@@ -41,6 +41,11 @@
     color:var(--ink);transition:.15s;font-family:inherit;text-align:left}
   .cat-btn:hover{border-color:var(--tag);background:var(--tag-bg)}
   .cat-btn .n{font-size:.74rem;color:var(--ink-soft);background:var(--paper);border-radius:20px;padding:2px 9px;white-space:nowrap}
+  .shuf{width:100%;border-radius:12px;padding:11px 14px;font-size:.9rem;font-weight:700;cursor:pointer;
+    font-family:inherit;margin-bottom:14px;transition:.15s;border:1.5px solid var(--line)}
+  .shuf.on{background:var(--correct-bg);border-color:#BFE3D0;color:var(--correct)}
+  .shuf.off{background:var(--paper);color:var(--ink-soft)}
+  .shuf-note{font-size:.72rem;color:var(--ink-soft);margin:-8px 0 14px;line-height:1.5}
   .divider{display:flex;align-items:center;gap:12px;margin:20px 0 12px;color:var(--ink-soft);font-size:.74rem;letter-spacing:.1em}
   .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
 
@@ -112,6 +117,8 @@
   <div id="start" class="screen active">
     <div class="card">
       <h2 class="sec">出題メニューを選ぶ</h2>
+      <button id="shufBtn" class="shuf on" onclick="toggleShuffle()">選択肢をシャッフル：ON</button>
+      <div class="shuf-note">★位置で丸暗記するのを防ぎ、内容で判断する力が鍛えられます。じっくり復習したい時はOFFに。</div>
       <div class="modes">
         <button class="mode-btn" onclick="startQuiz('all')">
           <span class="big">📚</span>
@@ -192,6 +199,13 @@ cats.forEach(c=>{
 });
 
 let queue=[], idx=0, correct=0, answered=false, wrongList=[], results=[];
+let curOrder=[], curCorrectPos=0, shuffleOpts=true;  // 選択肢シャッフル用
+function toggleShuffle(){
+  shuffleOpts=!shuffleOpts;
+  const b=document.getElementById('shufBtn');
+  b.textContent='選択肢をシャッフル：'+(shuffleOpts?'ON':'OFF');
+  b.className='shuf '+(shuffleOpts?'on':'off');
+}
 
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -230,13 +244,16 @@ function renderQ(){
   document.getElementById('tags').innerHTML=t;
   // question: bold **..** -> em(marker)
   document.getElementById('qtext').innerHTML=fmt(q.q);
-  // options
+  // options（シャッフル対応）
+  const n=q.options.length;
+  curOrder = shuffleOpts ? shuffle([...Array(n).keys()]) : [...Array(n).keys()];
+  curCorrectPos = curOrder.indexOf(q.answer);  // 表示上の正解位置
   const ow=document.getElementById('opts'); ow.innerHTML='';
-  q.options.forEach((op,i)=>{
+  curOrder.forEach((orig,pos)=>{
     const btn=document.createElement('button');
-    btn.className='opt'; btn.dataset.i=i;
-    btn.innerHTML=`<span class="num">${i+1}</span><span>${fmt(op)}</span>`;
-    btn.onclick=()=>choose(i);
+    btn.className='opt'; btn.dataset.i=pos;
+    btn.innerHTML=`<span class="num">${pos+1}</span><span>${fmt(q.options[orig])}</span>`;
+    btn.onclick=()=>choose(pos);
     ow.appendChild(btn);
   });
   const ex=document.getElementById('explain'); ex.className='explain'; ex.innerHTML='';
@@ -245,21 +262,21 @@ function renderQ(){
 }
 function fmt(s){return s.replace(/\*\*(.+?)\*\*/g,'<em>$1</em>');}
 
-function choose(i){
+function choose(i){   // i = 表示上の位置（シャッフル後）
   if(answered) return; answered=true;
   const q=queue[idx];
   const btns=document.querySelectorAll('#opts .opt');
   btns.forEach(b=>b.disabled=true);
-  const ok = i===q.answer;
+  const ok = i===curCorrectPos;
   if(ok){ correct++; }
   else { wrongList.push(q); }
   results.push({q,chosen:i,ok});
-  btns[q.answer].classList.add('correct');
-  btns[q.answer].insertAdjacentHTML('beforeend','<span class="mk">✓</span>');
+  btns[curCorrectPos].classList.add('correct');
+  btns[curCorrectPos].insertAdjacentHTML('beforeend','<span class="mk">✓</span>');
   if(!ok){ btns[i].classList.add('wrong'); btns[i].insertAdjacentHTML('beforeend','<span class="mk">✕</span>'); }
   const ex=document.getElementById('explain');
   ex.className='explain show '+(ok?'ok':'ng');
-  ex.innerHTML=`<div class="head">${ok?'⭕ 正解！':'❌ 不正解'}　正解は ${q.answer+1}</div>`+
+  ex.innerHTML=`<div class="head">${ok?'⭕ 正解！':'❌ 不正解'}　正解は ${curCorrectPos+1}</div>`+
     `<div>${fmt(q.explanation)}</div>`;
   document.getElementById('nextBtn').classList.add('show');
   document.getElementById('prog').style.width=((idx+1)/queue.length*100)+'%';
