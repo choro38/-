@@ -1,0 +1,216 @@
+
+<style>
+.wrap { font-size: 13px; padding: 4px 0; }
+.brain-row { display: flex; gap: 12px; align-items: flex-start; }
+.brain-svg { flex: 0 0 340px; }
+.legend { flex: 1; }
+.leg-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; cursor: pointer; padding: 4px 6px; border-radius: 6px; transition: background .15s; }
+.leg-item:hover { background: var(--surface-1); }
+.dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+.leg-name { font-weight: 500; font-size: 12px; color: var(--text-primary); }
+.leg-sub { font-size: 11px; color: var(--text-secondary); }
+.info-box { margin-top: 10px; padding: 10px 14px; border-radius: 10px; background: var(--surface-1); border: 1px solid var(--border); min-height: 60px; }
+.info-box h3 { font-size: 13px; font-weight: 500; margin: 0 0 6px; }
+.info-row { display: flex; gap: 6px; margin-bottom: 4px; align-items: baseline; }
+.info-label { font-size: 11px; color: var(--text-secondary); width: 52px; flex-shrink: 0; }
+.info-val { font-size: 12px; color: var(--text-primary); }
+.badge { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 10px; font-weight: 500; margin-left: 4px; }
+.good { background: #E1F5EE; color: #085041; }
+.bad { background: #FAEEDA; color: #633806; }
+.fluid { background: #E6F1FB; color: #0C447C; }
+.nfluid { background: #FBEAF0; color: #72243E; }
+.rule-box { margin-top: 10px; background: var(--surface-1); border-radius: 10px; padding: 10px 14px; }
+.rule-box h4 { font-size: 12px; font-weight: 500; margin: 0 0 6px; color: var(--text-primary); }
+.rule { font-size: 11px; color: var(--text-secondary); line-height: 1.7; }
+.rule b { color: var(--text-primary); }
+</style>
+<div class="wrap">
+<div class="brain-row">
+<div class="brain-svg">
+<svg width="100%" viewBox="0 0 340 230" role="img">
+<title>言語野の脳地図</title>
+<desc>シルヴィウス裂を中心とした言語野の分布図</desc>
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+<!-- 脳の外形 -->
+<ellipse cx="165" cy="115" rx="145" ry="105" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/>
+<!-- シルヴィウス裂 -->
+<path d="M60 130 Q120 90 200 95 Q240 97 280 110" fill="none" stroke="#888" stroke-width="2" stroke-dasharray="4 2"/>
+<text class="ts" x="150" y="82" text-anchor="middle" style="font-size:10px;fill:var(--text-muted)">シルヴィウス裂（傍）</text>
+<!-- 弓状束 -->
+<path id="arcuate" d="M105 155 Q140 85 210 100" fill="none" stroke="#7F77DD" stroke-width="3" stroke-dasharray="6 3" opacity="0.7"/>
+<text class="ts" x="158" y="68" text-anchor="middle" style="font-size:10px;fill:#534AB7">弓状束</text>
+
+<!-- ブローカ野 -->
+<ellipse id="broca-el" cx="98" cy="148" rx="36" ry="26" fill="#FAECE7" stroke="#993C1D" stroke-width="1.5" style="cursor:pointer" onclick="showInfo('broca')"/>
+<text style="font-size:11px;font-weight:500;fill:#712B13;cursor:pointer" x="98" y="144" text-anchor="middle" onclick="showInfo('broca')">ブローカ野</text>
+<text style="font-size:10px;fill:#993C1D;cursor:pointer" x="98" y="157" text-anchor="middle" onclick="showInfo('broca')">前頭葉下部</text>
+
+<!-- ウェルニッケ野 -->
+<ellipse id="wern-el" cx="220" cy="130" rx="40" ry="24" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.5" style="cursor:pointer" onclick="showInfo('wern')"/>
+<text style="font-size:11px;font-weight:500;fill:#0C447C;cursor:pointer" x="220" y="126" text-anchor="middle" onclick="showInfo('wern')">ウェルニッケ野</text>
+<text style="font-size:10px;fill:#185FA5;cursor:pointer" x="220" y="138" text-anchor="middle" onclick="showInfo('wern')">側頭葉上部後方</text>
+
+<!-- 補足運動野 -->
+<ellipse id="sma-el" cx="148" cy="42" rx="32" ry="18" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1.2" style="cursor:pointer" onclick="showInfo('sma')"/>
+<text style="font-size:10px;font-weight:500;fill:#27500A;cursor:pointer" x="148" y="38" text-anchor="middle" onclick="showInfo('sma')">補足運動野</text>
+<text style="font-size:9px;fill:#3B6D11;cursor:pointer" x="148" y="50" text-anchor="middle" onclick="showInfo('sma')">前頭葉内側</text>
+
+<!-- 縁上回・角回 -->
+<ellipse id="angular-el" cx="248" cy="78" rx="34" ry="18" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.2" style="cursor:pointer" onclick="showInfo('angular')"/>
+<text style="font-size:10px;font-weight:500;fill:#3C3489;cursor:pointer" x="248" y="74" text-anchor="middle" onclick="showInfo('angular')">縁上回・角回</text>
+<text style="font-size:9px;fill:#534AB7;cursor:pointer" x="248" y="86" text-anchor="middle" onclick="showInfo('angular')">頭頂葉下部</text>
+
+<!-- 前 後 ラベル -->
+<text class="ts" x="30" y="115" style="font-size:11px;fill:var(--text-muted)">前</text>
+<text class="ts" x="302" y="115" style="font-size:11px;fill:var(--text-muted)">後</text>
+<text class="ts" x="165" y="220" text-anchor="middle" style="font-size:10px;fill:var(--text-muted)">左半球 外側面</text>
+</svg>
+</div>
+<div class="legend">
+  <div style="font-size:11px;font-weight:500;color:var(--text-secondary);margin-bottom:8px;">各部位をタップ →</div>
+  <div class="leg-item" onclick="showInfo('broca')">
+    <div class="dot" style="background:#D85A30"></div>
+    <div><div class="leg-name">ブローカ野</div><div class="leg-sub">発話プログラム工場</div></div>
+  </div>
+  <div class="leg-item" onclick="showInfo('wern')">
+    <div class="dot" style="background:#378ADD"></div>
+    <div><div class="leg-name">ウェルニッケ野</div><div class="leg-sub">意味の解読装置</div></div>
+  </div>
+  <div class="leg-item" onclick="showInfo('arcuate')">
+    <div class="dot" style="background:#7F77DD"></div>
+    <div><div class="leg-name">弓状束</div><div class="leg-sub">前後をつなぐケーブル</div></div>
+  </div>
+  <div class="leg-item" onclick="showInfo('sma')">
+    <div class="dot" style="background:#639922"></div>
+    <div><div class="leg-name">補足運動野</div><div class="leg-sub">発話の発動スイッチ</div></div>
+  </div>
+  <div class="leg-item" onclick="showInfo('angular')">
+    <div class="dot" style="background:#7F77DD"></div>
+    <div><div class="leg-name">縁上回・角回</div><div class="leg-sub">概念・連合野</div></div>
+  </div>
+</div>
+</div>
+
+<div class="info-box" id="info">
+  <div style="font-size:12px;color:var(--text-muted)">部位または下の失語タイプをタップしてください</div>
+</div>
+
+<div style="margin-top:10px;font-size:11px;font-weight:500;color:var(--text-secondary);margin-bottom:6px;">失語タイプ別 — なぜその症状になるか</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+  <button onclick="showAphasia('broca')" style="font-size:11px;padding:4px 10px;border-radius:16px;border:1px solid #993C1D;background:#FAECE7;color:#712B13;cursor:pointer">ブローカ失語</button>
+  <button onclick="showAphasia('wern')" style="font-size:11px;padding:4px 10px;border-radius:16px;border:1px solid #185FA5;background:#E6F1FB;color:#0C447C;cursor:pointer">ウェルニッケ失語</button>
+  <button onclick="showAphasia('zenbu')" style="font-size:11px;padding:4px 10px;border-radius:16px;border:1px solid #888;background:#F1EFE8;color:#444;cursor:pointer">全失語</button>
+  <button onclick="showAphasia('dendo')" style="font-size:11px;padding:4px 10px;border-radius:16px;border:1px solid #534AB7;background:#EEEDFE;color:#3C3489;cursor:pointer">伝導失語</button>
+  <button onclick="showAphasia('tunM')" style="font-size:11px;padding:4px 10px;border-radius:16px;border:1px solid #3B6D11;background:#EAF3DE;color:#27500A;cursor:pointer">超皮質性運動</button>
+  <button onclick="showAphasia('tunS')" style="font-size:11px;padding:4px 10px;border-radius:16px;border:1px solid #BA7517;background:#FAEEDA;color:#633806;cursor:pointer">超皮質性感覚</button>
+  <button onclick="showAphasia('kenbo')" style="font-size:11px;padding:4px 10px;border-radius:16px;border:1px solid #1D9E75;background:#E1F5EE;color:#085041;cursor:pointer">健忘失語</button>
+  <button onclick="showAphasia('mixed')" style="font-size:11px;padding:4px 10px;border-radius:16px;border:1px solid #999;background:#F1EFE8;color:#333;cursor:pointer">混合型超皮質性</button>
+</div>
+
+<div class="rule-box">
+  <h4>3つの「なぜ」を覚える</h4>
+  <div class="rule">
+    <b>流暢性</b>：前（ブローカ野・補足運動野）が壊れると<b>非流暢</b>、後（ウェルニッケ野）が壊れても発話工場は無事なので<b>流暢</b><br>
+    <b>理解</b>：ウェルニッケ野が解読装置→そこが壊れると<b>理解障害</b>、前方損傷なら解読装置は無事<br>
+    <b>復唱</b>：ウェルニッケ→弓状束→ブローカのルートが繋がっていれば<b>良好</b>、どこか1つでも切れると<b>不良</b>。超皮質性系はこのルートが無傷だから復唱だけできる
+  </div>
+</div>
+</div>
+
+<script>
+const infoData = {
+  broca: {
+    title: 'ブローカ野（前頭葉下部：BA44/45）',
+    body: '発話プログラムを作る「工場」。ここが壊れると言葉が出にくくなる（非流暢）。でも意味を理解するウェルニッケ野は無傷なので理解は比較的良好。失文法・発語失行が生じる。'
+  },
+  wern: {
+    title: 'ウェルニッケ野（上側頭回後部：BA22）',
+    body: '聴いた音に意味を与える「解読装置」。ここが壊れると①理解が障害される②発話工場は無傷なのでスラスラしゃべる（流暢）。でも意味がおかしい（錯語・ジャルゴン）。'
+  },
+  arcuate: {
+    title: '弓状束（Arcuate fasciculus）',
+    body: 'ウェルニッケ野とブローカ野をつなぐ神経線維の束。ここだけが切れると伝導失語になる。「理解もできる・発話も流暢」なのに「復唱だけが不良」という特殊パターン。'
+  },
+  sma: {
+    title: '補足運動野（前頭葉内側：BA6）',
+    body: '発話を「始める」スイッチ。ここが壊れると自発的に話し出せなくなる（自発性の著しい低下）。でも復唱の回路（弓状束）は無傷→復唱は良好。→超皮質性運動失語の正体。'
+  },
+  angular: {
+    title: '縁上回・角回（頭頂葉下部：BA39/40）',
+    body: '意味・概念の連合野。ここが壊れると概念へのアクセスが障害される。弓状束の上流にあたり、「記憶の引き出し」として機能。健忘失語や伝導失語に関連する。'
+  }
+};
+
+const aphasiaData = {
+  broca: {
+    title: 'ブローカ失語　なぜこの症状になるか',
+    lesion: '前頭葉下部（ブローカ野周辺）',
+    fluent: '非流暢', rep: '不良', comp: '軽〜中度障害',
+    why: 'ブローカ野（発話工場）が壊れる→言葉が出にくい・短い文・失文法。ウェルニッケ野は無傷→理解は比較的保たれる。弓状束は損傷→復唱も不良。'
+  },
+  wern: {
+    title: 'ウェルニッケ失語　なぜこの症状になるか',
+    lesion: '上側頭回後部（ウェルニッケ野）',
+    fluent: '流暢', rep: '不良', comp: '中〜重度障害',
+    why: 'ウェルニッケ野（解読装置）が壊れる→意味理解が崩壊。発話工場は無傷→流暢にしゃべる。でも解読装置が壊れているので自分の発話の誤りにも気づかない→錯語・ジャルゴン。復唱は弓状束の入力側（ウェルニッケ野）が壊れているので不良。'
+  },
+  zenbu: {
+    title: '全失語　なぜこの症状になるか',
+    lesion: 'シルヴィウス裂周囲の広範な損傷',
+    fluent: '非流暢', rep: '不良', comp: '重度障害',
+    why: 'ブローカ野・ウェルニッケ野・弓状束すべてが損傷→4モダリティすべてが重度に障害される。中大脳動脈の広範な梗塞が原因となることが多い。'
+  },
+  dendo: {
+    title: '伝導失語　なぜこの症状になるか',
+    lesion: '弓状束（縁上回）',
+    fluent: '流暢', rep: '不良', comp: 'ほぼ良好',
+    why: '弓状束だけが切れる→ウェルニッケ野もブローカ野も無傷。だから理解はできる・発話も流暢。でも前後をつなぐケーブルが切れているので「聞いた音を発話に変換するルート」が使えない→復唱が特異的に不良。音韻性錯語の頻発と自己修正が特徴。'
+  },
+  tunM: {
+    title: '超皮質性運動失語　なぜこの症状になるか',
+    lesion: '補足運動野・前頭葉内側（傍シルヴィウス裂の外側）',
+    fluent: '非流暢', rep: '良好', comp: '文法的・超時的理解の障害',
+    why: '「発話を始めるスイッチ」（補足運動野）が壊れる→自発的に話し出せない（自発性著しく低下）。でもウェルニッケ→弓状束→ブローカの復唱回路は無傷→復唱だけはできる。「ほぼ無言なのに復唱できる」という独特の症状。'
+  },
+  tunS: {
+    title: '超皮質性感覚失語　なぜこの症状になるか',
+    lesion: 'ウェルニッケ野の外側・後方言語領域（傍シルヴィウス裂の外側）',
+    fluent: '流暢', rep: '良好', comp: '語と文レベルで障害',
+    why: 'ウェルニッケ野そのものは無傷（だから復唱回路は保たれる→復唱良好）。でも概念・意味へのアクセスが外側から遮断される→理解障害・反響言語。ウェルニッケ失語と似ているが「復唱が良好」な点が決定的な違い。'
+  },
+  kenbo: {
+    title: '健忘失語　なぜこの症状になるか',
+    lesion: '語の音と復唱に関する回路は保存',
+    fluent: '流暢', rep: '良好', comp: 'なし〜軽度',
+    why: '復唱回路が保たれている→復唱良好。理解もほぼ良好。でも「単語を思い出す」引き出しへのアクセスが障害される→喚語困難・迂言・代名詞多用。発話は流暢だが情報量が少ない。'
+  },
+  mixed: {
+    title: '混合型超皮質性失語　なぜこの症状になるか',
+    lesion: 'ブローカ野＋ウェルニッケ野の両側損傷（傍シルヴィウス裂は残存）',
+    fluent: 'ほぼ無言', rep: '良好', comp: '聴解不能',
+    why: '「超皮質性運動失語＋超皮質性感覚失語」が合わさった状態。ブローカ野もウェルニッケ野も壊れているが、ウェルニッケ→弓状束→ブローカの「復唱専用回路」だけが奇跡的に残っている→ほぼ無言・理解不能なのに復唱だけできる（エコラリア）。'
+  }
+};
+
+function showInfo(key) {
+  const d = infoData[key];
+  if (!d) return;
+  document.getElementById('info').innerHTML = `<h3>${d.title}</h3><div style="font-size:12px;color:var(--text-secondary);line-height:1.7">${d.body}</div>`;
+}
+
+function showAphasia(key) {
+  const d = aphasiaData[key];
+  if (!d) return;
+  const fBadge = d.fluent === '流暢' ? '<span class="badge fluid">流暢</span>' : '<span class="badge nfluid">非流暢</span>';
+  const rBadge = d.rep === '良好' ? '<span class="badge good">復唱良好</span>' : '<span class="badge bad">復唱不良</span>';
+  document.getElementById('info').innerHTML = `
+    <h3>${d.title}</h3>
+    <div class="info-row"><span class="info-label">病巣</span><span class="info-val">${d.lesion}</span></div>
+    <div class="info-row"><span class="info-label">流暢性</span><span class="info-val">${fBadge}</span><span class="info-label" style="margin-left:8px">理解</span><span class="info-val">${d.comp}</span>${rBadge}</div>
+    <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;margin-top:6px"><b>なぜ？</b> ${d.why}</div>`;
+}
+</script>
