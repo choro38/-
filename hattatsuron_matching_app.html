@@ -1,0 +1,339 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.app{padding:1.5rem 0;max-width:680px}
+.tabs{display:flex;gap:8px;margin-bottom:1.5rem;border-bottom:0.5px solid var(--border);padding-bottom:0}
+.tab{padding:8px 16px;font-size:14px;cursor:pointer;border:none;background:none;color:var(--text-secondary);border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:0;transition:all .15s}
+.tab.active{color:var(--text-accent);border-bottom-color:var(--border-accent);font-weight:500}
+.tab:hover:not(.active){color:var(--text-primary)}
+.screen{display:none}.screen.active{display:block}
+.score-bar{display:flex;gap:12px;margin-bottom:1.5rem;align-items:center}
+.score-card{background:var(--surface-1);border:0.5px solid var(--border);border-radius:var(--radius);padding:8px 16px;font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:6px}
+.score-num{font-size:18px;font-weight:500;color:var(--text-primary)}
+.progress-bar{flex:1;height:6px;background:var(--surface-1);border-radius:9px;overflow:hidden;border:0.5px solid var(--border)}
+.progress-fill{height:100%;background:var(--fill-accent);border-radius:9px;transition:width .3s}
+
+/* カード整列モード */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.col-label{font-size:12px;color:var(--text-secondary);margin-bottom:8px;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+.cards-col{display:flex;flex-direction:column;gap:8px}
+.match-card{padding:10px 14px;background:var(--surface-2);border:0.5px solid var(--border);border-radius:var(--radius);font-size:13px;cursor:pointer;transition:all .15s;color:var(--text-primary);user-select:none;line-height:1.5}
+.match-card:hover{border-color:var(--border-accent);background:var(--bg-accent)}
+.match-card.selected{border-color:var(--border-accent);background:var(--bg-accent);color:var(--text-accent)}
+.match-card.correct{border-color:var(--border-success);background:var(--bg-success);color:var(--text-success);pointer-events:none}
+.match-card.wrong{border-color:var(--border-danger);background:var(--bg-danger);color:var(--text-danger);animation:shake .3s}
+.match-card.dimmed{opacity:.4;pointer-events:none}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* フラッシュカードモード */
+.fc-wrap{perspective:1000px;width:100%;margin:0 auto 1.5rem}
+.fc-inner{position:relative;transform-style:preserve-3d;transition:transform .5s;cursor:pointer;height:180px}
+.fc-inner.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;border:0.5px solid var(--border)}
+.fc-front{background:var(--surface-2)}
+.fc-back{background:var(--bg-accent);border-color:var(--border-accent);transform:rotateY(180deg)}
+.fc-hint{font-size:12px;color:var(--text-muted);margin-bottom:8px}
+.fc-q{font-size:15px;font-weight:500;color:var(--text-primary);line-height:1.6}
+.fc-a{font-size:14px;color:var(--text-accent);line-height:1.6}
+.fc-tag{font-size:11px;background:var(--bg-pro);color:var(--text-pro);padding:2px 8px;border-radius:20px;margin-bottom:8px;font-weight:500}
+.fc-nav{display:flex;gap:12px;justify-content:center;align-items:center;margin-bottom:1.5rem}
+.fc-btn{padding:8px 20px;font-size:14px;cursor:pointer;border:0.5px solid var(--border-strong);background:var(--surface-2);border-radius:var(--radius);color:var(--text-primary)}
+.fc-btn:hover{background:var(--surface-1)}
+.fc-counter{font-size:14px;color:var(--text-secondary);min-width:60px;text-align:center}
+.rate-btns{display:flex;gap:8px;justify-content:center}
+.rate-btn{padding:6px 18px;font-size:13px;cursor:pointer;border:0.5px solid var(--border);border-radius:var(--radius);background:var(--surface-2);color:var(--text-secondary)}
+.rate-btn.good{border-color:var(--border-success);background:var(--bg-success);color:var(--text-success)}
+.rate-btn.bad{border-color:var(--border-danger);background:var(--bg-danger);color:var(--text-danger)}
+.rate-btn:hover{opacity:.8}
+
+/* クイズモード */
+.quiz-q{font-size:16px;font-weight:500;color:var(--text-primary);margin-bottom:1.5rem;line-height:1.7}
+.quiz-choices{display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem}
+.quiz-choice{padding:12px 16px;background:var(--surface-2);border:0.5px solid var(--border);border-radius:var(--radius);font-size:14px;cursor:pointer;text-align:left;color:var(--text-primary);transition:all .15s;line-height:1.5}
+.quiz-choice:hover:not(:disabled){border-color:var(--border-accent);background:var(--bg-accent)}
+.quiz-choice.correct{border-color:var(--border-success);background:var(--bg-success);color:var(--text-success)}
+.quiz-choice.wrong{border-color:var(--border-danger);background:var(--bg-danger);color:var(--text-danger)}
+.quiz-choice:disabled{cursor:default}
+.quiz-exp{padding:12px 14px;background:var(--surface-1);border-left:3px solid var(--border-accent);border-radius:0 var(--radius) var(--radius) 0;font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:1.5rem}
+.quiz-exp strong{color:var(--text-primary)}
+.btn-next{padding:10px 24px;font-size:14px;cursor:pointer;border:0.5px solid var(--border-accent);background:var(--bg-accent);color:var(--text-accent);border-radius:var(--radius);font-weight:500}
+.btn-next:hover{opacity:.8}
+.result-box{text-align:center;padding:2rem 1rem}
+.result-score{font-size:48px;font-weight:500;color:var(--text-primary)}
+.result-label{font-size:14px;color:var(--text-secondary);margin-bottom:1.5rem}
+.result-msg{font-size:15px;color:var(--text-primary);margin-bottom:1.5rem;line-height:1.7}
+.reset-btn{padding:10px 28px;font-size:14px;cursor:pointer;border:0.5px solid var(--border-strong);background:var(--surface-2);border-radius:var(--radius);color:var(--text-primary)}
+.badge-star{display:inline-block;background:var(--bg-warning);color:var(--text-warning);font-size:11px;padding:1px 6px;border-radius:20px;margin-left:6px;vertical-align:middle}
+</style>
+
+<div class="app">
+<h2 class="sr-only">発達論 学習アプリ（マッチング・フラッシュカード・クイズの3モード）</h2>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('match')">マッチング</button>
+  <button class="tab" onclick="switchTab('flash')">フラッシュカード</button>
+  <button class="tab" onclick="switchTab('quiz')">クイズ</button>
+</div>
+
+<!-- ══ マッチングモード ══ -->
+<div id="screen-match" class="screen active">
+  <div class="score-bar">
+    <div class="score-card"><span class="score-num" id="m-correct">0</span> 正解</div>
+    <div class="progress-bar"><div class="progress-fill" id="m-prog" style="width:0%"></div></div>
+    <div class="score-card" style="cursor:pointer" onclick="initMatch()">↻ リセット</div>
+  </div>
+  <div class="match-grid">
+    <div><div class="col-label">人物・説の名前</div><div class="cards-col" id="left-col"></div></div>
+    <div><div class="col-label">内容・キーワード</div><div class="cards-col" id="right-col"></div></div>
+  </div>
+  <div id="m-msg" style="margin-top:1rem;font-size:14px;color:var(--text-secondary);text-align:center;min-height:20px"></div>
+</div>
+
+<!-- ══ フラッシュカードモード ══ -->
+<div id="screen-flash" class="screen">
+  <div class="score-bar">
+    <div class="score-card"><span class="score-num" id="f-ok">0</span> 覚えた</div>
+    <div class="score-card"><span class="score-num" id="f-ng">0</span> 要復習</div>
+    <div class="progress-bar"><div class="progress-fill" id="f-prog" style="width:0%"></div></div>
+  </div>
+  <div class="fc-wrap" onclick="flipCard()">
+    <div class="fc-inner" id="fc-inner">
+      <div class="fc-face fc-front">
+        <div class="fc-tag" id="fc-tag"></div>
+        <div class="fc-hint">クリックして答えを見る</div>
+        <div class="fc-q" id="fc-q"></div>
+      </div>
+      <div class="fc-face fc-back">
+        <div class="fc-a" id="fc-a"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-nav">
+    <button class="fc-btn" onclick="fcMove(-1)">← 前へ</button>
+    <span class="fc-counter" id="fc-counter">1 / 1</span>
+    <button class="fc-btn" onclick="fcMove(1)">次へ →</button>
+  </div>
+  <div class="rate-btns" id="rate-btns">
+    <button class="rate-btn bad" onclick="fcRate(false)">✕ まだ曖昧</button>
+    <button class="rate-btn good" onclick="fcRate(true)">○ 覚えた！</button>
+  </div>
+</div>
+
+<!-- ══ クイズモード ══ -->
+<div id="screen-quiz" class="screen">
+  <div id="quiz-body">
+    <div class="score-bar">
+      <div class="score-card"><span class="score-num" id="q-correct">0</span> 正解</div>
+      <div class="score-card"><span class="score-num" id="q-wrong">0</span> 不正解</div>
+      <div class="progress-bar"><div class="progress-fill" id="q-prog" style="width:0%"></div></div>
+    </div>
+    <div class="quiz-q" id="quiz-q"></div>
+    <div class="quiz-choices" id="quiz-choices"></div>
+    <div class="quiz-exp" id="quiz-exp" style="display:none"></div>
+    <button class="btn-next" id="btn-next" style="display:none" onclick="nextQuiz()">次の問題 →</button>
+  </div>
+  <div class="result-box" id="quiz-result" style="display:none">
+    <div class="result-score" id="r-score"></div>
+    <div class="result-label">点（10問中）</div>
+    <div class="result-msg" id="r-msg"></div>
+    <button class="reset-btn" onclick="initQuiz()">もう一度挑戦</button>
+  </div>
+</div>
+</div>
+
+<script>
+const PAIRS = [
+  {left:"ルソー（仏・思想家）",right:"生得説｜天性が発達を最も決定する",cat:"遺伝論",star:false},
+  {left:"ゲゼル（米・小児科医）",right:"成熟優位説｜発達の順序は自然な成熟で決まる。レディネスが必要",cat:"遺伝論",star:true},
+  {left:"ロック（英・哲学者）",right:"経験説｜白紙（タブラ・ラサ）に経験が書きこまれる",cat:"環境論",star:false},
+  {left:"ワトソン（米・心理学者）",right:"学習優位説｜発達は人間が統制できる（行動主義）",cat:"環境論",star:true},
+  {left:"シュテルン（独・心理学者）",right:"輻輳説｜遺伝＋環境（加算的・相関しない）",cat:"輻輳説",star:true},
+  {left:"ルクセンブルガー（独・精神科医）",right:"輻輳説の図式化｜寄与率は機能によって異なる",cat:"輻輳説",star:false},
+  {left:"ジェンセン（米・心理学者）",right:"環境閾値説｜環境が閾値を超えると遺伝的可能性が開花",cat:"相互作用説",star:true},
+  {left:"「蛙の子は蛙」",right:"遺伝論のたとえ",cat:"たとえ",star:false},
+  {left:"「氏より育ち」",right:"環境論のたとえ",cat:"たとえ",star:false},
+  {left:"レディネス（readiness）",right:"心身の機能が学ぶ準備の整った状態。ゲゼルが重視",cat:"重要語",star:true},
+  {left:"アヴェロンの野生児",right:"環境の重要性を示す事例。言語環境がなく言語未習得",cat:"事例",star:true},
+  {left:"「遺伝×環境」",right:"相互作用説｜掛け算的に働く（輻輳説の＋とは異なる）",cat:"相互作用説",star:true},
+];
+
+const QUIZ = [
+  {q:"「発達の基本的様態と順序は自然な成熟によって決まる。学習にはレディネスが必要」とする説は？",choices:["生得説","成熟優位説","輻輳説","環境閾値説"],ans:1,exp:"成熟優位説（ゲゼル）。レディネス＝心身の機能が学ぶ準備の整った状態。ゲゼルの「階段のぼり実験」で実証された。",star:true},
+  {q:"「遺伝と環境は加算的に発達を規定し、相関しない」とする輻輳説を提唱したのは誰？",choices:["ジェンセン","シュテルン","ゲゼル","ワトソン"],ans:1,exp:"シュテルン（Stern, W.、独・心理学者）が輻輳説を提唱。遺伝＋環境（加算的）であり、相互作用説（遺伝×環境）とは異なる。",star:true},
+  {q:"「環境の質がある水準（閾値）を超えると遺伝的な可能性が開花する」とする環境閾値説を唱えたのは？",choices:["シュテルン","ルクセンブルガー","ジェンセン","ロック"],ans:2,exp:"ジェンセン（Jensen, A. R.、米・心理学者）の環境閾値説。遺伝的な特質があっても環境が閾値に達しなければ発現しない。",star:true},
+  {q:"「子どもの発育・発達は人間が統制できる」とし、行動主義の立場をとった人物は？",choices:["ルソー","ゲゼル","ワトソン","シュテルン"],ans:2,exp:"ワトソン（Watson, J. B.、米・心理学者）の学習優位説。環境論の立場。「氏より育ち」に対応。",star:true},
+  {q:"ロック（Locke, J.）の経験説における中心概念はどれか？",choices:["レディネス","白紙（タブラ・ラサ）","普遍文法","発達の最近接領域"],ans:1,exp:"ロックの経験説＝「白紙（タブラ・ラサ）」に経験が書きこまれる。経験こそが知識の源泉とする環境論。",star:false},
+  {q:"「輻輳説」と「相互作用説」の違いとして正しいのはどれか？",choices:["輻輳説は遺伝のみを重視する","輻輳説は遺伝＋環境（加算的）、相互作用説は遺伝×環境（掛け算的）","相互作用説はゲゼルが提唱した","両者とも同じ意味である"],ans:1,exp:"輻輳説（シュテルン）＝遺伝＋環境（加算的・相関しない）、相互作用説（ジェンセン）＝遺伝×環境（掛け算的・相互に影響）。★国試で区別が問われやすい！",star:true},
+  {q:"発達の特徴として誤っているものはどれか？",choices:["最適期（臨界期）がある","気質と環境の相互作用で支えられる","常に直線的に発達する","個人差が大きい"],ans:2,exp:"発達は「直線的ではない」のが特徴。スランプ・急成長など非線形に進む。その他①臨界期あり②気質×環境③おおよその順序性⑤個人差大 は正しい。",star:true},
+  {q:"アヴェロンの野生児が示すものとして最も適切なのは？",choices:["遺伝の重要性","言語の生得性","環境の重要性","成熟優位説の根拠"],ans:2,exp:"アヴェロンの野生児・狼に育てられた子・カスパー・ハウザーは環境（言語環境）の重要性を示す事例として環境論の根拠とされる。",star:false},
+  {q:"「どのような機能も遺伝と環境が影響するが、その寄与率は機能によって異なる」という図式化を行ったのは？",choices:["シュテルン","ルクセンブルガー","ジェンセン","ゲゼル"],ans:1,exp:"ルクセンブルガー（Luxenburger, H.、独・精神科医）が輻輳説を図式化。知能は遺伝的寄与が大きく、特定の病気は環境的寄与が大きいなど機能によって寄与率が異なると示した。",star:false},
+  {q:"「発達を最も決定づけるのは受け継がれた天性である」とした思想家は？",choices:["ワトソン","ロック","ルソー","シュテルン"],ans:2,exp:"ルソー（Rousseau, J. J.、仏・思想家）の生得説。「蛙の子は蛙」に対応する遺伝論の代表。",star:false},
+];
+
+let mSel={left:null,right:null},mCorrect=0,mDone=0;
+let fcIdx=0,fcOk=0,fcNg=0,fcFlipped=false;
+let qIdx=0,qCorrect=0,qWrong=0,qAnswered=false,qList=[];
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((b,i)=>{
+    b.classList.toggle('active',['match','flash','quiz'][i]===t);
+  });
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+t).classList.add('active');
+  if(t==='flash')renderFC();
+  if(t==='quiz')initQuiz();
+}
+
+function shuffle(a){let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function initMatch(){
+  mSel={left:null,right:null};mCorrect=0;mDone=0;
+  document.getElementById('m-correct').textContent=0;
+  document.getElementById('m-prog').style.width='0%';
+  document.getElementById('m-msg').textContent='左右の対応するカードを選んでください';
+  const pairs=shuffle(PAIRS).slice(0,6);
+  const lefts=shuffle(pairs.map(p=>p.left));
+  const rights=shuffle(pairs.map(p=>p.right));
+  window._matchPairs=pairs;
+  const lc=document.getElementById('left-col');
+  const rc=document.getElementById('right-col');
+  lc.innerHTML='';rc.innerHTML='';
+  lefts.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='match-card';d.textContent=t;d.dataset.val=t;d.dataset.side='left';
+    d.onclick=()=>selectCard(d,'left');lc.appendChild(d);
+  });
+  rights.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='match-card';d.textContent=t;d.dataset.val=t;d.dataset.side='right';
+    d.onclick=()=>selectCard(d,'right');rc.appendChild(d);
+  });
+}
+
+function selectCard(el,side){
+  if(el.classList.contains('correct')||el.classList.contains('dimmed'))return;
+  document.querySelectorAll('.match-card.selected').forEach(c=>{
+    if(c.dataset.side===side)c.classList.remove('selected');
+  });
+  el.classList.add('selected');
+  mSel[side]=el;
+  if(mSel.left&&mSel.right){
+    const lv=mSel.left.dataset.val;
+    const rv=mSel.right.dataset.val;
+    const pair=window._matchPairs.find(p=>p.left===lv&&p.right===rv);
+    if(pair){
+      mSel.left.classList.remove('selected');mSel.right.classList.remove('selected');
+      mSel.left.classList.add('correct');mSel.right.classList.add('correct');
+      mCorrect++;mDone++;
+      document.getElementById('m-correct').textContent=mCorrect;
+      document.getElementById('m-prog').style.width=(mDone/window._matchPairs.length*100)+'%';
+      document.getElementById('m-msg').textContent='✓ 正解！「'+pair.cat+'」の組み合わせ';
+      if(mDone===window._matchPairs.length){
+        setTimeout(()=>{document.getElementById('m-msg').textContent='🎉 全問正解！完璧です！';},400);
+      }
+    } else {
+      mSel.left.classList.add('wrong');mSel.right.classList.add('wrong');
+      document.getElementById('m-msg').textContent='✗ 違います。もう一度試してみて！';
+      setTimeout(()=>{
+        mSel.left.classList.remove('wrong','selected');
+        mSel.right.classList.remove('wrong','selected');
+      },700);
+    }
+    mSel={left:null,right:null};
+  }
+}
+
+const FC_DATA=[
+  {q:"遺伝論の2つの説と提唱者は？",a:"①生得説（ルソー）：天性が発達を決定\n②成熟優位説（ゲゼル）：発達の順序は自然な成熟で決まる。レディネスが必要",cat:"遺伝論",star:true},
+  {q:"環境論の2つの説と提唱者は？",a:"①経験説（ロック）：白紙（タブラ・ラサ）に経験が書きこまれる\n②学習優位説（ワトソン）：発達は人間が統制できる",cat:"環境論",star:true},
+  {q:"輻輳説とは？提唱者は？",a:"シュテルン（独）が提唱。遺伝＋環境（加算的に作用、相関しない）。ルクセンブルガーが図式化（機能によって寄与率が異なる）",cat:"輻輳説",star:true},
+  {q:"相互作用説・環境閾値説とは？提唱者は？",a:"ジェンセン（米）が提唱。遺伝×環境（掛け算的）。環境の質がある水準（閾値）を超えると遺伝的可能性が開花",cat:"相互作用説",star:true},
+  {q:"輻輳説と相互作用説の違いは？",a:"輻輳説＝遺伝＋環境（加算的・相関しない）\n相互作用説＝遺伝×環境（掛け算的・相互に影響する）",cat:"比較",star:true},
+  {q:"「レディネス」とは何か？誰の概念？",a:"心身の機能がある行動・知識を習得できる段階まで発達し、学ぶ準備が整った状態。ゲゼル（成熟優位説）の概念。",cat:"重要語",star:true},
+  {q:"「タブラ・ラサ（白紙）」とは？誰の概念？",a:"ロック（英・哲学者）の経験説の中心概念。心は生まれたとき白紙であり、経験によって知識が書きこまれるという考え方。",cat:"重要語",star:false},
+  {q:"アヴェロンの野生児が示すものは？",a:"環境の重要性。言語環境のない状況で育ったため言語を習得できなかった。環境論の根拠となる事例。",cat:"事例",star:false},
+  {q:"発達の5つの特徴を答えよ",a:"①最適期（臨界期）がある②気質と環境の相互作用で支えられる③おおよその一定の順序性④直線的ではない⑤個人差が大きい",cat:"発達の特徴",star:true},
+  {q:"「蛙の子は蛙」「氏より育ち」は何論のたとえ？",a:"「蛙の子は蛙」＝遺伝論\n「氏より育ち」＝環境論",cat:"たとえ",star:false},
+];
+
+function renderFC(){
+  const d=FC_DATA[fcIdx];
+  document.getElementById('fc-tag').textContent=d.cat+(d.star?'★':'');
+  document.getElementById('fc-q').textContent=d.q;
+  document.getElementById('fc-a').textContent=d.a;
+  document.getElementById('fc-counter').textContent=(fcIdx+1)+' / '+FC_DATA.length;
+  document.getElementById('fc-inner').classList.remove('flipped');
+  fcFlipped=false;
+}
+function flipCard(){document.getElementById('fc-inner').classList.toggle('flipped');fcFlipped=!fcFlipped;}
+function fcMove(d){fcIdx=(fcIdx+d+FC_DATA.length)%FC_DATA.length;renderFC();}
+function fcRate(ok){
+  if(ok){fcOk++}else{fcNg++}
+  document.getElementById('f-ok').textContent=fcOk;
+  document.getElementById('f-ng').textContent=fcNg;
+  const done=fcOk+fcNg;
+  document.getElementById('f-prog').style.width=Math.min(done/FC_DATA.length*100,100)+'%';
+  fcMove(1);
+}
+
+function initQuiz(){
+  qList=shuffle(QUIZ).slice(0,10);
+  qIdx=0;qCorrect=0;qWrong=0;qAnswered=false;
+  document.getElementById('q-correct').textContent=0;
+  document.getElementById('q-wrong').textContent=0;
+  document.getElementById('q-prog').style.width='0%';
+  document.getElementById('quiz-result').style.display='none';
+  document.getElementById('quiz-body').style.display='block';
+  renderQuiz();
+}
+function renderQuiz(){
+  if(qIdx>=qList.length){showResult();return;}
+  const q=qList[qIdx];
+  document.getElementById('quiz-q').innerHTML=(q.star?'<span class="badge-star">★国試</span> ':'')+q.q;
+  const cc=document.getElementById('quiz-choices');
+  cc.innerHTML='';
+  shuffle(q.choices.map((c,i)=>({c,orig:i}))).forEach(({c,orig})=>{
+    const b=document.createElement('button');
+    b.className='quiz-choice';b.textContent=c;
+    b.onclick=()=>answerQuiz(b,orig===q.ans,q);
+    cc.appendChild(b);
+  });
+  document.getElementById('quiz-exp').style.display='none';
+  document.getElementById('btn-next').style.display='none';
+  qAnswered=false;
+}
+function answerQuiz(el,correct,q){
+  if(qAnswered)return;qAnswered=true;
+  document.querySelectorAll('.quiz-choice').forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===q.choices[q.ans])b.classList.add('correct');
+  });
+  if(!correct)el.classList.add('wrong');
+  if(correct){qCorrect++}else{qWrong++}
+  document.getElementById('q-correct').textContent=qCorrect;
+  document.getElementById('q-wrong').textContent=qWrong;
+  document.getElementById('q-prog').style.width=((qIdx+1)/qList.length*100)+'%';
+  const exp=document.getElementById('quiz-exp');
+  exp.innerHTML='<strong>'+(correct?'✓ 正解！':'✗ 不正解')+'</strong>　'+q.exp;
+  exp.style.display='block';
+  document.getElementById('btn-next').style.display='inline-block';
+}
+function nextQuiz(){qIdx++;renderQuiz();}
+function showResult(){
+  document.getElementById('quiz-body').style.display='none';
+  document.getElementById('quiz-result').style.display='block';
+  const pct=Math.round(qCorrect/qList.length*100);
+  document.getElementById('r-score').textContent=qCorrect+'/'+qList.length;
+  const msgs={
+    100:'完璧です！発達論マスター確定！このまま国試も突破しよう🎉',
+    80:'すごい！あともう一歩で完璧。苦手な問題だけ見直そう✨',
+    60:'いい調子！マッチングとフラッシュカードで定着させよう💪',
+    0:'ここからが本番！フラッシュカードで提唱者と説を一つずつ覚えよう📚'
+  };
+  const msg=pct===100?msgs[100]:pct>=80?msgs[80]:pct>=60?msgs[60]:msgs[0];
+  document.getElementById('r-msg').textContent=msg;
+}
+
+initMatch();
+</script>
