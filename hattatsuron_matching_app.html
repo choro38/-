@@ -1,106 +1,192 @@
-
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>発達論・言語発達理論 完全学習アプリ</title>
 <style>
+:root{
+  --bg:#f7f5f0;--surface:#fff;--surface2:#f2f0eb;
+  --border:#ddd9d0;--border-s:#b8b4aa;
+  --text:#1c1a17;--text2:#6b6560;--text3:#a09a92;--line:#d0cbc0;
+  --r:8px;
+  --c-ide:#1d4ed8;--c-ide-bg:#eff6ff;--c-ide-bd:#bfdbfe;
+  --c-env:#15803d;--c-env-bg:#f0fdf4;--c-env-bd:#86efac;
+  --c-fuk:#b45309;--c-fuk-bg:#fffbeb;--c-fuk-bd:#fde68a;
+  --c-sog:#7c3aed;--c-sog-bg:#f5f3ff;--c-sog-bd:#ddd6fe;
+  --c-gak:#0e7490;--c-gak-bg:#ecfeff;--c-gak-bd:#a5f3fc;
+  --c-sei:#be185d;--c-sei-bg:#fdf2f8;--c-sei-bd:#f9a8d4;
+  --c-nin:#d97706;--c-nin-bg:#fffbeb;--c-nin-bd:#fcd34d;
+  --c-sha:#4f46e5;--c-sha-bg:#eef2ff;--c-sha-bd:#c7d2fe;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans)}
-.app{padding:1.5rem 0;max-width:680px}
-.tabs{display:flex;gap:8px;margin-bottom:1.5rem;border-bottom:0.5px solid var(--border);padding-bottom:0}
-.tab{padding:8px 16px;font-size:14px;cursor:pointer;border:none;background:none;color:var(--text-secondary);border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:0;transition:all .15s}
-.tab.active{color:var(--text-accent);border-bottom-color:var(--border-accent);font-weight:500}
-.tab:hover:not(.active){color:var(--text-primary)}
-.screen{display:none}.screen.active{display:block}
-.score-bar{display:flex;gap:12px;margin-bottom:1.5rem;align-items:center}
-.score-card{background:var(--surface-1);border:0.5px solid var(--border);border-radius:var(--radius);padding:8px 16px;font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:6px}
-.score-num{font-size:18px;font-weight:500;color:var(--text-primary)}
-.progress-bar{flex:1;height:6px;background:var(--surface-1);border-radius:9px;overflow:hidden;border:0.5px solid var(--border)}
-.progress-fill{height:100%;background:var(--fill-accent);border-radius:9px;transition:width .3s}
+body{background:var(--bg);color:var(--text);font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;line-height:1.6}
+.wrap{max-width:860px;margin:0 auto;padding:1.5rem 1.25rem 4rem}
 
-/* カード整列モード */
-.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-.col-label{font-size:12px;color:var(--text-secondary);margin-bottom:8px;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
-.cards-col{display:flex;flex-direction:column;gap:8px}
-.match-card{padding:10px 14px;background:var(--surface-2);border:0.5px solid var(--border);border-radius:var(--radius);font-size:13px;cursor:pointer;transition:all .15s;color:var(--text-primary);user-select:none;line-height:1.5}
-.match-card:hover{border-color:var(--border-accent);background:var(--bg-accent)}
-.match-card.selected{border-color:var(--border-accent);background:var(--bg-accent);color:var(--text-accent)}
-.match-card.correct{border-color:var(--border-success);background:var(--bg-success);color:var(--text-success);pointer-events:none}
-.match-card.wrong{border-color:var(--border-danger);background:var(--bg-danger);color:var(--text-danger);animation:shake .3s}
-.match-card.dimmed{opacity:.4;pointer-events:none}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* ヘッダー */
+.hdr{display:flex;align-items:baseline;gap:10px;margin-bottom:.25rem;flex-wrap:wrap}
+.hdr h1{font-size:19px;font-weight:700}
+.hdr-sub{font-size:12px;color:var(--text3)}
+.page-sub{font-size:12.5px;color:var(--text2);margin-bottom:1.25rem}
 
-/* フラッシュカードモード */
-.fc-wrap{perspective:1000px;width:100%;margin:0 auto 1.5rem}
-.fc-inner{position:relative;transform-style:preserve-3d;transition:transform .5s;cursor:pointer;height:180px}
+/* メインナビ */
+.nav{display:flex;gap:0;border:1px solid var(--border-s);border-radius:var(--r);overflow:hidden;margin-bottom:1.5rem}
+.nav-btn{flex:1;padding:10px 8px;font-size:13px;cursor:pointer;border:none;background:var(--surface);color:var(--text2);border-right:1px solid var(--border);transition:all .15s;white-space:nowrap}
+.nav-btn:last-child{border-right:none}
+.nav-btn.active{background:var(--text);color:#fff;font-weight:600}
+.nav-btn:hover:not(.active){background:var(--surface2)}
+.page{display:none}.page.active{display:block}
+
+/* カテゴリフィルター */
+.filter-bar{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1.25rem}
+.filter-btn{padding:4px 12px;font-size:12px;cursor:pointer;border:1px solid var(--border-s);border-radius:20px;background:var(--surface);color:var(--text2);transition:all .15s}
+.filter-btn.active{background:var(--text);color:#fff;border-color:var(--text)}
+.filter-btn:hover:not(.active){background:var(--surface2)}
+
+/* スコアバー */
+.score-bar{display:flex;gap:8px;margin-bottom:1.25rem;align-items:center}
+.sc-pill{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 13px;font-size:12.5px;color:var(--text2);display:flex;align-items:center;gap:5px}
+.sc-num{font-size:16px;font-weight:700;color:var(--text)}
+.prog-wrap{flex:1;height:6px;background:var(--surface2);border-radius:9px;overflow:hidden;border:1px solid var(--border)}
+.prog-fill{height:100%;background:#1d4ed8;border-radius:9px;transition:width .35s}
+.reset-lnk{font-size:12px;color:#1d4ed8;cursor:pointer;text-decoration:underline;margin-left:auto;white-space:nowrap}
+
+/* マッチング */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.col-lbl{font-size:10.5px;color:var(--text3);margin-bottom:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.cards-col{display:flex;flex-direction:column;gap:6px}
+.mc{padding:8px 11px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);font-size:12px;cursor:pointer;transition:all .15s;color:var(--text);line-height:1.55;user-select:none}
+.mc:hover{border-color:#93c5fd;background:#eff6ff}
+.mc.selected{border-color:#1d4ed8;background:#eff6ff;color:#1d4ed8;box-shadow:0 0 0 2px #bfdbfe}
+.mc.correct{border-color:#86efac;background:#f0fdf4;color:#15803d;pointer-events:none}
+.mc.wrong{border-color:#fca5a5;background:#fef2f2;color:#dc2626;animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.m-msg{margin-top:10px;font-size:13px;color:var(--text2);text-align:center;min-height:18px}
+
+/* フラッシュカード */
+.fc-wrap{perspective:1000px;margin-bottom:1.25rem;cursor:pointer}
+.fc-inner{position:relative;transform-style:preserve-3d;transition:transform .45s;height:210px}
 .fc-inner.flipped{transform:rotateY(180deg)}
-.fc-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;border:0.5px solid var(--border)}
-.fc-front{background:var(--surface-2)}
-.fc-back{background:var(--bg-accent);border-color:var(--border-accent);transform:rotateY(180deg)}
-.fc-hint{font-size:12px;color:var(--text-muted);margin-bottom:8px}
-.fc-q{font-size:15px;font-weight:500;color:var(--text-primary);line-height:1.6}
-.fc-a{font-size:14px;color:var(--text-accent);line-height:1.6}
-.fc-tag{font-size:11px;background:var(--bg-pro);color:var(--text-pro);padding:2px 8px;border-radius:20px;margin-bottom:8px;font-weight:500}
-.fc-nav{display:flex;gap:12px;justify-content:center;align-items:center;margin-bottom:1.5rem}
-.fc-btn{padding:8px 20px;font-size:14px;cursor:pointer;border:0.5px solid var(--border-strong);background:var(--surface-2);border-radius:var(--radius);color:var(--text-primary)}
-.fc-btn:hover{background:var(--surface-1)}
-.fc-counter{font-size:14px;color:var(--text-secondary);min-width:60px;text-align:center}
+.fc-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center}
+.fc-front{background:var(--surface);border:1px solid var(--border)}
+.fc-back{background:#eff6ff;border:1px solid #bfdbfe;transform:rotateY(180deg)}
+.fc-cat{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;margin-bottom:7px}
+.fc-hint{font-size:11px;color:var(--text3);margin-bottom:5px}
+.fc-q{font-size:14px;font-weight:600;color:var(--text);line-height:1.65}
+.fc-a{font-size:12.5px;color:#1d4ed8;line-height:1.7;white-space:pre-line}
+.fc-nav{display:flex;gap:10px;justify-content:center;align-items:center;margin-bottom:1rem}
+.fc-btn{padding:7px 20px;font-size:13px;cursor:pointer;border:1px solid var(--border-s);background:var(--surface);border-radius:var(--r);color:var(--text)}
+.fc-btn:hover{background:var(--surface2)}
+.fc-cnt{font-size:13px;color:var(--text2);min-width:60px;text-align:center}
 .rate-btns{display:flex;gap:8px;justify-content:center}
-.rate-btn{padding:6px 18px;font-size:13px;cursor:pointer;border:0.5px solid var(--border);border-radius:var(--radius);background:var(--surface-2);color:var(--text-secondary)}
-.rate-btn.good{border-color:var(--border-success);background:var(--bg-success);color:var(--text-success)}
-.rate-btn.bad{border-color:var(--border-danger);background:var(--bg-danger);color:var(--text-danger)}
+.rate-btn{padding:7px 22px;font-size:13px;cursor:pointer;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);color:var(--text2)}
+.rate-btn.good{border-color:#86efac;background:#f0fdf4;color:#15803d;font-weight:600}
+.rate-btn.bad{border-color:#fca5a5;background:#fef2f2;color:#dc2626}
 .rate-btn:hover{opacity:.8}
 
-/* クイズモード */
-.quiz-q{font-size:16px;font-weight:500;color:var(--text-primary);margin-bottom:1.5rem;line-height:1.7}
-.quiz-choices{display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem}
-.quiz-choice{padding:12px 16px;background:var(--surface-2);border:0.5px solid var(--border);border-radius:var(--radius);font-size:14px;cursor:pointer;text-align:left;color:var(--text-primary);transition:all .15s;line-height:1.5}
-.quiz-choice:hover:not(:disabled){border-color:var(--border-accent);background:var(--bg-accent)}
-.quiz-choice.correct{border-color:var(--border-success);background:var(--bg-success);color:var(--text-success)}
-.quiz-choice.wrong{border-color:var(--border-danger);background:var(--bg-danger);color:var(--text-danger)}
-.quiz-choice:disabled{cursor:default}
-.quiz-exp{padding:12px 14px;background:var(--surface-1);border-left:3px solid var(--border-accent);border-radius:0 var(--radius) var(--radius) 0;font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:1.5rem}
-.quiz-exp strong{color:var(--text-primary)}
-.btn-next{padding:10px 24px;font-size:14px;cursor:pointer;border:0.5px solid var(--border-accent);background:var(--bg-accent);color:var(--text-accent);border-radius:var(--radius);font-weight:500}
-.btn-next:hover{opacity:.8}
-.result-box{text-align:center;padding:2rem 1rem}
-.result-score{font-size:48px;font-weight:500;color:var(--text-primary)}
-.result-label{font-size:14px;color:var(--text-secondary);margin-bottom:1.5rem}
-.result-msg{font-size:15px;color:var(--text-primary);margin-bottom:1.5rem;line-height:1.7}
-.reset-btn{padding:10px 28px;font-size:14px;cursor:pointer;border:0.5px solid var(--border-strong);background:var(--surface-2);border-radius:var(--radius);color:var(--text-primary)}
-.badge-star{display:inline-block;background:var(--bg-warning);color:var(--text-warning);font-size:11px;padding:1px 6px;border-radius:20px;margin-left:6px;vertical-align:middle}
+/* クイズ */
+.quiz-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:1.25rem;line-height:1.75}
+.quiz-choices{display:flex;flex-direction:column;gap:7px;margin-bottom:1.25rem}
+.qc{padding:11px 15px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);font-size:13px;cursor:pointer;text-align:left;color:var(--text);transition:all .15s;line-height:1.55}
+.qc:hover:not(:disabled){border-color:#93c5fd;background:#eff6ff}
+.qc.correct{border-color:#86efac;background:#f0fdf4;color:#15803d;font-weight:600}
+.qc.wrong{border-color:#fca5a5;background:#fef2f2;color:#dc2626}
+.qc:disabled{cursor:default}
+.quiz-exp{padding:11px 14px;background:var(--surface);border-left:3px solid #1d4ed8;border-radius:0 var(--r) var(--r) 0;border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:12.5px;color:var(--text2);line-height:1.78;margin-bottom:1.25rem}
+.quiz-exp b{color:var(--text)}
+.btn-next{padding:9px 24px;font-size:13.5px;cursor:pointer;border:1px solid #1d4ed8;background:#1d4ed8;color:#fff;border-radius:var(--r);font-weight:600}
+.btn-next:hover{opacity:.88}
+.star{display:inline-block;background:#fffbeb;color:#92400e;border:1px solid #fcd34d;font-size:10px;padding:1px 6px;border-radius:20px;font-weight:700;margin-right:4px;vertical-align:middle}
+.result-box{text-align:center;padding:2.5rem 1rem}
+.result-score{font-size:52px;font-weight:700;color:var(--text)}
+.result-lbl{font-size:14px;color:var(--text2);margin-bottom:.5rem}
+.result-msg{font-size:14px;color:var(--text);margin-bottom:1.5rem;line-height:1.75;max-width:420px;margin-left:auto;margin-right:auto}
+.reset-btn{padding:9px 28px;font-size:14px;cursor:pointer;border:1px solid var(--border-s);background:var(--surface);border-radius:var(--r);color:var(--text)}
+.reset-btn:hover{background:var(--surface2)}
+
+/* ── 年表ページ ── */
+.tl-legend{display:flex;flex-wrap:wrap;gap:5px 12px;margin-bottom:1.25rem;padding:10px 13px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r)}
+.tl-leg{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text2)}
+.tl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.era-badge{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 12px;border-radius:20px;background:var(--text);color:#fff;margin-bottom:.5rem}
+.era-desc{font-size:12px;color:var(--text2);line-height:1.75;padding:7px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:.875rem}
+.era-sec{margin:1.75rem 0 .75rem}
+.tl{position:relative;padding-left:60px}
+.tl::before{content:'';position:absolute;left:27px;top:0;bottom:0;width:2px;background:var(--line)}
+.tl-card{position:relative;margin-bottom:1.1rem}
+.tl-card::before{content:'';position:absolute;left:-37px;top:14px;width:12px;height:12px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 0 0 2px var(--tl-dot-c,#94a3b8)}
+.tl-yr{position:absolute;left:-58px;width:50px;text-align:right;font-size:10px;font-weight:700;color:var(--text3);padding-right:6px;top:15px;line-height:1.2}
+.tl-ci{background:var(--surface);border:1px solid var(--tl-cb,var(--border));border-left:4px solid var(--tl-ca,var(--border));border-radius:var(--r);padding:11px 13px}
+.tl-ch{display:flex;flex-wrap:wrap;align-items:flex-start;gap:5px;margin-bottom:6px}
+.tl-name{font-size:14px;font-weight:700;color:var(--text)}
+.tl-nat{font-size:10.5px;color:var(--text3);font-weight:400}
+.tl-sb{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.tl-yb{font-size:10.5px;color:var(--text3);background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:1px 7px;white-space:nowrap;flex-shrink:0}
+.tl-setsu{font-size:13px;font-weight:700;margin-bottom:4px}
+.tl-body{font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:6px}
+.tl-kws{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px}
+.tl-kw{font-size:10.5px;padding:2px 7px;border-radius:20px;border:1px solid;line-height:1.4}
+.tl-note{font-size:11px;color:var(--text3);border-top:1px solid var(--border);padding-top:5px;margin-top:3px;font-style:italic}
+.tl-star{display:inline-block;background:#fffbeb;color:#92400e;border:1px solid #fcd34d;font-size:10px;padding:1px 6px;border-radius:20px;font-weight:700;margin-left:4px;vertical-align:middle}
+
+/* まとめ表 */
+.sum-h{font-size:14px;font-weight:700;margin:2rem 0 .75rem;padding-bottom:5px;border-bottom:2px solid var(--text)}
+table.sum{width:100%;border-collapse:collapse;font-size:12px}
+table.sum th{background:var(--text);color:#fff;padding:7px 10px;font-weight:600;text-align:left}
+table.sum td{padding:6px 10px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.6}
+table.sum tr:nth-child(even) td{background:#fafaf8}
+table.sum tr:last-child td{border-bottom:none}
+.tip-box{margin-top:1.25rem;padding:11px 14px;background:#fffbeb;border:1px solid #fcd34d;border-radius:var(--r);font-size:12.5px;color:#78350f;line-height:1.8}
+
+@media(max-width:600px){
+  .nav-btn{font-size:11px;padding:9px 4px}
+  .match-grid{grid-template-columns:1fr 1fr;gap:.75rem}
+  .mc{font-size:11px;padding:7px 9px}
+}
 </style>
+</head>
+<body>
+<div class="wrap">
 
-<div class="app">
-<h2 class="sr-only">発達論 学習アプリ（マッチング・フラッシュカード・クイズの3モード）</h2>
+<div class="hdr">
+  <h1>発達論・言語発達理論 完全学習アプリ</h1>
+</div>
+<div class="page-sub">ST国家試験対策 ― 全12人・4モード　★＝国試頻出</div>
 
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('match')">マッチング</button>
-  <button class="tab" onclick="switchTab('flash')">フラッシュカード</button>
-  <button class="tab" onclick="switchTab('quiz')">クイズ</button>
+<div class="nav">
+  <button class="nav-btn active" onclick="switchPage('match')">マッチング</button>
+  <button class="nav-btn" onclick="switchPage('flash')">フラッシュカード</button>
+  <button class="nav-btn" onclick="switchPage('quiz')">クイズ</button>
+  <button class="nav-btn" onclick="switchPage('timeline')">年表</button>
 </div>
 
-<!-- ══ マッチングモード ══ -->
-<div id="screen-match" class="screen active">
+<!-- ══ マッチング ══ -->
+<div id="page-match" class="page active">
+  <div class="filter-bar" id="m-filter"></div>
   <div class="score-bar">
-    <div class="score-card"><span class="score-num" id="m-correct">0</span> 正解</div>
-    <div class="progress-bar"><div class="progress-fill" id="m-prog" style="width:0%"></div></div>
-    <div class="score-card" style="cursor:pointer" onclick="initMatch()">↻ リセット</div>
+    <div class="sc-pill"><span class="sc-num" id="m-correct">0</span> 正解</div>
+    <div class="prog-wrap"><div class="prog-fill" id="m-prog" style="width:0%"></div></div>
+    <span class="reset-lnk" onclick="initMatch()">↻ リセット</span>
   </div>
   <div class="match-grid">
-    <div><div class="col-label">人物・説の名前</div><div class="cards-col" id="left-col"></div></div>
-    <div><div class="col-label">内容・キーワード</div><div class="cards-col" id="right-col"></div></div>
+    <div><div class="col-lbl">人物・説の名前</div><div class="cards-col" id="left-col"></div></div>
+    <div><div class="col-lbl">内容・キーワード</div><div class="cards-col" id="right-col"></div></div>
   </div>
-  <div id="m-msg" style="margin-top:1rem;font-size:14px;color:var(--text-secondary);text-align:center;min-height:20px"></div>
+  <div class="m-msg" id="m-msg">左右の対応するカードを選んでください</div>
 </div>
 
-<!-- ══ フラッシュカードモード ══ -->
-<div id="screen-flash" class="screen">
+<!-- ══ フラッシュカード ══ -->
+<div id="page-flash" class="page">
+  <div class="filter-bar" id="f-filter"></div>
   <div class="score-bar">
-    <div class="score-card"><span class="score-num" id="f-ok">0</span> 覚えた</div>
-    <div class="score-card"><span class="score-num" id="f-ng">0</span> 要復習</div>
-    <div class="progress-bar"><div class="progress-fill" id="f-prog" style="width:0%"></div></div>
+    <div class="sc-pill"><span class="sc-num" id="f-ok">0</span> 覚えた</div>
+    <div class="sc-pill"><span class="sc-num" id="f-ng">0</span> 要復習</div>
+    <div class="prog-wrap"><div class="prog-fill" id="f-prog" style="width:0%"></div></div>
   </div>
   <div class="fc-wrap" onclick="flipCard()">
     <div class="fc-inner" id="fc-inner">
       <div class="fc-face fc-front">
-        <div class="fc-tag" id="fc-tag"></div>
+        <div class="fc-cat" id="fc-tag"></div>
         <div class="fc-hint">クリックして答えを見る</div>
         <div class="fc-q" id="fc-q"></div>
       </div>
@@ -111,22 +197,23 @@ body{font-family:var(--font-sans)}
   </div>
   <div class="fc-nav">
     <button class="fc-btn" onclick="fcMove(-1)">← 前へ</button>
-    <span class="fc-counter" id="fc-counter">1 / 1</span>
+    <span class="fc-cnt" id="fc-cnt">1 / 1</span>
     <button class="fc-btn" onclick="fcMove(1)">次へ →</button>
   </div>
-  <div class="rate-btns" id="rate-btns">
+  <div class="rate-btns">
     <button class="rate-btn bad" onclick="fcRate(false)">✕ まだ曖昧</button>
     <button class="rate-btn good" onclick="fcRate(true)">○ 覚えた！</button>
   </div>
 </div>
 
-<!-- ══ クイズモード ══ -->
-<div id="screen-quiz" class="screen">
+<!-- ══ クイズ ══ -->
+<div id="page-quiz" class="page">
+  <div class="filter-bar" id="q-filter"></div>
   <div id="quiz-body">
     <div class="score-bar">
-      <div class="score-card"><span class="score-num" id="q-correct">0</span> 正解</div>
-      <div class="score-card"><span class="score-num" id="q-wrong">0</span> 不正解</div>
-      <div class="progress-bar"><div class="progress-fill" id="q-prog" style="width:0%"></div></div>
+      <div class="sc-pill"><span class="sc-num" id="q-correct">0</span> 正解</div>
+      <div class="sc-pill"><span class="sc-num" id="q-wrong">0</span> 不正解</div>
+      <div class="prog-wrap"><div class="prog-fill" id="q-prog" style="width:0%"></div></div>
     </div>
     <div class="quiz-q" id="quiz-q"></div>
     <div class="quiz-choices" id="quiz-choices"></div>
@@ -135,151 +222,273 @@ body{font-family:var(--font-sans)}
   </div>
   <div class="result-box" id="quiz-result" style="display:none">
     <div class="result-score" id="r-score"></div>
-    <div class="result-label">点（10問中）</div>
+    <div class="result-lbl">点（10問中）</div>
     <div class="result-msg" id="r-msg"></div>
     <button class="reset-btn" onclick="initQuiz()">もう一度挑戦</button>
   </div>
 </div>
-</div>
 
+<!-- ══ 年表 ══ -->
+<div id="page-timeline" class="page">
+  <div class="tl-legend">
+    <div style="width:100%;font-size:10.5px;font-weight:700;color:var(--text3);letter-spacing:.06em;margin-bottom:3px">カテゴリ凡例</div>
+    <div class="tl-leg"><div class="tl-dot" style="background:var(--c-ide)"></div>遺伝論</div>
+    <div class="tl-leg"><div class="tl-dot" style="background:var(--c-env)"></div>環境論</div>
+    <div class="tl-leg"><div class="tl-dot" style="background:var(--c-fuk)"></div>輻輳説</div>
+    <div class="tl-leg"><div class="tl-dot" style="background:var(--c-sog)"></div>相互作用説</div>
+    <div class="tl-leg"><div class="tl-dot" style="background:var(--c-gak)"></div>言語：学習論</div>
+    <div class="tl-leg"><div class="tl-dot" style="background:var(--c-sei)"></div>言語：生得論</div>
+    <div class="tl-leg"><div class="tl-dot" style="background:var(--c-nin)"></div>言語：認知論</div>
+    <div class="tl-leg"><div class="tl-dot" style="background:var(--c-sha)"></div>言語：社会認知論</div>
+  </div>
+  <div id="tl-content"></div>
+  <div class="sum-h">全12人 まとめ一覧</div>
+  <table class="sum">
+    <tr><th>年代</th><th>人物</th><th>立場・説</th><th>最重要キーワード</th></tr>
+    <tr><td>1689</td><td>ロック（英）</td><td style="color:var(--c-env);font-weight:700">環境論・経験説</td><td>白紙（タブラ・ラサ）</td></tr>
+    <tr><td>1762</td><td>ルソー（仏）</td><td style="color:var(--c-ide);font-weight:700">遺伝論・生得説 ★</td><td>天性・性善説</td></tr>
+    <tr><td>1906</td><td>シュテルン（独）</td><td style="color:var(--c-fuk);font-weight:700">輻輳説 ★</td><td>遺伝＋環境（加算的・独立）</td></tr>
+    <tr><td>1913</td><td>ワトソン（米）</td><td style="color:var(--c-env);font-weight:700">環境論・学習優位説 ★</td><td>行動主義・発達は統制できる</td></tr>
+    <tr><td>1925</td><td>ゲゼル（米）</td><td style="color:var(--c-ide);font-weight:700">遺伝論・成熟優位説 ★</td><td>レディネス・階段のぼり実験</td></tr>
+    <tr><td>1930s</td><td>ルクセンブルガー（独）</td><td style="color:var(--c-fuk);font-weight:700">輻輳説・図式化</td><td>機能によって寄与率が異なる</td></tr>
+    <tr><td>1934</td><td>ヴィゴツキー（旧ソ連）</td><td style="color:var(--c-sha);font-weight:700">言語：社会認知論 ★</td><td>ZPD（発達の最近接領域）</td></tr>
+    <tr><td>1936〜</td><td>ピアジェ（スイス）</td><td style="color:var(--c-nin);font-weight:700">言語：認知論 ★</td><td>認知発達4段階・シェマ・対象の永続性</td></tr>
+    <tr><td>1957</td><td>スキナー（米）</td><td style="color:var(--c-gak);font-weight:700">言語：学習論 ★</td><td>オペラント条件づけ・ABA</td></tr>
+    <tr><td>1959</td><td>チョムスキー（米）</td><td style="color:var(--c-sei);font-weight:700">言語：生得論 ★</td><td>LAD・普遍文法・刺激の貧困</td></tr>
+    <tr><td>1969</td><td>ジェンセン（米）</td><td style="color:var(--c-sog);font-weight:700">相互作用説 ★</td><td>遺伝×環境（掛け算）・環境閾値</td></tr>
+    <tr><td>1983</td><td>ブルーナー（米）</td><td style="color:var(--c-sha);font-weight:700">言語：社会認知論 ★</td><td>LASS・足場かけ（scaffolding）</td></tr>
+  </table>
+  <div class="tip-box">
+    <strong>★ 最頻出 混同注意</strong><br>
+    ・輻輳説（シュテルン）＝遺伝<strong>＋</strong>環境（加算的・相関しない）<br>
+    ・相互作用説（ジェンセン）＝遺伝<strong>×</strong>環境（掛け算的・相互に影響する）<br>
+    ・LAD（チョムスキー）＝生得的装置　vs　LASS（ブルーナー）＝母親が提供する支援システム<br>
+    ・ZPD（ヴィゴツキー）＝自力水準と援助があればできる水準の間の領域
+  </div>
+</div><!-- /page-timeline -->
+
+</div><!-- /wrap -->
 <script>
-const PAIRS = [
-  {left:"ルソー（仏・思想家）",right:"生得説｜天性が発達を最も決定する",cat:"遺伝論",star:false},
-  {left:"ゲゼル（米・小児科医）",right:"成熟優位説｜発達の順序は自然な成熟で決まる。レディネスが必要",cat:"遺伝論",star:true},
-  {left:"ロック（英・哲学者）",right:"経験説｜白紙（タブラ・ラサ）に経験が書きこまれる",cat:"環境論",star:false},
-  {left:"ワトソン（米・心理学者）",right:"学習優位説｜発達は人間が統制できる（行動主義）",cat:"環境論",star:true},
-  {left:"シュテルン（独・心理学者）",right:"輻輳説｜遺伝＋環境（加算的・相関しない）",cat:"輻輳説",star:true},
-  {left:"ルクセンブルガー（独・精神科医）",right:"輻輳説の図式化｜寄与率は機能によって異なる",cat:"輻輳説",star:false},
-  {left:"ジェンセン（米・心理学者）",right:"環境閾値説｜環境が閾値を超えると遺伝的可能性が開花",cat:"相互作用説",star:true},
-  {left:"「蛙の子は蛙」",right:"遺伝論のたとえ",cat:"たとえ",star:false},
-  {left:"「氏より育ち」",right:"環境論のたとえ",cat:"たとえ",star:false},
-  {left:"レディネス（readiness）",right:"心身の機能が学ぶ準備の整った状態。ゲゼルが重視",cat:"重要語",star:true},
-  {left:"アヴェロンの野生児",right:"環境の重要性を示す事例。言語環境がなく言語未習得",cat:"事例",star:true},
-  {left:"「遺伝×環境」",right:"相互作用説｜掛け算的に働く（輻輳説の＋とは異なる）",cat:"相互作用説",star:true},
+/* ══════════════════════════════════════
+   データ定義
+══════════════════════════════════════ */
+const CATS = {
+  ide:{label:'遺伝論',bg:'var(--c-ide-bg)',bd:'var(--c-ide-bd)',fg:'var(--c-ide)'},
+  env:{label:'環境論',bg:'var(--c-env-bg)',bd:'var(--c-env-bd)',fg:'var(--c-env)'},
+  fuk:{label:'輻輳説',bg:'var(--c-fuk-bg)',bd:'var(--c-fuk-bd)',fg:'var(--c-fuk)'},
+  sog:{label:'相互作用説',bg:'var(--c-sog-bg)',bd:'var(--c-sog-bd)',fg:'var(--c-sog)'},
+  gak:{label:'言語：学習論',bg:'var(--c-gak-bg)',bd:'var(--c-gak-bd)',fg:'var(--c-gak)'},
+  sei:{label:'言語：生得論',bg:'var(--c-sei-bg)',bd:'var(--c-sei-bd)',fg:'var(--c-sei)'},
+  nin:{label:'言語：認知論',bg:'var(--c-nin-bg)',bd:'var(--c-nin-bd)',fg:'var(--c-nin)'},
+  sha:{label:'言語：社会認知論',bg:'var(--c-sha-bg)',bd:'var(--c-sha-bd)',fg:'var(--c-sha)'},
+};
+
+/* マッチングペア全12人 */
+const ALL_PAIRS = [
+  {cat:'ide',left:'ルソー（仏・思想家）',right:'生得説｜天性が発達を最も決定する'},
+  {cat:'ide',left:'ゲゼル（米・小児科医）',right:'成熟優位説｜レディネスが必要・階段のぼり実験'},
+  {cat:'env',left:'ロック（英・哲学者）',right:'経験説｜白紙（タブラ・ラサ）に経験が書きこまれる'},
+  {cat:'env',left:'ワトソン（米・心理学者）',right:'学習優位説｜行動主義・発達は人間が統制できる'},
+  {cat:'fuk',left:'シュテルン（独・心理学者）',right:'輻輳説｜遺伝＋環境（加算的・相関しない）'},
+  {cat:'fuk',left:'ルクセンブルガー（独・精神科医）',right:'輻輳説の図式化｜機能によって寄与率が異なる'},
+  {cat:'sog',left:'ジェンセン（米・心理学者）',right:'環境閾値説｜遺伝×環境・閾値を超えると遺伝が開花'},
+  {cat:'sha',left:'ヴィゴツキー（旧ソ連・心理学者）',right:'ZPD（発達の最近接領域）｜社会的相互作用で言語が育つ'},
+  {cat:'nin',left:'ピアジェ（スイス・認識論者）',right:'認知発達4段階｜認知発達が言語に先行する'},
+  {cat:'gak',left:'スキナー（米・心理学者）',right:'学習論｜オペラント条件づけ・ABA（応用行動分析）'},
+  {cat:'sei',left:'チョムスキー（米・言語学者）',right:'生得論｜LAD（言語獲得装置）・普遍文法・刺激の貧困'},
+  {cat:'sha',left:'ブルーナー（米・認知心理学者）',right:'LASS（言語獲得支援システム）｜足場かけ・ヴィゴツキーを継承'},
 ];
 
-const QUIZ = [
-  {q:"「発達の基本的様態と順序は自然な成熟によって決まる。学習にはレディネスが必要」とする説は？",choices:["生得説","成熟優位説","輻輳説","環境閾値説"],ans:1,exp:"成熟優位説（ゲゼル）。レディネス＝心身の機能が学ぶ準備の整った状態。ゲゼルの「階段のぼり実験」で実証された。",star:true},
-  {q:"「遺伝と環境は加算的に発達を規定し、相関しない」とする輻輳説を提唱したのは誰？",choices:["ジェンセン","シュテルン","ゲゼル","ワトソン"],ans:1,exp:"シュテルン（Stern, W.、独・心理学者）が輻輳説を提唱。遺伝＋環境（加算的）であり、相互作用説（遺伝×環境）とは異なる。",star:true},
-  {q:"「環境の質がある水準（閾値）を超えると遺伝的な可能性が開花する」とする環境閾値説を唱えたのは？",choices:["シュテルン","ルクセンブルガー","ジェンセン","ロック"],ans:2,exp:"ジェンセン（Jensen, A. R.、米・心理学者）の環境閾値説。遺伝的な特質があっても環境が閾値に達しなければ発現しない。",star:true},
-  {q:"「子どもの発育・発達は人間が統制できる」とし、行動主義の立場をとった人物は？",choices:["ルソー","ゲゼル","ワトソン","シュテルン"],ans:2,exp:"ワトソン（Watson, J. B.、米・心理学者）の学習優位説。環境論の立場。「氏より育ち」に対応。",star:true},
-  {q:"ロック（Locke, J.）の経験説における中心概念はどれか？",choices:["レディネス","白紙（タブラ・ラサ）","普遍文法","発達の最近接領域"],ans:1,exp:"ロックの経験説＝「白紙（タブラ・ラサ）」に経験が書きこまれる。経験こそが知識の源泉とする環境論。",star:false},
-  {q:"「輻輳説」と「相互作用説」の違いとして正しいのはどれか？",choices:["輻輳説は遺伝のみを重視する","輻輳説は遺伝＋環境（加算的）、相互作用説は遺伝×環境（掛け算的）","相互作用説はゲゼルが提唱した","両者とも同じ意味である"],ans:1,exp:"輻輳説（シュテルン）＝遺伝＋環境（加算的・相関しない）、相互作用説（ジェンセン）＝遺伝×環境（掛け算的・相互に影響）。★国試で区別が問われやすい！",star:true},
-  {q:"発達の特徴として誤っているものはどれか？",choices:["最適期（臨界期）がある","気質と環境の相互作用で支えられる","常に直線的に発達する","個人差が大きい"],ans:2,exp:"発達は「直線的ではない」のが特徴。スランプ・急成長など非線形に進む。その他①臨界期あり②気質×環境③おおよその順序性⑤個人差大 は正しい。",star:true},
-  {q:"アヴェロンの野生児が示すものとして最も適切なのは？",choices:["遺伝の重要性","言語の生得性","環境の重要性","成熟優位説の根拠"],ans:2,exp:"アヴェロンの野生児・狼に育てられた子・カスパー・ハウザーは環境（言語環境）の重要性を示す事例として環境論の根拠とされる。",star:false},
-  {q:"「どのような機能も遺伝と環境が影響するが、その寄与率は機能によって異なる」という図式化を行ったのは？",choices:["シュテルン","ルクセンブルガー","ジェンセン","ゲゼル"],ans:1,exp:"ルクセンブルガー（Luxenburger, H.、独・精神科医）が輻輳説を図式化。知能は遺伝的寄与が大きく、特定の病気は環境的寄与が大きいなど機能によって寄与率が異なると示した。",star:false},
-  {q:"「発達を最も決定づけるのは受け継がれた天性である」とした思想家は？",choices:["ワトソン","ロック","ルソー","シュテルン"],ans:2,exp:"ルソー（Rousseau, J. J.、仏・思想家）の生得説。「蛙の子は蛙」に対応する遺伝論の代表。",star:false},
+/* フラッシュカード全18枚 */
+const ALL_FC = [
+  {cat:'ide',star:true,q:'遺伝論の2つの説と提唱者は？',a:'①生得説（ルソー）：天性が発達を最も決定する\n②成熟優位説（ゲゼル）：発達の順序は自然な成熟で決まる。レディネスが必要'},
+  {cat:'env',star:true,q:'環境論の2つの説と提唱者は？',a:'①経験説（ロック）：白紙（タブラ・ラサ）に経験が書きこまれる\n②学習優位説（ワトソン）：発達は人間が統制できる（行動主義）'},
+  {cat:'fuk',star:true,q:'輻輳説とは？提唱者は？図式化したのは？',a:'シュテルン（独）が提唱。遺伝＋環境（加算的・相関しない）\nルクセンブルガーが図式化：機能によって遺伝と環境の寄与率が異なる'},
+  {cat:'sog',star:true,q:'環境閾値説・相互作用説とは？提唱者は？',a:'ジェンセン（米）が提唱。遺伝×環境（掛け算的）\n環境の質が閾値を超えると遺伝的可能性が開花する'},
+  {cat:'fuk',star:true,q:'輻輳説と相互作用説の違いは？',a:'輻輳説（シュテルン）＝遺伝＋環境（加算的・相関しない）\n相互作用説（ジェンセン）＝遺伝×環境（掛け算的・相互に影響する）\n★「＋」か「×」かが最頻出ポイント！'},
+  {cat:'ide',star:true,q:'「レディネス」とは何か？誰の概念？',a:'心身の機能がある行動・知識を習得できる段階まで発達し、学ぶ準備が整った状態。ゲゼル（成熟優位説）の概念。「階段のぼり実験」で証明。'},
+  {cat:'env',star:false,q:'「タブラ・ラサ（白紙）」とは？誰の概念？',a:'ロック（英・哲学者）の経験説の中心概念。心は生まれたとき白紙であり、経験によって知識が書きこまれる。'},
+  {cat:'ide',star:false,q:'「蛙の子は蛙」「氏より育ち」はそれぞれ何論のたとえ？',a:'「蛙の子は蛙」＝遺伝論\n「氏より育ち」＝環境論'},
+  {cat:'gak',star:true,q:'スキナーの言語発達理論の核心は？ABAとは？',a:'言語は他者を介してオペラント条件づけ（強化）によって形成される行動。幼児期は模倣が特に重要。\nABA（応用行動分析）：ABC分析（先行刺激→行動→後続刺激）で言語行動を説明。現在も発達障害児の言語指導に活用。'},
+  {cat:'sei',star:true,q:'チョムスキーのLAD・普遍文法・刺激の貧困とは？',a:'LAD（Language Acquisition Device：言語獲得装置）：ヒトの脳に生得的に組み込まれた普遍文法の装置。\n刺激の貧困：大人の不完全な発話（助詞省略など）にもかかわらず子どもが完全な文法を獲得する事実→生得的知識の証拠。'},
+  {cat:'nin',star:true,q:'ピアジェの認知発達4段階を年齢とともに答えよ',a:'①感覚運動期（0〜2歳）：対象の永続性を獲得\n②前操作期（2〜7歳）：自己中心性・アニミズム・象徴遊び\n③具体的操作期（7〜12歳）：保存性獲得・脱中心化\n④形式的操作期（12歳〜）：抽象的・仮説的思考'},
+  {cat:'nin',star:true,q:'ピアジェの「シェマ・同化・調節・均衡化」とは？',a:'シェマ：既存の認知構造\n同化：新情報を既存シェマに取り込む（例：犬を「わんわん」と呼ぶ）\n調節：新情報に合わせてシェマを変える（例：猫も「にゃんにゃん」と修正）\n均衡化：同化と調節を繰り返す発達プロセス'},
+  {cat:'sha',star:true,q:'ヴィゴツキーのZPDとは？',a:'ZPD（Zone of Proximal Development：発達の最近接領域）：自分一人で解決できる水準と、他者の援助があればできる水準の差。この領域への働きかけが最も効果的な教育。'},
+  {cat:'sha',star:true,q:'ブルーナーのLASSと足場かけとは？',a:'LASS（Language Acquisition Support System：言語獲得支援システム）：母親が子どもの言語発達を促すサポートシステム。共同注視ルーチンを提供。\n足場かけ4手順：①課題へ誘う→②ヒント（プロンプト）→③習熟に伴いヒントを撤去→④自立へ'},
+  {cat:'sha',star:true,q:'LAD（チョムスキー）とLASS（ブルーナー）の違いは？',a:'LAD：ヒトの脳に生得的に備わった言語獲得装置（内的・生得論）\nLASS：母親が外部から提供する言語発達のサポートシステム（外的・社会認知論）\n★頭文字が似ているが全く異なる概念！'},
+  {cat:'sog',star:false,q:'発達の5つの特徴を答えよ',a:'①最適期（臨界期）がある\n②気質と環境の相互作用で支えられる\n③おおよその一定の順序性がある\n④直線的ではない\n⑤個人差が大きい'},
+  {cat:'env',star:false,q:'アヴェロンの野生児が示すものは？',a:'環境の重要性を示す事例。言語環境のない状況で育ったため言語を習得できなかった。環境論の根拠。（カスパー・ハウザー・狼に育てられた子も同様）'},
+  {cat:'gak',star:false,q:'ワトソンとスキナーの違いは？',a:'ワトソン：行動主義の創始者。「発達は人間が統制できる」環境論の立場。\nスキナー：ワトソンを継承・発展。オペラント条件づけで言語行動を説明。1957年「言語行動」を出版→チョムスキーに翌年批判される。'},
 ];
 
-let mSel={left:null,right:null},mCorrect=0,mDone=0;
-let fcIdx=0,fcOk=0,fcNg=0,fcFlipped=false;
-let qIdx=0,qCorrect=0,qWrong=0,qAnswered=false,qList=[];
+/* クイズ全20問 */
+const ALL_QUIZ = [
+  {cat:'ide',star:true,q:'「発達の基本的様態と順序は自然な成熟によって決まる。学習にはレディネスが必要」とする説は？',c:['生得説','成熟優位説','輻輳説','環境閾値説'],a:1,exp:'成熟優位説（ゲゼル）。レディネス＝心身の機能が学ぶ準備の整った状態。階段のぼり実験で証明。'},
+  {cat:'fuk',star:true,q:'「遺伝と環境は加算的に発達を規定し、相関しない」とする輻輳説を提唱したのは？',c:['ジェンセン','シュテルン','ゲゼル','ワトソン'],a:1,exp:'シュテルン（Stern, W.、独・心理学者）が輻輳説を提唱。遺伝＋環境（加算的）で、相互作用説（遺伝×環境）とは異なる。'},
+  {cat:'sog',star:true,q:'「環境の質がある水準（閾値）を超えると遺伝的な可能性が開花する」環境閾値説を唱えたのは？',c:['シュテルン','ルクセンブルガー','ジェンセン','ロック'],a:2,exp:'ジェンセン（Jensen, A. R.、米・心理学者）の環境閾値説。遺伝的素質があっても環境が閾値に達しなければ発現しない。'},
+  {cat:'env',star:true,q:'「子どもの発育・発達は人間が統制できる」とし行動主義の立場をとった人物は？',c:['ルソー','ゲゼル','ワトソン','シュテルン'],a:2,exp:'ワトソン（Watson, J. B.、米・心理学者）の学習優位説。環境論の立場。「氏より育ち」に対応。'},
+  {cat:'fuk',star:true,q:'輻輳説（シュテルン）と相互作用説（ジェンセン）の違いとして正しいのは？',c:['輻輳説は遺伝のみを重視する','輻輳説は遺伝＋環境（加算的）、相互作用説は遺伝×環境（掛け算的）','相互作用説はゲゼルが提唱した','両者は同じ意味である'],a:1,exp:'輻輳説（シュテルン）＝遺伝＋環境（加算的・相関しない）、相互作用説（ジェンセン）＝遺伝×環境（掛け算的・相互に影響）。★最頻出！'},
+  {cat:'sei',star:true,q:'チョムスキーが提唱した、ヒトの脳に生得的に備わる言語獲得の仕組みはどれか？',c:['LASS','LAD（言語獲得装置）＝普遍文法','ZPD（発達の最近接領域）','オペラント条件づけ'],a:1,exp:'チョムスキー＝LAD（Language Acquisition Device：言語獲得装置）＝普遍文法が生得的に備わる。'},
+  {cat:'sha',star:true,q:'ヴィゴツキーが提唱したZPD（発達の最近接領域）の説明として正しいのは？',c:['自分ひとりで解決できる水準','他者の援助があればできる水準と自力水準の間の領域','まだ全く到達できない水準','成熟によって自然に発達する領域'],a:1,exp:'ZPD＝自力で解決できる水準と、他者の援助があればできる水準の間の領域。この領域への働きかけが効果的な教育。'},
+  {cat:'sha',star:true,q:'ブルーナーが提唱したLASSの説明として正しいのは？',c:['ヒトの脳に生得的に備わった言語装置','母親が子どもの言語発達を促すサポートシステム','自力水準と援助水準の間の領域','オペラント条件づけの応用'],a:1,exp:'LASS（Language Acquisition Support System：言語獲得支援システム）＝ブルーナーが提唱。母親が共同注視ルーチンを提供する。'},
+  {cat:'nin',star:true,q:'ピアジェの前操作期（2〜7歳）の特徴として正しいものはどれか？',c:['対象の永続性を初めて獲得する','自己中心性・アニミズム・保存概念の未発達','抽象的・仮説的思考が可能になる','保存性の獲得・脱中心化が起きる'],a:1,exp:'前操作期（2〜7歳）＝自己中心性・アニミズム・象徴遊び・保存概念の未発達。対象の永続性は感覚運動期（8〜12か月）、保存性は具体的操作期（7〜12歳）。'},
+  {cat:'gak',star:true,q:'スキナーのオペラント条件づけにおける言語発達の説明として正しいのは？',c:['言語は生得的な普遍文法によって獲得される','言語は認知発達に支えられて発達する','言語は強化された行動であり、模倣が幼児期に重要','言語は社会的相互作用の副産物である'],a:2,exp:'スキナー＝言語は他者を介して強化（オペラント条件づけ）された行動。幼児期は模倣が特に重要。ABAとして発達障害支援に活用。'},
+  {cat:'env',star:false,q:'ロック（Locke, J.）の経験説における中心概念は？',c:['レディネス','白紙（タブラ・ラサ）','普遍文法','発達の最近接領域'],a:1,exp:'ロックの経験説＝「白紙（タブラ・ラサ）」に経験が書きこまれる。経験こそが知識の源泉とする環境論。'},
+  {cat:'ide',star:false,q:'「発達を最も決定づけるのは受け継がれた天性である」とした思想家は？',c:['ワトソン','ロック','ルソー','シュテルン'],a:2,exp:'ルソー（Rousseau, J. J.、仏・思想家）の生得説。「蛙の子は蛙」に対応する遺伝論の代表。'},
+  {cat:'fuk',star:false,q:'「どのような機能も遺伝と環境が影響するが、機能によって寄与率が異なる」図式化を行ったのは？',c:['シュテルン','ルクセンブルガー','ジェンセン','ゲゼル'],a:1,exp:'ルクセンブルガー（独・精神科医）が輻輳説を図式化。双生児研究を活用して遺伝と環境の寄与率が機能によって異なることを示した。'},
+  {cat:'nin',star:false,q:'ピアジェの感覚運動期（0〜2歳）で獲得される概念は？',c:['保存性','脱中心化','対象の永続性（8〜12か月）','抽象的思考'],a:2,exp:'対象の永続性＝見えなくなったものが存在し続けると理解する概念。感覚運動期の第4段階（8〜12か月）で獲得。'},
+  {cat:'sha',star:false,q:'ヴィゴツキーの思想を継承し言語発達理論へ発展させた人物は？',c:['ピアジェ','チョムスキー','ブルーナー','スキナー'],a:2,exp:'ブルーナーがヴィゴツキーの「ことばや心は他者とのコミュニケーションの副産物」という考えを受け継ぎ、LASSと足場かけの理論へ発展させた。'},
+  {cat:'sei',star:false,q:'「刺激の貧困」が示すことは何か？',c:['環境が貧しいと言語は育たない','不完全な言語入力でも完全な文法が獲得される→生得的知識の証拠','レディネスが整わないと言語は習得できない','ZPDがないと言語発達は促されない'],a:1,exp:'刺激の貧困（チョムスキー）：大人の言葉には助詞省略・言い誤りなど不完全な部分が多いにもかかわらず、子どもは完全な文法体系を獲得する。これは生得的な言語知識（LAD）の存在を示す。'},
+  {cat:'sog',star:false,q:'発達の特徴として誤っているものはどれか？',c:['最適期（臨界期）がある','気質と環境の相互作用で支えられる','常に直線的に発達する','個人差が大きい'],a:2,exp:'発達は「直線的ではない」のが特徴。スランプ・急成長など非線形に進む。他の①②④はすべて正しい。'},
+  {cat:'gak',star:false,q:'ABA（応用行動分析）はどの理論から生まれたか？',c:['チョムスキーの生得論','ピアジェの認知論','スキナーのオペラント条件づけ（学習論）','ヴィゴツキーの社会認知論'],a:2,exp:'ABA（Applied Behavior Analysis：応用行動分析）はスキナーのオペラント条件づけ理論を応用。ABC分析（先行刺激→行動→後続刺激）で言語行動を分析・支援する。現在も発達障害支援の現場で広く使われる。'},
+  {cat:'sha',star:false,q:'ブルーナーの「足場かけ（scaffolding）」の4手順として正しいのは？',c:['課題を与える→評価する→修正する→完成させる','課題へ誘う→ヒント（プロンプト）を与える→習熟に伴いヒントを撤去する→自立へ導く','観察する→模倣させる→強化する→定着させる','問いかける→考えさせる→答えを伝える→復習する'],a:1,exp:'足場かけ4手順：①課題へ誘う→②ヒント（プロンプト）を与える→③習熟に伴いヒントを撤去する→④自立へ導く。子どもの能力に合わせて足場を提供し、徐々に外していく。'},
+  {cat:'nin',star:false,q:'「認知発達が言語発達に先行する」という立場はどれか？',c:['学習論（スキナー）','生得論（チョムスキー）','認知論（ピアジェ）','社会認知論（ヴィゴツキー）'],a:2,exp:'認知論（ピアジェ）＝認知発達が言語発達に先行する。言語は認知的な発達によって支えられ準備されるという立場。'},
+];
 
-function switchTab(t){
-  document.querySelectorAll('.tab').forEach((b,i)=>{
-    b.classList.toggle('active',['match','flash','quiz'][i]===t);
-  });
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('screen-'+t).classList.add('active');
-  if(t==='flash')renderFC();
-  if(t==='quiz')initQuiz();
-}
-
+/* ══════════════════════════════════════
+   共通ユーティリティ
+══════════════════════════════════════ */
 function shuffle(a){let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 
+function catStyle(cat){return `background:${CATS[cat].bg};color:${CATS[cat].fg};border:1px solid ${CATS[cat].bd}`;}
+
+/* ══════════════════════════════════════
+   フィルターUI
+══════════════════════════════════════ */
+let mCatFilter='all', fCatFilter='all', qCatFilter='all';
+
+function buildFilter(containerId, currentVal, onChangeFn){
+  const el = document.getElementById(containerId);
+  const allBtn = `<button class="filter-btn ${currentVal==='all'?'active':''}" onclick="${onChangeFn}('all')">全12人</button>`;
+  const catBtns = Object.entries(CATS).map(([k,v])=>{
+    const active = currentVal===k ? 'active' : '';
+    return `<button class="filter-btn ${active}" style="${active?'background:'+v.fg+';color:#fff;border-color:'+v.fg:'border-color:'+v.bd+';color:'+v.fg+';background:'+v.bg}" onclick="${onChangeFn}('${k}')">${v.label}</button>`;
+  }).join('');
+  el.innerHTML = allBtn + catBtns;
+}
+
+function setMFilter(cat){mCatFilter=cat;buildFilter('m-filter',cat,'setMFilter');initMatch();}
+function setFFilter(cat){fCatFilter=cat;buildFilter('f-filter',cat,'setFFilter');fcIdx=0;fcOk=0;fcNg=0;document.getElementById('f-ok').textContent=0;document.getElementById('f-ng').textContent=0;document.getElementById('f-prog').style.width='0%';renderFC();}
+function setQFilter(cat){qCatFilter=cat;buildFilter('q-filter',cat,'setQFilter');initQuiz();}
+
+/* ══════════════════════════════════════
+   ページ切替
+══════════════════════════════════════ */
+function switchPage(p){
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',['match','flash','quiz','timeline'][i]===p));
+  document.querySelectorAll('.page').forEach(s=>s.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  if(p==='flash') renderFC();
+  if(p==='quiz') initQuiz();
+  if(p==='timeline') buildTimeline();
+}
+
+/* ══════════════════════════════════════
+   マッチング
+══════════════════════════════════════ */
+let mSel={left:null,right:null}, mCorrect=0, mDone=0, mPairs=[];
+
 function initMatch(){
-  mSel={left:null,right:null};mCorrect=0;mDone=0;
+  mSel={left:null,right:null}; mCorrect=0; mDone=0;
   document.getElementById('m-correct').textContent=0;
   document.getElementById('m-prog').style.width='0%';
   document.getElementById('m-msg').textContent='左右の対応するカードを選んでください';
-  const pairs=shuffle(PAIRS).slice(0,6);
-  const lefts=shuffle(pairs.map(p=>p.left));
-  const rights=shuffle(pairs.map(p=>p.right));
-  window._matchPairs=pairs;
+  const pool = mCatFilter==='all' ? ALL_PAIRS : ALL_PAIRS.filter(p=>p.cat===mCatFilter);
+  mPairs = shuffle(pool).slice(0, Math.min(6, pool.length));
+  const lefts = shuffle(mPairs.map(p=>p.left));
+  const rights = shuffle(mPairs.map(p=>p.right));
   const lc=document.getElementById('left-col');
   const rc=document.getElementById('right-col');
-  lc.innerHTML='';rc.innerHTML='';
+  lc.innerHTML=''; rc.innerHTML='';
   lefts.forEach(t=>{
     const d=document.createElement('div');
-    d.className='match-card';d.textContent=t;d.dataset.val=t;d.dataset.side='left';
-    d.onclick=()=>selectCard(d,'left');lc.appendChild(d);
+    d.className='mc'; d.textContent=t; d.dataset.val=t; d.dataset.side='left';
+    d.onclick=()=>selectCard(d,'left'); lc.appendChild(d);
   });
   rights.forEach(t=>{
     const d=document.createElement('div');
-    d.className='match-card';d.textContent=t;d.dataset.val=t;d.dataset.side='right';
-    d.onclick=()=>selectCard(d,'right');rc.appendChild(d);
+    d.className='mc'; d.textContent=t; d.dataset.val=t; d.dataset.side='right';
+    d.onclick=()=>selectCard(d,'right'); rc.appendChild(d);
   });
 }
 
 function selectCard(el,side){
   if(el.classList.contains('correct')||el.classList.contains('dimmed'))return;
-  document.querySelectorAll('.match-card.selected').forEach(c=>{
-    if(c.dataset.side===side)c.classList.remove('selected');
-  });
-  el.classList.add('selected');
-  mSel[side]=el;
+  document.querySelectorAll('.mc.selected').forEach(c=>{if(c.dataset.side===side)c.classList.remove('selected');});
+  el.classList.add('selected'); mSel[side]=el;
   if(mSel.left&&mSel.right){
-    const lv=mSel.left.dataset.val;
-    const rv=mSel.right.dataset.val;
-    const pair=window._matchPairs.find(p=>p.left===lv&&p.right===rv);
+    const lv=mSel.left.dataset.val, rv=mSel.right.dataset.val;
+    const pair=mPairs.find(p=>p.left===lv&&p.right===rv);
     if(pair){
-      mSel.left.classList.remove('selected');mSel.right.classList.remove('selected');
-      mSel.left.classList.add('correct');mSel.right.classList.add('correct');
-      mCorrect++;mDone++;
+      mSel.left.classList.remove('selected'); mSel.right.classList.remove('selected');
+      mSel.left.classList.add('correct'); mSel.right.classList.add('correct');
+      mCorrect++; mDone++;
       document.getElementById('m-correct').textContent=mCorrect;
-      document.getElementById('m-prog').style.width=(mDone/window._matchPairs.length*100)+'%';
-      document.getElementById('m-msg').textContent='✓ 正解！「'+pair.cat+'」の組み合わせ';
-      if(mDone===window._matchPairs.length){
-        setTimeout(()=>{document.getElementById('m-msg').textContent='🎉 全問正解！完璧です！';},400);
-      }
+      document.getElementById('m-prog').style.width=(mDone/mPairs.length*100)+'%';
+      const cat=CATS[pair.cat];
+      document.getElementById('m-msg').innerHTML=`<span style="${catStyle(pair.cat)};padding:2px 8px;border-radius:20px;font-size:12px">✓ 正解！${cat.label}</span>`;
+      if(mDone===mPairs.length) setTimeout(()=>{document.getElementById('m-msg').textContent='🎉 全問正解！完璧です！';},400);
     } else {
-      mSel.left.classList.add('wrong');mSel.right.classList.add('wrong');
-      document.getElementById('m-msg').textContent='✗ 違います。もう一度試してみて！';
-      setTimeout(()=>{
-        mSel.left.classList.remove('wrong','selected');
-        mSel.right.classList.remove('wrong','selected');
-      },700);
+      mSel.left.classList.add('wrong'); mSel.right.classList.add('wrong');
+      document.getElementById('m-msg').textContent='✗ 違います。もう一度！';
+      setTimeout(()=>{mSel.left.classList.remove('wrong','selected');mSel.right.classList.remove('wrong','selected');},700);
     }
     mSel={left:null,right:null};
   }
 }
 
-const FC_DATA=[
-  {q:"遺伝論の2つの説と提唱者は？",a:"①生得説（ルソー）：天性が発達を決定\n②成熟優位説（ゲゼル）：発達の順序は自然な成熟で決まる。レディネスが必要",cat:"遺伝論",star:true},
-  {q:"環境論の2つの説と提唱者は？",a:"①経験説（ロック）：白紙（タブラ・ラサ）に経験が書きこまれる\n②学習優位説（ワトソン）：発達は人間が統制できる",cat:"環境論",star:true},
-  {q:"輻輳説とは？提唱者は？",a:"シュテルン（独）が提唱。遺伝＋環境（加算的に作用、相関しない）。ルクセンブルガーが図式化（機能によって寄与率が異なる）",cat:"輻輳説",star:true},
-  {q:"相互作用説・環境閾値説とは？提唱者は？",a:"ジェンセン（米）が提唱。遺伝×環境（掛け算的）。環境の質がある水準（閾値）を超えると遺伝的可能性が開花",cat:"相互作用説",star:true},
-  {q:"輻輳説と相互作用説の違いは？",a:"輻輳説＝遺伝＋環境（加算的・相関しない）\n相互作用説＝遺伝×環境（掛け算的・相互に影響する）",cat:"比較",star:true},
-  {q:"「レディネス」とは何か？誰の概念？",a:"心身の機能がある行動・知識を習得できる段階まで発達し、学ぶ準備が整った状態。ゲゼル（成熟優位説）の概念。",cat:"重要語",star:true},
-  {q:"「タブラ・ラサ（白紙）」とは？誰の概念？",a:"ロック（英・哲学者）の経験説の中心概念。心は生まれたとき白紙であり、経験によって知識が書きこまれるという考え方。",cat:"重要語",star:false},
-  {q:"アヴェロンの野生児が示すものは？",a:"環境の重要性。言語環境のない状況で育ったため言語を習得できなかった。環境論の根拠となる事例。",cat:"事例",star:false},
-  {q:"発達の5つの特徴を答えよ",a:"①最適期（臨界期）がある②気質と環境の相互作用で支えられる③おおよその一定の順序性④直線的ではない⑤個人差が大きい",cat:"発達の特徴",star:true},
-  {q:"「蛙の子は蛙」「氏より育ち」は何論のたとえ？",a:"「蛙の子は蛙」＝遺伝論\n「氏より育ち」＝環境論",cat:"たとえ",star:false},
-];
+/* ══════════════════════════════════════
+   フラッシュカード
+══════════════════════════════════════ */
+let fcIdx=0, fcOk=0, fcNg=0;
 
+function getFCList(){
+  return fCatFilter==='all' ? ALL_FC : ALL_FC.filter(c=>c.cat===fCatFilter);
+}
 function renderFC(){
-  const d=FC_DATA[fcIdx];
-  document.getElementById('fc-tag').textContent=d.cat+(d.star?'★':'');
+  const list=getFCList();
+  if(!list.length){
+    document.getElementById('fc-q').textContent='このカテゴリのカードはありません';
+    document.getElementById('fc-a').textContent='';
+    document.getElementById('fc-cnt').textContent='0 / 0';
+    document.getElementById('fc-tag').textContent='';
+    return;
+  }
+  if(fcIdx>=list.length) fcIdx=0;
+  const d=list[fcIdx];
+  const cat=CATS[d.cat];
+  const tagEl=document.getElementById('fc-tag');
+  tagEl.textContent=cat.label+(d.star?' ★国試':'');
+  tagEl.style.cssText=catStyle(d.cat);
   document.getElementById('fc-q').textContent=d.q;
   document.getElementById('fc-a').textContent=d.a;
-  document.getElementById('fc-counter').textContent=(fcIdx+1)+' / '+FC_DATA.length;
+  document.getElementById('fc-cnt').textContent=(fcIdx+1)+' / '+list.length;
   document.getElementById('fc-inner').classList.remove('flipped');
-  fcFlipped=false;
 }
-function flipCard(){document.getElementById('fc-inner').classList.toggle('flipped');fcFlipped=!fcFlipped;}
-function fcMove(d){fcIdx=(fcIdx+d+FC_DATA.length)%FC_DATA.length;renderFC();}
+function flipCard(){document.getElementById('fc-inner').classList.toggle('flipped');}
+function fcMove(d){
+  const list=getFCList();
+  fcIdx=(fcIdx+d+list.length)%list.length;
+  renderFC();
+}
 function fcRate(ok){
-  if(ok){fcOk++}else{fcNg++}
+  if(ok) fcOk++; else fcNg++;
   document.getElementById('f-ok').textContent=fcOk;
   document.getElementById('f-ng').textContent=fcNg;
-  const done=fcOk+fcNg;
-  document.getElementById('f-prog').style.width=Math.min(done/FC_DATA.length*100,100)+'%';
+  const total=getFCList().length;
+  document.getElementById('f-prog').style.width=Math.min((fcOk+fcNg)/total*100,100)+'%';
   fcMove(1);
 }
 
+/* ══════════════════════════════════════
+   クイズ
+══════════════════════════════════════ */
+let qIdx=0, qCorrect=0, qWrong=0, qAnswered=false, qList=[];
+
 function initQuiz(){
-  qList=shuffle(QUIZ).slice(0,10);
-  qIdx=0;qCorrect=0;qWrong=0;qAnswered=false;
+  const pool = qCatFilter==='all' ? ALL_QUIZ : ALL_QUIZ.filter(q=>q.cat===qCatFilter);
+  qList=shuffle(pool).slice(0,Math.min(10,pool.length));
+  qIdx=0; qCorrect=0; qWrong=0; qAnswered=false;
   document.getElementById('q-correct').textContent=0;
   document.getElementById('q-wrong').textContent=0;
   document.getElementById('q-prog').style.width='0%';
@@ -290,13 +499,13 @@ function initQuiz(){
 function renderQuiz(){
   if(qIdx>=qList.length){showResult();return;}
   const q=qList[qIdx];
-  document.getElementById('quiz-q').innerHTML=(q.star?'<span class="badge-star">★国試</span> ':'')+q.q;
-  const cc=document.getElementById('quiz-choices');
-  cc.innerHTML='';
-  shuffle(q.choices.map((c,i)=>({c,orig:i}))).forEach(({c,orig})=>{
+  const starHtml = q.star ? `<span class="star">★国試</span>` : '';
+  document.getElementById('quiz-q').innerHTML = starHtml + q.q;
+  const cc=document.getElementById('quiz-choices'); cc.innerHTML='';
+  shuffle(q.c.map((c,i)=>({c,orig:i}))).forEach(({c,orig})=>{
     const b=document.createElement('button');
-    b.className='quiz-choice';b.textContent=c;
-    b.onclick=()=>answerQuiz(b,orig===q.ans,q);
+    b.className='qc'; b.textContent=c;
+    b.onclick=()=>answerQuiz(b,orig===q.a,q);
     cc.appendChild(b);
   });
   document.getElementById('quiz-exp').style.display='none';
@@ -304,18 +513,16 @@ function renderQuiz(){
   qAnswered=false;
 }
 function answerQuiz(el,correct,q){
-  if(qAnswered)return;qAnswered=true;
-  document.querySelectorAll('.quiz-choice').forEach(b=>{
-    b.disabled=true;
-    if(b.textContent===q.choices[q.ans])b.classList.add('correct');
-  });
-  if(!correct)el.classList.add('wrong');
-  if(correct){qCorrect++}else{qWrong++}
+  if(qAnswered)return; qAnswered=true;
+  document.querySelectorAll('.qc').forEach(b=>{b.disabled=true;if(b.textContent===q.c[q.a])b.classList.add('correct');});
+  if(!correct) el.classList.add('wrong');
+  if(correct) qCorrect++; else qWrong++;
   document.getElementById('q-correct').textContent=qCorrect;
   document.getElementById('q-wrong').textContent=qWrong;
   document.getElementById('q-prog').style.width=((qIdx+1)/qList.length*100)+'%';
+  const cat=CATS[q.cat];
   const exp=document.getElementById('quiz-exp');
-  exp.innerHTML='<strong>'+(correct?'✓ 正解！':'✗ 不正解')+'</strong>　'+q.exp;
+  exp.innerHTML=`<span style="${catStyle(q.cat)};padding:1px 7px;border-radius:20px;font-size:11px">${cat.label}</span> <b>${correct?'✓ 正解！':'✗ 不正解'}</b>　${q.exp}`;
   exp.style.display='block';
   document.getElementById('btn-next').style.display='inline-block';
 }
@@ -323,17 +530,137 @@ function nextQuiz(){qIdx++;renderQuiz();}
 function showResult(){
   document.getElementById('quiz-body').style.display='none';
   document.getElementById('quiz-result').style.display='block';
-  const pct=Math.round(qCorrect/qList.length*100);
   document.getElementById('r-score').textContent=qCorrect+'/'+qList.length;
-  const msgs={
-    100:'完璧です！発達論マスター確定！このまま国試も突破しよう🎉',
-    80:'すごい！あともう一歩で完璧。苦手な問題だけ見直そう✨',
-    60:'いい調子！マッチングとフラッシュカードで定着させよう💪',
-    0:'ここからが本番！フラッシュカードで提唱者と説を一つずつ覚えよう📚'
-  };
-  const msg=pct===100?msgs[100]:pct>=80?msgs[80]:pct>=60?msgs[60]:msgs[0];
-  document.getElementById('r-msg').textContent=msg;
+  const pct=qCorrect/qList.length*100;
+  document.getElementById('r-msg').textContent=
+    pct===100?'完璧です！全員マスター確定！このまま国試も突破しよう🎉':
+    pct>=80?'すごい！あともう一歩。苦手なカテゴリをフラッシュカードで補強しよう✨':
+    pct>=60?'いい調子！混同しやすいポイントをもう一度マッチングで確認しよう💪':
+    'カテゴリを絞って練習するのがおすすめ。年表も一緒に見てみて📚';
 }
 
+/* ══════════════════════════════════════
+   年表ビルダー
+══════════════════════════════════════ */
+const TL_DATA = [
+  {era:'📜 近世（17〜18世紀）― 哲学・思想の時代',
+   desc:'産業革命前夜。「人はなぜ賢くなるのか」を哲学者が議論。遺伝か環境かという問いの出発点。',
+   people:[
+    {yr:'1689',cat:'env',name:'ロック',nat:'英・哲学者 1632–1704',yr2:'1689「人間知性論」',
+     setsu:'経験説',star:false,
+     body:'知識の源泉はすべて<strong>経験</strong>にある。人の心は生まれたとき<strong>白紙（タブラ・ラサ）</strong>であり、経験によって書きこまれる。',
+     kws:['白紙（タブラ・ラサ）','経験が知識の源泉','「氏より育ち」系'],
+     note:'🕰 科学革命の影響で「観察と経験」重視の機運。ニュートンの自然科学と並走。'},
+    {yr:'1762',cat:'ide',name:'ルソー',nat:'仏・思想家 1712–1778',yr2:'1762「エミール」',
+     setsu:'生得説',star:true,
+     body:'発達を最も決定づけるのは<strong>受け継がれた天性（生得的な性質）</strong>。子どもは本来善であり（性善説）、自然の成長を重視。',
+     kws:['天性・生得的性質','性善説','「蛙の子は蛙」系'],
+     note:'🕰 フランス啓蒙主義・市民革命前夜。ロックの環境論へのアンチテーゼとして登場。'},
+  ]},
+  {era:'🔬 近代（19世紀末〜20世紀前半）― 科学的心理学の誕生',
+   desc:'ダーウィンの進化論（1859）が「遺伝と適応」への関心を爆発させた。心理学が哲学から独立し、実験・観察で発達を研究。',
+   people:[
+    {yr:'1906',cat:'fuk',name:'シュテルン',nat:'独・心理学者 1871–1938',yr2:'1906「人格の心理学」',
+     setsu:'輻輳説（遺伝＋環境・加算的）',star:true,
+     body:'遺伝だけでも環境だけでもなく、両方が<strong>加算的（足し算・＋）</strong>に発達を規定。遺伝と環境は互いに独立で相関しない。IQ（知能指数）の概念も初めて提唱。',
+     kws:['遺伝＋環境（加算的）','相関しない・独立','IQ（知能指数）を提唱'],
+     note:'🕰 「遺伝か環境か」の二項対立を折衷しようとした先駆的試み。'},
+    {yr:'1913',cat:'env',name:'ワトソン',nat:'米・心理学者 1878–1958',yr2:'1913「行動主義宣言」',
+     setsu:'学習優位説（行動主義）',star:true,
+     body:'「子どもの発育・発達は<strong>人間が統制できる</strong>」。観察できる<strong>行動</strong>のみを研究対象とする行動主義を宣言。言語も<strong>強化</strong>によって形成される行動と捉える（後のスキナーに継承）。',
+     kws:['行動主義','条件づけ','発達は人間が統制できる'],
+     note:'🕰 パブロフの条件反射研究に刺激を受けた。優生学・遺伝論への反発も背景に。'},
+    {yr:'1925',cat:'ide',name:'ゲゼル',nat:'米・小児科医 1880–1961',yr2:'1925「乳幼児の精神発達」',
+     setsu:'成熟優位説',star:true,
+     body:'発達の基本的様態と順序は<strong>自然な成熟</strong>によって決まる。学習・訓練の効果には<strong>レディネス（学習準備性）</strong>が必要。「階段のぼり実験」で証明。',
+     kws:['成熟・自然な発達順序','レディネス ★','階段のぼり実験'],
+     note:'🕰 ダーウィン進化論の影響。映像記録技術（映画）を使った最初期の発達観察研究。'},
+    {yr:'1930',cat:'fuk',name:'ルクセンブルガー',nat:'独・精神科医 1894–1976',yr2:'1930年代',
+     setsu:'輻輳説の図式化',star:false,
+     body:'シュテルンの輻輳説を<strong>図式化</strong>。どの機能も遺伝と環境の両方が影響するが、<strong>機能によって寄与率が異なる</strong>（知能は遺伝的寄与が大、感染症は環境的寄与が大など）。',
+     kws:['機能によって寄与率が異なる','双生児研究'],
+     note:'🕰 双生児研究・家系研究が盛んになり、遺伝と環境の寄与を統計的に分ける手法が発展。'},
+  ]},
+  {era:'🧠 20世紀中盤（1930〜60年代）― 認知革命・言語学の台頭',
+   desc:'行動主義への反省から「心の中を科学する」認知革命が起きる。チョムスキーがスキナーの行動主義を正面から批判し、言語学・認知科学が爆発的に発展した。',
+   people:[
+    {yr:'1934',cat:'sha',name:'ヴィゴツキー',nat:'旧ソ連・心理学者 1896–1934',yr2:'1934「思考と言語」',
+     setsu:'社会認知論・ZPD',star:true,
+     body:'「ことばや心は個人的産物ではなく、<strong>他者とのコミュニケーションの副産物</strong>」。言語・思考・記憶の発達は社会的相互作用の中で促される。<strong>ZPD（発達の最近接領域）</strong>：自力水準と援助があればできる水準の間の領域が教育の最適ゾーン。',
+     kws:['ZPD（発達の最近接領域）★','社会的相互作用','ことばは他者との副産物'],
+     note:'🕰 37歳で夭折したが没後に英訳され1960〜70年代に世界へ影響を与えた。'},
+    {yr:'1936',cat:'nin',name:'ピアジェ',nat:'スイス・発生的認識論者 1896–1980',yr2:'1936「知能の誕生」ほか',
+     setsu:'認知論・認知発達4段階',star:true,
+     body:'<strong>認知発達が言語発達に先行する</strong>。シェマへの同化・調節を繰り返し均衡化する。4段階：<strong>①感覚運動期（0〜2歳）②前操作期（2〜7歳）③具体的操作期（7〜12歳）④形式的操作期（12歳〜）</strong>。',
+     kws:['認知発達4段階 ★','シェマ・同化・調節','対象の永続性','保存概念・脱中心化'],
+     note:'🕰 生物学者出身。子どもを半世紀観察し続けた。「子どもは小さな大人ではない」という視点を確立。'},
+    {yr:'1957',cat:'gak',name:'スキナー',nat:'米・心理学者 1904–1990',yr2:'1957「言語行動」',
+     setsu:'学習論（オペラント条件づけ）',star:true,
+     body:'言語は他者を介して<strong>強化（オペラント条件づけ）</strong>された行動。ABC分析（先行刺激→行動→後続刺激）で言語行動を説明。幼児期の言語獲得には<strong>模倣</strong>が特に重要。→<strong>ABA（応用行動分析）</strong>として現在も発達障害支援に活用。',
+     kws:['オペラント条件づけ','強化・模倣','ABA（応用行動分析）★','ABC分析'],
+     note:'🕰 1957年「言語行動」はチョムスキーに翌年批判されて言語学の方向を変えた転換点。'},
+    {yr:'1959',cat:'sei',name:'チョムスキー',nat:'米・言語学者 1928–',yr2:'1959 スキナー批判・LAD提唱',
+     setsu:'生得論・LAD（言語獲得装置）',star:true,
+     body:'ヒトは生得的に<strong>LAD（Language Acquisition Device：言語獲得装置）＝普遍文法</strong>を脳に備えている。<strong>刺激の貧困</strong>：大人の不完全な発話（助詞省略など）にもかかわらず子どもは完全な文法を獲得する→生得的知識の証拠。スキナーを徹底批判し生成文法理論を確立。',
+     kws:['LAD（言語獲得装置）★','普遍文法','刺激の貧困 ★','モジュール論'],
+     note:'🕰 スキナーの「言語行動」（1957）を翌年に書評で粉砕。認知革命の象徴的事件。'},
+  ]},
+  {era:'🧬 現代（1960年代〜）― 遺伝子科学・社会認知論の時代',
+   desc:'DNA研究が急加速し遺伝と環境の複雑な相互作用へ関心が移る。ヴィゴツキーを受け継いだ社会認知論が言語発達理論の主流に。',
+   people:[
+    {yr:'1969',cat:'sog',name:'ジェンセン',nat:'米・心理学者 1923–2012',yr2:'1969「環境閾値説」',
+     setsu:'環境閾値説（相互作用説）',star:true,
+     body:'遺伝と環境は<strong>掛け算的（×）</strong>に相互作用する。環境の質がある<strong>水準（閾値）を超えると</strong>遺伝的な可能性が開花する。閾値以下では素質があっても発現しない。<br>⚠️ 輻輳説（シュテルン）の「＋加算的」との違いが最頻出。',
+     kws:['遺伝×環境（掛け算）★','環境閾値（しきい値）','閾値を超えると遺伝が開花'],
+     note:'🕰 公民権運動・教育格差論争の時代。「知能の遺伝率」論文が大きな社会的議論を呼んだ。'},
+    {yr:'1983',cat:'sha',name:'ブルーナー',nat:'米・認知心理学者 1915–2016',yr2:'1983「子どもの語りの発達」',
+     setsu:'社会認知論・LASS',star:true,
+     body:'ヴィゴツキーの思想を継承し言語発達理論へ発展。<strong>LASS（Language Acquisition Support System：言語獲得支援システム）</strong>：母親が子どもの能力に合った共同注視ルーチンを提供し言語発達を足場（scaffolding）として支える。<br>足場かけ4手順：①課題へ誘う→②ヒント→③ヒントを撤去→④自立へ。',
+     kws:['LASS（言語獲得支援システム）★','足場かけ（scaffolding）','共同注視ルーチン','ヴィゴツキーを継承'],
+     note:'🕰 認知革命の立役者の一人。チョムスキーの生得論に対し「社会的文脈が言語を育てる」と主張。現代の言語発達支援の理論的基盤。'},
+  ]},
+];
+
+let tlBuilt = false;
+function buildTimeline(){
+  if(tlBuilt) return; tlBuilt=true;
+  const cont = document.getElementById('tl-content');
+  let html = '';
+  TL_DATA.forEach(era=>{
+    html += `<div class="era-sec">
+      <div class="era-badge">${era.era}</div>
+      <div class="era-desc">${era.desc}</div>
+      <div class="tl">`;
+    era.people.forEach(p=>{
+      const c = CATS[p.cat];
+      html += `<div class="tl-card" style="--tl-dot-c:${c.fg};--tl-ca:${c.fg};--tl-cb:${c.bd}">
+        <div class="tl-yr">${p.yr}</div>
+        <div class="tl-ci">
+          <div class="tl-ch">
+            <span class="tl-name">${p.name} <span class="tl-nat">（${p.nat}）</span></span>
+            <span class="tl-sb" style="${catStyle(p.cat)}">${c.label}</span>
+            <span class="tl-yb">${p.yr2}</span>
+          </div>
+          <div class="tl-setsu" style="color:${c.fg}">${p.setsu}${p.star?' <span class="tl-star">★国試</span>':''}</div>
+          <div class="tl-body">${p.body}</div>
+          <div class="tl-kws">${p.kws.map(k=>`<span class="tl-kw" style="${catStyle(p.cat)}">${k}</span>`).join('')}</div>
+          <div class="tl-note">${p.note}</div>
+        </div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  cont.innerHTML = html;
+}
+
+/* ══════════════════════════════════════
+   初期化
+══════════════════════════════════════ */
+buildFilter('m-filter','all','setMFilter');
+buildFilter('f-filter','all','setFFilter');
+buildFilter('q-filter','all','setQFilter');
 initMatch();
+renderFC();
 </script>
+</body>
+</html>
