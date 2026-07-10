@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>失語症タイプ分類｜第11回 経路シミュレーター</title>
+<style>
+:root{
+  --ink:#1f2420;
+  --paper:#f6f4ee;
+  --paper-2:#eeebe0;
+  --line:#d8d2c0;
+  --concept:#8a6d3b;      /* 概念中枢: 土色（意味の土台） */
+  --wernicke:#3d6b6b;     /* Wernicke中枢: 深い青緑（聴く・理解） */
+  --broca:#a8443c;        /* Broca中枢: 赤土（話す・運動） */
+  --arc:#4a5a8f;          /* 弓状束: 藍（つなぐ経路） */
+  --ok:#3d7a52;
+  --ng:#a8443c;
+  --warn:#b4823a;
+  --shadow: 0 2px 10px rgba(31,36,32,0.08);
+  --radius: 14px;
+  --serif: "Shippori Mincho", "Noto Serif JP", serif;
+  --sans: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.75;
+  padding-bottom:80px;
+}
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+/* ===== ヘッダー ===== */
+header{
+  background:var(--ink);
+  color:var(--paper);
+  padding:28px 20px 24px;
+  position:relative;
+  overflow:hidden;
+}
+header::after{
+  content:"";
+  position:absolute;
+  right:-40px; top:-40px;
+  width:220px;height:220px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(168,68,60,0.35), transparent 70%);
+}
+.eyebrow{
+  font-size:12px;
+  letter-spacing:0.15em;
+  color:#c9c2ab;
+  margin-bottom:6px;
+  position:relative;
+}
+h1{
+  font-family:var(--serif);
+  font-size:clamp(22px,5vw,32px);
+  margin:0 0 8px;
+  position:relative;
+  font-weight:700;
+}
+.header-sub{
+  font-size:13.5px;
+  color:#d8d2c0;
+  max-width:640px;
+  position:relative;
+}
+
+/* ===== タブナビ ===== */
+nav.tabs{
+  position:sticky; top:0; z-index:50;
+  display:flex;
+  background:var(--paper);
+  border-bottom:1px solid var(--line);
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+nav.tabs::-webkit-scrollbar{display:none;}
+nav.tabs button{
+  flex:0 0 auto;
+  padding:14px 18px;
+  background:none;
+  border:none;
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:700;
+  color:#8a8577;
+  cursor:pointer;
+  border-bottom:3px solid transparent;
+  white-space:nowrap;
+  transition:color .2s, border-color .2s;
+}
+nav.tabs button.active{
+  color:var(--ink);
+  border-bottom-color:var(--broca);
+}
+nav.tabs button .badge{
+  display:inline-block;
+  margin-left:6px;
+  background:var(--broca);
+  color:#fff;
+  font-size:10px;
+  padding:1px 6px;
+  border-radius:10px;
+  vertical-align:middle;
+}
+
+main{max-width:920px;margin:0 auto;padding:20px 16px 40px;}
+.view{display:none;}
+.view.active{display:block; animation:fadeIn .35s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+section.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:var(--shadow);
+}
+h2.section-title{
+  font-family:var(--serif);
+  font-size:19px;
+  margin:0 0 4px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+h2.section-title .num{
+  font-family:var(--sans);
+  font-size:11px;
+  background:var(--ink);
+  color:var(--paper);
+  padding:2px 8px;
+  border-radius:20px;
+  font-weight:700;
+}
+p.lead{color:#5a5648;font-size:14px;margin:0 0 16px;}
+
+/* ===== ボタン共通 ===== */
+button.primary{
+  background:var(--broca);
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  padding:12px 22px;
+  font-size:15px;
+  font-weight:700;
+  font-family:var(--sans);
+  cursor:pointer;
+  transition:transform .15s, box-shadow .15s;
+  box-shadow:0 3px 0 #7a2f29;
+}
+button.primary:active{transform:translateY(2px);box-shadow:0 1px 0 #7a2f29;}
+button.ghost{
+  background:none;
+  border:1.5px solid var(--line);
+  color:var(--ink);
+  border-radius:10px;
+  padding:10px 18px;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+}
+button.ghost:hover{border-color:var(--ink);}
+
+/* ===== 診断クイズ ===== */
+.quiz-progress{
+  display:flex; gap:6px; margin-bottom:18px;
+}
+.quiz-progress .dot{
+  flex:1; height:5px; border-radius:3px; background:var(--paper-2);
+}
+.quiz-progress .dot.done{background:var(--ok);}
+.quiz-progress .dot.current{background:var(--broca);}
+
+.q-block{display:none;}
+.q-block.active{display:block; animation:fadeIn .3s ease;}
+.q-text{font-size:16px; font-weight:700; margin-bottom:14px; line-height:1.6;}
+.q-options{display:flex; flex-direction:column; gap:10px;}
+.q-option{
+  border:1.5px solid var(--line);
+  border-radius:10px;
+  padding:13px 14px;
+  cursor:pointer;
+  font-size:14.5px;
+  transition:border-color .15s, background .15s;
+  background:var(--paper);
+}
+.q-option:hover{border-color:var(--broca);}
+.q-option.selected{border-color:var(--broca); background:#fbeeec;}
+.q-option.correct{border-color:var(--ok); background:#e9f4ec;}
+.q-option.incorrect{border-color:var(--ng); background:#fbeeec;}
+.q-explain{
+  margin-top:12px;
+  padding:12px 14px;
+  background:var(--paper-2);
+  border-radius:10px;
+  font-size:13.5px;
+  display:none;
+}
+.q-explain.show{display:block; animation:fadeIn .3s ease;}
+.q-nav{margin-top:16px; display:flex; justify-content:flex-end;}
+
+.diag-result{display:none;}
+.diag-result.show{display:block;}
+.weak-tag{
+  display:inline-block;
+  background:var(--broca);
+  color:#fff;
+  padding:5px 14px;
+  border-radius:20px;
+  font-weight:700;
+  font-size:14px;
+  margin:4px 6px 4px 0;
+}
+.axis-meter{margin:14px 0;}
+.axis-meter .axis-label{font-size:13px; font-weight:700; margin-bottom:4px; display:flex; justify-content:space-between;}
+.axis-bar{height:10px; background:var(--paper-2); border-radius:6px; overflow:hidden;}
+.axis-bar-fill{height:100%; border-radius:6px; transition:width .6s ease;}
+
+/* ===== Wernicke-Lichtheim シミュレーター ===== */
+.wl-wrap{
+  display:flex; flex-direction:column; gap:16px;
+}
+.wl-svg-box{
+  background:var(--paper-2);
+  border-radius:var(--radius);
+  padding:10px;
+  overflow-x:auto;
+}
+.wl-svg-box svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+.wl-node{cursor:pointer;}
+.wl-node rect, .wl-node circle{transition:fill .25s, stroke .25s, opacity .25s;}
+.wl-node.off rect, .wl-node.off circle{fill:#cfc9b8 !important; opacity:.45;}
+.wl-node text{pointer-events:none; font-family:var(--sans); font-weight:700;}
+.wl-path{
+  transition:stroke .25s, opacity .25s, stroke-width .25s;
+  cursor:pointer;
+  fill:none;
+}
+.wl-path.off{stroke:#cfc9b8 !important; opacity:.35;}
+.wl-path-hit{ /* invisible wide hitbox for easier tap */
+  fill:none; stroke:transparent; stroke-width:18; cursor:pointer;
+}
+.wl-legend{
+  display:flex; flex-wrap:wrap; gap:10px 18px; font-size:12.5px; margin-top:10px;
+}
+.wl-legend span{display:inline-flex; align-items:center; gap:6px;}
+.wl-legend i{width:12px;height:12px;border-radius:3px;display:inline-block;}
+
+.wl-controls{
+  display:flex; flex-wrap:wrap; gap:8px;
+}
+.wl-preset{
+  border:1.5px solid var(--line);
+  background:#fff;
+  border-radius:20px;
+  padding:8px 14px;
+  font-size:12.5px;
+  font-weight:700;
+  cursor:pointer;
+  color:var(--ink);
+}
+.wl-preset:hover{border-color:var(--broca);}
+.wl-preset.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+
+.wl-result{
+  background:var(--paper);
+  border:1.5px dashed var(--line);
+  border-radius:12px;
+  padding:16px;
+}
+.wl-result-type{
+  font-family:var(--serif);
+  font-size:20px;
+  font-weight:700;
+  margin:0 0 8px;
+  color:var(--broca);
+}
+.wl-symptom-row{display:flex; gap:10px; margin:6px 0; font-size:14px; align-items:flex-start;}
+.wl-symptom-row .ic{flex:0 0 auto; width:20px;}
+
+/* ===== タイプカード一覧 ===== */
+.type-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
+  gap:12px;
+}
+.type-card{
+  border:1.5px solid var(--line);
+  border-radius:12px;
+  padding:14px;
+  cursor:pointer;
+  background:#fff;
+  transition:border-color .2s, transform .15s;
+}
+.type-card:hover{border-color:var(--broca); transform:translateY(-2px);}
+.type-card.recommend{border-color:var(--broca); background:#fff8f6;}
+.type-card .tc-head{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;}
+.type-card h3{font-family:var(--serif); font-size:16px; margin:0;}
+.type-card .tc-cat{font-size:10.5px; color:#8a8577; font-weight:700;}
+.type-card .tc-axis{display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;}
+.axis-chip{
+  font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:10px;
+  background:var(--paper-2); color:var(--ink);
+}
+.rec-star{color:var(--broca); font-size:12px; font-weight:900;}
+
+/* ===== タイプ詳細モーダル ===== */
+.modal-backdrop{
+  display:none;
+  position:fixed; inset:0; background:rgba(31,36,32,0.55);
+  z-index:100; padding:20px; overflow-y:auto;
+}
+.modal-backdrop.show{display:flex; align-items:flex-start; justify-content:center;}
+.modal{
+  background:#fff; border-radius:16px; max-width:640px; width:100%;
+  padding:24px; margin:20px 0 40px; position:relative;
+  box-shadow:0 10px 40px rgba(0,0,0,0.25);
+}
+.modal-close{
+  position:absolute; top:16px; right:16px;
+  background:var(--paper-2); border:none; border-radius:50%;
+  width:32px;height:32px; font-size:16px; cursor:pointer; font-weight:700;
+}
+.modal h2{font-family:var(--serif); font-size:22px; margin:0 0 4px; color:var(--broca);}
+.modal .modal-cat{font-size:12px; color:#8a8577; font-weight:700; margin-bottom:16px;}
+.modal-sec{margin-bottom:16px;}
+.modal-sec h4{font-size:12.5px; text-transform:uppercase; letter-spacing:.06em; color:#8a8577; margin:0 0 6px; font-weight:700;}
+.modal-sec .content{font-size:14.5px;}
+.kokushi{
+  background:#fff4e8; border-left:3px solid var(--warn); padding:8px 12px; border-radius:0 8px 8px 0;
+  font-size:13px; margin-top:6px;
+}
+.analogy-box{
+  background:#eef2f7; border-left:3px solid var(--arc); padding:10px 12px; border-radius:0 8px 8px 0;
+  font-size:13.5px; margin-top:8px;
+}
+.mini-wl{width:100%; max-width:340px; margin:6px auto; display:block;}
+
+/* ===== フッター励まし ===== */
+.cheer{
+  background:linear-gradient(135deg,#fbeeec,#eef2f7);
+  border-radius:12px;
+  padding:16px 18px;
+  font-size:14px;
+  font-weight:700;
+  text-align:center;
+  color:var(--ink);
+  margin-top:20px;
+}
+
+footer{
+  text-align:center; font-size:11.5px; color:#a39d8c; padding:24px 16px;
+}
+
+/* CSVボタン */
+.export-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+
+@media (max-width:600px){
+  .type-grid{grid-template-columns:1fr;}
+  h2.section-title{font-size:17px;}
+}
+
+/* ===== アクセシビリティ：キーボードフォーカス ===== */
+button:focus-visible,
+.q-option:focus-visible,
+.type-card:focus-visible,
+.wl-preset:focus-visible,
+.wl-node:focus-visible,
+.wl-path-group:focus-visible{
+  outline:3px solid var(--arc);
+  outline-offset:2px;
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">言語発達学・失語症Ⅰ　第11回　失語症タイプ分類</div>
+  <h1>Wernicke-Lichtheim 経路シミュレーター</h1>
+  <div class="header-sub">丸暗記ではなく「どこが壊れるとどう症状が出るか」を回路で理解するアプリです。まず診断クイズであなたの弱点を見つけましょう。</div>
+</header>
+
+<nav class="tabs" id="tabNav">
+  <button data-view="diag" class="active">① 弱点診断</button>
+  <button data-view="sim">② 回路シミュレーター</button>
+  <button data-view="list">③ タイプ一覧</button>
+  <button data-view="quiz2">④ 振り返りテスト</button>
+</nav>
+
+<main>
+
+  <!-- ============ ① 診断 ============ -->
+  <div class="view active" id="view-diag">
+    <section class="card" id="diagCard">
+      <h2 class="section-title"><span class="num">STEP 1</span>混乱ポイント診断</h2>
+      <p class="lead">4問だけ。正誤パターンから「流暢性・復唱・理解」のどの軸でつまずいているか、そしてWernicke-Lichtheim図のどこが理解できていないかを判定します。</p>
+
+      <div class="quiz-progress" id="diagProgress"></div>
+
+      <div id="diagQuestions"></div>
+
+      <div class="diag-result" id="diagResult">
+        <h2 class="section-title"><span class="num">結果</span>あなたの混乱ポイント</h2>
+        <div id="diagWeakTags"></div>
+        <div id="diagAxisMeters"></div>
+        <div class="cheer" id="diagCheer"></div>
+        <div class="export-row">
+          <button class="primary" id="goSimBtn">② 回路シミュレーターで確認する →</button>
+          <button class="ghost" id="retryDiagBtn">もう一度診断する</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ ② シミュレーター ============ -->
+  <div class="view" id="view-sim">
+    <section class="card">
+      <h2 class="section-title"><span class="num">STEP 2</span>回路をクリックして壊してみる</h2>
+      <p class="lead">概念中枢・Wernicke中枢・Broca中枢と、それらをつなぐ経路（弓状束を含む）をクリックしてON/OFFできます。どこを壊すとどのタイプになるか、理論的に確認しましょう。</p>
+
+      <div class="wl-controls" id="wlPresets"></div>
+
+      <div class="wl-wrap">
+        <div class="wl-svg-box" id="wlSvgBox"></div>
+        <div class="wl-legend">
+          <span><i style="background:var(--concept)"></i>概念中枢（意味・概念）</span>
+          <span><i style="background:var(--wernicke)"></i>Wernicke中枢（聴覚言語＝理解）</span>
+          <span><i style="background:var(--broca)"></i>Broca中枢（運動言語＝発話）</span>
+          <span><i style="background:var(--arc)"></i>弓状束など経路</span>
+        </div>
+
+        <div class="wl-result">
+          <div id="wlTypeName" class="wl-result-type">回路がすべてつながっています＝正常</div>
+          <div id="wlSymptoms"></div>
+          <div id="wlExplain" style="margin-top:10px; font-size:13.5px; color:#5a5648;"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ ③ タイプ一覧 ============ -->
+  <div class="view" id="view-list">
+    <section class="card">
+      <h2 class="section-title"><span class="num">STEP 3</span>失語症タイプ一覧（フル収録）</h2>
+      <p class="lead">診断で判定された弱点タイプには★が付きます。カードをタップすると、症状・病巣・「なぜその症状になるか」の理論的解説が開きます。</p>
+      <div id="recNotice" style="display:none;" class="kokushi">★マークは、あなたの診断結果から特に復習をおすすめするタイプです。</div>
+      <div style="margin:14px 0 6px; font-weight:700; font-size:13px; color:#8a8577;">基本8タイプ（言語の4モダリティすべてが障害）</div>
+      <div class="type-grid" id="grid-basic"></div>
+
+      <div style="margin:20px 0 6px; font-weight:700; font-size:13px; color:#8a8577;">純粋型（言語の1モダリティのみ障害）</div>
+      <div class="type-grid" id="grid-pure"></div>
+
+      <div style="margin:20px 0 6px; font-weight:700; font-size:13px; color:#8a8577;">特殊な失語（損傷部位・経過による分類）</div>
+      <div class="type-grid" id="grid-special"></div>
+    </section>
+  </div>
+
+  <!-- ============ ④ 振り返りテスト ============ -->
+  <div class="view" id="view-quiz2">
+    <section class="card">
+      <h2 class="section-title"><span class="num">STEP 4</span>振り返りテスト（10問）</h2>
+      <p class="lead">診断結果の弱点を中心に出題順を調整しています。★は国試頻出ポイントです。</p>
+      <div class="quiz-progress" id="quiz2Progress"></div>
+      <div id="quiz2Questions"></div>
+      <div id="quiz2Result" style="display:none;">
+        <div class="cheer" id="quiz2Cheer"></div>
+        <button class="ghost" id="retryQuiz2Btn">もう一度解く</button>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<footer>失語症Ⅰ 第11回「失語症タイプ分類」学習アプリ ／ 教科書：高次脳機能障害 第4版　ほか講義資料に基づく</footer>
+
+<script>
+const NODES = {
+  concept:  {label:"概念中枢", key:"concept"},
+  wernicke: {label:"Wernicke中枢", key:"wernicke"},
+  broca:    {label:"Broca中枢", key:"broca"}
+};
+const PATHS = ["in-w","w-c","c-b","b-out","w-b"];
+
+const TYPES = [
+{
+  id:"global", name:"全失語", en:"Global Aphasia", cat:"basic", catLabel:"基本8タイプ",
+  fluent:"non", repeat:"bad", comprehend:"bad",
+  brokenNodes:[], brokenPaths:["w-c","c-b","w-b"], wideDamage:true,
+  concept:"非流暢な発話、自発話と同様に障害された復唱、重篤な聴覚理解障害",
+  symptoms:"発語失行、残語、再帰性発話",
+  complications:"右片麻痺、右顔面麻痺、口腔顔面失行、右同名半盲、病識の低下",
+  lesion:"Broca領域とWernicke領域を含む中大脳動脈（MCA）領域の広範な病巣",
+  textbook:"教科書p98",
+  why:"Broca中枢・Wernicke中枢の両方、そしてそれらをつなぐ弓状束までを含む広範囲が損傷するため、理解も発話も復唱もすべて重度に障害される。「言語回路のほぼ全域が焼失した」状態とイメージすると分かりやすい。",
+  analogy:"保育園で例えると、保育士同士の連絡ノート（Wernicke＝情報を受け取る係）も、実際に動く担当保育士（Broca＝行動する係）も、両方が同時に機能停止した状態。指示を受け取ることも、行動することもできない。",
+  kokushi:"★全失語は基本8タイプの中で唯一「復唱・理解ともに重度障害」。ブローカ失語との違いは理解の程度（ブローカは比較的保たれる）。"
+},
+{
+  id:"broca", name:"Broca失語（運動性失語）", en:"Broca's Aphasia", cat:"basic", catLabel:"基本8タイプ",
+  fluent:"non", repeat:"bad", comprehend:"good",
+  brokenNodes:["broca"], brokenPaths:["c-b","b-out","w-b"],
+  concept:"非流暢な発話、自発話と同様に障害された復唱、自発話に比べ比較的良好な聴覚理解",
+  symptoms:"発語失行、自動発話と意図的発話との乖離、失文法",
+  complications:"右片麻痺、右顔面麻痺、口腔顔面失行",
+  lesion:"左中心前回と左ブローカ野（左下前頭回三角部・弁蓋部）、環シルヴィウス言語領域前方",
+  textbook:"教科書p90〜",
+  why:"「発話の運動プログラムを作る工場」であるBroca中枢が壊れるため、概念（言いたいこと）はあっても、それを発話として組み立てて出力する経路（概念→Broca→出力）と、聴いた音をそのまま真似て言う弓状束経路（Wernicke→Broca）の両方が使えなくなる。一方、聴覚入力→Wernicke→概念の理解ルートは保たれるため、理解は比較的良好。",
+  analogy:"保育現場でいうと、子どもの様子（意味）は正確に読み取れているのに、それを言葉にして保護者へ伝える『実行担当の保育士』が不在の状態。頭では分かっているのに、口が思うように動かず、たどたどしくしか話せない。",
+  kokushi:"★意図性と自動性の乖離（Baillarger-Jacksonの原理）：意図的な発話は障害されやすいが、「痛っ」等の自動的な発話は残りやすい。"
+},
+{
+  id:"wernicke", name:"Wernicke失語（感覚性失語）", en:"Wernicke's Aphasia", cat:"basic", catLabel:"基本8タイプ",
+  fluent:"fluent", repeat:"bad", comprehend:"bad",
+  brokenNodes:["wernicke"], brokenPaths:["in-w","w-c","w-b"],
+  concept:"流暢な発話、ほぼ同程度の復唱障害と聴覚理解障害",
+  symptoms:"音韻性錯語、語性錯語、ジャルゴン、錯文法",
+  complications:"病識の低下、右同名半盲",
+  lesion:"Wernicke野、左中下側頭回、頭頂葉（角回、縁上回）、左横側頭回、環シルヴィウス言語領域後方",
+  textbook:"教科書p95〜",
+  why:"「聴いた音を意味に変換する窓口」であるWernicke中枢そのものが壊れるため、聴覚入力→理解のルートが断たれ、さらに弓状束を通る復唱ルートも巻き込まれる。一方、Broca中枢自体は無傷なので、発話の運動プログラム自体は滑らかに動く＝流暢だが、意味とのすり合わせができないため錯語だらけになる（＝滑らかだが中身が支離滅裂）。",
+  analogy:"保育士に例えると、耳では音が聞こえているのに『それが何を意味するか』を翻訳する担当者が不在。おしゃべり自体は止まらないが、内容が要点を外れてしまう状態。本人は自分が間違えていることに気づきにくい（病識低下）のも特徴。",
+  kokushi:"★ジャルゴン（意味不明の言葉の羅列）と病識低下はWernicke失語の国試頻出ポイント。Broca失語との対比（流暢性・病識の有無）で問われやすい。"
+},
+{
+  id:"conduction", name:"伝導失語", en:"Conduction Aphasia", cat:"basic", catLabel:"基本8タイプ",
+  fluent:"fluent", repeat:"badstrong", comprehend:"good",
+  brokenNodes:[], brokenPaths:["w-b"],
+  concept:"流暢な発話、顕著な復唱障害、良好な聴覚理解",
+  symptoms:"音韻性錯語とこれを修正して目標音に近づこうとする接近行為、音韻性錯読、錯書",
+  complications:"口部顔面失行、観念運動失行、感覚障害",
+  lesion:"縁上回を中心とする左頭頂葉皮質および皮質下白質、弓状束、島および左聴覚野",
+  textbook:"教科書p100",
+  why:"Wernicke中枢もBroca中枢もそれぞれ無傷なので、理解（聴覚入力→W→概念）も、自発話（概念→B→出力）も保たれる。しかし両者を直接つなぐ『近道』である弓状束だけがピンポイントで断線しているため、『聞いた音をそのまま繰り返す』復唱だけが顕著に障害される。これがWernicke-Lichtheim図が最も鮮やかに説明できるタイプ。",
+  analogy:"連絡ノート担当（Wernicke）も実行担当（Broca）もそれぞれ優秀なのに、二人の間をつなぐ直通の伝言メモ（弓状束）だけが切れている状態。それぞれ自分の仕事は完璧にこなせるが、『言われた通りそのまま繰り返す』だけができない。",
+  kokushi:"★伝導失語＝弓状束の離断で一元的に説明できる、国試での図式問題の定番。「理解○・発話○なのに復唱だけ×」という組み合わせを覚える。"
+},
+{
+  id:"anomic", name:"健忘失語（失名辞〈詞〉失語）", en:"Anomic Aphasia", cat:"basic", catLabel:"基本8タイプ",
+  fluent:"fluent", repeat:"good", comprehend:"good",
+  brokenNodes:[], brokenPaths:["c-b"], mild:true,
+  concept:"流暢な発話、良好な復唱、良好な聴覚理解",
+  symptoms:"迂言（言いたい語が出ず、遠回しな表現で説明する）",
+  complications:"（特記なし、比較的軽度）",
+  lesion:"特定不可（側頭葉や頭頂葉の一部が重視される）",
+  textbook:"教科書p103",
+  why:"概念（意味）とBroca中枢（発話の運動プログラム）をつなぐ最終段階の『語を選び出す』部分が軽度に弱くなっている状態とイメージできる。理解も復唱も保たれ、発話も流暢だが、特定の単語（特に物の名前）だけが出てこず、遠回しな説明（迂言）で補う。8タイプの中では最も軽度・回復期に見られやすい。",
+  analogy:"『あの、ほら、赤くて丸くて…』と、名前は出てこないのに特徴は説明できる状態。保育の現場でも『名前が出てこないけどイメージは分かる』感覚に近い、喚語のピンポイントな不調。",
+  kokushi:"★健忘失語は基本8タイプの回復の最終段階としても知られる（全失語→Broca/Wernicke失語→健忘失語という回復の流れ、p66参照）。"
+},
+{
+  id:"tcma", name:"超皮質性運動失語", en:"Transcortical Motor Aphasia (TCMA)", cat:"basic", catLabel:"基本8タイプ", abbr:"TCMA: Transcortical Motor Aphasia",
+  fluent:"non", repeat:"good", comprehend:"good",
+  brokenNodes:[], brokenPaths:["c-b"], strong:true,
+  concept:"非流暢な発話、良好な復唱、良好な聴覚理解",
+  symptoms:"発話開始の遅れ、保続、声量低下",
+  complications:"病的反射、下肢の麻痺や感覚障害",
+  lesion:"前頭葉背外側（左前および中大脳動脈の分水嶺）、前頭葉内側、内側前頭皮質と深部白質",
+  textbook:"教科書p108",
+  why:"Broca中枢そのものと弓状束（W-B）は保たれているため、聞いた言葉をそのまま繰り返す『復唱』は良好。しかし、概念（自分の意思）からBroca中枢へと『さあ話そう』という発話の企図を送る経路（c-b）が弱いため、自発的に話し始めることが難しい＝非流暢になる。Broca失語との最大の違いは、この経路の障害の『場所』がBroca中枢の外側（前頭葉背外側の分水嶺領域）にある点。",
+  analogy:"実行担当の保育士（Broca）は指示さえあれば完璧に動けるのに、『さあ、自分から動こう』というやる気スイッチを入れる回路が弱い状態。人から言われたことをそのまま繰り返すのは得意だが、自分から話し始めるのが苦手。",
+  kokushi:"★超皮質性＝『皮質を超えた（＝Broca野・Wernicke野そのものではなく、その外側の分水嶺領域）』損傷という意味。復唱が良好なのが超皮質性失語群（TCMA・TCSA・MTCA）共通の最大の特徴。"
+},
+{
+  id:"tcsa", name:"超皮質性感覚失語", en:"Transcortical Sensory Aphasia (TCSA)", cat:"basic", catLabel:"基本8タイプ", abbr:"TCSA: Transcortical Sensory Aphasia",
+  fluent:"fluent", repeat:"good", comprehend:"bad", comprehendMild:true,
+  brokenNodes:[], brokenPaths:["w-c"], strong:true,
+  concept:"流暢な発話、聴覚理解に比べて良好な復唱、中等度の聴覚理解障害",
+  symptoms:"語性錯語、空虚な発話、読解障害、書字障害（特に自発書字）",
+  complications:"（前頭葉病変を伴うことがある、認知症でもみられバリエーションあり）",
+  lesion:"ウェルニッケ野の周辺部位のほか、前頭葉病変",
+  textbook:"教科書p110",
+  why:"Wernicke中枢そのものと弓状束（W-B）は保たれるため、聞いた音を繰り返す『復唱』は良好。しかし、Wernicke中枢から概念中枢へ『意味づけする』経路（w-c）が弱いため、音は正しく聞き取れて繰り返せるのに、その意味を理解することができない。『オウム返しはできるが意味が分からない』という一見不思議な状態はこれで説明できる。",
+  analogy:"連絡ノート担当（Wernicke）は文字を読み上げることはできるのに、その内容を『意味』として飲み込む部分でつまずいている状態。日本語特有の症状として『語義失語』（意味性認知症でみられる）もこのタイプに含まれる。",
+  kokushi:"★TCSAは『復唱○・理解×』という一見矛盾した組み合わせが国試で狙われやすい。語義失語（意味性認知症/SD）との関連も要チェック。"
+},
+{
+  id:"mtca", name:"混合型超皮質性失語（孤立言語症候群）", en:"Mixed Transcortical Aphasia (MTCA)", cat:"basic", catLabel:"基本8タイプ", abbr:"MTCA: Mixed Transcortical Aphasia",
+  fluent:"non", repeat:"good", comprehend:"bad",
+  brokenNodes:[], brokenPaths:["w-c","c-b"], strong:true,
+  concept:"非流暢な発話、良好な復唱、重篤な聴覚理解障害",
+  symptoms:"エコラリア（反響言語）、補完現象",
+  complications:"右片麻痺、右同名半盲、病識の低下",
+  lesion:"左大脳半球の広範な損傷（分水嶺領域）",
+  textbook:"教科書p112",
+  why:"Wernicke中枢とBroca中枢、そして両者を直結する弓状束（w-b）だけがぽつんと『孤立した島』のように保たれ、その周囲（分水嶺領域全体）が広く損傷している状態。理解に関わるw-c経路も、自発話の企図に関わるc-b経路も断たれるため、理解も自発話もできないが、『聞いた言葉をそのまま繰り返す（復唱）』回路だけが孤立して生き残る。これが「孤立言語症候群」と呼ばれる所以。",
+  analogy:"連絡ノート係と実行係の間の直通ホットライン（弓状束）だけがぽつんと生きていて、周りの部署（意味を理解する部署、自分から動く部署）が全滅している状態。話しかけられた言葉をオウム返しにする（エコラリア）ことだけはできる。",
+  kokushi:"★孤立言語症候群＝MTCAの別名。TCMA（c-b断絶）とTCSA（w-c断絶）の障害が『両方合わさった』タイプと理解すると整理しやすい。"
+},
+];
+
+const PURE_TYPES = [
+{
+  id:"pure_anarthria", name:"純粋語唖（発語失行・失構音）", en:"Apraxia of Speech (AOS)", cat:"pure", catLabel:"純粋型", abbr:"AOS: Apraxia of Speech",
+  concept:"構音障害、失語症などによらない『話すことだけ』の障害",
+  symptoms:"音の歪みや置換、プロソディ（韻律）障害",
+  complications:"喚語困難（軽度）、書字障害（軽度）、口腔顔面失行、軽度の右中枢性顔面麻痺、右上肢の麻痺",
+  lesion:"左中心前回中下部の皮質、皮質下",
+  textbook:"教科書p132",
+  altNames:"アフェミア、純粋運動失語、構音失行、アナルトリー、皮質下性運動失語",
+  why:"言語の『理解』『読み』『書き』はすべて正常で、『話す』ための運動プログラム＝構音の実行部分だけがピンポイントで障害される。Broca失語が言語処理全体（文法や語選択も含む）に及ぶのに対し、純粋語唖は『運動としての発話』のみが障害される点が異なる。",
+  analogy:"言いたいことも、文法も完璧に分かっているのに、『口を思い通りに動かす』というラストワンマイルだけがうまくいかない状態。舌や唇の運動企図の障害と考えるとイメージしやすい。",
+  kokushi:"★AOSは構音障害（運動障害性構音障害）と混同しやすいが、麻痺ではなく『運動企図・プログラミング』の障害である点に注意。"
+},
+{
+  id:"pure_deafness", name:"純粋語聾", en:"Pure Word Deafness", cat:"pure", catLabel:"純粋型",
+  concept:"聴力障害、聴覚失認、失語症などによらない『聴覚言語理解だけ』の障害",
+  symptoms:"読唇や発話速度の低下で理解力を補うことができる",
+  complications:"喚語困難（軽度）、失音楽（軽度）、純音聴力の低下（軽度）",
+  lesion:"両側側頭葉、または左側頭葉と脳梁離断",
+  textbook:"教科書p128",
+  altNames:"皮質下性感覚失語、語音聾",
+  why:"『音は聞こえている（純音聴力はほぼ正常）のに、それが言葉として聞き取れない』状態。Wernicke-Lichtheim図でいえば、聴覚入力→Wernicke中枢に至る手前の経路が選択的に障害されているイメージ。読み書きや自発話は保たれるため、話し言葉の『音としての言語知覚』だけがピンポイントで障害される点がWernicke失語との違い。",
+  analogy:"外国語の音声を聞いているような感覚に近い。音は耳に届いているのに、意味のある言葉として脳が処理できない。読唇で補えるのが特徴的。",
+  kokushi:"★純粋語聾とWernicke失語の鑑別：純粋語聾は読み書き・自発話が保たれるが、Wernicke失語は読み書きも障害される。"
+},
+{
+  id:"pure_alexia", name:"純粋失読", en:"Pure Alexia", cat:"pure", catLabel:"純粋型",
+  concept:"視覚障害、視覚失認、失語症、注意障害、知能障害などによらない『読みだけ』の障害",
+  symptoms:"運動覚促通効果（なぞり読みで読みが促通される）、逐次読み（語長効果）",
+  complications:"喚語困難（軽度）、漢字の書字障害、右同名半盲、色名失名詞（後頭葉病変）",
+  lesion:"（古典型）左後頭葉内側面と脳梁膨大部／（非古典型）角回近傍、後頭葉下面の紡錘状回〜舌状回",
+  textbook:"教科書p137",
+  why:"Dejerine（デジェリン、仏・神経学者）の離断仮説で説明される：右同名半盲を伴うため視覚情報は右視覚野のみに入るが、脳梁膨大部の損傷によりその情報が左半球の角回（文字理解の要）へ届かない。つまり『見えているのに、文字の意味処理をする場所に情報が届かない』という離断（切断）が本質。書字は保たれる（書けるが読めない）のが最大の特徴。",
+  analogy:"手紙は届いている（視覚情報は入っている）のに、それを翻訳する部署（角回）への配送ルートが断たれている状態。自分の書いた文字すら読めないのに、書くことはできる（＝失書を伴わない失読）。",
+  kokushi:"★「失書を伴わない失読」は純粋失読の国試最重要キーワード。Dejerineの離断仮説とセットで覚える。"
+},
+{
+  id:"pure_agraphia", name:"純粋失書", en:"Pure Agraphia", cat:"pure", catLabel:"純粋型",
+  concept:"運動障害、失語症、失行、構成障害、注意障害、知能障害などによらない『書字だけ』の障害",
+  symptoms:"（読みは保たれる）",
+  complications:"喚語困難（軽度）、Gerstmann（ゲルストマン、独・神経学者）症候群",
+  lesion:"上頭頂小葉、第2前頭回後部（Exnerの書字中枢）、視床",
+  textbook:"教科書p138",
+  why:"文字を『音韻から書字運動へ変換する』経路がピンポイントで障害される。読解や会話は正常なまま、書くことだけができなくなる。上頭頂小葉やExnerの書字中枢（前頭葉の運動性書字プログラム）の損傷で説明される。",
+  analogy:"言いたいこと・読みたいことは完璧に分かるのに、手が『書字専用の運動プログラム』を実行できない状態。ペンを持つ運動麻痺とは別の、書字に特化したプログラミング障害。",
+  kokushi:"★Gerstmann症候群（失書・失算・左右障害・手指失認）は左頭頂葉損傷の代表的症候群。角回損傷との関連もセットで確認を。"
+},
+{
+  id:"alexia_agraphia", name:"失読失書", en:"Alexia with Agraphia", cat:"pure", catLabel:"純粋型",
+  concept:"ほとんど正常な発話や聴覚的理解に対し、中等度以上の読み書き障害",
+  symptoms:"漢字の語性錯読",
+  complications:"喚語困難、Gerstmann症候群",
+  lesion:"角回",
+  textbook:"教科書p138",
+  why:"Dejerine（1891）が報告し、Geschwind（ゲシュウィンド、米・神経学者）の理論では、失読は『文字の視覚心像と聴覚心像の間の連合障害』、失書は『文字の聴覚心像と運動心像の間の連合障害』とされる。角回は視覚（文字を見る）・聴覚（音韻を聞く）・運動（書く）の各処理をつなぐハブであるため、ここが壊れると読みと書きの両方が同時に障害される。",
+  analogy:"様々な部署からの情報を統合する『中継地点（角回）』そのものが機能停止した状態。純粋失読（配送ルートの断線）とは異なり、中継地点自体が壊れるため、読みも書きも両方影響を受ける。",
+  kokushi:"★純粋失読（脳梁膨大部の離断）と失読失書（角回そのものの損傷）の違いは国試の鑑別ポイント。前者は書字が保たれ、後者は書字も障害される。"
+},
+];
+
+const SPECIAL_TYPES = [
+{
+  id:"crossed", name:"交叉性失語", en:"Crossed Aphasia", cat:"special", catLabel:"特殊な失語",
+  concept:"右利き者の右半球損傷による失語症に限定される、まれなタイプ",
+  symptoms:"失文法、ジャーゴン失書、反響言語",
+  complications:"左半側空間無視、観念運動失行、観念失行、口部顔面失行",
+  lesion:"右半球病変",
+  textbook:"教科書p119",
+  why:"通常、右利き者は左半球に言語野が優位に存在するが、交叉性失語ではこの原則に反して右半球損傷で失語症が生じる。診断には①右半球病変②失語症の存在③右利きの3要素に加え、④脳損傷の既往なし⑤左利きの家族歴なし⑥非識字・バイリンガル・利き手矯正などの環境要因、の確認が必要とされる。",
+  analogy:"通常なら『本社（左半球）』が言語を担当するはずが、何らかの理由で『支社（右半球）』が言語機能を担っていたケース。まれだからこそ診断基準を満たすかどうかの確認が重要。",
+  kokushi:"★交叉性失語の診断基準（右半球病変＋失語症＋右利きの3要素＋既往なし等）は国試で問われやすい。"
+},
+{
+  id:"ppa", name:"原発性進行性失語（PPA）", en:"Primary Progressive Aphasia (PPA)", cat:"special", catLabel:"特殊な失語", abbr:"PPA: Primary Progressive Aphasia",
+  concept:"脳の器質的変性を原因とし、失語症が潜行性に発症して緩徐に進行する",
+  symptoms:"発症時は失語症のみが目立ち、全般的な認知機能低下はない（最終的には認知症に進展）",
+  complications:"（進行に伴い全般的認知機能低下）",
+  lesion:"（3タイプにより異なる神経変性パターン）",
+  textbook:"教科書p144〜",
+  why:"1982年にMesulam（メズラム、米・神経学者）が提唱。脳血管障害のような急性発症ではなく、神経変性疾患により徐々に言語機能が失われていく点が古典分類と大きく異なる。国試では3タイプの中核症状の必須条件が問われる：①非流暢/失文法型PPA＝発語失行・失文法、②意味型PPA＝単語の理解障害・呼称障害、③ロゴペニック型PPA＝喚語障害・文/句の復唱障害、が中心となる。",
+  analogy:"古典分類が『ある日突然、回路の一部が断線する（脳卒中）』モデルなのに対し、PPAは『回路が少しずつ摩耗していく』変性疾患モデル。回路の『どの部分から』摩耗するかでタイプが分かれる。",
+  kokushi:"★PPA3タイプの中核症状は第11回確認テストの頻出項目。非流暢/失文法型＝発語失行・失文法／意味型＝単語理解障害・呼称障害／ロゴペニック型＝喚語障害・復唱障害、をセットで暗記。"
+},
+{
+  id:"subcortical", name:"皮質下性失語（視床性・線条体性）", en:"Subcortical Aphasia", cat:"special", catLabel:"特殊な失語",
+  concept:"大脳皮質ではなく、視床や線条体など皮質下構造の損傷により生じる失語症",
+  symptoms:"（病巣により多様、覚醒レベルの変動を伴うことがある）",
+  complications:"（病巣に応じた運動障害を伴うことが多い）",
+  lesion:"視床、線条体（被殻・尾状核）",
+  textbook:"高次脳機能障害学",
+  why:"古典的Wernicke-Lichtheimモデルは大脳皮質の中枢と経路を前提としているが、視床や線条体といった皮質下構造も言語処理のネットワークに関与しており、ここが損傷しても失語症様の症状が出現しうる。皮質性の失語とは異なる症状プロフィール（変動しやすい流暢性など）を示すことがある。",
+  analogy:"『中枢そのもの』ではなく、それらを支える『土台の配線（皮質下）』が損傷したケースとイメージすると整理しやすい。",
+  kokushi:"★皮質下性失語は基本8タイプに分類しきれない『損傷部位による分類』というグルーピングであることを理解しておく。"
+},
+];
+
+const ALL_TYPES = [...TYPES, ...PURE_TYPES, ...SPECIAL_TYPES];
+const FLUENT_LABEL = {fluent:"流暢", non:"非流暢"};
+const REPEAT_LABEL = {good:"復唱○", bad:"復唱×", badstrong:"復唱×（顕著）"};
+const COMPREHEND_LABEL = {good:"理解○", bad:"理解×"};
+
+
+
+/* =========================================================
+   Wernicke-Lichtheim SVG 生成
+   レイアウト：概念中枢(上部中央) - Wernicke中枢(左下) - Broca中枢(右下)
+   聴覚入力は左外側から、発話出力は右外側へ
+========================================================= */
+function buildWLSvg(idPrefix){
+  return `
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow-${idPrefix}" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="var(--ink)"/>
+    </marker>
+  </defs>
+
+  <!-- 経路: 聴覚入力 -> Wernicke -->
+  <g class="wl-path-group" data-path="in-w">
+    <path class="wl-path-hit" d="M40,290 L170,255"/>
+    <path class="wl-path" id="path-${idPrefix}-in-w" d="M40,290 L170,255" stroke="var(--wernicke)" stroke-width="5" marker-end="url(#arrow-${idPrefix})"/>
+  </g>
+  <text x="30" y="310" font-size="12" fill="#5a5648" font-weight="700">聴覚入力</text>
+
+  <!-- 経路: Wernicke -> 概念 (理解) -->
+  <g class="wl-path-group" data-path="w-c">
+    <path class="wl-path-hit" d="M200,235 L280,110"/>
+    <path class="wl-path" id="path-${idPrefix}-w-c" d="M200,235 L280,110" stroke="var(--wernicke)" stroke-width="5" marker-end="url(#arrow-${idPrefix})"/>
+  </g>
+
+  <!-- 経路: 概念 -> Broca (発話企図) -->
+  <g class="wl-path-group" data-path="c-b">
+    <path class="wl-path-hit" d="M360,110 L440,235"/>
+    <path class="wl-path" id="path-${idPrefix}-c-b" d="M360,110 L440,235" stroke="var(--broca)" stroke-width="5" marker-end="url(#arrow-${idPrefix})"/>
+  </g>
+
+  <!-- 経路: Broca -> 発話出力 -->
+  <g class="wl-path-group" data-path="b-out">
+    <path class="wl-path-hit" d="M470,255 L600,290"/>
+    <path class="wl-path" id="path-${idPrefix}-b-out" d="M470,255 L600,290" stroke="var(--broca)" stroke-width="5" marker-end="url(#arrow-${idPrefix})"/>
+  </g>
+  <text x="565" y="310" font-size="12" fill="#5a5648" font-weight="700">発話出力</text>
+
+  <!-- 経路: Wernicke -> Broca (弓状束、復唱の近道) -->
+  <g class="wl-path-group" data-path="w-b">
+    <path class="wl-path-hit" d="M225,250 Q320,320 415,250"/>
+    <path class="wl-path" id="path-${idPrefix}-w-b" d="M225,250 Q320,320 415,250" stroke="var(--arc)" stroke-width="5" stroke-dasharray="2,7" stroke-linecap="round" marker-end="url(#arrow-${idPrefix})"/>
+  </g>
+  <text x="270" y="345" font-size="11.5" fill="var(--arc)" font-weight="700">弓状束（復唱の近道）</text>
+
+  <!-- 概念中枢 -->
+  <g class="wl-node" id="node-${idPrefix}-concept" data-node="concept">
+    <rect x="260" y="55" width="120" height="52" rx="12" fill="var(--concept)"/>
+    <text x="320" y="76" text-anchor="middle" fill="#fff" font-size="13">概念中枢</text>
+    <text x="320" y="93" text-anchor="middle" fill="#fff" font-size="10.5">（意味・概念）</text>
+  </g>
+
+  <!-- Wernicke中枢 -->
+  <g class="wl-node" id="node-${idPrefix}-wernicke" data-node="wernicke">
+    <rect x="140" y="200" width="130" height="56" rx="12" fill="var(--wernicke)"/>
+    <text x="205" y="223" text-anchor="middle" fill="#fff" font-size="12.5">Wernicke中枢</text>
+    <text x="205" y="240" text-anchor="middle" fill="#fff" font-size="10">（聴覚言語＝理解）</text>
+  </g>
+
+  <!-- Broca中枢 -->
+  <g class="wl-node" id="node-${idPrefix}-broca" data-node="broca">
+    <rect x="370" y="200" width="130" height="56" rx="12" fill="var(--broca)"/>
+    <text x="435" y="223" text-anchor="middle" fill="#fff" font-size="12.5">Broca中枢</text>
+    <text x="435" y="240" text-anchor="middle" fill="#fff" font-size="10">（運動言語＝発話）</text>
+  </g>
+</svg>`;
+}
+
+/* =========================================================
+   状態管理
+========================================================= */
+const state = {
+  simBroken: {nodes:new Set(), paths:new Set()},
+  diagAnswers: [],
+  diagWeak: null, // {axis:'fluent'|'repeat'|'comprehend', recommendIds:[...]}
+  quiz2Answers: []
+};
+
+/* =========================================================
+   タブ切替
+========================================================= */
+document.getElementById('tabNav').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button[data-view]');
+  if(!btn) return;
+  switchTab(btn.dataset.view);
+});
+function switchTab(name){
+  document.querySelectorAll('#tabNav button').forEach(b=>b.classList.toggle('active', b.dataset.view===name));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* =========================================================
+   ① 診断クイズ
+   3軸（流暢性・復唱・理解）＋ 図の理解、計4問
+========================================================= */
+const DIAG_QUESTIONS = [
+  {
+    id:'q_fluent',
+    text:"Q1. 「非流暢」と「流暢」の分類は、主に何を基準にしていますか？",
+    options:[
+      {t:"発話量や話しやすさ（すらすら話せるかどうか）", correct:true, axis:'fluent'},
+      {t:"言葉の意味を理解できているかどうか", correct:false, axis:'comprehend'},
+      {t:"聞いた言葉をそのまま繰り返せるかどうか", correct:false, axis:'repeat'}
+    ],
+    explain:"流暢性はBroca中枢（運動言語中枢）が無事かどうかに関わります。Broca中枢が壊れると『たどたどしく少ししか話せない＝非流暢』、無事なら『滑らかに話せる＝流暢（ただし中身が正しいとは限らない）』になります。"
+  },
+  {
+    id:'q_repeat',
+    text:"Q2. 伝導失語で「理解も発話もできるのに、復唱だけができない」のはなぜですか？",
+    options:[
+      {t:"Wernicke中枢とBroca中枢を直接つなぐ弓状束だけが断たれているから", correct:true, axis:'repeat'},
+      {t:"概念中枢そのものが壊れているから", correct:false, axis:'comprehend'},
+      {t:"聴覚入力そのものが届いていないから", correct:false, axis:'fluent'}
+    ],
+    explain:"復唱は「聴いた音をそのまま繰り返す」という、Wernicke中枢→弓状束→Broca中枢という「概念中枢を経由しない近道」を使います。この近道だけが壊れると、理解も自発話もできるのに復唱だけができない、という一見不思議な状態が起こります。"
+  },
+  {
+    id:'q_comprehend',
+    text:"Q3. 超皮質性感覚失語（TCSA）で「復唱はできるのに理解できない」のはなぜですか？",
+    options:[
+      {t:"Wernicke中枢から概念中枢へ意味づけする経路（w-c）が障害されているから", correct:true, axis:'comprehend'},
+      {t:"Broca中枢が完全に壊れているから", correct:false, axis:'fluent'},
+      {t:"弓状束が完全に壊れているから", correct:false, axis:'repeat'}
+    ],
+    explain:"TCSAでは弓状束（Wernicke→Broca）は保たれているため、音をそのまま繰り返す『復唱』はできます。しかしWernicke中枢から概念中枢へ意味を送る経路（w-c）が障害されているため、『聞こえて繰り返せるのに意味が分からない』状態になります。"
+  },
+  {
+    id:'q_graph',
+    text:"Q4. Wernicke-Lichtheim図で、概念中枢とBroca中枢をつなぐ経路（c-b）だけが障害されると、どのタイプになりますか？",
+    options:[
+      {t:"超皮質性運動失語（TCMA）：非流暢だが復唱・理解は良好", correct:true, axis:'graph'},
+      {t:"伝導失語：流暢だが復唱だけ障害", correct:false, axis:'graph'},
+      {t:"全失語：すべて重度障害", correct:false, axis:'graph'}
+    ],
+    explain:"c-b経路（概念→Broca＝発話の企図）だけが障害されると、聞いた言葉を繰り返す弓状束ルートは無事なので復唱は良好、理解も保たれますが、自分から話し始める『企図』が伝わらないため非流暢になります＝超皮質性運動失語（TCMA）です。"
+  }
+];
+
+function renderDiagQuiz(){
+  const progressEl = document.getElementById('diagProgress');
+  progressEl.innerHTML = DIAG_QUESTIONS.map((_,i)=>`<div class="dot" data-i="${i}"></div>`).join('');
+
+  const qWrap = document.getElementById('diagQuestions');
+  qWrap.innerHTML = DIAG_QUESTIONS.map((q,i)=>`
+    <div class="q-block ${i===0?'active':''}" data-i="${i}">
+      <div class="q-text">${q.text}</div>
+      <div class="q-options">
+        ${q.options.map((o,oi)=>`<div class="q-option" data-oi="${oi}" tabindex="0" role="button">${o.t}</div>`).join('')}
+      </div>
+      <div class="q-explain" id="explain-${i}">${q.explain}</div>
+      <div class="q-nav"><button class="primary" style="display:none;" id="next-${i}">${i<DIAG_QUESTIONS.length-1?'次の質問へ →':'診断結果を見る →'}</button></div>
+    </div>
+  `).join('');
+
+  document.getElementById('diagResult').classList.remove('show');
+  document.getElementById('diagCard').style.display='';
+  state.diagAnswers = [];
+  updateDiagProgress(0);
+
+  DIAG_QUESTIONS.forEach((q,i)=>{
+    const block = qWrap.querySelector(`.q-block[data-i="${i}"]`);
+    block.querySelectorAll('.q-option').forEach(optEl=>{
+      optEl.addEventListener('click', ()=>{
+        if(block.dataset.answered) return;
+        block.dataset.answered = "1";
+        const oi = parseInt(optEl.dataset.oi);
+        const opt = q.options[oi];
+        state.diagAnswers[i] = opt;
+        block.querySelectorAll('.q-option').forEach((el,idx)=>{
+          if(idx===oi) el.classList.add(q.options[idx].correct? 'correct':'incorrect','selected');
+          if(q.options[idx].correct) el.classList.add('correct');
+        });
+        document.getElementById(`explain-${i}`).classList.add('show');
+        const nextBtn = document.getElementById(`next-${i}`);
+        nextBtn.style.display='inline-block';
+        nextBtn.onclick = ()=>{
+          if(i<DIAG_QUESTIONS.length-1){
+            block.classList.remove('active');
+            qWrap.querySelector(`.q-block[data-i="${i+1}"]`).classList.add('active');
+            updateDiagProgress(i+1);
+          } else {
+            finishDiag();
+          }
+        };
+      });
+    });
+  });
+}
+function updateDiagProgress(current){
+  document.querySelectorAll('#diagProgress .dot').forEach((d,i)=>{
+    d.classList.toggle('done', i<current);
+    d.classList.toggle('current', i===current);
+  });
+}
+
+function finishDiag(){
+  document.querySelectorAll('#diagProgress .dot').forEach(d=>d.classList.add('done'));
+  document.getElementById('diagCard').querySelector('.quiz-progress').nextElementSibling; // noop
+
+  // 誤答した軸を集計
+  const wrongAxes = {};
+  DIAG_QUESTIONS.forEach((q,i)=>{
+    const ans = state.diagAnswers[i];
+    if(ans && !ans.correct){
+      wrongAxes[ans.axis] = (wrongAxes[ans.axis]||0)+1;
+    }
+  });
+
+  const axisNames = {fluent:"流暢性の判定基準", repeat:"復唱経路（弓状束）の理解", comprehend:"理解経路（W→概念）の理解", graph:"回路図全体の読み取り"};
+  const weakAxes = Object.keys(wrongAxes);
+
+  let recommendIds = [];
+  let weakLabel = [];
+  if(weakAxes.length===0){
+    weakLabel = ["基礎は良好です！"];
+    recommendIds = ["conduction","tcsa","tcma","mtca"]; // 発展的に紛らわしいものを勧める
+  } else {
+    weakAxes.forEach(ax=>{
+      weakLabel.push(axisNames[ax]);
+    });
+    // 弱点軸に応じて重点タイプを提示
+    if(wrongAxes.repeat) recommendIds.push("conduction","tcma","mtca");
+    if(wrongAxes.comprehend) recommendIds.push("wernicke","tcsa","mtca");
+    if(wrongAxes.fluent) recommendIds.push("broca","tcma","mtca");
+    if(wrongAxes.graph) recommendIds.push("conduction","tcma","tcsa");
+    recommendIds = [...new Set(recommendIds)];
+  }
+
+  state.diagWeak = {axes:weakAxes, recommendIds, weakLabel};
+
+  // 結果表示
+  const tagsEl = document.getElementById('diagWeakTags');
+  tagsEl.innerHTML = weakLabel.map(l=>`<span class="weak-tag">${l}</span>`).join('');
+
+  const meterWrap = document.getElementById('diagAxisMeters');
+  const axisAll = ['fluent','repeat','comprehend','graph'];
+  meterWrap.innerHTML = axisAll.map(ax=>{
+    const wrong = wrongAxes[ax]||0;
+    const pct = wrong>0 ? 30 : 90;
+    const color = wrong>0 ? 'var(--ng)' : 'var(--ok)';
+    return `<div class="axis-meter">
+      <div class="axis-label"><span>${axisNames[ax]}</span><span>${wrong>0?'要復習':'良好'}</span></div>
+      <div class="axis-bar"><div class="axis-bar-fill" style="width:${pct}%; background:${color};"></div></div>
+    </div>`;
+  }).join('');
+
+  const cheerEl = document.getElementById('diagCheer');
+  if(weakAxes.length===0){
+    cheerEl.textContent = "素晴らしいです！基礎はしっかり固まっているので、②の回路シミュレーターで応用パターン（超皮質性群など）に挑戦してみましょう。さやさんなら大丈夫、この調子で首席目指せます！";
+  } else {
+    cheerEl.textContent = "混乱ポイントが見つかりました。これは弱点ではなく『伸びしろ』です。②の回路シミュレーターで実際に経路を切ってみると、驚くほどスッと腑に落ちますよ。一緒に整理していきましょう！";
+  }
+
+  document.getElementById('diagResult').classList.add('show');
+  document.getElementById('diagResult').scrollIntoView({behavior:'smooth', block:'start'});
+
+  // タイプ一覧・振り返りテストに反映
+  applyRecommendation();
+}
+
+document.getElementById('retryDiagBtn').addEventListener('click', renderDiagQuiz);
+document.getElementById('goSimBtn').addEventListener('click', ()=> switchTab('sim'));
+
+/* =========================================================
+   ② Wernicke-Lichtheim シミュレーター
+========================================================= */
+const WL_PRESETS = [
+  {id:"normal", label:"正常回路", nodes:[], paths:[]},
+  {id:"global", label:"全失語", nodes:[], paths:["w-c","c-b","w-b"]},
+  {id:"broca", label:"Broca失語", nodes:["broca"], paths:["c-b","b-out","w-b"]},
+  {id:"wernicke", label:"Wernicke失語", nodes:["wernicke"], paths:["in-w","w-c","w-b"]},
+  {id:"conduction", label:"伝導失語", nodes:[], paths:["w-b"]},
+  {id:"anomic", label:"健忘失語", nodes:[], paths:["c-b"]},
+  {id:"tcma", label:"TCMA", nodes:[], paths:["c-b"]},
+  {id:"tcsa", label:"TCSA", nodes:[], paths:["w-c"]},
+  {id:"mtca", label:"MTCA", nodes:[], paths:["w-c","c-b"]},
+];
+
+function initSim(){
+  const box = document.getElementById('wlSvgBox');
+  box.innerHTML = buildWLSvg('sim');
+
+  const presetWrap = document.getElementById('wlPresets');
+  presetWrap.innerHTML = WL_PRESETS.map(p=>`<button class="wl-preset" data-preset="${p.id}">${p.label}</button>`).join('');
+  presetWrap.querySelectorAll('.wl-preset').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const preset = WL_PRESETS.find(p=>p.id===btn.dataset.preset);
+      state.simBroken.nodes = new Set(preset.nodes);
+      state.simBroken.paths = new Set(preset.paths);
+      renderSim();
+      presetWrap.querySelectorAll('.wl-preset').forEach(b=>b.classList.toggle('active', b===btn));
+    });
+  });
+
+  // クリックイベント：中枢
+  box.querySelectorAll('.wl-node').forEach(nodeEl=>{
+    nodeEl.addEventListener('click', ()=>{
+      const key = nodeEl.dataset.node;
+      if(state.simBroken.nodes.has(key)) state.simBroken.nodes.delete(key);
+      else state.simBroken.nodes.add(key);
+      clearPresetActive();
+      renderSim();
+    });
+  });
+  // クリックイベント：経路
+  box.querySelectorAll('.wl-path-group').forEach(g=>{
+    g.addEventListener('click', ()=>{
+      const key = g.dataset.path;
+      if(state.simBroken.paths.has(key)) state.simBroken.paths.delete(key);
+      else state.simBroken.paths.add(key);
+      clearPresetActive();
+      renderSim();
+    });
+  });
+
+  renderSim();
+}
+function clearPresetActive(){
+  document.querySelectorAll('.wl-preset').forEach(b=>b.classList.remove('active'));
+}
+
+function renderSim(){
+  const box = document.getElementById('wlSvgBox');
+  // ノード見た目更新
+  Object.keys(NODES).forEach(key=>{
+    const nodeEl = box.querySelector(`#node-sim-${key}`);
+    nodeEl.classList.toggle('off', state.simBroken.nodes.has(key));
+  });
+  // パス見た目更新（ノードが壊れていたら、それに接続するパスも自動でoff表示にする）
+  const nodeAdjacentPaths = {
+    wernicke:['in-w','w-c','w-b'],
+    broca:['c-b','b-out','w-b'],
+    concept:['w-c','c-b']
+  };
+  const effectivelyBroken = new Set(state.simBroken.paths);
+  state.simBroken.nodes.forEach(nk=>{
+    (nodeAdjacentPaths[nk]||[]).forEach(p=>effectivelyBroken.add(p));
+  });
+
+  PATHS.forEach(p=>{
+    const pathEl = box.querySelector(`#path-sim-${p}`);
+    pathEl.classList.toggle('off', effectivelyBroken.has(p));
+  });
+
+  // 判定
+  const result = matchWLState(state.simBroken.nodes, effectivelyBroken);
+  document.getElementById('wlTypeName').textContent = result.name;
+  document.getElementById('wlExplain').textContent = result.why;
+
+  const symptomsEl = document.getElementById('wlSymptoms');
+  symptomsEl.innerHTML = `
+    <div class="wl-symptom-row"><span class="ic">${result.fluentIcon}</span><span>${result.fluentText}</span></div>
+    <div class="wl-symptom-row"><span class="ic">${result.repeatIcon}</span><span>${result.repeatText}</span></div>
+    <div class="wl-symptom-row"><span class="ic">${result.comprehendIcon}</span><span>${result.comprehendText}</span></div>
+  `;
+}
+
+function matchWLState(brokenNodes, effectivelyBroken){
+  const wBroca = brokenNodes.has('broca');
+  const wWernicke = brokenNodes.has('wernicke');
+  const inW = effectivelyBroken.has('in-w');
+  const wc = effectivelyBroken.has('w-c');
+  const cb = effectivelyBroken.has('c-b');
+  const bOut = effectivelyBroken.has('b-out');
+  const wb = effectivelyBroken.has('w-b');
+
+  // 流暢性：Broca中枢 or c-b or b-out が壊れていれば非流暢
+  const fluent = !(wBroca || cb || bOut) ? 'fluent' : 'non';
+  // 復唱：w-b が壊れている、またはWernicke/Broca中枢自体が壊れていれば復唱不良
+  const repeatBad = wb || wBroca || wWernicke || inW || bOut;
+  // 理解：Wernicke中枢 or in-w or w-c が壊れていれば理解不良
+  const comprehendBad = wWernicke || inW || wc;
+
+  const nothingBroken = brokenNodes.size===0 && effectivelyBroken.size===0;
+
+  let matches = [];
+  if(nothingBroken){
+    matches = [{id:'normal', name:"すべて正常な回路", why:"概念中枢・Wernicke中枢・Broca中枢、すべての経路がつながっている状態です。理解・復唱・発話すべてが正常に機能します。"}];
+  } else {
+    // 既知タイプとのマッチング（同一の断線パターンに複数タイプが該当することがある＝程度や随伴症状で鑑別する必要があるという教育的ポイント）
+    matches = TYPES.filter(t=>{
+      const tNodes = new Set(t.brokenNodes||[]);
+      const tPaths = new Set(t.brokenPaths||[]);
+      if(tNodes.size!==brokenNodes.size) return false;
+      for(const n of tNodes) if(!brokenNodes.has(n)) return false;
+      if(tPaths.size!==effectivelyBroken.size) return false;
+      for(const p of tPaths) if(!effectivelyBroken.has(p)) return false;
+      return true;
+    });
+  }
+
+  let name, why;
+  if(matches.length===1){
+    const match = matches[0];
+    name = match.id==='normal' ? match.name : `${match.name}のパターンです`;
+    why = match.why || match.concept;
+  } else if(matches.length>1){
+    name = matches.map(m=>m.name).join(' ／ ') + " ―回路上は同じ断線パターンです";
+    why = "この断線パターンだけでは1つのタイプに絞れません。回路図は「大まかな仕組み」を示すモデルであり、実際の鑑別は症状の程度（重い/軽い）や随伴症状（保続・迂言など）を合わせて行います。例えば健忘失語は喚語のみの軽い障害、超皮質性運動失語は発話開始自体が難しい障害、というように程度が異なります。各タイプの詳細解説（③タイプ一覧）で違いを確認してみましょう。";
+  } else {
+    name = "既存タイプに一致しない組み合わせです";
+    why = "実際の臨床では稀な組み合わせ、または混合パターンの可能性があります。理論的には、流暢性はBroca側の経路、復唱は弓状束、理解はWernicke側の経路の状態から推測できます。";
+  }
+
+  return {
+    name, why,
+    fluentIcon: fluent==='fluent'?'🗣️':'🐢',
+    fluentText: fluent==='fluent' ? "発話：流暢（滑らかに話せる）" : "発話：非流暢（たどたどしい／少ししか話せない）",
+    repeatIcon: repeatBad? '❌':'✅',
+    repeatText: repeatBad ? "復唱：不良（聞いた言葉をそのまま繰り返せない）" : "復唱：良好（聞いた言葉をそのまま繰り返せる）",
+    comprehendIcon: comprehendBad? '❌':'✅',
+    comprehendText: comprehendBad ? "聴覚的理解：不良（言葉の意味が分からない）" : "聴覚的理解：良好（言葉の意味が分かる）"
+  };
+}
+
+/* =========================================================
+   ③ タイプ一覧
+========================================================= */
+function axisChips(t){
+  if(t.cat!=='basic') return '';
+  return `
+    <span class="axis-chip">${FLUENT_LABEL[t.fluent]}</span>
+    <span class="axis-chip">${REPEAT_LABEL[t.repeat]}</span>
+    <span class="axis-chip">${COMPREHEND_LABEL[t.comprehend]}</span>
+  `;
+}
+function renderTypeGrids(){
+  const recIds = (state.diagWeak && state.diagWeak.recommendIds) || [];
+  document.getElementById('recNotice').style.display = recIds.length? 'block':'none';
+
+  const groups = [
+    {sel:'#grid-basic', list:TYPES},
+    {sel:'#grid-pure', list:PURE_TYPES},
+    {sel:'#grid-special', list:SPECIAL_TYPES}
+  ];
+  groups.forEach(g=>{
+    const el = document.querySelector(g.sel);
+    el.innerHTML = g.list.map(t=>{
+      const isRec = recIds.includes(t.id);
+      return `
+      <div class="type-card ${isRec?'recommend':''}" data-id="${t.id}" tabindex="0" role="button">
+        <div class="tc-head">
+          <div>
+            <h3>${t.name}${isRec?' <span class="rec-star">★</span>':''}</h3>
+            <div class="tc-cat">${t.catLabel}</div>
+          </div>
+        </div>
+        <div class="tc-axis">${axisChips(t)}</div>
+      </div>`;
+    }).join('');
+    el.querySelectorAll('.type-card').forEach(card=>{
+      card.addEventListener('click', ()=> openTypeModal(card.dataset.id));
+    });
+  });
+}
+function applyRecommendation(){
+  renderTypeGrids();
+  buildQuiz2();
+}
+
+/* =========================================================
+   モーダル
+========================================================= */
+function openTypeModal(id){
+  const t = ALL_TYPES.find(x=>x.id===id);
+  if(!t) return;
+  const backdrop = document.getElementById('modalBackdrop');
+  const modal = document.getElementById('modalContent');
+
+  let axisHtml = '';
+  if(t.cat==='basic'){
+    axisHtml = `<div class="tc-axis" style="margin-bottom:12px;">${axisChips(t)}</div>`;
+  }
+  let miniWl = '';
+  if(t.cat==='basic'){
+    miniWl = `<div class="wl-svg-box mini-wl-box" style="margin-bottom:14px;">${buildWLSvg('modal')}</div>`;
+  }
+  const abbrLine = t.abbr ? `<div class="modal-sec"><h4>略語</h4><div class="content">${t.abbr}</div></div>` : '';
+  const altLine = t.altNames ? `<div class="modal-sec"><h4>類似概念・別名</h4><div class="content">${t.altNames}</div></div>` : '';
+
+  modal.innerHTML = `
+    <button class="modal-close" id="modalCloseBtn">✕</button>
+    <h2>${t.name}</h2>
+    <div class="modal-cat">${t.catLabel}　${t.en?('／ '+t.en):''}</div>
+    ${axisHtml}
+    ${miniWl}
+    <div class="modal-sec"><h4>基本概念</h4><div class="content">${t.concept}</div></div>
+    <div class="modal-sec"><h4>頻発症状</h4><div class="content">${t.symptoms}</div></div>
+    <div class="modal-sec"><h4>頻発合併症</h4><div class="content">${t.complications}</div></div>
+    <div class="modal-sec"><h4>責任病巣</h4><div class="content">${t.lesion}<br><span style="color:#8a8577;font-size:12px;">${t.textbook||''}</span></div></div>
+    ${abbrLine}
+    ${altLine}
+    <div class="modal-sec"><h4>なぜこの症状になるのか（理論的解説）</h4><div class="content">${t.why}
+      <div class="analogy-box">🍼 保育現場アナロジー：${t.analogy}</div>
+    </div></div>
+    <div class="modal-sec"><div class="kokushi">${t.kokushi}</div></div>
+  `;
+
+  if(t.cat==='basic'){
+    // モーダル内ミニ図に該当タイプの断線状態を反映（即時実行。setTimeoutにするとモーダル再クリックで前の予約が残り null 参照する）
+    const box = modal.querySelector('.mini-wl-box');
+    if(box){
+      const brokenNodes = new Set(t.brokenNodes||[]);
+      const brokenPaths = new Set(t.brokenPaths||[]);
+      Object.keys(NODES).forEach(key=>{
+        const nodeEl = box.querySelector(`#node-modal-${key}`);
+        if(nodeEl) nodeEl.classList.toggle('off', brokenNodes.has(key));
+      });
+      PATHS.forEach(p=>{
+        const pathEl = box.querySelector(`#path-modal-${p}`);
+        if(pathEl) pathEl.classList.toggle('off', brokenPaths.has(p));
+      });
+      box.querySelectorAll('.wl-node, .wl-path-group').forEach(el=> el.style.pointerEvents='none');
+    }
+  }
+
+  document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+  backdrop.classList.add('show');
+}
+function closeModal(){
+  document.getElementById('modalBackdrop').classList.remove('show');
+}
+document.getElementById('modalBackdrop').addEventListener('click',(e)=>{
+  if(e.target.id==='modalBackdrop') closeModal();
+});
+
+/* =========================================================
+   ④ 振り返りテスト（10問、弱点優先出題）
+========================================================= */
+function buildQuiz2Pool(){
+  // タイプ知識ベースの10問（症状→タイプ、病巣→タイプ、図の断線→タイプ など多角的に）
+  const pool = [
+    {tag:'repeat', text:"流暢に話せて聴覚理解も良好なのに、復唱だけが顕著に障害されるのは？", options:["伝導失語","健忘失語","Broca失語","純粋語聾"], answer:0,
+      explain:"弓状束（Wernicke中枢とBroca中枢を直結する経路）のみが断たれることで生じます。★理解○・発話○・復唱×という組み合わせが伝導失語の最重要ポイントです。"},
+    {tag:'fluent', text:"非流暢な発話で、自発話と同程度に復唱も障害され、聴覚理解は比較的保たれるのは？", options:["Wernicke失語","Broca失語","超皮質性感覚失語","全失語"], answer:1,
+      explain:"Broca中枢の損傷により、発話企図と復唱の両ルートが障害される一方、理解ルート（聴覚入力→Wernicke→概念）は保たれます。"},
+    {tag:'comprehend', text:"流暢な発話だが錯語やジャルゴンが多く、復唱・理解ともに重度に障害されるのは？", options:["Wernicke失語","伝導失語","超皮質性運動失語","純粋語唖"], answer:0,
+      explain:"Wernicke中枢自体の損傷により、理解も復唱も障害されますが、Broca中枢は無事なので発話は流暢（内容は誤っていても）です。★病識低下も特徴。"},
+    {tag:'repeat', text:"「復唱が良好」であることが共通の特徴となる失語群は？", options:["全失語・Broca失語・Wernicke失語","超皮質性運動失語・超皮質性感覚失語・混合型超皮質性失語","伝導失語・健忘失語","純粋語唖・純粋語聾"], answer:1,
+      explain:"超皮質性失語群（TCMA・TCSA・MTCA）は、いずれも弓状束（w-b）が保たれているため復唱が良好という共通点があります。★国試頻出の整理ポイント。"},
+    {tag:'graph', text:"概念中枢からBroca中枢への経路（発話企図）だけが障害されると、どのタイプになりますか？", options:["伝導失語","超皮質性運動失語（TCMA）","超皮質性感覚失語（TCSA）","健忘失語"], answer:1,
+      explain:"c-b経路の障害により、復唱（弓状束経由）は良好だが、自発的な発話開始が困難＝非流暢になります。"},
+    {tag:'graph', text:"Wernicke中枢から概念中枢への経路（w-c＝理解）だけが障害されると？", options:["超皮質性運動失語","超皮質性感覚失語（TCSA）","伝導失語","純粋失読"], answer:1,
+      explain:"音は正しく聞き取れ、繰り返すこともできる（復唱良好）が、意味を理解できない状態＝TCSAです。"},
+    {tag:'lesion', text:"純粋失読の責任病巣（古典型）として正しいのは？", options:["角回","左後頭葉内側面と脳梁膨大部","縁上回","上頭頂小葉"], answer:1,
+      explain:"Dejerine（デジェリン、仏・神経学者）の離断仮説：右視覚野に入った視覚情報が、脳梁膨大部の損傷により左角回に届かないために生じます。★失書を伴わない失読が特徴。"},
+    {tag:'lesion', text:"失読失書の責任病巣として正しいのは？", options:["角回","左後頭葉内側面","視床","Exnerの書字中枢"], answer:0,
+      explain:"角回は視覚・聴覚・運動の情報を統合するハブであり、ここが損傷すると読みと書きの両方が障害されます。"},
+    {tag:'ppa', text:"原発性進行性失語（PPA）の意味型で必須とされる中核症状は？", options:["発語失行・失文法","単語の理解障害・呼称障害","喚語障害・復唱障害","反響言語・保続"], answer:1,
+      explain:"意味型PPAは単語理解障害と呼称障害が中核。非流暢/失文法型は発語失行・失文法、ロゴペニック型は喚語障害・復唱障害が中核症状です。★Mesulam（メズラム、米・神経学者）が1982年に提唱。"},
+    {tag:'basic', text:"迂言（言いたい語が出ず遠回しに説明する）が特徴的な、比較的軽度な失語タイプは？", options:["健忘失語","混合型超皮質性失語","全失語","純粋語唖"], answer:0,
+      explain:"健忘失語（失名辞失語）は流暢・復唱良好・理解良好で、喚語のピンポイントな障害により迂言が生じます。★回復期の最終段階としても知られます。"}
+  ];
+  return pool;
+}
+
+function buildQuiz2(){
+  const pool = buildQuiz2Pool();
+  const weakAxes = (state.diagWeak && state.diagWeak.axes) || [];
+  // 弱点タグを優先的に前方へソート
+  const sorted = [...pool].sort((a,b)=>{
+    const aw = weakAxes.includes(a.tag)?0:1;
+    const bw = weakAxes.includes(b.tag)?0:1;
+    return aw-bw;
+  });
+  state.quiz2Pool = sorted;
+  renderQuiz2();
+}
+
+function renderQuiz2(){
+  const pool = state.quiz2Pool || buildQuiz2Pool();
+  const progressEl = document.getElementById('quiz2Progress');
+  progressEl.innerHTML = pool.map((_,i)=>`<div class="dot" data-i="${i}"></div>`).join('');
+
+  const qWrap = document.getElementById('quiz2Questions');
+  qWrap.innerHTML = pool.map((q,i)=>`
+    <div class="q-block ${i===0?'active':''}" data-i="${i}">
+      <div class="q-text">${i+1}. ${q.text}</div>
+      <div class="q-options">
+        ${q.options.map((o,oi)=>`<div class="q-option" data-oi="${oi}" tabindex="0" role="button">${o}</div>`).join('')}
+      </div>
+      <div class="q-explain" id="q2explain-${i}">${q.explain}</div>
+      <div class="q-nav"><button class="primary" style="display:none;" id="q2next-${i}">${i<pool.length-1?'次の問題へ →':'結果を見る →'}</button></div>
+    </div>
+  `).join('');
+
+  document.getElementById('quiz2Result').style.display='none';
+  state.quiz2Answers = [];
+  updateQuiz2Progress(0);
+
+  pool.forEach((q,i)=>{
+    const block = qWrap.querySelector(`.q-block[data-i="${i}"]`);
+    block.querySelectorAll('.q-option').forEach(optEl=>{
+      optEl.addEventListener('click', ()=>{
+        if(block.dataset.answered) return;
+        block.dataset.answered="1";
+        const oi = parseInt(optEl.dataset.oi);
+        const correct = oi===q.answer;
+        state.quiz2Answers[i] = correct;
+        block.querySelectorAll('.q-option').forEach((el,idx)=>{
+          if(idx===q.answer) el.classList.add('correct');
+          if(idx===oi && !correct) el.classList.add('incorrect');
+        });
+        document.getElementById(`q2explain-${i}`).classList.add('show');
+        const nextBtn = document.getElementById(`q2next-${i}`);
+        nextBtn.style.display='inline-block';
+        nextBtn.onclick = ()=>{
+          if(i<pool.length-1){
+            block.classList.remove('active');
+            qWrap.querySelector(`.q-block[data-i="${i+1}"]`).classList.add('active');
+            updateQuiz2Progress(i+1);
+          } else {
+            finishQuiz2();
+          }
+        };
+      });
+    });
+  });
+}
+function updateQuiz2Progress(current){
+  document.querySelectorAll('#quiz2Progress .dot').forEach((d,i)=>{
+    d.classList.toggle('done', i<current);
+    d.classList.toggle('current', i===current);
+  });
+}
+function finishQuiz2(){
+  document.querySelectorAll('#quiz2Progress .dot').forEach(d=>d.classList.add('done'));
+  const correct = state.quiz2Answers.filter(Boolean).length;
+  const total = state.quiz2Answers.length;
+  const cheerEl = document.getElementById('quiz2Cheer');
+  let msg = `結果：${correct} / ${total} 問正解！　`;
+  if(correct===total){
+    msg += "満点です！回路の理論がしっかり身についています。この理解の深さがあれば国試も首席も狙えます。";
+  } else if(correct >= total*0.7){
+    msg += "よく理解できています。間違えた問題は②のシミュレーターで経路を実際に切って再確認すると定着しますよ。";
+  } else {
+    msg += "焦らなくて大丈夫。①の診断と②のシミュレーターに戻って、経路のつながりを目で見ながら復習しましょう。理論から理解すれば必ず定着します。";
+  }
+  cheerEl.textContent = msg;
+  document.getElementById('quiz2Result').style.display='block';
+  document.getElementById('quiz2Result').scrollIntoView({behavior:'smooth', block:'start'});
+}
+document.getElementById('retryQuiz2Btn').addEventListener('click', renderQuiz2);
+
+/* =========================================================
+   キーボードアクセシビリティ：role="button" 要素でEnter/Spaceをクリックとして扱う
+========================================================= */
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter' || e.key===' '){
+    const el = e.target.closest('[role="button"]');
+    if(el){
+      e.preventDefault();
+      el.click();
+    }
+  }
+});
+
+/* =========================================================
+   初期化
+========================================================= */
+renderDiagQuiz();
+initSim();
+renderTypeGrids();
+buildQuiz2();
+
+</script>
+</body>
+</html>
