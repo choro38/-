@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知的障害 暗記アプリ｜ST国試対策</title>
+<style>
+  :root{
+    --main:#4f7d68;
+    --main-dark:#375c4a;
+    --sub:#f2ede3;
+    --accent:#e08e45;
+    --bad:#d16b6b;
+    --good:#4f9d6c;
+    --card-bg:#ffffff;
+    --text:#2f3a35;
+    --star:#e0a800;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+    background:linear-gradient(180deg,#f7f5ef 0%,#eef2ec 100%);
+    color:var(--text);
+    min-height:100vh;
+    padding-bottom:40px;
+  }
+  header{
+    background:var(--main);
+    color:#fff;
+    padding:18px 16px 14px;
+    text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,0.12);
+  }
+  header h1{
+    margin:0 0 4px;
+    font-size:1.3rem;
+  }
+  header p{
+    margin:0;
+    font-size:0.8rem;
+    opacity:0.9;
+  }
+  .container{
+    max-width:640px;
+    margin:0 auto;
+    padding:16px;
+  }
+  .panel{
+    background:#fff;
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:14px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.08);
+  }
+  .filter-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-bottom:10px;
+  }
+  .chip{
+    border:1px solid var(--main);
+    color:var(--main);
+    background:#fff;
+    border-radius:999px;
+    padding:6px 12px;
+    font-size:0.8rem;
+    cursor:pointer;
+    user-select:none;
+    transition:all .15s;
+  }
+  .chip.active{
+    background:var(--main);
+    color:#fff;
+  }
+  .stats{
+    display:flex;
+    justify-content:space-between;
+    font-size:0.78rem;
+    color:#666;
+    margin-top:6px;
+  }
+  .stats b{ color:var(--main-dark); }
+  .progressbar{
+    width:100%;
+    height:8px;
+    background:#e5e5e5;
+    border-radius:999px;
+    overflow:hidden;
+    margin-top:8px;
+  }
+  .progressbar-inner{
+    height:100%;
+    background:var(--accent);
+    width:0%;
+    transition:width .2s;
+  }
+  .card-area{
+    perspective:1200px;
+    margin-bottom:14px;
+  }
+  .card{
+    position:relative;
+    min-height:260px;
+    border-radius:16px;
+    cursor:pointer;
+    transform-style:preserve-3d;
+    transition:transform .5s;
+    box-shadow:0 4px 14px rgba(0,0,0,0.12);
+  }
+  .card.flipped{
+    transform:rotateY(180deg);
+  }
+  .face{
+    position:absolute;
+    inset:0;
+    backface-visibility:hidden;
+    border-radius:16px;
+    padding:22px 20px;
+    display:flex;
+    flex-direction:column;
+    overflow-y:auto;
+  }
+  .face-front{
+    background:var(--card-bg);
+    border:2px solid var(--main);
+  }
+  .face-back{
+    background:#fbf7ee;
+    border:2px solid var(--accent);
+    transform:rotateY(180deg);
+  }
+  .tag-row{
+    display:flex;
+    gap:6px;
+    align-items:center;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+  }
+  .tag{
+    font-size:0.72rem;
+    padding:2px 9px;
+    border-radius:999px;
+    background:var(--sub);
+    color:var(--main-dark);
+    font-weight:bold;
+  }
+  .tag.dev{
+    background:#ece3f5;
+    color:#6a4c93;
+  }
+  .star-mark{
+    color:var(--star);
+    font-weight:bold;
+    font-size:0.85rem;
+  }
+  .q-text, .a-text{
+    font-size:1.02rem;
+    line-height:1.7;
+    white-space:pre-wrap;
+  }
+  .hint{
+    margin-top:auto;
+    text-align:center;
+    font-size:0.75rem;
+    color:#999;
+    padding-top:10px;
+  }
+  .btn-row{
+    display:flex;
+    gap:10px;
+  }
+  .btn{
+    flex:1;
+    border:none;
+    border-radius:12px;
+    padding:14px 8px;
+    font-size:0.95rem;
+    font-weight:bold;
+    cursor:pointer;
+    color:#fff;
+    transition:opacity .15s, transform .1s;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn-again{ background:var(--bad); }
+  .btn-known{ background:var(--good); }
+  .btn.disabled{
+    opacity:0.35;
+    pointer-events:none;
+  }
+  .nav-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:12px;
+    font-size:0.85rem;
+  }
+  .nav-btn{
+    background:none;
+    border:1px solid #bbb;
+    border-radius:8px;
+    padding:6px 12px;
+    cursor:pointer;
+    color:#555;
+  }
+  .nav-btn:hover{ background:#f0f0f0; }
+  .counter{
+    color:#777;
+  }
+  .empty-msg{
+    text-align:center;
+    padding:40px 10px;
+    color:#888;
+    font-size:0.95rem;
+  }
+  .reset-link{
+    display:block;
+    text-align:center;
+    font-size:0.75rem;
+    color:#999;
+    margin-top:6px;
+    text-decoration:underline;
+    cursor:pointer;
+  }
+  .cheer{
+    text-align:center;
+    font-size:0.85rem;
+    color:var(--main-dark);
+    margin-top:10px;
+    min-height:1.2em;
+  }
+  footer{
+    text-align:center;
+    font-size:0.7rem;
+    color:#aaa;
+    margin-top:20px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📚 知的障害 暗記アプリ</h1>
+  <p>言語聴覚士（ST）国家試験対策｜授業①〜⑤ 復習問題</p>
+</header>
+
+<div class="container">
+
+  <div class="panel">
+    <div class="filter-row" id="unitFilters"></div>
+    <div class="filter-row">
+      <span class="chip active" data-type="all">全問題</span>
+      <span class="chip" data-type="basic">基本問題のみ</span>
+      <span class="chip" data-type="dev">発展問題のみ</span>
+      <span class="chip" data-mode="wrong">苦手のみ★</span>
+    </div>
+    <div class="stats">
+      <span>出題数：<b id="statTotal">0</b>問</span>
+      <span>わかった：<b id="statKnown">0</b></span>
+      <span>もう一度：<b id="statUnknown">0</b></span>
+    </div>
+    <div class="progressbar"><div class="progressbar-inner" id="progressBar"></div></div>
+  </div>
+
+  <div class="card-area">
+    <div class="card" id="card">
+      <div class="face face-front" id="faceFront">
+        <div class="tag-row" id="tagRowFront"></div>
+        <div class="q-text" id="qText"></div>
+        <div class="hint">タップ／クリックで解答を表示</div>
+      </div>
+      <div class="face face-back" id="faceBack">
+        <div class="tag-row" id="tagRowBack"></div>
+        <div class="a-text" id="aText"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="answerPanel" style="display:none;">
+    <div class="btn-row">
+      <button class="btn btn-again" id="btnAgain">😅 もう一度</button>
+      <button class="btn btn-known" id="btnKnown">✅ わかった！</button>
+    </div>
+    <div class="cheer" id="cheerMsg"></div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="btnPrev">← 前へ</button>
+    <span class="counter" id="counterText">0 / 0</span>
+    <button class="nav-btn" id="btnShuffle">🔀 シャッフル</button>
+    <button class="nav-btn" id="btnNext">次へ →</button>
+  </div>
+  <div class="reset-link" id="resetProgress">成績をリセットする</div>
+
+  <footer>さやさんの国試合格＆主席卒業、応援しています！ 🌸</footer>
+</div>
+
+<script>
+// ==========================================================
+// データ本体：知的障害 授業①〜⑤ 復習問題（レジュメPDFより作成）
+// ==========================================================
+const CARDS = [
+
+// ---------------- 第1回：知能とは？知的能力障害とは？ ----------------
+{unit:1, type:'basic', star:true,
+ q:"DSM（Diagnostic and Statistical Manual of Mental Disorders：精神疾患の診断・統計マニュアル）やICD（International Classification of Diseases：国際疾病分類）では、知的障害の診断基準に2つの欠陥が挙げられている。その2つの欠陥とは何か？",
+ a:"①知的機能の欠陥\n推論、問題解決、計画、抽象的思考、判断、学習、経験から学ぶ力などに障害があること。臨床的評価や標準化された知能検査によって確認される。\n\n②適応機能の欠陥\n年齢や文化に応じて日常生活を送るために必要な能力の障害。以下の3領域で評価される。\n・概念的領域：言語、読み書き、計算、お金や時間の理解など\n・社会的領域：対人関係、コミュニケーション、社会的判断など\n・実用的（実践的）領域：身辺自立、家事、仕事、安全管理など\n\n★DSM-5・ICD-11では、発達期（18歳頃まで）に発症していることも診断条件。"},
+
+{unit:1, type:'basic', star:true,
+ q:"知能とは何か。2因子説と多因子説それぞれの立場から説明せよ。",
+ a:"・2因子説：知能はあらゆる知的活動に共通に働く「一般因子（g）」と、各能力ごとの固有の「特殊因子（s）」から構成されるとする説。\n\n・多因子説：一般因子を前提とせず、複数の基本的知能因子（言語、語の流暢性、空間、数、記憶、帰納的推理、知覚の7因子）の組み合わせで知的活動が行われるとする説。"},
+
+{unit:1, type:'basic', star:true,
+ q:"知能検査について、妥当性とは何か。信頼性とは何か。",
+ a:"妥当性…その検査が、測定しようとしているものを、どの程度的確に・確実に測定しているか。\n\n信頼性…その検査結果に、どの程度一貫性・安定性が備わっているか。"},
+
+{unit:1, type:'basic', star:true,
+ q:"知能指数について、比例IQ（Intelligence Quotient：知能指数）とは何か。偏差IQとは何か。",
+ a:"・比例IQ：精神年齢と生活年齢の比から知的発達の程度を示す指数。\n計算式＝精神年齢÷生活年齢×100\n例：ビネー式知能検査\n\n・偏差IQ：同一年代集団内における個人の相対的位置を示す指数。\n±1SD（85〜115）に全体の約68%、±2SD（70〜130）に全体の約96%が含まれる。\n例：ウェクスラー式知能検査"},
+
+{unit:1, type:'basic', star:false,
+ q:"適応機能とは何か。",
+ a:"日常生活動作における自立機能に関して、年齢相応の基準および社会文化的に相応な基準を満たす能力。\n「個人の自立や社会的責任において発達的および社会文化的な水準を満たすこと」。"},
+
+{unit:1, type:'basic', star:false,
+ q:"適応機能の評価に使われる検査を2つ書け。",
+ a:"・ASA旭出式社会適応スキル検査\n・Vineland-Ⅱ適応行動尺度（半構造化面接法）\n・社会生活能力プログラム　のいずれか2つ"},
+
+{unit:1, type:'dev', star:true,
+ q:"【発展】DSM-5-TRの診断基準の3領域を挙げ、それぞれの特徴を具体例を挙げながら説明しなさい。",
+ a:"①概念的領域…学習や知識の理解・活用に関する能力（言語、読み書き、計算、時間やお金の概念など）\n例：時計を見て時間を理解することが難しい／お金の価値が分からず適切な支払いができない\n\n②社会的領域…他者とのコミュニケーションや対人関係を築く能力（会話理解・表現、社会的ルール理解、他者の気持ちを推測する力など）\n例：相手の言葉の裏の意味を理解しにくい／知らない人を簡単に信用してだまされやすい\n\n③実用的領域…日常生活を自立して送るための能力（身辺自立、家事、金銭管理、仕事、安全・健康管理など）\n例：家事を一人で行えない／公共交通機関を利用して目的地まで行けない"},
+
+{unit:1, type:'dev', star:true,
+ q:"【発展】DSM-5-TRでは、知的能力障害の重症度判定においてIQよりも適応機能が重視される理由を説明しなさい。",
+ a:"IQは知的能力の一側面を示す指標にすぎず、同じIQでも日常生活の困難さや必要な支援量は大きく異なる。実生活でどの程度自立でき、どの程度支援が必要かをより正確に反映するのが適応機能であるため。"},
+
+// ---------------- 第2回：知的能力障害の疫学と原因論 ----------------
+{unit:2, type:'basic', star:true,
+ q:"知的障害の有病率は約何%と言われているか。",
+ a:"約1%★（国試頻出の数値）"},
+
+{unit:2, type:'basic', star:true,
+ q:"知的障害の原因論の生理的要因とは何か。",
+ a:"明らかな病気や脳の損傷が見つからないのに、知能の発達が全体としてゆっくりで、平均より低くとどまっているケース。\n（ダウン症候群は21番染色体が1本多い先天的な染色体異常であり、病気というより遺伝学的・生物学的要因といえる）"},
+
+{unit:2, type:'basic', star:true,
+ q:"知的障害の原因論の病理的要因とは何か。",
+ a:"感染症や外傷、周産期障害などの病気・外傷により脳に器質的障害が生じた要因。程度は比較的重く、IQ35程度を頂点とするもう一つの分布を示す。\n例：脳室周囲白質軟化症、ムコ多糖症など。"},
+
+{unit:2, type:'basic', star:true,
+ q:"知的障害がみられる主な疾患のうち、出生前のものを2つ挙げ、それぞれ特徴を説明せよ。",
+ a:"①21トリソミー（ダウン症候群）\n常染色体異常。21番染色体が1本多いことで起こる先天性疾患。知的障害のほか筋緊張低下、特徴的な顔貌、先天性心疾患などを伴うことがある。\n\n②フェニルケトン尿症\n先天性代謝異常。フェニルアラニンを代謝できず、治療しないと知的障害を生じる。新生児マススクリーニングで早期発見・食事療法により予防可能。"},
+
+{unit:2, type:'basic', star:false,
+ q:"知的障害がみられる主な疾患のうち、周産期のものを2つ挙げ、それぞれ特徴を説明せよ。",
+ a:"①脳室周囲白質軟化症\n早産児・低出生体重児に多い。脳室周囲の白質が低酸素や虚血で障害される。運動障害や脳性麻痺を合併し、重症例で知的障害を伴うことがある。\n\n②低酸素性虚血性脳症（HIE：Hypoxic-Ischemic Encephalopathy）\n分娩時の仮死や低酸素状態で脳が障害される。重症例で知的障害、脳性麻痺、てんかんなどの後遺症を残すことがある。"},
+
+{unit:2, type:'basic', star:false,
+ q:"知的障害がみられる主な疾患のうち、出生後のものを2つ挙げ、それぞれ特徴を説明せよ。",
+ a:"①頭部外傷\n交通事故や転落などによる脳損傷。重症例で知的障害や高次脳機能障害を残すことがある。\n\n②核黄疸\n新生児黄疸が重症化し、ビリルビンが脳に沈着して障害を起こす病態。知的障害、難聴、運動障害などの後遺症を残すことがある。"},
+
+{unit:2, type:'dev', star:false,
+ q:"【発展】知的障害がみられる疾患を予防・重症化防止できるか。できるとしたら、どのような対策が考えられるか。",
+ a:"原因によっては発症予防・重症化防止が可能。\n・妊娠前〜妊娠中：葉酸摂取（二分脊椎の予防）、感染症予防（先天性風疹症候群の予防）、妊婦健診\n・出生直後：新生児マススクリーニング、重症黄疸の早期治療\n・出生後：予防接種、感染症予防、事故予防（頭部外傷）、早期療育・リハビリテーション"},
+
+// ---------------- 第3回：知的能力障害の認知特性 ----------------
+{unit:3, type:'basic', star:true,
+ q:"子どもの「縦の発達」と「横の発達」について、それぞれ具体例を挙げながら説明せよ。",
+ a:"縦の発達…「できることがレベルアップする」。同じ機能が一定の順序で段階的に発達すること。\n例：喃語→初語→二語文→会話／はいはい→立つ→歩く→走る\n\n横の発達…「できるようになったことを、いろいろな場面で使えるようになる」（適用範囲の拡大）。\n例：「バイバイ」が家族だけでなく先生や友達にもできるようになる／「ありがとう」が家庭だけでなく幼稚園や買い物先でも使えるようになる"},
+
+{unit:3, type:'basic', star:true,
+ q:"子どもの認知発達モデルの速度と到達地点について、定型発達児と知的障害児の共通点と相違点をそれぞれ説明せよ。",
+ a:"共通点：認知発達の順序は共通している。\n相違点：知的障害児は定型発達児よりも発達速度が遅く、最終的な到達地点（認知発達の水準）が低い。"},
+
+{unit:3, type:'basic', star:true,
+ q:"子どもの記憶力について、定型発達児と知的障害児の共通点と相違点をそれぞれ説明せよ。",
+ a:"共通点：どちらも発達に伴って記憶力が向上する。\n相違点：知的障害児は特に短期記憶（ワーキングメモリ）に課題があり、精緻化やリハーサルなどの記憶方略を自発的に用いることが少ないため記憶の効率が低い。長期記憶に保存された後の情報の保持率は、定型発達児と大きな差はないとされる。"},
+
+{unit:3, type:'basic', star:false,
+ q:"知的障害児の記憶力を高めるために必要な支援には何があるか。いくつか挙げよ。",
+ a:"・反復学習を行うこと\n・絵や写真などの視覚的手がかりを活用すること\n・一度に提示する情報量を少なくすること\n・リハーサルなどの記憶方略を指導すること\n・意味づけや具体的な体験と関連づけて学習すること\n\n（保育の現場でも、絵カードや繰り返しの声かけを使う工夫と同じ発想ですね！）"},
+
+{unit:3, type:'basic', star:true,
+ q:"子どもの注意力について、定型発達児と知的障害児の相違点を説明せよ。",
+ a:"定型発達児：発達に伴い注意の持続・選択・切り替えの能力が向上する。\n知的障害児：注意の持続・切り替え・選択的注意に困難がみられ、周囲の刺激に注意が向きやすく集中を維持しにくい。そのため刺激の違いを弁別して学習することが困難となる。\n\n★道具的弁別学習過程…刺激を弁別し適切な反応を行うことで強化を受け学習が成立する過程。知的障害児は選択的注意の制約により弁別に時間がかかる。"},
+
+{unit:3, type:'dev', star:true,
+ q:"【発展】知的障害者に動機づけ上の配慮が必要になってくる理由は何か説明せよ。",
+ a:"知的障害者は注意機能や認知機能の特性から自発的な学習意欲（内発的動機づけ）が生じにくく、失敗経験によって意欲が低下しやすい。そのため褒めることや報酬などの外発的動機づけを用いて成功体験を積ませ、学習意欲を高める配慮が必要である。"},
+
+// ---------------- 第4回：知的能力障害の言語特徴 ----------------
+{unit:4, type:'basic', star:true,
+ q:"知的障害児と定型発達児の語彙の獲得の共通点と相違点を説明せよ。",
+ a:"共通点：同じ発達の順序や基本的な過程で語彙を獲得する。\n相違点：発達の速度が遅く、獲得できる語彙の量や質に違いがみられる。"},
+
+{unit:4, type:'basic', star:true,
+ q:"平均発話長（MLU：Mean Length of Utterance）とは何か説明せよ。",
+ a:"幼児の発話の長さを測る指標。一定数（一般的に50〜100）の発話を収集し、総形態素数（または総語数）を発話数で割って算出する。値が大きいほど、より長く複雑な文を話せることを示す。\n\n例：「わんわん」(1語)「ママ きた」(2語)「ぼくも いくよ」(3語)\n→総語数6÷発話数3＝MLU 2.0"},
+
+{unit:4, type:'basic', star:true,
+ q:"知的障害児の言語発達の音韻面での誤り方の特徴について、具体的な例を挙げながら説明せよ。",
+ a:"音の置き換え・省略・付加や発音の不明瞭さが特徴。\n例：「さかな」→「たかな」、「でんしゃ」→「でしゃ」\nこれらの誤りは定型発達児にもみられるが、知的障害児では改善に時間がかかり長く持続しやすい点が特徴。"},
+
+{unit:4, type:'basic', star:false,
+ q:"知的障害児の語用能力の弱さの原因は何と考えられているか。いくつか挙げよ。",
+ a:"・認知機能の発達の遅れ\n・語彙・文法能力の未熟さ\n・社会性・他者理解の未熟さ\n・注意・記憶機能の弱さ\n・興味・関心の範囲が限られていること\n・コミュニケーション経験の不足"},
+
+{unit:4, type:'dev', star:true,
+ q:"【発展】語用能力が認知発達に依存する理由を説明しなさい。",
+ a:"語用能力は、相手の意図や気持ち、場面や状況を理解し、それに応じて適切に言葉を使う能力である。そのため状況判断、推論、注意、記憶、他者視点の理解などの認知機能が必要であり、語用能力は認知発達に大きく依存している。"},
+
+// ---------------- 第5回：評価（発達検査、知能検査） ----------------
+{unit:5, type:'basic', star:true,
+ q:"評価の目的について説明せよ。",
+ a:"知的能力や発達の特徴を客観的に把握し、診断や適切な支援・教育、将来の生活支援につなげるため。評価の結果から目標と支援方法を決め、今後の見通しを立てるため。"},
+
+{unit:5, type:'basic', star:false,
+ q:"評価の方法について、具体的な例を挙げながら説明せよ。",
+ a:"情報収集（面接で生育歴・発達歴・既往歴・生活状況・困りごとを把握）→行動観察（注意力、対人関係、コミュニケーション能力、指示理解などを観察）→各種検査（知能検査・発達検査・適応機能評価）の順に行い、総合的に判断する。"},
+
+{unit:5, type:'basic', star:true,
+ q:"発達検査と知能検査の違いについて書け。",
+ a:"発達検査：主に乳幼児〜発達年齢の低い子どもを対象に、認知・言語・運動・社会性・生活習慣など発達全体の状況を評価。発達年齢（DA：Developmental Age）や発達指数（DQ：Developmental Quotient）を算出。\n代表例：新版K式発達検査、遠城寺式乳幼児分析的発達検査\n\n知能検査：児童〜成人まで幅広い年齢を対象に、言語理解・知覚推理・ワーキングメモリ・処理速度などを測定し知能指数（IQ）を算出。\n代表例：ウェクスラー式知能検査（WISC・WAIS）、田中ビネー知能検査Ⅴ\n\n★発達検査＝「発達全体の状態」、知能検査＝「知的能力」を評価する検査。"},
+
+{unit:5, type:'basic', star:true,
+ q:"発達検査を2つ書け。",
+ a:"・新版K式発達検査2020\n・遠城寺式乳幼児分析的発達検査法\n・KIDS（Kinder Infant Development Scale：乳幼児発達スケール）\nのいずれか2つ"},
+
+{unit:5, type:'basic', star:true,
+ q:"知能検査を2つ書け。",
+ a:"・田中ビネー知能検査Ⅴ・Ⅵ\n・WISC-Ⅴ知能検査（Wechsler Intelligence Scale for Children：ウェクスラー児童用知能検査）\n・WPPSI-Ⅲ知能検査（Wechsler Preschool and Primary Scale of Intelligence）\nのいずれか2つ"},
+
+{unit:5, type:'dev', star:true,
+ q:"【発展】ST（Speech-Language-Hearing Therapist：言語聴覚士）の言語臨床の流れについて、段階ごとの目的を挙げながら説明せよ。",
+ a:"①情報収集…対象者の状態や問題の背景を把握するため\n↓\n②評価…障害の種類や程度、能力の特徴を客観的に把握するため\n↓\n③仮説…評価結果をもとに障害の原因や問題が生じている要因を推測する\n↓\n④予後予測…今後の回復の可能性や見通しを予測する\n↓\n⑤治療計画…目標と具体的な支援方法を決定する\n↓\n⑥訓練…言語機能やコミュニケーション能力の改善・維持、代償手段の獲得のため\n↓\n⑦再評価…訓練の効果を確認し、今後の方針を見直す"},
+
+];
+
+// ==========================================================
+// アプリロジック
+// ==========================================================
+const STORAGE_KEY = "chiteki_shogai_progress_v1";
+
+function loadProgress(){
+  try{
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  }catch(e){ return {}; }
+}
+function saveProgress(p){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+}
+
+CARDS.forEach((c,i)=>{ c.id = 'u'+c.unit+'_'+c.type+'_'+i; });
+
+let progress = loadProgress();
+let currentDeck = [];
+let currentIndex = 0;
+let currentUnitFilter = 'all';
+let currentTypeFilter = 'all';
+let wrongOnly = false;
+
+const cheerWords = [
+  "その調子です！✨","いいペースですね😊","主席卒業、目指しましょう！",
+  "コツコツ積み重ねが力になります🌱","保育のアナロジーで覚えると忘れにくいですよ",
+  "★は国試頻出、要チェックです","休憩も大事。無理せずいきましょう☕"
+];
+
+function buildUnitFilters(){
+  const wrap = document.getElementById('unitFilters');
+  const units = [1,2,3,4,5];
+  let html = `<span class="chip active" data-unit="all">全回</span>`;
+  units.forEach(u=>{
+    html += `<span class="chip" data-unit="${u}">第${u}回</span>`;
+  });
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('.chip').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      wrap.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      currentUnitFilter = chip.dataset.unit;
+      rebuildDeck();
+    });
+  });
+}
+
+function buildTypeFilters(){
+  document.querySelectorAll('[data-type]').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      document.querySelectorAll('[data-type]').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      currentTypeFilter = chip.dataset.type;
+      rebuildDeck();
+    });
+  });
+  document.querySelector('[data-mode="wrong"]').addEventListener('click', function(){
+    wrongOnly = !wrongOnly;
+    this.classList.toggle('active', wrongOnly);
+    rebuildDeck();
+  });
+}
+
+function rebuildDeck(){
+  currentDeck = CARDS.filter(c=>{
+    if(currentUnitFilter !== 'all' && String(c.unit) !== String(currentUnitFilter)) return false;
+    if(currentTypeFilter !== 'all' && c.type !== currentTypeFilter) return false;
+    if(wrongOnly && progress[c.id] !== 'unknown') return false;
+    return true;
+  });
+  currentIndex = 0;
+  renderCard();
+  renderStats();
+}
+
+function shuffleDeck(){
+  for(let i=currentDeck.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [currentDeck[i],currentDeck[j]] = [currentDeck[j],currentDeck[i]];
+  }
+  currentIndex = 0;
+  renderCard();
+}
+
+function renderCard(){
+  const card = document.getElementById('card');
+  const answerPanel = document.getElementById('answerPanel');
+  card.classList.remove('flipped');
+  answerPanel.style.display = 'none';
+
+  if(currentDeck.length === 0){
+    document.getElementById('qText').innerHTML = '<div class="empty-msg">🎉 該当する問題がありません。<br>フィルタを変えてみてください。</div>';
+    document.getElementById('aText').innerHTML = '';
+    document.getElementById('tagRowFront').innerHTML = '';
+    document.getElementById('tagRowBack').innerHTML = '';
+    document.getElementById('counterText').textContent = '0 / 0';
+    return;
+  }
+
+  const c = currentDeck[currentIndex];
+  const tagHtml = `<span class="tag">第${c.unit}回</span>` +
+    (c.type==='dev' ? `<span class="tag dev">発展</span>` : `<span class="tag">基本</span>`) +
+    (c.star ? `<span class="star-mark">★国試頻出</span>` : '');
+  document.getElementById('tagRowFront').innerHTML = tagHtml;
+  document.getElementById('tagRowBack').innerHTML = tagHtml;
+  document.getElementById('qText').textContent = c.q;
+  document.getElementById('aText').textContent = c.a;
+  document.getElementById('counterText').textContent = (currentIndex+1) + ' / ' + currentDeck.length;
+}
+
+function renderStats(){
+  const total = currentDeck.length;
+  let known=0, unknown=0;
+  currentDeck.forEach(c=>{
+    if(progress[c.id]==='known') known++;
+    else if(progress[c.id]==='unknown') unknown++;
+  });
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statKnown').textContent = known;
+  document.getElementById('statUnknown').textContent = unknown;
+  const pct = total ? Math.round((known/total)*100) : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+document.getElementById('card').addEventListener('click', ()=>{
+  if(currentDeck.length === 0) return;
+  const card = document.getElementById('card');
+  card.classList.toggle('flipped');
+  document.getElementById('answerPanel').style.display = card.classList.contains('flipped') ? 'block' : 'none';
+});
+
+function goNext(){
+  if(currentDeck.length === 0) return;
+  currentIndex = (currentIndex+1) % currentDeck.length;
+  renderCard();
+}
+function goPrev(){
+  if(currentDeck.length === 0) return;
+  currentIndex = (currentIndex-1+currentDeck.length) % currentDeck.length;
+  renderCard();
+}
+
+document.getElementById('btnNext').addEventListener('click', goNext);
+document.getElementById('btnPrev').addEventListener('click', goPrev);
+document.getElementById('btnShuffle').addEventListener('click', shuffleDeck);
+
+document.getElementById('btnKnown').addEventListener('click', ()=>{
+  const c = currentDeck[currentIndex];
+  progress[c.id] = 'known';
+  saveProgress(progress);
+  renderStats();
+  document.getElementById('cheerMsg').textContent = cheerWords[Math.floor(Math.random()*cheerWords.length)];
+  setTimeout(goNext, 400);
+});
+document.getElementById('btnAgain').addEventListener('click', ()=>{
+  const c = currentDeck[currentIndex];
+  progress[c.id] = 'unknown';
+  saveProgress(progress);
+  renderStats();
+  document.getElementById('cheerMsg').textContent = "大丈夫、繰り返せば必ず身につきます💪";
+  setTimeout(goNext, 400);
+});
+
+document.getElementById('resetProgress').addEventListener('click', ()=>{
+  if(confirm('これまでの成績記録をすべてリセットします。よろしいですか？')){
+    progress = {};
+    saveProgress(progress);
+    renderStats();
+  }
+});
+
+// 初期化
+buildUnitFilters();
+buildTypeFilters();
+rebuildDeck();
+</script>
+</body>
+</html>
