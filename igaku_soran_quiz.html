@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>医学総論 テスト対策アプリ｜さや専用</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@700&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --card: #21253a;
+    --border: #2e3350;
+    --accent: #5b8dee;
+    --accent2: #e05c8a;
+    --accent3: #4ecba8;
+    --warn: #f5a623;
+    --text: #e8eaf6;
+    --text-dim: #8892b0;
+    --correct: #4ecba8;
+    --wrong: #e05c8a;
+    --star: #f5c518;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #141728 0%, #1a2040 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px 16px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  header h1 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(1.1rem, 4vw, 1.5rem);
+    letter-spacing: .05em;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  header p { font-size: .8rem; color: var(--text-dim); margin-top: 2px; }
+
+  /* ── MAIN LAYOUT ── */
+  main { max-width: 760px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  /* ── SCORE BAR ── */
+  #scorebar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    align-items: center;
+  }
+  .score-item { font-size: .8rem; color: var(--text-dim); }
+  .score-item span { font-size: 1.1rem; font-weight: 700; }
+  .score-correct span { color: var(--correct); }
+  .score-wrong span { color: var(--wrong); }
+  .score-total span { color: var(--accent); }
+  #progress-bar-wrap { flex: 1; min-width: 120px; }
+  #progress-bar-bg { background: var(--border); border-radius: 99px; height: 6px; overflow: hidden; }
+  #progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent3)); border-radius: 99px; transition: width .4s ease; width: 0%; }
+
+  /* ── FILTER TABS ── */
+  #filter-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .tab-btn {
+    padding: 6px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    font-size: .78rem;
+    cursor: pointer;
+    transition: all .2s;
+    font-family: inherit;
+  }
+  .tab-btn.active, .tab-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .tab-btn.past-q { }
+  .tab-btn.past-q.active { background: var(--accent2); border-color: var(--accent2); }
+
+  /* ── QUESTION CARD ── */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 18px;
+    transition: border-color .2s;
+  }
+  .q-card.answered-correct { border-color: var(--correct); }
+  .q-card.answered-wrong   { border-color: var(--wrong); }
+
+  .q-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+  .q-num { font-size: .75rem; color: var(--text-dim); }
+  .tag {
+    font-size: .7rem;
+    padding: 2px 8px;
+    border-radius: 99px;
+    border: 1px solid;
+    font-weight: 500;
+  }
+  .tag-lecture { border-color: var(--accent); color: var(--accent); }
+  .tag-past    { border-color: var(--accent2); color: var(--accent2); }
+  .star-mark   { color: var(--star); font-size: .8rem; }
+
+  .q-text {
+    font-size: .97rem;
+    margin-bottom: 14px;
+    font-weight: 500;
+    line-height: 1.8;
+  }
+  .q-text em { font-style: normal; color: var(--warn); }
+
+  /* ── OPTIONS ── */
+  .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .opt-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 15px;
+    text-align: left;
+    color: var(--text);
+    font-size: .88rem;
+    cursor: pointer;
+    transition: all .2s;
+    font-family: inherit;
+    line-height: 1.6;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); background: #2a3050; }
+  .opt-btn.correct { background: #0d2e25; border-color: var(--correct); color: var(--correct); }
+  .opt-btn.wrong   { background: #2e0d1a; border-color: var(--wrong); color: var(--wrong); }
+  .opt-btn:disabled { cursor: default; }
+
+  /* ── EXPLANATION ── */
+  .explanation {
+    display: none;
+    background: #181c30;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px;
+    font-size: .85rem;
+    margin-top: 10px;
+    line-height: 1.85;
+    color: var(--text-dim);
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--accent3); }
+  .explanation .keyword { color: var(--warn); font-weight: 700; }
+  .explanation .correct-label { color: var(--correct); font-weight: 700; }
+
+  /* ── CONTROLS ── */
+  #controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+  .ctrl-btn {
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: none;
+    font-size: .85rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    transition: all .2s;
+  }
+  .ctrl-btn.primary { background: var(--accent); color: #fff; }
+  .ctrl-btn.secondary { background: var(--surface); color: var(--text-dim); border: 1px solid var(--border); }
+  .ctrl-btn:hover { opacity: .85; transform: translateY(-1px); }
+
+  /* ── RESULT BANNER ── */
+  #result-banner {
+    display: none;
+    background: linear-gradient(135deg, #1a2040, #1a2a30);
+    border: 1px solid var(--accent3);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  #result-banner h2 { font-size: 1.3rem; color: var(--accent3); margin-bottom: 8px; }
+  #result-banner p { color: var(--text-dim); font-size: .9rem; }
+  #result-banner .big-score { font-size: 2.5rem; font-weight: 900; color: var(--accent); }
+
+  /* empty state */
+  #empty-msg { display: none; text-align: center; color: var(--text-dim); padding: 40px; font-size: .9rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🩺 医学総論 テスト対策アプリ</h1>
+  <p>授業レジュメ全範囲 ＋ 過去問ベース ｜ さや専用</p>
+</header>
+
+<main>
+
+  <!-- スコアバー -->
+  <div id="scorebar">
+    <div class="score-item score-total">問題数 <span id="cnt-total">0</span></div>
+    <div class="score-item score-correct">✅ 正解 <span id="cnt-correct">0</span></div>
+    <div class="score-item score-wrong">❌ 不正解 <span id="cnt-wrong">0</span></div>
+    <div id="progress-bar-wrap">
+      <div id="progress-bar-bg"><div id="progress-bar"></div></div>
+    </div>
+  </div>
+
+  <!-- フィルター -->
+  <div id="filter-tabs">
+    <button class="tab-btn active" onclick="filterQuiz('all')">すべて</button>
+    <button class="tab-btn" onclick="filterQuiz('①')">①細胞・水分</button>
+    <button class="tab-btn" onclick="filterQuiz('②③')">②③遺伝・感染</button>
+    <button class="tab-btn" onclick="filterQuiz('④')">④循環器・呼吸器</button>
+    <button class="tab-btn" onclick="filterQuiz('⑤')">⑤腫瘍・老化・栄養</button>
+    <button class="tab-btn past-q" onclick="filterQuiz('past')">⭐ 過去問ベース</button>
+  </div>
+
+  <!-- 操作ボタン -->
+  <div id="controls">
+    <button class="ctrl-btn primary" onclick="showAllAnswers()">全解答を表示</button>
+    <button class="ctrl-btn secondary" onclick="resetAll()">リセット</button>
+  </div>
+
+  <!-- 結果バナー -->
+  <div id="result-banner">
+    <h2>🎉 お疲れさまでした！</h2>
+    <div class="big-score" id="result-score">0%</div>
+    <p id="result-msg"></p>
+  </div>
+
+  <!-- 問題コンテナ -->
+  <div id="quiz-container"></div>
+  <div id="empty-msg">該当する問題がありません</div>
+
+</main>
+
+<script>
+// ===================================================
+// 問題データベース（レジュメ全範囲 + 過去問ベース）
+// ===================================================
+const QUESTIONS = [
+
+  // ─── ① 細胞・体水分 ───
+  {
+    id: 1, unit: '①', past: false, star: true,
+    text: '体水分量（TBW: Total Body Water）が最も多い時期はどれか。',
+    opts: ['新生児（0〜1か月）', '乳児（1〜12か月）', '成人', '高齢者'],
+    ans: 0,
+    exp: `<strong class="correct-label">正解：新生児</strong><br>
+体水分量は年齢とともに減少します。<br>
+<span class="keyword">胎児・新生児 約80%</span> → 乳幼児 約70% → 成人男性 約60% → 高齢者 約50%<br>
+★高齢者は体水分量が少ないため<strong>脱水症状になりやすい</strong>（細胞内液の減少が主因）。`
+  },
+  {
+    id: 2, unit: '①', past: true, star: true,
+    text: '高齢者が脱水症状になりやすい理由として正しいのはどれか。',
+    opts: [
+      '腎臓の尿濃縮能が亢進するため',
+      '体内の水分量（体水分量）が若年者より少ないため',
+      '口渇感が若年者より強く発現するため',
+      '皮膚からの不感蒸泄が若年者より少ないため'
+    ],
+    ans: 1,
+    exp: `<strong class="correct-label">正解：体水分量が少ないため</strong><br>
+高齢者では筋肉量の低下により細胞内液が減少し、<span class="keyword">体水分量が約50%</span>まで低下しています。<br>
+加えて、口渇中枢の感受性低下・腎臓の尿濃縮能低下・不感蒸泄の増加なども脱水リスクを高めます。<br>
+保育現場でも夏場の水分補給が重要なように、高齢者は「口が渇いた」と感じにくいため特に注意が必要です。`
+  },
+  {
+    id: 3, unit: '①', past: false, star: true,
+    text: '水の生理作用として<strong>誤っている</strong>のはどれか。',
+    opts: [
+      '栄養素や老廃物の運搬',
+      '体温調節（蒸散による冷却）',
+      'エネルギー源としての直接利用',
+      '体液の浸透圧・pH の維持'
+    ],
+    ans: 2,
+    exp: `<strong class="correct-label">正解（誤りの選択肢）：エネルギー源としての直接利用</strong><br>
+水はエネルギー産生には<span class="keyword">直接使われません</span>（カロリー0）。<br>
+水の主な生理作用：①物質運搬 ②体温調節 ③化学反応の溶媒 ④浸透圧維持 ⑤関節の潤滑`
+  },
+  {
+    id: 4, unit: '①', past: false, star: false,
+    text: '細胞内液と細胞外液について正しいのはどれか。',
+    opts: [
+      '細胞外液のほうが量が多い',
+      '血漿は細胞内液に含まれる',
+      '成人の細胞内液は体重の約40%を占める',
+      '間質液（組織液）は細胞内液に分類される'
+    ],
+    ans: 2,
+    exp: `<strong class="correct-label">正解：細胞内液は体重の約40%</strong><br>
+体水分（体重60%）の内訳：<span class="keyword">細胞内液 40%</span>・細胞外液 20%（血漿5% + 間質液15%）<br>
+血漿・間質液（リンパ液を含む）は細胞<strong>外</strong>液です。`
+  },
+
+  // ─── ②③ 遺伝・感染 ───
+  {
+    id: 5, unit: '②③', past: true, star: true,
+    text: '肺気腫の病態として最も適切なのはどれか。',
+    opts: [
+      '肺胞壁の破壊による気腔の拡大',
+      '気管支平滑筋の収縮による気道狭窄',
+      '肺胞への液体貯留による換気障害',
+      '肺胞上皮の線維化による拡散障害'
+    ],
+    ans: 0,
+    exp: `<strong class="correct-label">正解：肺胞壁の破壊による気腔の拡大</strong><br>
+肺気腫（emphysema）は<span class="keyword">COPD（慢性閉塞性肺疾患）</span>の一型。<br>
+主因：喫煙・大気汚染 → プロテアーゼ過剰活性 → <strong>肺胞壁破壊</strong> → 気腔拡大 → ガス交換面積減少。<br>
+樽状胸（barrel chest）・低酸素血症が特徴。選択肢②は気管支喘息、③は肺水腫、④は肺線維症。`
+  },
+  {
+    id: 6, unit: '②③', past: true, star: true,
+    text: 'ダウン症候群（Down syndrome）の核型として正しいのはどれか。',
+    opts: [
+      '45, XO（モノソミーX）',
+      '47, XXY',
+      'トリソミー21（染色体が21番に1本余分）',
+      'トリソミー18'
+    ],
+    ans: 2,
+    exp: `<strong class="correct-label">正解：トリソミー21</strong><br>
+ダウン症候群は<span class="keyword">21番染色体が3本（トリソミー21）</span>で計47本。<br>
+特徴：知的障害・特徴的な顔貌（眼瞼裂斜上など）・先天性心疾患（約40%）・筋緊張低下。<br>
+母親の高齢出産でリスク上昇（非分離が原因）。<br>
+45,XOはターナー症候群、47,XXYはクラインフェルター症候群。`
+  },
+  {
+    id: 7, unit: '②③', past: true, star: true,
+    text: 'ターナー症候群（Turner syndrome）の核型と特徴として正しいのはどれか。',
+    opts: [
+      '47, XYY：男性で高身長',
+      '47, XXX：女性で学習障害軽度',
+      '45, XO（45, X）：女性で低身長・翼状頸・性腺機能不全',
+      '47, XXY：男性で女性化乳房'
+    ],
+    ans: 2,
+    exp: `<strong class="correct-label">正解：45, XO</strong><br>
+ターナー症候群は<span class="keyword">45, X（モノソミーX）</span>。表現型は<strong>女性</strong>。<br>
+特徴：低身長・翼状頸（首に皮膚ひだ）・外反肘・原発性無月経・不妊・大動脈縮窄症。<br>
+★47,XXYはクラインフェルター症候群（男性型）。`
+  },
+  {
+    id: 8, unit: '②③', past: true, star: true,
+    text: '血友病の遺伝形式として正しいのはどれか。',
+    opts: [
+      '常染色体優性遺伝（AD）',
+      '常染色体劣性遺伝（AR）',
+      'X染色体連鎖劣性遺伝（XR）',
+      'Y染色体連鎖遺伝'
+    ],
+    ans: 2,
+    exp: `<strong class="correct-label">正解：X染色体連鎖劣性遺伝（XR）</strong><br>
+血友病A（第Ⅷ因子欠乏）・B（第Ⅸ因子欠乏）ともに<span class="keyword">X染色体連鎖劣性遺伝</span>。<br>
+→ 女性は保因者（発症しにくい）、<strong>男性が発症</strong>しやすい。<br>
+保育士経験から：保育園の男の子で鼻血・内出血が止まりにくい場合は要注意。`
+  },
+  {
+    id: 9, unit: '②③', past: true, star: true,
+    text: '多因子遺伝病として正しいのはどれか。2つ選べ。',
+    opts: [
+      '大腸がん（家族性でない散発性）',
+      'フェニルケトン尿症（PKU）',
+      '高血圧（本態性）',
+      '血友病A'
+    ],
+    ans: [0, 2],
+    multi: true,
+    exp: `<strong class="correct-label">正解：大腸がん（散発性）・高血圧（本態性）</strong><br>
+<span class="keyword">多因子遺伝病</span>：複数の遺伝子 ＋ 環境因子が重なって発症。<br>
+例：高血圧・糖尿病・脂質異常症・がん（散発性）・統合失調症・口唇口蓋裂など。<br>
+フェニルケトン尿症は常染色体<strong>劣性</strong>遺伝（一因子）、血友病はX連鎖劣性遺伝（一因子）。`
+  },
+  {
+    id: 10, unit: '②③', past: true, star: true,
+    text: '感染症のうち<strong>医原性感染（院内感染）に分類されない</strong>のはどれか。',
+    opts: [
+      '手術操作による創部感染',
+      '輸血による肝炎ウイルス感染',
+      '飛沫感染による麻疹',
+      '留置カテーテルによる尿路感染'
+    ],
+    ans: 2,
+    exp: `<strong class="correct-label">正解：飛沫感染による麻疹</strong><br>
+<span class="keyword">医原性感染（iatrogenic infection）</span>は医療行為が原因で生じる感染。<br>
+例：手術・輸血・カテーテル・内視鏡・注射針など。<br>
+麻疹（measles）は飛沫感染で市中感染が主体→ 医原性ではない。<br>
+★最も防御しにくい感染：<strong>内因性感染</strong>（患者自身の常在菌による）。`
+  },
+  {
+    id: 11, unit: '②③', past: true, star: true,
+    text: '最も防御しにくい感染の種類はどれか。',
+    opts: [
+      '外来感染（外因性感染）',
+      '内因性感染（日和見感染）',
+      '飛沫感染',
+      '接触感染'
+    ],
+    ans: 1,
+    exp: `<strong class="correct-label">正解：内因性感染（日和見感染）</strong><br>
+<span class="keyword">内因性感染</span>：患者自身の体内に常在する細菌・真菌が免疫低下時に発症させる感染。<br>
+例：カンジダ症（Candida）・緑膿菌（Pseudomonas aeruginosa）感染など。<br>
+外から来る菌ではないため、消毒や隔離などの外的防御が効かない点が特徴。`
+  },
+  {
+    id: 12, unit: '②③', past: true, star: true,
+    text: 'HIV（ヒト免疫不全ウイルス）が主に感染・破壊するのはどれか。',
+    opts: [
+      'B細胞（形質細胞）',
+      'NK細胞（ナチュラルキラー細胞）',
+      'CD4陽性Tリンパ球（ヘルパーT細胞）',
+      '好中球'
+    ],
+    ans: 2,
+    exp: `<strong class="correct-label">正解：CD4陽性Tリンパ球（ヘルパーT細胞）</strong><br>
+HIVはCD4受容体に結合し、<span class="keyword">CD4陽性Tリンパ球</span>を標的として破壊します。<br>
+→ 免疫機能の崩壊 → AIDS（後天性免疫不全症候群）発症 → 日和見感染・カポジ肉腫など。<br>
+★CD4数200/μL未満でAIDSと診断。`
+  },
+  {
+    id: 13, unit: '②③', past: false, star: true,
+    text: '最も小さい微生物はどれか。',
+    opts: ['真菌（カビ・酵母）', '細菌', 'クラミジア', 'ウイルス'],
+    ans: 3,
+    exp: `<strong class="correct-label">正解：ウイルス</strong><br>
+微生物サイズ（大→小）：<span class="keyword">真菌 ＞ 細菌 ＞ クラミジア・リケッチア ＞ ウイルス</span><br>
+ウイルスは20〜300nmで電子顕微鏡でないと見えない。細菌（1〜10μm）・真菌（数μm〜）。<br>
+クラミジアは細胞内寄生性で、細菌と真菌の中間的な大きさ。`
+  },
+  {
+    id: 14, unit: '②③', past: true, star: true,
+    text: '次のうち「細菌」に分類されるのはどれか。',
+    opts: [
+      'インフルエンザウイルス',
+      '結核菌（Mycobacterium tuberculosis）',
+      'カンジダ（Candida albicans）',
+      'マイコプラズマ（Mycoplasma）'
+    ],
+    ans: [1, 3],
+    multi: true,
+    exp: `<strong class="correct-label">正解：結核菌・マイコプラズマ（どちらも細菌）</strong><br>
+<span class="keyword">細菌（Bacteria）</span>：核膜がない原核生物。細胞壁・細胞膜を持つ。<br>
+・結核菌 → 抗酸菌（酸に抵抗性のある細菌）<br>
+・マイコプラズマ → 細胞壁のない最小の細菌（約0.3μm）<br>
+カンジダは<strong>真菌</strong>、インフルエンザは<strong>ウイルス</strong>。`
+  },
+
+  // ─── ④ 循環器・呼吸器・免疫 ───
+  {
+    id: 15, unit: '④', past: true, star: true,
+    text: '粥状動脈硬化症（アテローム硬化）の危険因子として、以下のうち<strong>修正可能な因子</strong>はどれか。',
+    opts: [
+      '年齢・加齢',
+      '遺伝的素因（家族歴）',
+      '高血圧・糖尿病・脂質異常症',
+      '性別（男性）'
+    ],
+    ans: 2,
+    exp: `<strong class="correct-label">正解：高血圧・糖尿病・脂質異常症</strong><br>
+<span class="keyword">修正可能（可変）な危険因子</span>：高血圧・糖尿病・脂質異常症（高LDL）・喫煙・肥満・運動不足・ストレス。<br>
+<span class="keyword">修正不可能な危険因子</span>：年齢・性別・遺伝（家族歴）・人種。<br>
+★過去問で「修正できない因子」として<strong>遺伝子（家族歴）・年齢</strong>が正解になる出題あり。`
+  },
+  {
+    id: 16, unit: '④', past: true, star: true,
+    text: '粥状動脈硬化（アテローム硬化）の予防として最も重要でないのはどれか。',
+    opts: [
+      '禁煙',
+      '血糖コントロール',
+      '血圧管理',
+      'カルシウム摂取の増加'
+    ],
+    ans: 3,
+    exp: `<strong class="correct-label">正解（最重要でない）：カルシウム摂取の増加</strong><br>
+粥状動脈硬化予防の三本柱：<span class="keyword">禁煙・血糖管理・血圧管理</span>＋脂質管理。<br>
+カルシウムは骨粗鬆症予防に重要だが、アテローム硬化の直接的な予防因子ではありません。`
+  },
+  {
+    id: 17, unit: '④', past: false, star: true,
+    text: '心不全（heart failure）で左心不全の症状として正しいのはどれか。',
+    opts: [
+      '浮腫（下腿・足背）',
+      '肝腫大・腹水',
+      '肺水腫・呼吸困難・起座呼吸',
+      '頸静脈怒張'
+    ],
+    ans: 2,
+    exp: `<strong class="correct-label">正解：肺水腫・呼吸困難・起座呼吸</strong><br>
+<span class="keyword">左心不全</span>：左心室の収縮/拡張障害 → 肺うっ血 → 肺水腫 → 呼吸困難・起座呼吸・ピンク泡沫痰。<br>
+<span class="keyword">右心不全</span>：右心室障害 → 全身静脈うっ血 → 浮腫・肝腫大・腹水・頸静脈怒張。<br>
+慢性化すると両心不全へ移行。`
+  },
+  {
+    id: 18, unit: '④', past: false, star: true,
+    text: '免疫について正しいのはどれか。',
+    opts: [
+      '液性免疫はT細胞が抗体を産生する',
+      '自然免疫は特異的・記憶を持つ',
+      '細胞性免疫はキラーT細胞が主役で、ウイルス感染細胞を破壊する',
+      'B細胞は骨髄で産生されT細胞に分化する'
+    ],
+    ans: 2,
+    exp: `<strong class="correct-label">正解：細胞性免疫はキラーT細胞が主役</strong><br>
+<span class="keyword">液性免疫</span>：B細胞 → 形質細胞（plasma cell） → 抗体産生（IgG, IgA, IgM等）<br>
+<span class="keyword">細胞性免疫</span>：CD8陽性キラーT細胞がウイルス感染細胞・がん細胞を直接破壊。<br>
+自然免疫（好中球・NK細胞等）は非特異的・記憶なし。獲得免疫（B・T細胞）は特異的・記憶あり。`
+  },
+  {
+    id: 19, unit: '④', past: false, star: false,
+    text: '疾患の素因（predisposition）について誤っているのはどれか。',
+    opts: [
+      '素因には体質・遺伝・年齢・性別・人種などが含まれる',
+      '疾患は素因（内因）と誘因（外因）の組み合わせで発症することが多い',
+      '素因があれば必ず発病する',
+      '糖尿病は多因子遺伝的素因と生活習慣が組み合わさる'
+    ],
+    ans: 2,
+    exp: `<strong class="correct-label">正解（誤り）：素因があれば必ず発病する</strong><br>
+素因は「かかりやすい性質」であり、<span class="keyword">素因があっても必ず発病するわけではない</span>。<br>
+例：家族性大腸ポリポーシスのような強い素因でも環境要因が関与。<br>
+→ 素因（内因）＋ 誘因・環境（外因）の相互作用で発病。`
+  },
+
+  // ─── ⑤ 腫瘍・老化・栄養・代謝 ───
+  {
+    id: 20, unit: '⑤', past: true, star: true,
+    text: '大腸がんと遺伝の関係について正しいのはどれか。',
+    opts: [
+      '大腸がんはすべて遺伝性である',
+      '散発性大腸がんは遺伝子変異が蓄積して発症する多因子性疾患である',
+      '家族性大腸腺腫症はX染色体連鎖遺伝である',
+      '大腸がんに遺伝子変異は関与しない'
+    ],
+    ans: 1,
+    exp: `<strong class="correct-label">正解：散発性大腸がんは多因子性疾患</strong><br>
+大腸がんの約85%は<span class="keyword">散発性（多因子）</span>：複数の遺伝子変異（APC, KRAS, p53等）が蓄積。<br>
+約15%は遺伝性：家族性大腸腺腫症（FAP：常染色体優性遺伝、APC遺伝子変異）など。<br>
+★過去問では「大腸がんと遺伝子変異の関係」「一因子か多因子か」が出題されています。`
+  },
+  {
+    id: 21, unit: '⑤', past: false, star: true,
+    text: '良性腫瘍と悪性腫瘍の違いとして正しいのはどれか。',
+    opts: [
+      '良性腫瘍は転移するが悪性は転移しない',
+      '悪性腫瘍（がん）は周囲に浸潤し、転移する',
+      '良性腫瘍は必ず手術が必要である',
+      '悪性腫瘍は細胞分化度が高い（高分化）'
+    ],
+    ans: 1,
+    exp: `<strong class="correct-label">正解：悪性腫瘍は浸潤・転移する</strong><br>
+<table style="font-size:.82rem; border-collapse:collapse; margin-top:6px;">
+<tr><th style="padding:4px 8px; border:1px solid #2e3350; color:var(--accent)">特徴</th><th style="padding:4px 8px; border:1px solid #2e3350">良性</th><th style="padding:4px 8px; border:1px solid #2e3350">悪性（がん）</th></tr>
+<tr><td style="padding:4px 8px; border:1px solid #2e3350">増殖速度</td><td style="padding:4px 8px; border:1px solid #2e3350">緩慢</td><td style="padding:4px 8px; border:1px solid #2e3350">速い</td></tr>
+<tr><td style="padding:4px 8px; border:1px solid #2e3350">被膜</td><td style="padding:4px 8px; border:1px solid #2e3350">あり（境界明瞭）</td><td style="padding:4px 8px; border:1px solid #2e3350">なし（浸潤性）</td></tr>
+<tr><td style="padding:4px 8px; border:1px solid #2e3350">転移</td><td style="padding:4px 8px; border:1px solid #2e3350">なし</td><td style="padding:4px 8px; border:1px solid #2e3350"><strong>あり</strong>（血行・リンパ行）</td></tr>
+<tr><td style="padding:4px 8px; border:1px solid #2e3350">分化度</td><td style="padding:4px 8px; border:1px solid #2e3350">高い</td><td style="padding:4px 8px; border:1px solid #2e3350">低い（未分化）</td></tr>
+</table>`
+  },
+  {
+    id: 22, unit: '⑤', past: false, star: true,
+    text: '老化に伴う生理的変化として<strong>正しい</strong>のはどれか。',
+    opts: [
+      '肺活量の増加',
+      '腎臓の糸球体濾過率（GFR）の増加',
+      '骨密度の低下と骨折リスクの増加',
+      '基礎代謝率（BMR）の増加'
+    ],
+    ans: 2,
+    exp: `<strong class="correct-label">正解：骨密度の低下と骨折リスクの増加</strong><br>
+老化に伴う変化（全般的に<span class="keyword">「低下」</span>が多い）：<br>
+・肺活量<strong>低下</strong>・残気量増加（肺弾性低下）<br>
+・GFR（糸球体濾過率）<strong>低下</strong> → 薬物蓄積リスク<br>
+・<strong>骨密度低下</strong>（特に女性は閉経後に急減）<br>
+・基礎代謝率<strong>低下</strong> → 肥満・低体温リスク<br>
+栄養士経験から：高齢者の食事はエネルギー密度と骨密度維持（Ca・VitD）がポイントです！`
+  },
+  {
+    id: 23, unit: '⑤', past: false, star: true,
+    text: '栄養障害のうちタンパク質・エネルギー欠乏症（PEM: Protein-Energy Malnutrition）の重症型「クワシオルコル（kwashiorkor）」の特徴として正しいのはどれか。',
+    opts: [
+      '脂肪・タンパク質とも欠乏し、極度の消耗（やせ）が主症状',
+      '主にタンパク質欠乏で、浮腫・腹水・脂肪肝が特徴',
+      '主にエネルギー欠乏で、成長遅延のみ',
+      'ビタミンB1欠乏による神経障害'
+    ],
+    ans: 1,
+    exp: `<strong class="correct-label">正解：タンパク質欠乏・浮腫・腹水・脂肪肝</strong><br>
+<span class="keyword">クワシオルコル</span>：主にタンパク質欠乏 → 低アルブミン血症 → 浮腫・腹水・脂肪肝・毛髪脱色。<br>
+<span class="keyword">マラスムス（marasmus）</span>：エネルギー＆タンパク質ともに欠乏 → 著しいやせ（消耗）。<br>
+栄養士の視点から：アルブミンが低いと浮腫が生じる理由（膠質浸透圧低下）と同じメカニズムです。`
+  },
+  {
+    id: 24, unit: '⑤', past: false, star: true,
+    text: '悪性腫瘍（がん）の転移経路として誤っているのはどれか。',
+    opts: [
+      'リンパ行性転移（リンパ節転移）',
+      '血行性転移（肺・肝・骨・脳への転移）',
+      '播種性転移（腹膜・胸膜への散布）',
+      '接触感染による転移'
+    ],
+    ans: 3,
+    exp: `<strong class="correct-label">正解（誤り）：接触感染による転移</strong><br>
+がんは<strong>感染症ではない</strong>ため、接触感染という概念は当てはまりません。<br>
+転移の3経路：<br>
+① <span class="keyword">リンパ行性転移</span>：所属リンパ節→遠隔リンパ節<br>
+② <span class="keyword">血行性転移</span>：肺（静脈血）・肝（門脈系）・骨・脳<br>
+③ <span class="keyword">播種性転移</span>：体腔（腹腔・胸腔・脳脊髄腔）への散布`
+  },
+  {
+    id: 25, unit: '⑤', past: false, star: false,
+    text: '糖尿病の三大合併症として正しい組み合わせはどれか。',
+    opts: [
+      '網膜症・腎症・神経障害',
+      '脳梗塞・心筋梗塞・肺がん',
+      '白内障・緑内障・網膜剥離',
+      '腎炎・腎結石・膀胱炎'
+    ],
+    ans: 0,
+    exp: `<strong class="correct-label">正解：網膜症・腎症・神経障害</strong><br>
+糖尿病の<span class="keyword">三大合併症（細小血管症）</span>：<br>
+① <strong>糖尿病網膜症</strong>（失明の主要原因）<br>
+② <strong>糖尿病腎症</strong>（透析導入の主要原因）<br>
+③ <strong>糖尿病神経障害</strong>（末梢神経→しびれ、自律神経→起立性低血圧など）<br>
+さらに大血管症（脳梗塞・心筋梗塞・閉塞性動脈硬化症）も重要。`
+  },
+  {
+    id: 26, unit: '⑤', past: false, star: true,
+    text: '炎症の5徴候（カルダヌスの5徴）として正しいのはどれか。',
+    opts: [
+      '発赤・腫脹・疼痛・熱感・機能障害',
+      '発熱・悪寒・倦怠感・嘔吐・頭痛',
+      '貧血・出血・浮腫・壊死・発熱',
+      '蒼白・冷汗・頻脈・低血圧・意識障害'
+    ],
+    ans: 0,
+    exp: `<strong class="correct-label">正解：発赤・腫脹・疼痛・熱感・機能障害</strong><br>
+炎症の5徴候（ラテン語の頭文字：Rubor, Tumor, Dolor, Calor, Functio laesa）<br>
+<span class="keyword">発赤（Rubor）・腫脹（Tumor）・疼痛（Dolor）・熱感（Calor）・機能障害（Functio laesa）</span><br>
+機序：組織傷害 → ヒスタミン・ブラジキニン・プロスタグランジン放出 → 血管拡張・透過性亢進。<br>
+選択肢④はショックの症状。`
+  },
+  {
+    id: 27, unit: '⑤', past: false, star: false,
+    text: 'ネフローゼ症候群（nephrotic syndrome）の4主徴として正しいのはどれか。',
+    opts: [
+      '高タンパク尿・高アルブミン血症・高脂血症・浮腫',
+      '大量タンパク尿・低アルブミン血症・高脂血症・浮腫',
+      '血尿・タンパク尿・高血圧・浮腫',
+      'タンパク尿・高血糖・多尿・口渇'
+    ],
+    ans: 1,
+    exp: `<strong class="correct-label">正解：大量タンパク尿・低アルブミン血症・高脂血症・浮腫</strong><br>
+ネフローゼ症候群の病態：糸球体障害 → <span class="keyword">大量タンパク尿</span>（3.5g/日以上）<br>
+→ 血清アルブミン<strong>低下</strong>（膠質浸透圧↓）→ <strong>浮腫</strong>（全身性）+ 肝臓がアルブミン代わりに脂質産生 → <strong>高脂血症</strong><br>
+栄養士経験から：浮腫があっても塩分・水分管理が重要、タンパク質補充も考える場面。`
+  },
+  {
+    id: 28, unit: '⑤', past: false, star: true,
+    text: '脱水の種類として、<strong>高張性脱水（水欠乏性脱水）</strong>の特徴はどれか。',
+    opts: [
+      '血清Na濃度が低下し、細胞外液が増加する',
+      '水分喪失が電解質喪失より大きく、血清Na濃度が上昇する',
+      '嘔吐・下痢による電解質喪失が主で、血清Naが低下する',
+      '等張液が失われるため血清Na濃度は正常を保つ'
+    ],
+    ans: 1,
+    exp: `<strong class="correct-label">正解：水分喪失>電解質喪失→血清Na上昇</strong><br>
+<span class="keyword">高張性脱水（水欠乏型）</span>：発汗・高熱・不感蒸泄増加 → 水分が主に失われる → 血清Na↑（高Na血症）→ 細胞内脱水 → 強い口渇・神経症状。<br>
+<span class="keyword">低張性脱水（塩類欠乏型）</span>：嘔吐・下痢・利尿剤 → Na喪失 → 血清Na↓ → 口渇なし・循環不全。<br>
+<span class="keyword">等張性脱水</span>：出血・腸液喪失 → 水・電解質ともに等比例に喪失。`
+  },
+
+  // ─── 追加：シラバス・過去問ベース ───
+  {
+    id: 29, unit: '①', past: false, star: true,
+    text: '病気の原因分類として「内因（素因）」に当たるものはどれか。すべて選べ。',
+    opts: [
+      '遺伝的素因・体質',
+      '感染（ウイルス・細菌）',
+      '年齢・性別・人種',
+      '栄養不足・外傷'
+    ],
+    ans: [0, 2],
+    multi: true,
+    exp: `<strong class="correct-label">正解：遺伝的素因・体質 ／ 年齢・性別・人種</strong><br>
+疾病の原因の分類：<br>
+<span class="keyword">内因（素因）</span>：個体内に固有の要因→遺伝・体質・年齢・性別・人種。<br>
+<span class="keyword">外因（誘因）</span>：外部からの要因→感染・外傷・栄養不足・物理的・化学的刺激。<br>
+疾病はこの両方の組み合わせで発症することがほとんどです。`
+  },
+  {
+    id: 30, unit: '②③', past: false, star: true,
+    text: '常染色体優性遺伝（AD: Autosomal Dominant）疾患の特徴として正しいのはどれか。',
+    opts: [
+      '両親ともに発症していなくても子どもが発症する（保因者制度）',
+      '1つの変異アレルで表現型が現れる',
+      '男性のみ発症する',
+      '全員の子どもが発症する'
+    ],
+    ans: 1,
+    exp: `<strong class="correct-label">正解：1つの変異アレルで表現型が現れる</strong><br>
+<span class="keyword">常染色体優性遺伝（AD）</span>：1コピーの変異だけで発症。<br>
+・患者の子への伝達率：50%（親が保因者の場合）<br>
+・例：家族性大腸腺腫症（FAP）・マルファン症候群・ハンチントン病<br>
+・保因者という概念は<strong>劣性</strong>遺伝で使われる（ADでは変異があれば発症）。`
+  }
+];
+
+// ===================================================
+// アプリ ロジック
+// ===================================================
+let state = {}; // id -> {selected, answered}
+let currentFilter = 'all';
+let correctCount = 0;
+let wrongCount = 0;
+
+function init() {
+  QUESTIONS.forEach(q => {
+    state[q.id] = { selected: q.multi ? [] : null, answered: false };
+  });
+  render();
+}
+
+function filterQuiz(unit) {
+  currentFilter = unit;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
+}
+
+function getFiltered() {
+  if (currentFilter === 'all') return QUESTIONS;
+  if (currentFilter === 'past') return QUESTIONS.filter(q => q.past);
+  return QUESTIONS.filter(q => q.unit === currentFilter);
+}
+
+function render() {
+  const qs = getFiltered();
+  const container = document.getElementById('quiz-container');
+  const empty = document.getElementById('empty-msg');
+
+  if (qs.length === 0) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  container.innerHTML = qs.map((q, idx) => buildCard(q, idx + 1)).join('');
+  updateScore();
+}
+
+function buildCard(q, displayIdx) {
+  const s = state[q.id];
+  const isAnswered = s.answered;
+  const cardClass = !isAnswered ? '' : (isCorrect(q) ? 'answered-correct' : 'answered-wrong');
+
+  const optsHtml = q.opts.map((opt, i) => {
+    let cls = 'opt-btn';
+    if (isAnswered) {
+      const ansArr = q.multi ? q.ans : [q.ans];
+      if (ansArr.includes(i)) cls += ' correct';
+      else if (q.multi ? s.selected.includes(i) : s.selected === i) cls += ' wrong';
+    }
+    const checked = q.multi
+      ? (s.selected.includes(i) ? '☑ ' : '☐ ')
+      : '';
+    return `<button class="${cls}" ${isAnswered ? 'disabled' : ''} onclick="selectOpt(${q.id}, ${i})">${checked}${i + 1}. ${opt}</button>`;
+  }).join('');
+
+  const pastTag = q.past ? `<span class="tag tag-past">⭐過去問</span>` : '';
+  const starMark = q.star ? `<span class="star-mark">★ 頻出</span>` : '';
+  const multiNote = q.multi ? ` <span style="font-size:.73rem; color:var(--warn)">（複数選択可）</span>` : '';
+
+  return `
+<div class="q-card ${cardClass}" id="card-${q.id}">
+  <div class="q-meta">
+    <span class="q-num">Q${displayIdx}</span>
+    <span class="tag tag-lecture">${q.unit}回</span>
+    ${pastTag}${starMark}
+  </div>
+  <div class="q-text">${q.text}${multiNote}</div>
+  <div class="options">${optsHtml}</div>
+  ${q.multi && !isAnswered ? `<button class="ctrl-btn primary" style="margin-top:4px;font-size:.8rem;padding:7px 14px" onclick="submitMulti(${q.id})">この選択で確定</button>` : ''}
+  <div class="explanation ${isAnswered ? 'show' : ''}">${q.exp}</div>
+</div>`;
+}
+
+function selectOpt(id, i) {
+  const q = QUESTIONS.find(q => q.id === id);
+  const s = state[id];
+  if (s.answered) return;
+
+  if (q.multi) {
+    const idx = s.selected.indexOf(i);
+    if (idx === -1) s.selected.push(i);
+    else s.selected.splice(idx, 1);
+    reRenderCard(q);
+  } else {
+    s.selected = i;
+    s.answered = true;
+    reRenderCard(q);
+    updateScore();
+    checkAllDone();
+  }
+}
+
+function submitMulti(id) {
+  const q = QUESTIONS.find(q => q.id === id);
+  const s = state[id];
+  if (s.selected.length === 0) return;
+  s.answered = true;
+  reRenderCard(q);
+  updateScore();
+  checkAllDone();
+}
+
+function reRenderCard(q) {
+  const card = document.getElementById(`card-${q.id}`);
+  const filteredIdx = getFiltered().findIndex(fq => fq.id === q.id) + 1;
+  if (card) card.outerHTML = buildCard(q, filteredIdx);
+}
+
+function isCorrect(q) {
+  const s = state[q.id];
+  if (q.multi) {
+    const a = [...q.ans].sort().join(',');
+    const b = [...s.selected].sort().join(',');
+    return a === b;
+  }
+  return s.selected === q.ans;
+}
+
+function updateScore() {
+  const answered = QUESTIONS.filter(q => state[q.id].answered);
+  correctCount = answered.filter(q => isCorrect(q)).length;
+  wrongCount = answered.length - correctCount;
+
+  document.getElementById('cnt-total').textContent = QUESTIONS.length;
+  document.getElementById('cnt-correct').textContent = correctCount;
+  document.getElementById('cnt-wrong').textContent = wrongCount;
+
+  const pct = QUESTIONS.length > 0 ? Math.round(answered.length / QUESTIONS.length * 100) : 0;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+function checkAllDone() {
+  const answeredCount = QUESTIONS.filter(q => state[q.id].answered).length;
+  if (answeredCount < QUESTIONS.length) return;
+
+  const pct = Math.round(correctCount / QUESTIONS.length * 100);
+  document.getElementById('result-score').textContent = pct + '%';
+  const msg = pct >= 80
+    ? '🏆 すごい！このペースで国試も首席間違いなし！'
+    : pct >= 60
+    ? '💪 もう少し！解説を復習してもう一度チャレンジ！'
+    : '📖 解説をしっかり読んで、苦手分野を克服しよう！';
+  document.getElementById('result-msg').textContent = msg;
+  document.getElementById('result-banner').style.display = 'block';
+  document.getElementById('result-banner').scrollIntoView({ behavior: 'smooth' });
+}
+
+function showAllAnswers() {
+  QUESTIONS.forEach(q => {
+    const s = state[q.id];
+    if (!s.answered) {
+      if (q.multi) s.selected = [...q.ans];
+      else s.selected = q.ans;
+      s.answered = true;
+    }
+  });
+  render();
+  updateScore();
+  checkAllDone();
+}
+
+function resetAll() {
+  QUESTIONS.forEach(q => {
+    state[q.id] = { selected: q.multi ? [] : null, answered: false };
+  });
+  correctCount = 0;
+  wrongCount = 0;
+  document.getElementById('result-banner').style.display = 'none';
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
