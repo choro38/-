@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生理学 代謝 白紙練習アプリ</title>
+<style>
+  :root{
+    --orange:#e36c0a; --navy:#1f4e79; --grey:#8a8a8a;
+    --blue-bg:#eff6ff; --blue-border:#bfdbfe; --blue-text:#1d4ed8;
+    --green-bg:#f0fdf4; --green-border:#bbf7d0; --green-text:#15803d;
+    --purple-bg:#faf5ff; --purple-border:#e9d5ff; --purple-text:#7e22ce;
+  }
+  * { box-sizing: border-box; }
+  body{
+    margin:0; padding:16px; font-family:"Hiragino Sans","Yu Gothic",sans-serif;
+    background:#f7f7f8; color:#222; -webkit-tap-highlight-color: transparent;
+  }
+  .wrap{ max-width:640px; margin:0 auto; }
+  h1{ text-align:center; font-size:20px; color:var(--navy); margin:8px 0 2px; }
+  .subtitle{ text-align:center; font-size:12px; color:var(--grey); margin-bottom:16px; }
+
+  .timer{
+    display:flex; align-items:center; justify-content:center; gap:14px;
+    background:#1f2937; color:#fff; border-radius:14px; padding:12px; margin-bottom:16px;
+  }
+  .timer .time{ font-size:24px; font-weight:700; font-variant-numeric: tabular-nums; font-family: monospace; }
+  .timer button{
+    background:rgba(255,255,255,0.12); border:none; color:#fff; width:34px; height:34px;
+    border-radius:50%; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .timer button:active{ background:rgba(255,255,255,0.25); }
+
+  .tabs{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:16px; }
+  .tab{
+    padding:9px 4px; border-radius:12px; font-size:12.5px; font-weight:600; text-align:center;
+    background:#fff; border:1px solid #e5e5e5; color:#555; cursor:pointer;
+  }
+  .tab.active{ background:var(--orange); border-color:var(--orange); color:#fff; }
+
+  .card{ border-radius:16px; padding:14px; margin-bottom:14px; border:1px solid; }
+  .card.構造{ background:var(--blue-bg); border-color:var(--blue-border); }
+  .card.機能{ background:var(--green-bg); border-color:var(--green-border); }
+  .card.調節{ background:var(--purple-bg); border-color:var(--purple-border); }
+
+  .badge{
+    display:inline-block; font-size:11px; font-weight:700; padding:2px 10px;
+    border-radius:999px; background:#fff; margin-bottom:8px; border:1px solid;
+  }
+  .card.構造 .badge{ color:var(--blue-text); border-color:var(--blue-border); }
+  .card.機能 .badge{ color:var(--green-text); border-color:var(--green-border); }
+  .card.調節 .badge{ color:var(--purple-text); border-color:var(--purple-border); }
+
+  .label{ font-size:14px; font-weight:600; color:#444; margin-bottom:8px; }
+
+  textarea{
+    width:100%; border-radius:10px; border:1px solid #ddd; padding:8px 10px;
+    font-size:14px; font-family:inherit; resize:vertical; min-height:64px;
+    background:#fff;
+  }
+  textarea:focus{ outline:2px solid var(--orange); outline-offset:1px; }
+
+  .reveal-btn{
+    margin-top:8px; font-size:12px; color:#777; background:none; border:none;
+    cursor:pointer; display:flex; align-items:center; gap:4px; padding:4px 0;
+  }
+  .reveal-btn:active{ color:var(--orange); }
+
+  .answer{
+    margin-top:8px; background:#fff; border:1px solid #fcd9a8; border-radius:10px;
+    padding:10px 12px; font-size:14.5px; line-height:1.7; display:none;
+  }
+  .answer.show{ display:block; }
+  .answer .kw{ font-weight:700; color:var(--orange); }
+
+  .footnote{ text-align:center; font-size:11px; color:#bbb; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>生理学　代謝　白紙練習アプリ</h1>
+  <div class="subtitle">自分で書いてから答えを確認する</div>
+
+  <div class="timer">
+    <span class="time" id="timeDisplay">00:00</span>
+    <button id="playPauseBtn" onclick="toggleTimer()">▶</button>
+    <button onclick="resetTimer()">↺</button>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="cards"></div>
+
+  <div class="footnote">※入力内容とタイマーはブラウザを閉じると消えます（保存されません）</div>
+</div>
+
+<script>
+// ============ データ ============
+const TOPICS = [
+  { key: "overview", label: "総論" },
+  { key: "water", label: "体内水分" },
+  { key: "sugar", label: "糖質代謝" },
+  { key: "fat", label: "脂質代謝" },
+  { key: "protein", label: "タンパク質代謝" },
+  { key: "atp", label: "ATP産生" },
+  { key: "liver", label: "肝臓" },
+  { key: "muscle", label: "筋肉の代謝" },
+  { key: "basal", label: "基礎代謝" },
+  { key: "kidney", label: "腎臓" },
+  { key: "vitamin", label: "ビタミン・ミネラル" },
+];
+
+// ans配列：奇数indexがキーワード扱い
+const DATA = {
+  overview: [
+    { axis: "構造", label: "代謝の定義（同化・異化）",
+      ans: ["代謝とは生体内で起こる化学反応の総称である。", "同化", "は小さい分子から大きい分子への合成（エネルギー消費）、", "異化", "は大きい分子から小さい分子への分解（エネルギー放出）である。"] },
+    { axis: "機能", label: "細胞に何が入って何が出るか",
+      ans: ["入るもの：", "グルコース・脂肪酸・アミノ酸・O2", "。出るもの：", "ATP・CO2・H2O・熱", "。ミトコンドリアで解糖系→TCA回路→電子伝達系を経て変換される。"] },
+    { axis: "調節", label: "植物性機能と動物性機能",
+      ans: ["植物性機能", "（自律神経）は消化・呼吸・循環・代謝・排泄。", "動物性機能", "（体性神経）は感覚・運動・神経である。代謝は植物性機能の中核。"] },
+  ],
+  water: [
+    { axis: "構造", label: "体液の内訳",
+      ans: ["体液は体重の", "60％", "を占める。内訳は", "細胞内液40％", "、", "間質液15％", "、", "血漿5％", "である。"] },
+    { axis: "機能", label: "年齢による違い",
+      ans: ["小児", "は体液量が成人より多い（約", "70％", "）。", "高齢者", "は体液量が成人より少ない（約", "50％", "）ため脱水しやすい。"] },
+    { axis: "調節", label: "体液の移動経路",
+      ans: ["食べ物として摂取した水分は", "血液", "に入り、最終的に", "尿", "として排泄される。細胞内液と血漿の間で常に水分・電解質の移動が行われる。"] },
+  ],
+  sugar: [
+    { axis: "構造", label: "糖質の種類",
+      ans: ["単糖類", "：グルコース・フルクトース・ガラクトース。", "二糖類", "：スクロース・ラクトース・マルトース。", "多糖類", "：グリコーゲン（動物）・デンプン（植物）。"] },
+    { axis: "機能", label: "糖質代謝の役割",
+      ans: ["①", "主なエネルギー源", "（1g＝4kcal）。脳はグルコースのみを使用する。②", "グリコーゲン", "として肝臓・筋肉に貯蔵される。③", "血糖調節", "（正常値：空腹時70〜110mg/dL）。"] },
+    { axis: "調節", label: "血糖調節ホルモン",
+      ans: ["インスリン", "（膵β細胞）は血糖を下げグリコーゲン合成を促進する。", "グルカゴン", "（膵α細胞）は血糖を上げグリコーゲン分解を促進する。"] },
+  ],
+  fat: [
+    { axis: "構造", label: "脂質の種類",
+      ans: ["中性脂肪", "（脂肪酸3＋グリセリン1）はエネルギー貯蔵（9kcal/g）。", "リン脂質", "は細胞膜の主成分。", "コレステロール", "はホルモン・胆汁酸の原料。"] },
+    { axis: "機能", label: "脂質代謝の役割",
+      ans: ["①エネルギー貯蔵②細胞膜構成③ホルモン原料④", "脂溶性ビタミン（A・D・E・K）", "の運搬。"] },
+    { axis: "調節", label: "LDL・HDLとケトン体",
+      ans: ["LDL", "は肝臓→全身へコレステロールを運搬（血管に蓄積し動脈硬化）。", "HDL", "は全身→肝臓へ回収（動脈硬化を防ぐ）。絶食時は脂肪酸のβ酸化で", "ケトン体", "が産生される。"] },
+  ],
+  protein: [
+    { axis: "構造", label: "アミノ酸とチロシンの経路",
+      ans: ["アミノ酸は", "20種類", "（必須アミノ酸は9種類）。", "チロシン→ドパミン→ノルアドレナリン→アドレナリン", "という経路がある（ドパミン不足はパーキンソン病）。"] },
+    { axis: "機能", label: "タンパク質の役割",
+      ans: ["①酵素②", "抗体（免疫グロブリン）", "③輸送（アルブミン等）④ホルモン原料⑤エネルギー源（1g＝4kcal・飢餓時）。"] },
+    { axis: "調節", label: "尿素サイクル",
+      ans: ["アミノ酸分解で生じる", "アンモニア", "（毒性強）は、肝臓の", "尿素サイクル", "で尿素に変換され腎臓から排泄される。肝硬変で障害されると肝性脳症を起こす。"] },
+  ],
+  atp: [
+    { axis: "構造", label: "ATP産生の場（先生お気に入り）",
+      ans: ["ミトコンドリア", "の内膜にTCA回路・電子伝達系の酵素がある。", "解糖系", "（細胞質）→", "TCA回路", "（ミトコンドリア）→", "電子伝達系", "（内膜）の順に進む。"] },
+    { axis: "機能", label: "ATP産生量と効率",
+      ans: ["グルコース1個から", "ATP38個", "が産生される。効率は約", "1/3", "であり、残り", "2/3は熱", "となり体温維持に使われる。"] },
+    { axis: "調節", label: "酵素の至適温度",
+      ans: ["酵素は", "37℃・pH7.4", "付近で最も効率よく働く。体温が保たれることでATP産生効率も安定するという相互関係がある。"] },
+  ],
+  liver: [
+    { axis: "構造", label: "肝臓の二重血液支配",
+      ans: ["肝固有動脈", "（約30%・酸素供給）と", "門脈", "（約70%・栄養供給）の二重支配を受ける。機能単位は", "肝小葉", "（約50万個）。"] },
+    { axis: "機能", label: "代謝における肝臓の4つの役割",
+      ans: ["①糖代謝：グリコーゲンの合成・分解②脂質代謝：コレステロール合成・ケトン体産生③タンパク質代謝：血漿タンパク合成・", "尿素サイクル", "④解毒・薬物代謝：", "初回通過効果", "。"] },
+    { axis: "調節", label: "血糖調節での肝臓の働き",
+      ans: ["食後：インスリン→肝臓でグリコーゲン合成。空腹時：グルカゴン・アドレナリン→グリコーゲン分解→血糖上昇。肝硬変では", "凝固因子↓", "・", "アルブミン↓", "が起こる。"] },
+  ],
+  muscle: [
+    { axis: "構造", label: "骨格筋と不随意筋の違い",
+      ans: ["骨格筋", "は随意筋で疲労しやすい。", "心筋・平滑筋", "は不随意筋で疲労しにくい。"] },
+    { axis: "機能", label: "筋肉のグリコーゲン利用",
+      ans: ["筋肉にもグリコーゲンが貯蔵される（肝臓と並ぶ貯蔵先）。運動時は筋グリコーゲンを分解しグルコースをエネルギー源にする。"] },
+    { axis: "調節", label: "熱産生における筋肉の役割",
+      ans: ["運動・寒冷時に筋肉の代謝が亢進し熱産生量が増える。体熱産生が高い臓器・組織は", "筋肉と肝臓", "である。"] },
+  ],
+  basal: [
+    { axis: "構造", label: "基礎代謝の定義",
+      ans: ["安静・空腹・室温（20℃）", "での最低限のエネルギー消費量。成人男性約", "1500kcal/日", "、女性約", "1200kcal/日", "。"] },
+    { axis: "機能", label: "基礎代謝に影響する因子",
+      ans: ["①", "甲状腺ホルモン", "↑で基礎代謝↑。②筋肉量が多いほど基礎代謝↑。③加齢で基礎代謝↓。"] },
+    { axis: "調節", label: "熱産生の種類",
+      ans: ["ふるえ熱産生", "：寒冷時の骨格筋の不随意収縮。", "食事誘発性熱産生（DIT）", "：食後の代謝亢進。タンパク質で最大（約30%）。"] },
+  ],
+  kidney: [
+    { axis: "構造", label: "腎臓と代謝の接点",
+      ans: ["腎臓は代謝の独立した講義にはならないが、糖・Ca代謝の調節に関わる。"] },
+    { axis: "機能", label: "血糖の再吸収とビタミンD活性化",
+      ans: ["正常時グルコースは尿細管で", "100%再吸収", "される。血糖値が閾値（約", "180mg/dL", "）を超えると尿糖が出る。", "ビタミンD", "の最終活性化は腎臓で行われる。"] },
+    { axis: "調節", label: "EPO・レニンと代謝の関連",
+      ans: ["EPO", "は赤血球産生を促進（低酸素で分泌増加）。", "レニン", "はRAA系の起点として血圧を調節する。腎不全ではビタミンD活性化障害・EPO低下が起こる。"] },
+  ],
+  vitamin: [
+    { axis: "構造", label: "脂溶性・水溶性ビタミンの違い",
+      ans: ["脂溶性（A・D・E・K）", "は油に溶け体内に蓄積、過剰症がある。", "水溶性（B群・C）", "は水に溶け蓄積しにくく毎日摂取が必要。"] },
+    { axis: "機能", label: "主要ビタミンと欠乏症",
+      ans: ["ビタミンD", "はCa吸収促進（腎臓で活性化）、欠乏でくる病・骨軟化症。", "ビタミンB12", "は赤血球成熟（内因子と結合し回腸で吸収）、欠乏で悪性貧血。"] },
+    { axis: "調節", label: "カルシウムの多機能性",
+      ans: ["体重の約", "1.4%", "、99%は骨・歯に存在。①骨・歯の構成②", "筋収縮", "（トロポニンに結合）③", "神経伝達物質の放出", "④", "血液凝固の補助因子", "⑤細胞内情報伝達。"] },
+  ],
+};
+
+// ============ 状態 ============
+let currentTopic = "overview";
+let seconds = 0;
+let running = false;
+let timerInterval = null;
+const myAnswers = {};
+const revealedSet = {};
+
+// ============ タイマー ============
+function formatTime(sec){
+  const m = String(Math.floor(sec/60)).padStart(2,"0");
+  const s = String(sec%60).padStart(2,"0");
+  return m + ":" + s;
+}
+function toggleTimer(){
+  running = !running;
+  document.getElementById("playPauseBtn").textContent = running ? "❚❚" : "▶";
+  if(running){
+    timerInterval = setInterval(()=>{
+      seconds++;
+      document.getElementById("timeDisplay").textContent = formatTime(seconds);
+    },1000);
+  } else {
+    clearInterval(timerInterval);
+  }
+}
+function resetTimer(){
+  seconds = 0;
+  running = false;
+  clearInterval(timerInterval);
+  document.getElementById("timeDisplay").textContent = "00:00";
+  document.getElementById("playPauseBtn").textContent = "▶";
+}
+
+// ============ タブ描画 ============
+function renderTabs(){
+  const tabsEl = document.getElementById("tabs");
+  tabsEl.innerHTML = "";
+  TOPICS.forEach(t=>{
+    const btn = document.createElement("div");
+    btn.className = "tab" + (t.key===currentTopic ? " active" : "");
+    btn.textContent = t.label;
+    btn.onclick = ()=>{ currentTopic = t.key; renderTabs(); renderCards(); };
+    tabsEl.appendChild(btn);
+  });
+}
+
+// ============ 解答テキスト（キーワード強調） ============
+function buildAnswerHTML(parts){
+  return parts.map((p,i)=> i%2===1 ? '<span class="kw">'+escapeHtml(p)+'</span>' : escapeHtml(p) ).join("");
+}
+function escapeHtml(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// ============ カード描画 ============
+function renderCards(){
+  const container = document.getElementById("cards");
+  container.innerHTML = "";
+  const items = DATA[currentTopic];
+
+  items.forEach((item, idx)=>{
+    const key = currentTopic + "_" + idx;
+
+    const card = document.createElement("div");
+    card.className = "card " + item.axis;
+
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    badge.textContent = item.axis;
+    card.appendChild(badge);
+
+    const label = document.createElement("div");
+    label.className = "label";
+    label.textContent = item.label;
+    card.appendChild(label);
+
+    const textarea = document.createElement("textarea");
+    textarea.placeholder = "ここに自分の言葉で書いてみる...";
+    textarea.value = myAnswers[key] || "";
+    textarea.oninput = (e)=>{ myAnswers[key] = e.target.value; };
+    card.appendChild(textarea);
+
+    const revealBtn = document.createElement("button");
+    revealBtn.className = "reveal-btn";
+    revealBtn.textContent = revealedSet[key] ? "👁 答えを隠す" : "👁 答えを見る";
+    card.appendChild(revealBtn);
+
+    const answerDiv = document.createElement("div");
+    answerDiv.className = "answer" + (revealedSet[key] ? " show" : "");
+    answerDiv.innerHTML = buildAnswerHTML(item.ans);
+    card.appendChild(answerDiv);
+
+    revealBtn.onclick = ()=>{
+      revealedSet[key] = !revealedSet[key];
+      answerDiv.classList.toggle("show");
+      revealBtn.textContent = revealedSet[key] ? "👁 答えを隠す" : "👁 答えを見る";
+    };
+
+    container.appendChild(card);
+  });
+}
+
+// ============ 初期化 ============
+renderTabs();
+renderCards();
+</script>
+</body>
+</html>
