@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生理学 血液 白紙練習アプリ</title>
+<style>
+  :root{
+    --orange:#e36c0a; --navy:#1f4e79; --grey:#8a8a8a;
+    --blue-bg:#eff6ff; --blue-border:#bfdbfe; --blue-text:#1d4ed8;
+    --green-bg:#f0fdf4; --green-border:#bbf7d0; --green-text:#15803d;
+    --purple-bg:#faf5ff; --purple-border:#e9d5ff; --purple-text:#7e22ce;
+  }
+  * { box-sizing: border-box; }
+  body{
+    margin:0; padding:16px; font-family:"Hiragino Sans","Yu Gothic",sans-serif;
+    background:#f7f7f8; color:#222; -webkit-tap-highlight-color: transparent;
+  }
+  .wrap{ max-width:640px; margin:0 auto; }
+  h1{ text-align:center; font-size:20px; color:var(--navy); margin:8px 0 2px; }
+  .subtitle{ text-align:center; font-size:12px; color:var(--grey); margin-bottom:16px; }
+
+  .timer{
+    display:flex; align-items:center; justify-content:center; gap:14px;
+    background:#1f2937; color:#fff; border-radius:14px; padding:12px; margin-bottom:16px;
+  }
+  .timer .time{ font-size:24px; font-weight:700; font-variant-numeric: tabular-nums; font-family: monospace; }
+  .timer button{
+    background:rgba(255,255,255,0.12); border:none; color:#fff; width:34px; height:34px;
+    border-radius:50%; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .timer button:active{ background:rgba(255,255,255,0.25); }
+
+  .tabs{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:16px; }
+  .tab{
+    padding:10px 4px; border-radius:12px; font-size:13px; font-weight:600; text-align:center;
+    background:#fff; border:1px solid #e5e5e5; color:#555; cursor:pointer;
+  }
+  .tab.active{ background:var(--orange); border-color:var(--orange); color:#fff; }
+
+  .card{ border-radius:16px; padding:14px; margin-bottom:14px; border:1px solid; }
+  .card.構造{ background:var(--blue-bg); border-color:var(--blue-border); }
+  .card.機能{ background:var(--green-bg); border-color:var(--green-border); }
+  .card.調節{ background:var(--purple-bg); border-color:var(--purple-border); }
+
+  .badge{
+    display:inline-block; font-size:11px; font-weight:700; padding:2px 10px;
+    border-radius:999px; background:#fff; margin-bottom:8px; border:1px solid;
+  }
+  .card.構造 .badge{ color:var(--blue-text); border-color:var(--blue-border); }
+  .card.機能 .badge{ color:var(--green-text); border-color:var(--green-border); }
+  .card.調節 .badge{ color:var(--purple-text); border-color:var(--purple-border); }
+
+  .label{ font-size:14px; font-weight:600; color:#444; margin-bottom:8px; }
+
+  textarea{
+    width:100%; border-radius:10px; border:1px solid #ddd; padding:8px 10px;
+    font-size:14px; font-family:inherit; resize:vertical; min-height:64px;
+    background:#fff;
+  }
+  textarea:focus{ outline:2px solid var(--orange); outline-offset:1px; }
+
+  .reveal-btn{
+    margin-top:8px; font-size:12px; color:#777; background:none; border:none;
+    cursor:pointer; display:flex; align-items:center; gap:4px; padding:4px 0;
+  }
+  .reveal-btn:active{ color:var(--orange); }
+
+  .answer{
+    margin-top:8px; background:#fff; border:1px solid #fcd9a8; border-radius:10px;
+    padding:10px 12px; font-size:14.5px; line-height:1.7; display:none;
+  }
+  .answer.show{ display:block; }
+  .answer .kw{ font-weight:700; color:var(--orange); }
+
+  .footnote{ text-align:center; font-size:11px; color:#bbb; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>生理学　血液　白紙練習アプリ</h1>
+  <div class="subtitle">自分で書いてから答えを確認する</div>
+
+  <div class="timer">
+    <span class="time" id="timeDisplay">00:00</span>
+    <button id="playPauseBtn" onclick="toggleTimer()">▶</button>
+    <button onclick="resetTimer()">↺</button>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="cards"></div>
+
+  <div class="footnote">※入力内容とタイマーはブラウザを閉じると消えます（保存されません）</div>
+</div>
+
+<script>
+// ============ データ ============
+const ORGANS = [
+  { key: "blood", label: "血液" },
+  { key: "marrow", label: "骨髄" },
+  { key: "spleen", label: "脾臓" },
+  { key: "liver", label: "肝臓" },
+  { key: "kidney", label: "腎臓" },
+  { key: "circulation", label: "循環" },
+];
+
+// ans配列：奇数indexがキーワード扱い
+const DATA = {
+  blood: [
+    { axis: "構造", label: "血漿・血球の割合／血漿タンパク質3種とその役割",
+      ans: ["血液は体重の", "7〜8％", "を占める。遠心分離すると", "血漿（55%）", "と", "血球成分（45%＝ヘマトクリット値）", "に分かれる。血漿タンパク質は3種類。", "アルブミン", "は膠質浸透圧を維持し、", "グロブリン", "（特にγグロブリン）は免疫を担い、", "フィブリノーゲン", "は血液凝固に関与する。"] },
+    { axis: "機能", label: "3つの機能（運搬・恒常性維持・生体防御）",
+      ans: ["①", "運搬作用", "：O₂・CO₂・栄養素・代謝産物・ホルモンを運ぶ。②", "恒常性維持", "：体液量・浸透圧・体温・酸塩基平衡（", "pH7.35〜7.45", "）を保つ。③", "生体防御", "：白血球の免疫と血小板の止血。"] },
+    { axis: "調節", label: "止血の4段階",
+      ans: ["①", "血管収縮", "→②", "一次止血", "（血小板凝集）→③", "二次止血", "（フィブリノーゲン→フィブリン、", "カルシウムイオン", "が補助因子）→④", "線溶", "（プラスミンが血栓を溶かす）。"] },
+  ],
+  marrow: [
+    { axis: "構造", label: "赤色骨髄・黄色骨髄",
+      ans: ["赤色骨髄", "は造血が活発（脊椎・骨盤・胸骨・肋骨）。", "黄色骨髄", "は脂肪組織に置き換わった骨髄で、必要時に赤色骨髄に戻れる。"] },
+    { axis: "機能", label: "造血幹細胞からの分化（図を描いてみる）",
+      ans: ["造血幹細胞", "（多能性幹細胞）→", "骨髄系幹細胞", "（赤血球・血小板・顆粒球・単球）と", "リンパ系幹細胞", "（T細胞・B細胞・NK細胞）に分岐する。"] },
+    { axis: "調節", label: "EPO・ビタミンB12と内因子",
+      ans: ["エリスロポエチン（EPO）", "は腎臓の傍糸球体細胞から分泌され赤血球産生を促進する。B12は胃の", "内因子", "と結合して回腸で吸収される。胃全摘で", "悪性貧血", "が生じる。"] },
+  ],
+  spleen: [
+    { axis: "構造", label: "白脾髄・赤脾髄",
+      ans: ["白脾髄", "はリンパ組織（免疫）。", "赤脾髄", "は血洞からなり古い赤血球を破壊する。"] },
+    { axis: "機能", label: "赤血球破壊・免疫・血液貯蔵",
+      ans: ["寿命", "120日", "を迎えた赤血球を破壊しビリルビンに代謝する。白脾髄でリンパ球を産生・活性化する。約", "100〜200mL", "の血液を貯蔵する。"] },
+    { axis: "調節", label: "ビリルビン代謝と黄疸の分類",
+      ans: ["間接ビリルビン", "（水に溶けない）→肝臓で抱合→", "直接ビリルビン", "（水溶性）→胆汁排泄。", "溶血性黄疸", "は間接↑、", "閉塞性黄疸", "は直接↑で便が白くなる。"] },
+  ],
+  liver: [
+    { axis: "構造", label: "二重血液支配（門脈・肝固有動脈）",
+      ans: ["肝固有動脈", "（約30%・酸素供給）と", "門脈", "（約70%・栄養供給）の二重支配を受ける。機能単位は", "肝小葉", "（約50万個）。"] },
+    { axis: "機能", label: "7つの機能を書けるだけ書く",
+      ans: ["①", "糖代謝", "②", "タンパク質代謝", "（血漿タンパク合成・尿素サイクル）③", "脂質代謝", "④", "胆汁産生", "⑤", "解毒・薬物代謝", "⑥", "血液の貯蔵", "（全血液の約25%）⑦", "ビリルビン代謝", "。"] },
+    { axis: "調節", label: "血糖調節の双方向フロー",
+      ans: ["食後：", "インスリン", "分泌→グリコーゲン合成。空腹時：", "グルカゴン・アドレナリン", "分泌→グリコーゲン分解でグルコース放出。"] },
+  ],
+  kidney: [
+    { axis: "構造", label: "ネフロン・糸球体・尿細管",
+      ans: ["ネフロンは片方の腎臓に約", "100万個", "存在する。", "糸球体", "＋", "ボウマン嚢", "＋", "尿細管", "から構成される。"] },
+    { axis: "機能", label: "尿生成の3段階（ろ過・再吸収・分泌）",
+      ans: ["①", "ろ過", "（糸球体→原尿180L/日）②", "再吸収", "（グルコースは", "100%再吸収", "）③", "分泌", "→最終尿量", "1.5L/日", "。"] },
+    { axis: "調節", label: "EPO・レニン・バソプレシン",
+      ans: ["エリスロポエチン", "、", "レニン", "（RAA系の起点）、活性型ビタミンDを分泌する。", "バソプレシン（ADH）", "は下垂体後葉から分泌され集合管で水の再吸収を促進する。"] },
+  ],
+  circulation: [
+    { axis: "構造", label: "心臓4部屋・弁・刺激伝導系",
+      ans: ["4部屋のうち", "左心室", "の壁が最も厚い（全身へ送るため高圧が必要）。刺激伝導系は", "洞房結節", "→房室結節→ヒス束→プルキンエ線維の順。"] },
+    { axis: "機能", label: "体循環と肺循環／心拍出量",
+      ans: ["体循環", "：左心室→大動脈→全身→大静脈→右心房。", "肺循環", "：右心室→肺動脈→肺→肺静脈→左心房（", "肺動脈には静脈血", "が流れる）。心拍出量は安静時約", "5L/分", "。"] },
+    { axis: "調節", label: "自律神経・RAA系",
+      ans: ["交感神経", "は心拍数・収縮力を増加させ血圧を上げる。", "RAA系", "：腎血流低下→", "レニン", "→アンジオテンシンⅡ→", "アルドステロン", "分泌→Na⁺再吸収↑→血圧上昇。"] },
+  ],
+};
+
+// ============ 状態 ============
+let currentOrgan = "blood";
+let seconds = 0;
+let running = false;
+let timerInterval = null;
+const myAnswers = {};   // key: organKey+idx -> text
+const revealedSet = {}; // key: organKey+idx -> bool
+
+// ============ タイマー ============
+function formatTime(sec){
+  const m = String(Math.floor(sec/60)).padStart(2,"0");
+  const s = String(sec%60).padStart(2,"0");
+  return m + ":" + s;
+}
+function toggleTimer(){
+  running = !running;
+  document.getElementById("playPauseBtn").textContent = running ? "❚❚" : "▶";
+  if(running){
+    timerInterval = setInterval(()=>{
+      seconds++;
+      document.getElementById("timeDisplay").textContent = formatTime(seconds);
+    },1000);
+  } else {
+    clearInterval(timerInterval);
+  }
+}
+function resetTimer(){
+  seconds = 0;
+  running = false;
+  clearInterval(timerInterval);
+  document.getElementById("timeDisplay").textContent = "00:00";
+  document.getElementById("playPauseBtn").textContent = "▶";
+}
+
+// ============ タブ描画 ============
+function renderTabs(){
+  const tabsEl = document.getElementById("tabs");
+  tabsEl.innerHTML = "";
+  ORGANS.forEach(o=>{
+    const btn = document.createElement("div");
+    btn.className = "tab" + (o.key===currentOrgan ? " active" : "");
+    btn.textContent = o.label;
+    btn.onclick = ()=>{ currentOrgan = o.key; renderTabs(); renderCards(); };
+    tabsEl.appendChild(btn);
+  });
+}
+
+// ============ 解答テキスト（キーワード強調） ============
+function buildAnswerHTML(parts){
+  return parts.map((p,i)=> i%2===1 ? '<span class="kw">'+escapeHtml(p)+'</span>' : escapeHtml(p) ).join("");
+}
+function escapeHtml(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// ============ カード描画 ============
+function renderCards(){
+  const container = document.getElementById("cards");
+  container.innerHTML = "";
+  const items = DATA[currentOrgan];
+
+  items.forEach((item, idx)=>{
+    const key = currentOrgan + "_" + idx;
+
+    const card = document.createElement("div");
+    card.className = "card " + item.axis;
+
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    badge.textContent = item.axis;
+    card.appendChild(badge);
+
+    const label = document.createElement("div");
+    label.className = "label";
+    label.textContent = item.label;
+    card.appendChild(label);
+
+    const textarea = document.createElement("textarea");
+    textarea.placeholder = "ここに自分の言葉で書いてみる...";
+    textarea.value = myAnswers[key] || "";
+    textarea.oninput = (e)=>{ myAnswers[key] = e.target.value; };
+    card.appendChild(textarea);
+
+    const revealBtn = document.createElement("button");
+    revealBtn.className = "reveal-btn";
+    revealBtn.textContent = revealedSet[key] ? "👁 答えを隠す" : "👁 答えを見る";
+    card.appendChild(revealBtn);
+
+    const answerDiv = document.createElement("div");
+    answerDiv.className = "answer" + (revealedSet[key] ? " show" : "");
+    answerDiv.innerHTML = buildAnswerHTML(item.ans);
+    card.appendChild(answerDiv);
+
+    revealBtn.onclick = ()=>{
+      revealedSet[key] = !revealedSet[key];
+      answerDiv.classList.toggle("show");
+      revealBtn.textContent = revealedSet[key] ? "👁 答えを隠す" : "👁 答えを見る";
+    };
+
+    container.appendChild(card);
+  });
+}
+
+// ============ 初期化 ============
+renderTabs();
+renderCards();
+</script>
+</body>
+</html>
