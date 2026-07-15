@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>言語発達学レポート 完全対策アプリ</title>
+<style>
+:root{
+  --bg:#f7f5f0;--surface:#fff;--surface2:#f2f0eb;
+  --border:#ddd9d0;--border-s:#b8b4aa;
+  --text:#1c1a17;--text2:#6b6560;--text3:#a09a92;
+  --accent:#1d4ed8;--accent-bg:#eff6ff;--accent-bd:#bfdbfe;
+  --ok:#15803d;--ok-bg:#f0fdf4;--ok-bd:#86efac;
+  --ng:#dc2626;--ng-bg:#fef2f2;--ng-bd:#fca5a5;
+  --warn-bg:#fffbeb;--warn-bd:#fcd34d;--warn-text:#92400e;
+  --r:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;line-height:1.6}
+.wrap{max-width:780px;margin:0 auto;padding:1.5rem 1.25rem 4rem}
+h1{font-size:18px;font-weight:700;margin-bottom:2px}
+.sub{font-size:12px;color:var(--text3);margin-bottom:1.25rem}
+
+/* ナビ */
+.nav{display:flex;gap:0;border:1px solid var(--border-s);border-radius:var(--r);overflow:hidden;margin-bottom:1.5rem}
+.nb{flex:1;padding:9px 6px;font-size:13px;cursor:pointer;border:none;background:var(--surface);color:var(--text2);border-right:1px solid var(--border);transition:all .15s;white-space:nowrap}
+.nb:last-child{border-right:none}
+.nb.active{background:var(--text);color:#fff;font-weight:600}
+.nb:hover:not(.active){background:var(--surface2)}
+.page{display:none}.page.active{display:block}
+
+/* スコアバー */
+.sb{display:flex;gap:7px;margin-bottom:1.1rem;align-items:center}
+.sp{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px}
+.sn{font-size:15px;font-weight:700;color:var(--text)}
+.pw{flex:1;height:5px;background:var(--surface2);border-radius:9px;overflow:hidden;border:1px solid var(--border)}
+.pf{height:100%;background:var(--accent);border-radius:9px;transition:width .35s}
+.rlnk{font-size:12px;color:var(--accent);cursor:pointer;text-decoration:underline;margin-left:auto;white-space:nowrap}
+
+/* ─── 大問1：穴埋め ─── */
+.q-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem;margin-bottom:.875rem}
+.q-num{font-size:11px;font-weight:700;color:var(--text3);margin-bottom:6px;letter-spacing:.04em}
+.q-text{font-size:14px;color:var(--text);line-height:1.85;margin-bottom:10px}
+.q-text strong{color:var(--ng)}
+.ans-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ans-input{padding:5px 10px;font-size:13.5px;border:1px solid var(--border-s);border-radius:var(--r);background:var(--surface2);color:var(--text);min-width:120px;max-width:220px;outline:none}
+.ans-input:focus{border-color:var(--accent);background:#fff}
+.ans-input.correct{border-color:var(--ok-bd);background:var(--ok-bg);color:var(--ok)}
+.ans-input.wrong{border-color:var(--ng-bd);background:var(--ng-bg);color:var(--ng)}
+.check-btn{padding:5px 14px;font-size:12.5px;cursor:pointer;border:1px solid var(--accent);background:var(--accent-bg);color:var(--accent);border-radius:var(--r);font-weight:600;white-space:nowrap}
+.check-btn:hover{background:var(--accent);color:#fff}
+.ans-result{font-size:12.5px;margin-top:5px;padding:5px 10px;border-radius:var(--r);display:none;line-height:1.65}
+.ans-result.ok{background:var(--ok-bg);border:1px solid var(--ok-bd);color:var(--ok)}
+.ans-result.ng{background:var(--ng-bg);border:1px solid var(--ng-bd);color:var(--ng)}
+.show-btn{padding:4px 12px;font-size:12px;cursor:pointer;border:1px solid var(--border-s);background:var(--surface2);color:var(--text2);border-radius:var(--r)}
+.show-btn:hover{background:var(--border)}
+
+/* ─── 大問2：選択 ─── */
+.q2-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem;margin-bottom:.875rem}
+.q2-text{font-size:14px;color:var(--text);line-height:1.8;margin-bottom:.875rem}
+.choices{display:flex;flex-direction:column;gap:6px;margin-bottom:.75rem}
+.ch{padding:9px 13px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);font-size:13px;cursor:pointer;text-align:left;color:var(--text);transition:all .15s;line-height:1.55}
+.ch:hover:not(:disabled){border-color:var(--accent-bd);background:var(--accent-bg)}
+.ch.correct{border-color:var(--ok-bd);background:var(--ok-bg);color:var(--ok);font-weight:600}
+.ch.wrong{border-color:var(--ng-bd);background:var(--ng-bg);color:var(--ng)}
+.ch:disabled{cursor:default}
+.multi-check{padding:4px 14px;font-size:12.5px;cursor:pointer;border:1px solid var(--accent);background:var(--accent-bg);color:var(--accent);border-radius:var(--r);font-weight:600}
+.multi-check:hover{background:var(--accent);color:#fff}
+.exp{padding:9px 12px;background:var(--surface);border-left:3px solid var(--accent);border-radius:0 var(--r) var(--r) 0;border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:12.5px;color:var(--text2);line-height:1.75;margin-top:7px;display:none}
+.exp b{color:var(--text)}
+.star{display:inline-block;background:var(--warn-bg);color:var(--warn-text);border:1px solid var(--warn-bd);font-size:10px;padding:1px 6px;border-radius:20px;font-weight:700;margin-right:4px;vertical-align:middle}
+
+/* フラッシュカード */
+.fc-wrap{perspective:1000px;margin-bottom:1.1rem;cursor:pointer}
+.fc-inner{position:relative;transform-style:preserve-3d;transition:transform .45s;height:190px}
+.fc-inner.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.25rem;text-align:center}
+.fc-front{background:var(--surface);border:1px solid var(--border)}
+.fc-back{background:var(--accent-bg);border:1px solid var(--accent-bd);transform:rotateY(180deg)}
+.fc-q{font-size:14px;font-weight:600;color:var(--text);line-height:1.65}
+.fc-hint{font-size:11px;color:var(--text3);margin-bottom:6px}
+.fc-a{font-size:13px;color:var(--accent);line-height:1.7;white-space:pre-line}
+.fc-num{font-size:11px;font-weight:700;color:var(--warn-text);background:var(--warn-bg);border:1px solid var(--warn-bd);padding:1px 8px;border-radius:20px;margin-bottom:7px}
+.fc-nav{display:flex;gap:10px;justify-content:center;align-items:center;margin-bottom:1rem}
+.fc-btn{padding:7px 20px;font-size:13px;cursor:pointer;border:1px solid var(--border-s);background:var(--surface);border-radius:var(--r);color:var(--text)}
+.fc-btn:hover{background:var(--surface2)}
+.fc-cnt{font-size:13px;color:var(--text2);min-width:55px;text-align:center}
+.rate-btns{display:flex;gap:8px;justify-content:center}
+.rate-btn{padding:7px 22px;font-size:13px;cursor:pointer;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);color:var(--text2)}
+.rate-btn.good{border-color:var(--ok-bd);background:var(--ok-bg);color:var(--ok);font-weight:600}
+.rate-btn.bad{border-color:var(--ng-bd);background:var(--ng-bg);color:var(--ng)}
+
+/* クイズ */
+.quiz-q{font-size:14.5px;font-weight:600;color:var(--text);margin-bottom:1.1rem;line-height:1.75}
+.quiz-choices{display:flex;flex-direction:column;gap:6px;margin-bottom:1.1rem}
+.qc{padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);font-size:13px;cursor:pointer;text-align:left;color:var(--text);transition:all .15s;line-height:1.55}
+.qc:hover:not(:disabled){border-color:var(--accent-bd);background:var(--accent-bg)}
+.qc.correct{border-color:var(--ok-bd);background:var(--ok-bg);color:var(--ok);font-weight:600}
+.qc.wrong{border-color:var(--ng-bd);background:var(--ng-bg);color:var(--ng)}
+.qc:disabled{cursor:default}
+.qexp{padding:10px 13px;background:var(--surface);border-left:3px solid var(--accent);border-radius:0 var(--r) var(--r) 0;border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:12.5px;color:var(--text2);line-height:1.75;margin-bottom:1.1rem;display:none}
+.btn-next{padding:8px 22px;font-size:13.5px;cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:var(--r);font-weight:600}
+.btn-next:hover{opacity:.88}
+.result-box{text-align:center;padding:2.5rem 1rem}
+.rs{font-size:48px;font-weight:700;color:var(--text)}
+.rl{font-size:13px;color:var(--text2);margin-bottom:.5rem}
+.rm{font-size:13.5px;color:var(--text);margin-bottom:1.5rem;line-height:1.75}
+.rbtn{padding:8px 26px;font-size:13.5px;cursor:pointer;border:1px solid var(--border-s);background:var(--surface);border-radius:var(--r);color:var(--text)}
+
+/* イラスト問題 */
+.illus-row{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.illus-item{flex:1;min-width:120px;text-align:center}
+.illus-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px;font-size:20px;min-height:60px;display:flex;align-items:center;justify-content:center;margin-bottom:5px;flex-direction:column;gap:2px}
+.illus-box span{font-size:11px;color:var(--text2)}
+.illus-lbl{font-size:12px;color:var(--text2)}
+
+.tip{margin-top:1rem;padding:10px 13px;background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:var(--r);font-size:12.5px;color:var(--warn-text);line-height:1.75}
+.section-sep{margin:1.5rem 0 .75rem;font-size:13px;font-weight:700;color:var(--text2);padding-bottom:4px;border-bottom:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>言語発達学レポート 完全対策アプリ</h1>
+<div class="sub">2024年レポート（6月7日提出）の全問題を完全収録 ― GitHub Pages対応スタンドアロン版</div>
+
+<div class="nav">
+  <button class="nb active" onclick="switchPage('ana')">大問1<br>穴埋め</button>
+  <button class="nb" onclick="switchPage('sel')">大問2<br>選択</button>
+  <button class="nb" onclick="switchPage('flash')">フラッシュ<br>カード</button>
+  <button class="nb" onclick="switchPage('quiz')">総合<br>クイズ</button>
+</div>
+
+<!-- ══ 大問1：穴埋め ══ -->
+<div id="page-ana" class="page active">
+  <div class="sb">
+    <div class="sp"><span class="sn" id="a-ok">0</span> 正解</div>
+    <div class="pw"><div class="pf" id="a-prog" style="width:0%"></div></div>
+    <span class="rlnk" onclick="resetAna()">↻ リセット</span>
+  </div>
+  <div class="section-sep">【大問1】下記の文章の空欄を埋めなさい</div>
+  <div id="ana-list"></div>
+</div>
+
+<!-- ══ 大問2：選択 ══ -->
+<div id="page-sel" class="page">
+  <div class="sb">
+    <div class="sp"><span class="sn" id="s-ok">0</span> 正解</div>
+    <div class="pw"><div class="pf" id="s-prog" style="width:0%"></div></div>
+    <span class="rlnk" onclick="resetSel()">↻ リセット</span>
+  </div>
+  <div class="section-sep">【大問2】下記の問いについて、正しいものを選び記入しなさい</div>
+  <div id="sel-list"></div>
+</div>
+
+<!-- ══ フラッシュカード ══ -->
+<div id="page-flash" class="page">
+  <div class="sb">
+    <div class="sp"><span class="sn" id="f-ok">0</span> 覚えた</div>
+    <div class="sp"><span class="sn" id="f-ng">0</span> 要復習</div>
+    <div class="pw"><div class="pf" id="f-prog" style="width:0%"></div></div>
+  </div>
+  <div class="fc-wrap" onclick="flipCard()">
+    <div class="fc-inner" id="fc-inner">
+      <div class="fc-face fc-front">
+        <div class="fc-num" id="fc-num"></div>
+        <div class="fc-hint">クリックして答えを見る</div>
+        <div class="fc-q" id="fc-q"></div>
+      </div>
+      <div class="fc-face fc-back">
+        <div class="fc-a" id="fc-a"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-nav">
+    <button class="fc-btn" onclick="fcMove(-1)">← 前へ</button>
+    <span class="fc-cnt" id="fc-cnt">1 / 20</span>
+    <button class="fc-btn" onclick="fcMove(1)">次へ →</button>
+  </div>
+  <div class="rate-btns">
+    <button class="rate-btn bad" onclick="fcRate(false)">✕ まだ曖昧</button>
+    <button class="rate-btn good" onclick="fcRate(true)">○ 覚えた！</button>
+  </div>
+</div>
+
+<!-- ══ 総合クイズ ══ -->
+<div id="page-quiz" class="page">
+  <div id="quiz-body">
+    <div class="sb">
+      <div class="sp"><span class="sn" id="q-ok">0</span> 正解</div>
+      <div class="sp"><span class="sn" id="q-ng">0</span> 不正解</div>
+      <div class="pw"><div class="pf" id="q-prog" style="width:0%"></div></div>
+    </div>
+    <div class="quiz-q" id="quiz-q"></div>
+    <div class="quiz-choices" id="quiz-choices"></div>
+    <div class="qexp" id="qexp"></div>
+    <button class="btn-next" id="btn-next" style="display:none" onclick="nextQuiz()">次の問題 →</button>
+  </div>
+  <div class="result-box" id="quiz-result" style="display:none">
+    <div class="rs" id="r-score"></div>
+    <div class="rl">点（全問中）</div>
+    <div class="rm" id="r-msg"></div>
+    <button class="rbtn" onclick="initQuiz()">もう一度挑戦</button>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+<script>
+/* ══════════════════
+   大問1 データ
+══════════════════ */
+const ANA = [
+  {q:'学習によって自発的な行動を増加させる条件付けを（　　）という。',
+   ans:'オペラント条件づけ',
+   exp:'スキナー（米・心理学者）が提唱。自発的な行動の直後に強化子を与えることで行動が増加する。ABA（応用行動分析）の基礎。'},
+  {q:'乳児が母親の表情を参照してその場の状況を理解することを（　　）という。',
+   ans:'社会的参照',
+   exp:'共同注意＋大人の表情で善悪・安全危険・相手の好みなどを学習。視覚的断崖（ビジュアル・クリフ）実験で研究される。'},
+  {q:'生後半年くらいまで、子どもは「母親と自分」「おもちゃと自分」という2者間の関係のみでやりとりを行うが、その後は「母親とおもちゃと自分」という3者をまじえたやりとりが可能になる。前者の関係性を二項関係、後者を（　　）という。',
+   ans:'三項関係',
+   exp:'三項関係（triadic relationship）は生後8〜12か月ごろに成立。「人＋人＋モノ」の3者関係。★言語獲得の基盤となる重要概念。'},
+  {q:'生後2ヶ月ごろから出現する、アーアー、ウーウーという音声を（　　）という。',
+   ans:'クーイング',
+   exp:'クーイング（cooing）＝生後2〜4か月ごろ出現する母音中心の柔らかい発声。「アーアー」「ウーウー」など。'},
+  {q:'基準喃語が出現するのはおおよそ月齢（　　）以降である。',
+   ans:'6か月',
+   exp:'規準喃語（canonical babbling）＝生後6か月〜。子音＋母音（CV構造）が明確な喃語。重複喃語（bababa）や多様喃語（bagidabu）がある。難聴児は11〜25か月と大幅に遅れる。'},
+  {q:'幼児が、おもちゃをあげるときも欲しいときも「どーぞ」と言うような、語彙の適用範囲よりも広くある語彙を使うことを、語の（　　）という。',
+   ans:'過大汎用',
+   exp:'語の過大汎用（拡張的使用）＝語彙の適用範囲より広くカテゴリとして使う。例：四本足の動物全てを「ワンワン」と呼ぶ。語彙増加とともに消失。'},
+  {q:'いわゆる語彙爆発は、幼児の自然産出語が（　　）語を超えたころから生じる。',
+   ans:'50',
+   exp:'語彙爆発（vocabulary spurt）＝自発語が約50語を超えると語彙が急激に増加（1歳半ごろ）。'},
+  {q:'幼児が、ものには名前があることに気付くことを（　　）という。',
+   ans:'命名の洞察',
+   exp:'命名の洞察＝ものには名前があると気づき、指さしをして大人に命名を求めたり、自分で命名したりする。語彙爆発の引き金となる。'},
+  {q:'子どもの自発的な発話を記録・分析して文産出の状況を調査する手法を（　　）という。',
+   ans:'発話サンプリング法',
+   alt:['発話サンプル法','MLU分析','発話分析'],
+   exp:'発話サンプリング法（発話サンプル法）＝子どもの自発的発話を記録・分析して文産出の状況（MLU: Mean Length of Utteranceなど）を調査する手法。'},
+  {q:'10か月ごろから見られる、会話様喃語を（　　）という。',
+   ans:'ジャーゴン',
+   exp:'ジャーゴン（jargon）＝10か月ごろから出現する、会話のように聞こえるが意味のない発声。様々なイントネーション・ストレスを伴う。'},
+  {q:'過去の経験を時間軸に沿って語ることを（　　）という。',
+   ans:'ナラティブ',
+   exp:'ナラティブ（narrative）＝過去に経験したことや出来事を時間的経過・順序に従って語ること。3歳ごろから萌芽し学童期に発達する。'},
+  {q:'読み書き能力のことを（　　）という。',
+   ans:'リテラシー',
+   exp:'リテラシー（literacy）＝読み書き能力。学童期の言語発達で特に重要。音韻意識（1音1音の認識）が読み書き習得の基盤となる。'},
+];
+
+/* ══════════════════
+   大問2 データ
+══════════════════ */
+// ①ブルーナー・ヴィゴツキー（複数選択）
+const SEL_Q1 = {
+  type:'multi_person',
+  q:'①それぞれの人物が提唱した理論を選択肢からすべて選び、各人物の横の（　）に記号で記入しなさい。\nブルーナー（　　）　ヴィゴツキー（　　）\nア：足場作り　イ：発達の最近接領域　ウ：対象の永続性　エ：保存の概念',
+  persons:['ブルーナー','ヴィゴツキー'],
+  choices:['ア：足場作り','イ：発達の最近接領域（ZPD）','ウ：対象の永続性','エ：保存の概念'],
+  ans:{ブルーナー:[0],ヴィゴツキー:[1]},
+  exp:'ブルーナー＝足場かけ（scaffolding）・LASS。ヴィゴツキー＝ZPD（発達の最近接領域）。対象の永続性・保存の概念はピアジェ（認知論）の概念。',
+};
+
+// ②コミュニケーション
+const SEL_Q2 = {
+  type:'single',
+  q:'②コミュニケーションの際に最も多くの情報を伝達する形式は次のうちどれか。\nア：話しことば　イ：パラ言語　ウ：ボディランゲージ',
+  choices:['ア：話しことば（言語）','イ：パラ言語','ウ：ボディランゲージ'],
+  ans:2,
+  exp:'バードウィステルの研究より。2者間の対話で言語（話しことば）が伝える情報は約35%のみ。残り65%は話しぶり・動作・ジェスチャーなどの言語外手段による。パラ言語より広義のボディランゲージが最大。',
+};
+
+// ③イラスト問題（マンド・タクト・エコイック）
+const SEL_Q3 = {
+  type:'illus',
+  q:'③以下のイラストにおける子どもの発語は、次のうちどれにあたるか。当てはまるものをそれぞれのイラストの下の空欄に記入しなさい。\nア：マンド　イ：タクト　ウ：エコイック',
+  items:[
+    {label:'「ママー！抱っこして！」',icon:'👶💬',desc:'要求・欲求を表す発語',ans:'ア：マンド'},
+    {label:'「綿毛、ふわふわ」',icon:'🌸💬',desc:'対象を見て言語化する発語',ans:'イ：タクト'},
+    {label:'大人が「ママ」→赤ちゃんが「ママ」',icon:'👩💬👶',desc:'大人の言葉を模倣する発語',ans:'ウ：エコイック'},
+  ],
+  exp:'マンド＝要求・欲求を伝える発語（聞き手の行動を操作）。タクト＝対象を見て言語化し応答・強化される叙述。エコイック＝大人の言葉を模倣する発語。スキナー（学習論）の分類。',
+};
+
+// ④複数選択（発話の特徴）
+const SEL_Q4 = {
+  type:'multi_feat',
+  q:'④以下の子どもの発話の特徴は、選択肢のうちどれに当たるか。当てはまるものをすべて選び、文の後にある（　）に記号で記入しなさい。\nア：格助詞力の過剰使用　イ：語の過大汎用　ウ：自動詞の拡張使用',
+  items:[
+    {text:'「ごはんが、食べたの」（ご飯を食べたの）',ans:['ア']},
+    {text:'「テレビ、ついて」（テレビつけて）',ans:['ア','イ'].slice(0,1)},
+    {text:'車・バス・電車などをすべて「ぶーぶー」',ans:['イ']},
+  ],
+  choices_raw:[
+    {key:'ア',text:'格助詞「が」の過剰使用',exp:'「ごはんが、食べたの」＝助詞「を」が正しいが「が」を過剰使用'},
+    {key:'イ',text:'語の過大汎用（拡張的使用）',exp:'車・バス・電車を全て「ぶーぶー」＝語の適用範囲より広く使う'},
+  ],
+  exp:'ア：格助詞「が」の過剰使用（例「ごはんが食べたの」「赤ちゃんが連れて行く」）。イ：語の過大汎用（車・バス・電車を全て「ぶーぶー」）。「テレビ、ついて」はテレビをつける意図で「ついて」を使う＝自動詞の拡張使用（ウ）と解釈できる場合もある。',
+};
+
+/* ══════════════════
+   フラッシュカードデータ（全レポート問題の要点20枚）
+══════════════════ */
+const FC_DATA = [
+  {n:'大問1①',q:'学習によって自発的な行動を増加させる条件付けを何というか？',a:'オペラント条件づけ\nスキナー（米・心理学者）が提唱。ABA（応用行動分析）の基礎。'},
+  {n:'大問1②',q:'乳児が母親の表情を参照してその場の状況を理解することを何というか？',a:'社会的参照\n共同注意＋大人の表情で安全・危険などを学習する。視覚的断崖実験で研究。'},
+  {n:'大問1③',q:'「母親とおもちゃと自分」という3者の関係性を何というか？いつ成立するか？',a:'三項関係（triadic relationship）\n生後8〜12か月ごろ成立。★言語獲得の基盤。'},
+  {n:'大問1④',q:'生後2〜4か月ごろ出現する「アーアー」「ウーウー」という音声を何というか？',a:'クーイング（cooing）\n母音中心の柔らかい発声。原会話の始まり。'},
+  {n:'大問1⑤',q:'規準喃語はおおよそ何か月ごろから出現するか？その特徴は？',a:'生後6か月ごろ〜\nCV構造（子音＋母音）が明確な喃語。重複喃語（bababa）・多様喃語（bagidabu）がある。難聴児は11〜25か月と大幅に遅れる。'},
+  {n:'大問1⑥',q:'「ぶーぶー」を車・バス・電車など全てに使うような、語の適用範囲より広く使う現象を何というか？',a:'語の過大汎用（拡張的使用）\n語彙増加とともに消失する。'},
+  {n:'大問1⑦',q:'語彙爆発は自発語が何語を超えたころから生じるか？',a:'約50語\n1歳半ごろ。自発語50語を超えると語彙が急激に増加する。'},
+  {n:'大問1⑧',q:'「ものには名前がある」と気づき、大人に命名を求めることを何というか？',a:'命名の洞察\n指さしをして「あれ何？」と問いかける行動。語彙爆発の引き金となる。'},
+  {n:'大問1⑨',q:'子どもの自発的発話を記録・分析して文産出状況を調査する手法を何というか？',a:'発話サンプリング法（発話サンプル法）\nMLU（Mean Length of Utterance：平均発話長）などを分析する。'},
+  {n:'大問1⑩',q:'10か月ごろから見られる「会話様喃語」を何というか？',a:'ジャーゴン（jargon）\n意味はないが会話のように聞こえる発声。様々なイントネーション・ストレスを伴う。'},
+  {n:'大問1⑪',q:'過去の経験を時間軸に沿って語ることを何というか？',a:'ナラティブ（narrative）\n3歳ごろから萌芽し学童期に発達。発達順序：時系列→因果関係→意図。'},
+  {n:'大問1⑫',q:'読み書き能力のことを何というか？',a:'リテラシー（literacy）\n学童期の言語発達で特に重要。音韻意識が読み書き習得の基盤となる。'},
+  {n:'大問2①',q:'ブルーナーとヴィゴツキーがそれぞれ提唱した概念は？',a:'ブルーナー：足場かけ（scaffolding）・LASS\nヴィゴツキー：ZPD（発達の最近接領域）\n※対象の永続性・保存の概念はピアジェ'},
+  {n:'大問2②',q:'コミュニケーションで最も多くの情報を伝達するのはどの形式か？バードウィステルの数字は？',a:'ボディランゲージ（65%）が最大\n言語（話しことば）は約35%のみ。残り65%は言語外手段（パラ言語＋ボディランゲージ）による。'},
+  {n:'大問2③',q:'マンド・タクト・エコイックをそれぞれ説明せよ',a:'マンド＝要求・欲求を伝える発語（「抱っこして」）\nタクト＝対象を見て言語化（「ふわふわ」）\nエコイック＝大人の言葉を模倣\n→スキナー（学習論）の分類'},
+  {n:'大問2④ア',q:'「ごはんが、食べたの」（ご飯を食べたの）はどのような発話の特徴か？',a:'格助詞「が」の過剰使用\n助詞「を」を使うべきところで「が」を使う。日本語幼児に特徴的な誤り。'},
+  {n:'大問2④イ',q:'車・バス・電車をすべて「ぶーぶー」と呼ぶのはどのような発話の特徴か？',a:'語の過大汎用（拡張的使用）\n語彙の適用範囲より広くカテゴリとして使う。語彙増加とともに消失する。'},
+  {n:'補足',q:'ZPDとは何か？ヴィゴツキーの概念。',a:'ZPD（Zone of Proximal Development：発達の最近接領域）\n自力で解決できる水準と、他者の援助があればできる水準の差。この領域への働きかけが最も効果的な教育。'},
+  {n:'補足',q:'三項関係と共同注意・社会的参照の違いは？',a:'三項関係＝「人＋人＋モノ」の3者関係（8〜12か月）\n共同注意＝同一対象に注意を向けイメージを共有すること\n社会的参照＝共同注意＋大人の表情で善悪・安全を学習'},
+  {n:'補足',q:'規準喃語と難聴児・クーイングの違いをまとめよ',a:'クーイング：2〜4か月（健聴・難聴ともに出現）\n規準喃語：6か月〜（健聴）　11〜25か月（難聴）\n→規準喃語の遅れが難聴の早期発見の鍵。聴覚フィードバックが必要なため。'},
+];
+
+/* ══════════════════
+   クイズデータ（レポート全問ベース）
+══════════════════ */
+const QUIZ_DATA = [
+  {star:true,q:'「学習によって自発的な行動を増加させる条件付け」を何というか？',c:['古典的条件づけ','オペラント条件づけ','社会的参照','命名の洞察'],a:1,exp:'オペラント条件づけ（スキナー）。自発的な行動の直後に強化子を与えることで行動が増加する。ABAの基礎。'},
+  {star:true,q:'乳児が母親の表情を参照してその場の状況を理解することを何というか？',c:['共同注意','三項関係','社会的参照','視線追従'],a:2,exp:'社会的参照＝共同注意＋大人の表情で善悪・安全危険などを学習。視覚的断崖（ビジュアル・クリフ）実験が有名。'},
+  {star:true,q:'「母親とおもちゃと自分」という3者の関係を何というか？また何か月ごろ成立するか？',c:['二項関係・生後2か月','三項関係・生後8〜12か月','共同注意・生後3か月','社会的参照・生後2か月'],a:1,exp:'三項関係（triadic relationship）＝生後8〜12か月ごろ成立。★言語獲得の基盤となる最重要概念。'},
+  {star:true,q:'生後2〜4か月ごろ出現する「アーアー」「ウーウー」という音声を何というか？',c:['規準喃語','ジャーゴン','クーイング','初語'],a:2,exp:'クーイング（cooing）＝生後2〜4か月ごろ出現する母音中心の柔らかい発声。'},
+  {star:true,q:'規準喃語が出現するのはおおよそ何か月ごろ以降か？',c:['生後2か月〜','生後4か月〜','生後6か月〜','生後10か月〜'],a:2,exp:'規準喃語（canonical babbling）＝生後6か月〜。CV構造（子音＋母音）が明確。難聴児は11〜25か月と大幅に遅れる。★難聴早期発見の鍵。'},
+  {star:true,q:'「ぶーぶー」を車・バス・電車全てに使うような現象を何というか？',c:['命名の洞察','語の過大汎用','語彙爆発','ジャーゴン'],a:1,exp:'語の過大汎用（拡張的使用）＝語彙の適用範囲より広くカテゴリとして使う。語彙増加とともに消失する。'},
+  {star:true,q:'語彙爆発は自発語が何語を超えたころから生じるか？',c:['10語','30語','50語','100語'],a:2,exp:'自発語が約50語を超えると語彙が急激に増加（1歳半ごろ）。語彙爆発（vocabulary spurt）。'},
+  {star:true,q:'「ものには名前がある」と気づき大人に命名を求めることを何というか？',c:['語彙爆発','命名の洞察','過大汎用','発話サンプリング'],a:1,exp:'命名の洞察＝ものには名前があると気づき、指さしをして大人に命名を求めたり自分で命名する。語彙爆発の引き金。'},
+  {star:false,q:'子どもの自発的発話を記録・分析して文産出状況を調査する手法を何というか？',c:['観察法','発話サンプリング法','純音聴力検査','ビジュアル・クリフ'],a:1,exp:'発話サンプリング法（発話サンプル法）。MLU（Mean Length of Utterance：平均発話長）などを指標として分析する。'},
+  {star:true,q:'10か月ごろから見られる「会話様喃語」を何というか？',c:['クーイング','規準喃語','ジャーゴン','重複喃語'],a:2,exp:'ジャーゴン（jargon）＝10か月ごろから出現する、意味のない会話様の発声。様々なイントネーション・ストレスを伴う。'},
+  {star:true,q:'過去の経験を時間軸に沿って語ることを何というか？',c:['会話','ナラティブ','リテラシー','発話サンプリング'],a:1,exp:'ナラティブ（narrative）＝過去の経験・出来事を時間的経過に従って語ること。発達順序：時系列→因果関係→意図。'},
+  {star:false,q:'読み書き能力のことを何というか？',c:['音韻意識','ナラティブ','リテラシー','発話サンプリング'],a:2,exp:'リテラシー（literacy）＝読み書き能力。音韻意識（1音1音の認識）が読み書き習得の基盤となる。'},
+  {star:true,q:'ブルーナーが提唱した概念として正しいものはどれか？',c:['ZPD（発達の最近接領域）','足場かけ（scaffolding）・LASS','対象の永続性','保存の概念'],a:1,exp:'ブルーナー＝足場かけ（scaffolding）・LASS（言語獲得支援システム）。ZPDはヴィゴツキー、対象の永続性・保存の概念はピアジェ。'},
+  {star:true,q:'コミュニケーションで最も多くの情報を伝達する形式はどれか？',c:['話しことば（言語）','パラ言語','ボディランゲージ','書き言葉'],a:2,exp:'バードウィステルの研究。言語（話しことば）は約35%のみ。残り65%は言語外手段。中でもボディランゲージが最大の情報伝達手段。'},
+  {star:true,q:'スキナーの理論で「対象を見て言語化し応答・強化される発語（例：犬を見て「わんわん！」）」を何というか？',c:['マンド','タクト','エコイック','ジャーゴン'],a:1,exp:'タクト（叙述言語行動）＝対象を見て言語化し「そうだね」と応答・強化される発語。マンド＝要求、エコイック＝模倣。'},
+  {star:true,q:'「ごはんが、食べたの」（ご飯を食べたの）はどのような発話の特徴か？',c:['語の過大汎用','命名の洞察','格助詞「が」の過剰使用','ジャーゴン'],a:2,exp:'格助詞「が」の過剰使用＝助詞「を」を使うべきところで「が」を使う。日本語幼児の特徴的な誤り。'},
+  {star:true,q:'車・バス・電車を全て「ぶーぶー」と呼ぶのはどのような発話の特徴か？',c:['格助詞「が」の過剰使用','語の過大汎用','命名の洞察','語彙爆発'],a:1,exp:'語の過大汎用（拡張的使用）＝語の適用範囲より広くカテゴリとして使う。語彙増加とともに消失する。'},
+  {star:false,q:'ヴィゴツキーのZPDの説明として正しいのはどれか？',c:['自力で解決できる水準','自力水準と援助があればできる水準の間の領域','成熟によって自然に発達する領域','三項関係の成立時期'],a:1,exp:'ZPD（Zone of Proximal Development：発達の最近接領域）＝自力水準と、他者の援助があればできる水準の差。この領域への働きかけが最も効果的な教育。'},
+  {star:false,q:'難聴児の規準喃語出現時期として正しいのはどれか？',c:['健聴児と同じ6か月〜','産声も規準喃語も出現しない','健聴児（6〜10か月）に比べ大幅に遅れる（11〜25か月）','クーイングより早く出現する'],a:2,exp:'規準喃語は聴覚フィードバックが必要なため、難聴児では11〜25か月と大幅に遅れる。産声・初期喃語（クーイングなど）は難聴児にも出現する。★早期発見の鍵。'},
+  {star:true,q:'共同注意の説明として最も適切なものはどれか？',c:['単に見ている方向が同じであること','同一の対象に注意を向け、思い浮かべているイメージ・主観を共有すること','母親が子どもの声を模倣すること','助詞を使い始めること'],a:1,exp:'共同注意（joint attention）＝見ている方向が同じだけ（×）ではなく、思い浮かべているイメージを共有すること（○）。三項関係成立後に発達する。'},
+];
+
+/* ══════════════════
+   ページ切替
+══════════════════ */
+function switchPage(p){
+  document.querySelectorAll('.nb').forEach((b,i)=>b.classList.toggle('active',['ana','sel','flash','quiz'][i]===p));
+  document.querySelectorAll('.page').forEach(s=>s.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  if(p==='flash') renderFC();
+  if(p==='quiz') initQuiz();
+}
+
+/* ══════════════════
+   大問1 穴埋め
+══════════════════ */
+let anaScore=0, anaAnswered=new Array(ANA.length).fill(false);
+
+function buildAna(){
+  const list=document.getElementById('ana-list');
+  list.innerHTML='';
+  ANA.forEach((item,i)=>{
+    const div=document.createElement('div');
+    div.className='q-block';
+    div.innerHTML=`
+      <div class="q-num">問${i+1}</div>
+      <div class="q-text">${item.q}</div>
+      <div class="ans-row">
+        <input class="ans-input" id="ai-${i}" type="text" placeholder="答えを入力..." oninput="checkOnEnter(event,${i})">
+        <button class="check-btn" onclick="checkAna(${i})">確認</button>
+        <button class="show-btn" onclick="showAna(${i})">答えを見る</button>
+      </div>
+      <div class="ans-result" id="ar-${i}"></div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function checkOnEnter(e,i){if(e.key==='Enter')checkAna(i);}
+
+function normalize(s){return s.replace(/\s|　/g,'').toLowerCase();}
+
+function checkAna(i){
+  const input=document.getElementById('ai-'+i);
+  const result=document.getElementById('ar-'+i);
+  const val=input.value.trim();
+  if(!val)return;
+  const item=ANA[i];
+  const ans=item.ans;
+  const alts=item.alt||[];
+  const ok=normalize(val)===normalize(ans)||alts.some(a=>normalize(val)===normalize(a));
+  input.classList.remove('correct','wrong');
+  input.classList.add(ok?'correct':'wrong');
+  result.className='ans-result '+(ok?'ok':'ng');
+  result.style.display='block';
+  if(ok){
+    result.textContent='✓ 正解！　'+item.exp;
+    if(!anaAnswered[i]){anaAnswered[i]=true;anaScore++;document.getElementById('a-ok').textContent=anaScore;document.getElementById('a-prog').style.width=(anaScore/ANA.length*100)+'%';}
+  } else {
+    result.innerHTML=`✗ 不正解。正解は「<strong>${ans}</strong>」です。<br>${item.exp}`;
+  }
+}
+
+function showAna(i){
+  const input=document.getElementById('ai-'+i);
+  const result=document.getElementById('ar-'+i);
+  input.value=ANA[i].ans;
+  input.classList.add('correct');
+  result.className='ans-result ok';
+  result.textContent='答え：'+ANA[i].ans+'　'+ANA[i].exp;
+  result.style.display='block';
+}
+
+function resetAna(){
+  anaScore=0; anaAnswered=new Array(ANA.length).fill(false);
+  document.getElementById('a-ok').textContent=0;
+  document.getElementById('a-prog').style.width='0%';
+  buildAna();
+}
+
+/* ══════════════════
+   大問2 選択
+══════════════════ */
+let selScore=0, selTotal=4, selAnswered=[false,false,false,false];
+
+function buildSel(){
+  const list=document.getElementById('sel-list');
+  list.innerHTML='';
+
+  // Q1：ブルーナー・ヴィゴツキー
+  const d1=document.createElement('div');d1.className='q2-block';
+  d1.innerHTML=`<div class="q-num">問1</div>
+  <div class="q2-text" style="white-space:pre-line">${SEL_Q1.q}</div>
+  ${SEL_Q1.persons.map((p,pi)=>`
+    <div style="margin-bottom:8px">
+      <strong style="font-size:13px">${p}：</strong>
+      <div class="choices" id="sq1-${pi}" style="margin-top:5px">
+        ${SEL_Q1.choices.map((c,ci)=>`<button class="ch" onclick="ansMultiPerson(${pi},${ci})">${c}</button>`).join('')}
+      </div>
+    </div>
+  `).join('')}
+  <div class="exp" id="se1"></div>`;
+  list.appendChild(d1);
+
+  // Q2：コミュニケーション
+  const d2=document.createElement('div');d2.className='q2-block';
+  d2.innerHTML=`<div class="q-num">問2</div>
+  <div class="q2-text">${SEL_Q2.q}</div>
+  <div class="choices" id="sq2">
+    ${SEL_Q2.choices.map((c,i)=>`<button class="ch" onclick="ansSingle(${i},'sq2','se2',${SEL_Q2.ans},1)">${c}</button>`).join('')}
+  </div>
+  <div class="exp" id="se2"></div>`;
+  list.appendChild(d2);
+
+  // Q3：イラスト
+  const d3=document.createElement('div');d3.className='q2-block';
+  const illusHtml=SEL_Q3.items.map((it,ii)=>`
+    <div class="illus-item">
+      <div class="illus-box">${it.icon}<span style="font-size:10px;margin-top:3px">${it.desc}</span></div>
+      <div class="illus-lbl" style="margin-bottom:5px;font-size:11.5px">${it.label}</div>
+      <div class="choices" id="sq3-${ii}">
+        ${['ア：マンド','イ：タクト','ウ：エコイック'].map((c,ci)=>`<button class="ch" style="font-size:11px;padding:6px 8px" onclick="ansIllus(${ii},${ci})">${c}</button>`).join('')}
+      </div>
+    </div>
+  `).join('');
+  d3.innerHTML=`<div class="q-num">問3</div>
+  <div class="q2-text">${SEL_Q3.q}</div>
+  <div class="illus-row">${illusHtml}</div>
+  <div class="exp" id="se3"></div>`;
+  list.appendChild(d3);
+
+  // Q4：複数選択
+  const d4=document.createElement('div');d4.className='q2-block';
+  const multiFeatHtml=SEL_Q4.items.map((it,ii)=>`
+    <div style="margin-bottom:10px">
+      <div style="font-size:13px;color:var(--text);margin-bottom:5px">・${it.text}</div>
+      <div class="choices" id="sq4-${ii}" style="flex-direction:row;flex-wrap:wrap;gap:5px">
+        ${SEL_Q4.choices_raw.map((c,ci)=>`<button class="ch" style="flex:none;font-size:12px;padding:5px 10px" onclick="ansMultiFeat(${ii},${ci})">${c.key}：${c.text}</button>`).join('')}
+      </div>
+    </div>
+  `).join('');
+  d4.innerHTML=`<div class="q-num">問4</div>
+  <div class="q2-text">${SEL_Q4.q}</div>
+  ${multiFeatHtml}
+  <div class="exp" id="se4"></div>`;
+  list.appendChild(d4);
+}
+
+let s1State=[null,null], s3State=[null,null,null], s4State=[null,null,null];
+
+function ansMultiPerson(personIdx, choiceIdx){
+  s1State[personIdx]=choiceIdx;
+  const correct=SEL_Q1.ans[SEL_Q1.persons[personIdx]].includes(choiceIdx);
+  const container=document.getElementById('sq1-'+personIdx);
+  [...container.querySelectorAll('.ch')].forEach((b,i)=>{
+    b.disabled=true;
+    if(SEL_Q1.ans[SEL_Q1.persons[personIdx]].includes(i))b.classList.add('correct');
+    else if(i===choiceIdx&&!correct)b.classList.add('wrong');
+  });
+  // 両方回答したらまとめて解説
+  if(s1State[0]!==null&&s1State[1]!==null){
+    const exp=document.getElementById('se1');
+    exp.innerHTML=`<b>解説</b>　${SEL_Q1.exp}`;
+    exp.style.display='block';
+    if(!selAnswered[0]){
+      const ok0=SEL_Q1.ans['ブルーナー'].includes(s1State[0]);
+      const ok1=SEL_Q1.ans['ヴィゴツキー'].includes(s1State[1]);
+      if(ok0&&ok1){selAnswered[0]=true;selScore++;updateSelScore();}
+    }
+  }
+}
+
+function ansSingle(idx,gid,eid,correctIdx,qnum){
+  const container=document.getElementById(gid);
+  [...container.querySelectorAll('.ch')].forEach((b,i)=>{
+    b.disabled=true;
+    if(i===correctIdx)b.classList.add('correct');
+    else if(i===idx&&idx!==correctIdx)b.classList.add('wrong');
+  });
+  const exp=document.getElementById(eid);
+  const ok=idx===correctIdx;
+  exp.innerHTML=`<b>${ok?'✓ 正解！':'✗ 不正解'}</b>　${SEL_Q2.exp}`;
+  exp.style.display='block';
+  if(!selAnswered[1]&&ok){selAnswered[1]=true;selScore++;updateSelScore();}
+}
+
+const correctAns3=['ア：マンド','イ：タクト','ウ：エコイック'];
+function ansIllus(itemIdx, choiceIdx){
+  const container=document.getElementById('sq3-'+itemIdx);
+  const correct=SEL_Q3.items[itemIdx].ans;
+  const chosen=['ア：マンド','イ：タクト','ウ：エコイック'][choiceIdx];
+  [...container.querySelectorAll('.ch')].forEach((b,i)=>{
+    b.disabled=true;
+    if(['ア：マンド','イ：タクト','ウ：エコイック'][i]===correct)b.classList.add('correct');
+    else if(i===choiceIdx&&chosen!==correct)b.classList.add('wrong');
+  });
+  s3State[itemIdx]=choiceIdx;
+  if(s3State.every(v=>v!==null)){
+    const exp=document.getElementById('se3');
+    exp.innerHTML=`<b>解説</b>　${SEL_Q3.exp}`;
+    exp.style.display='block';
+    const allOk=SEL_Q3.items.every((it,ii)=>['ア：マンド','イ：タクト','ウ：エコイック'][s3State[ii]]===it.ans);
+    if(!selAnswered[2]&&allOk){selAnswered[2]=true;selScore++;updateSelScore();}
+  }
+}
+
+const correctAns4=[['ア'],['ア'],['イ']];
+function ansMultiFeat(itemIdx, choiceIdx){
+  const container=document.getElementById('sq4-'+itemIdx);
+  const correctKeys=correctAns4[itemIdx];
+  const chosen=SEL_Q4.choices_raw[choiceIdx].key;
+  [...container.querySelectorAll('.ch')].forEach((b,i)=>{
+    b.disabled=true;
+    if(correctKeys.includes(SEL_Q4.choices_raw[i].key))b.classList.add('correct');
+    else if(i===choiceIdx&&!correctKeys.includes(chosen))b.classList.add('wrong');
+  });
+  s4State[itemIdx]=choiceIdx;
+  if(s4State.every(v=>v!==null)){
+    const exp=document.getElementById('se4');
+    exp.innerHTML=`<b>解説</b>　${SEL_Q4.exp}`;
+    exp.style.display='block';
+    const allOk=correctAns4.every((ks,ii)=>s4State[ii]!==null&&ks.includes(SEL_Q4.choices_raw[s4State[ii]].key));
+    if(!selAnswered[3]&&allOk){selAnswered[3]=true;selScore++;updateSelScore();}
+  }
+}
+
+function updateSelScore(){
+  document.getElementById('s-ok').textContent=selScore;
+  document.getElementById('s-prog').style.width=(selScore/selTotal*100)+'%';
+}
+function resetSel(){
+  selScore=0;selAnswered=[false,false,false,false];
+  s1State=[null,null];s3State=[null,null,null];s4State=[null,null,null];
+  document.getElementById('s-ok').textContent=0;
+  document.getElementById('s-prog').style.width='0%';
+  buildSel();
+}
+
+/* ══════════════════
+   フラッシュカード
+══════════════════ */
+let fcIdx=0,fcOk=0,fcNg=0;
+function renderFC(){
+  const d=FC_DATA[fcIdx];
+  document.getElementById('fc-num').textContent=d.n;
+  document.getElementById('fc-q').textContent=d.q;
+  document.getElementById('fc-a').textContent=d.a;
+  document.getElementById('fc-cnt').textContent=(fcIdx+1)+' / '+FC_DATA.length;
+  document.getElementById('fc-inner').classList.remove('flipped');
+}
+function flipCard(){document.getElementById('fc-inner').classList.toggle('flipped');}
+function fcMove(d){fcIdx=(fcIdx+d+FC_DATA.length)%FC_DATA.length;renderFC();}
+function fcRate(ok){
+  if(ok)fcOk++;else fcNg++;
+  document.getElementById('f-ok').textContent=fcOk;
+  document.getElementById('f-ng').textContent=fcNg;
+  document.getElementById('f-prog').style.width=Math.min((fcOk+fcNg)/FC_DATA.length*100,100)+'%';
+  fcMove(1);
+}
+
+/* ══════════════════
+   クイズ
+══════════════════ */
+function shuffle(a){let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+let qIdx=0,qOk=0,qNg=0,qAnswered=false,qList=[];
+
+function initQuiz(){
+  qList=shuffle(QUIZ_DATA);
+  qIdx=0;qOk=0;qNg=0;qAnswered=false;
+  document.getElementById('q-ok').textContent=0;
+  document.getElementById('q-ng').textContent=0;
+  document.getElementById('q-prog').style.width='0%';
+  document.getElementById('quiz-result').style.display='none';
+  document.getElementById('quiz-body').style.display='block';
+  renderQuiz();
+}
+function renderQuiz(){
+  if(qIdx>=qList.length){showResult();return;}
+  const q=qList[qIdx];
+  document.getElementById('quiz-q').innerHTML=(q.star?'<span class="star">★国試</span>':'')+q.q;
+  const cc=document.getElementById('quiz-choices');cc.innerHTML='';
+  shuffle(q.c.map((c,i)=>({c,orig:i}))).forEach(({c,orig})=>{
+    const b=document.createElement('button');b.className='qc';b.textContent=c;
+    b.onclick=()=>ansQuiz(b,orig===q.a,q);cc.appendChild(b);
+  });
+  document.getElementById('qexp').style.display='none';
+  document.getElementById('btn-next').style.display='none';
+  qAnswered=false;
+}
+function ansQuiz(el,correct,q){
+  if(qAnswered)return;qAnswered=true;
+  document.querySelectorAll('.qc').forEach(b=>{b.disabled=true;if(b.textContent===q.c[q.a])b.classList.add('correct');});
+  if(!correct)el.classList.add('wrong');
+  if(correct)qOk++;else qNg++;
+  document.getElementById('q-ok').textContent=qOk;
+  document.getElementById('q-ng').textContent=qNg;
+  document.getElementById('q-prog').style.width=((qIdx+1)/qList.length*100)+'%';
+  const exp=document.getElementById('qexp');
+  exp.innerHTML=`<b>${correct?'✓ 正解！':'✗ 不正解'}</b>　${q.exp}`;
+  exp.style.display='block';
+  document.getElementById('btn-next').style.display='inline-block';
+}
+function nextQuiz(){qIdx++;renderQuiz();}
+function showResult(){
+  document.getElementById('quiz-body').style.display='none';
+  document.getElementById('quiz-result').style.display='block';
+  document.getElementById('r-score').textContent=qOk+'/'+qList.length;
+  const pct=qOk/qList.length*100;
+  document.getElementById('r-msg').textContent=
+    pct===100?'満点！レポート完全マスター！このまま本番も絶対大丈夫🎉':
+    pct>=80?'すごい！あと少しで完璧。苦手な問題をフラッシュカードで復習しよう✨':
+    pct>=60?'いい調子！大問1の穴埋めと大問2の選択を何度も繰り返してみよう💪':
+    'フラッシュカードから始めてみよう。繰り返すほど定着するよ！📚';
+}
+
+/* ══════════════════
+   初期化
+══════════════════ */
+buildAna();
+buildSel();
+renderFC();
+</script>
+</body>
+</html>
