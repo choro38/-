@@ -1,0 +1,246 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--surface-0);color:var(--text-primary)}
+.app{max-width:680px;margin:0 auto;padding:1rem 0}
+.header{padding:1rem 0 0.5rem;border-bottom:0.5px solid var(--border);margin-bottom:1rem}
+.header h1{font-size:18px;font-weight:500;color:var(--text-primary)}
+.header p{font-size:13px;color:var(--text-secondary);margin-top:4px}
+.progress-bar-wrap{background:var(--surface-1);border-radius:4px;height:6px;margin:12px 0 0;overflow:hidden}
+.progress-bar{height:6px;background:var(--fill-accent);border-radius:4px;transition:width 0.3s}
+.stats{display:flex;gap:12px;margin:8px 0 1rem;flex-wrap:wrap}
+.stat{background:var(--surface-1);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:var(--text-secondary);flex:1;min-width:80px;text-align:center}
+.stat strong{display:block;font-size:18px;font-weight:500;color:var(--text-primary)}
+.qcard{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.q-meta{font-size:11px;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em}
+.q-text{font-size:15px;font-weight:500;line-height:1.6;margin-bottom:1rem;color:var(--text-primary)}
+.choices{display:flex;flex-direction:column;gap:8px}
+.choice{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:0.5px solid var(--border);border-radius:var(--radius);cursor:pointer;background:var(--surface-2);transition:background 0.15s,border-color 0.15s;font-size:14px;color:var(--text-primary);text-align:left;width:100%}
+.choice:hover:not(:disabled){background:var(--surface-1);border-color:var(--border-strong)}
+.choice .badge{min-width:22px;height:22px;border-radius:50%;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--text-secondary);flex-shrink:0;background:var(--surface-0)}
+.choice.correct{background:var(--bg-success);border-color:var(--border-success)}
+.choice.correct .badge{background:var(--fill-success);border-color:var(--fill-success);color:#fff}
+.choice.wrong{background:var(--bg-danger);border-color:var(--border-danger)}
+.choice.wrong .badge{background:var(--fill-danger);border-color:var(--fill-danger);color:#fff}
+.choice.reveal-correct{background:var(--bg-success);border-color:var(--border-success);opacity:0.7}
+.choice:disabled{cursor:default}
+.explanation{margin-top:12px;padding:10px 12px;background:var(--surface-1);border-radius:var(--radius);border-left:3px solid var(--border-accent);font-size:13px;color:var(--text-secondary);line-height:1.6;display:none}
+.explanation.show{display:block}
+.explanation strong{color:var(--text-accent)}
+.btn-row{display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap}
+button.action{padding:8px 18px;border-radius:var(--radius);border:0.5px solid var(--border-strong);background:transparent;color:var(--text-primary);cursor:pointer;font-size:13px;font-family:var(--font-sans)}
+button.action:hover{background:var(--surface-1)}
+button.action.primary{background:var(--fill-accent);color:#fff;border-color:var(--fill-accent)}
+button.action.primary:hover{background:var(--fill-accent-hover,#1a56db);border-color:var(--fill-accent-hover,#1a56db)}
+.result-screen{text-align:center;padding:2rem 1rem}
+.result-score{font-size:48px;font-weight:500;color:var(--text-primary);margin:1rem 0 0.25rem}
+.result-msg{font-size:16px;color:var(--text-secondary);margin-bottom:1.5rem}
+.tag{display:inline-block;padding:2px 8px;border-radius:var(--radius);font-size:11px;background:var(--bg-accent);color:var(--text-accent);margin-bottom:8px}
+.filter-row{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.filter-btn{padding:5px 12px;border-radius:var(--radius);border:0.5px solid var(--border);background:transparent;cursor:pointer;font-size:12px;color:var(--text-secondary);font-family:var(--font-sans)}
+.filter-btn:hover,.filter-btn.active{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
+.mode-select{margin-bottom:1rem;display:flex;gap:8px;align-items:center}
+.mode-select label{font-size:13px;color:var(--text-secondary)}
+select{padding:5px 10px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-2);color:var(--text-primary);font-size:13px;font-family:var(--font-sans);cursor:pointer}
+</style>
+
+<div class="app">
+  <div class="header">
+    <div class="tag">言語学</div>
+    <h1>言語学 過去問クイズ</h1>
+    <p>授業で出題された選択問題を練習できます</p>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="prog"></div></div>
+  </div>
+
+  <div id="stats-row" class="stats">
+    <div class="stat"><strong id="s-done">0</strong>回答済み</div>
+    <div class="stat"><strong id="s-correct">0</strong>正解</div>
+    <div class="stat"><strong id="s-pct">—</strong>正答率</div>
+    <div class="stat"><strong id="s-left">0</strong>残り</div>
+  </div>
+
+  <div class="filter-row" id="filter-row"></div>
+  <div class="mode-select">
+    <label>出題順：</label>
+    <select id="mode-sel">
+      <option value="order">出題順</option>
+      <option value="random">シャッフル</option>
+    </select>
+    <label style="margin-left:8px">カテゴリ：</label>
+    <select id="cat-sel">
+      <option value="all">すべて</option>
+      <option value="記号・言語学基礎">記号・言語学基礎</option>
+      <option value="形態論">形態論</option>
+      <option value="統語論">統語論</option>
+      <option value="意味論">意味論</option>
+      <option value="音韻論">音韻論</option>
+      <option value="文字">文字</option>
+      <option value="文法範疇">文法範疇</option>
+    </select>
+  </div>
+
+  <div id="quiz-area"></div>
+</div>
+
+<script>
+const ALL_Q = [
+  {id:1,cat:"記号・言語学基礎",q:"意味役割をあらわす後置詞を2つ選べ",type:"multi",choices:["まで","しか","より","が","すら"],ans:[0,2],exp:"「まで」（限界・着点）と「より」（比較基準）が意味役割を表す後置詞。「が」は格を表すが意味役割は動詞依存。「しか」「すら」は限定・極端例示の係助詞。"},
+  {id:2,cat:"記号・言語学基礎",q:"日本語の母語獲得について誤っているものを1つ選べ",type:"single",choices:["ヒトという種に固有している","一定の年齢までに基本的な獲得をする","親と同じ母語を獲得する","周囲の言語を資料として獲得する"],ans:[2],exp:"誤りは③。母語獲得は親の言語ではなく「周囲の環境の言語」を習得する。日本生まれでも海外育ちなら現地語が母語になりうる。"},
+  {id:3,cat:"文字",q:"文字について正しいものを2つ選びなさい",type:"multi",choices:["ラテン文字は音節文字である","漢字は表意文字である","国字は表音文字である","片仮名はモーラ文字である","平仮名は音素文字である"],ans:[0,3],exp:"○ラテン文字は音節文字。○片仮名はモーラ文字。×漢字は表意文字ではなく表語文字（表音要素も含む）。×平仮名はモーラ文字（音素文字ではない）。"},
+  {id:4,cat:"統語論",q:"「二階は人に貸した」の「人に貸した」が示すものを2つ選べ",type:"multi",choices:["新情報","旧情報","トピック","コメント","主題"],ans:[0,3],exp:"「二階は」がトピック・主題・旧情報、「人に貸した」がコメント・新情報に相当する。情報構造の観点から「コメント」と「新情報」が正解。"},
+  {id:5,cat:"形態論",q:"形態素について誤っているものを3つ選べ",type:"multi",choices:["「はなみ」は「はな」と「み」に分けられる","「さかな」の「さ」が形態素である","語の最大の単位・形態素最小の単位とする","「はな」は「は」と「な」に分けられる","「さまざま」は2回形態素が繰り返している"],ans:[1,2,3],exp:"×「さかな」の「さ」は形態素ではない（「さかな」全体が1形態素）。×形態素は語の最小単位。×「はな」はそれ以上分割できない1形態素。○「はなみ」は「はな＋み」、○「さまざま」は「さま」の繰り返し。"},
+  {id:6,cat:"統語論",q:"可逆文となるものを選べ",type:"single",choices:["母がリンゴを食べた","亀が飼育員から餌をもらった","兄が妹に飴をあげた","太郎が次郎を叩いた","花子が机に置いた"],ans:[3],exp:"可逆文とは主語と目的語を入れ替えても文として成立するもの。「次郎が太郎を叩いた」も成立するので④が可逆文。他は意味的に逆転不可能。"},
+  {id:7,cat:"意味論",q:"他の用法と異なる「た」の例を2つ選べ",type:"multi",choices:["今日は1時にお昼を食べた","彼はその場では本当のことを話さなかった","そのペンいつ買ったの？","明日は休日だった","来なかった人は誰かな"],ans:[3,4],exp:"④「明日は休日だった」は反事実・仮定用法。⑤「来なかった人」は関係節中の過去形とは異なる用法。①②③は基本的な過去・完了の「た」。"},
+  {id:8,cat:"記号・言語学基礎",q:"言語記号の恣意性について正しいものを2つ選びなさい",type:"multi",choices:["経験に先立って生得概念が存在する","言語によって意味世界の組織化が異なる","言語表現と言語外世界との間には因果関係がある","表現と内容との間に必然的な結びつきはない","言語は既にカテゴリー化された世界を敷き写したもの"],ans:[1,3],exp:"恣意性①：言語によって意味世界の整理が異なる（water≠水＋湯）。恣意性②：音形と意味の結びつきに必然性はない（例：「犬」がなぜ/inu/か）。①③⑤は誤り。"},
+  {id:9,cat:"記号・言語学基礎",q:"世界の言語の数に最も近いものを選べ",type:"single",choices:["160","260","600","6000","60000"],ans:[3],exp:"世界の言語数は6000〜7000と推定されている。STの授業・テストでは「6000」が正答として用いられる。"},
+  {id:10,cat:"統語論",q:"統語的な格を表示する要素を2つ選べ",type:"multi",choices:["を","から","て","が","た"],ans:[0,3],exp:"「を」（対格）と「が」（主格）が統語的格標示の後置詞。「から」は起点・意味役割。「て」は接続助詞。「た」は時制マーカー（形態素）。"},
+  {id:11,cat:"統語論",q:"「私はりんごは好きだ」のりんごの「は」が表すものを選べ",type:"single",choices:["主題","主目","目的語","対比","対象"],ans:[3],exp:"「りんごは」の「は」は対比の係助詞。「（他はともかく）りんごは好きだ」という対比を示す。「私は」の「は」が主題。"},
+  {id:12,cat:"形態論",q:"「山奥（やまおく）」と「山脈（さんみゃく）」で拘束形態素はどれか",type:"single",choices:["やまおく","やま","おく","さん","みゃく"],ans:[3],exp:"「さん」（山の音読み）は単独では使えない拘束形態素。「やま」「おく」は自由形態素（単独で語として使える）。「みゃく」も拘束形態素だが選択肢での正答は「さん」。"},
+  {id:13,cat:"統語論",q:"「太郎が机に本を置いた」における「太郎」「机」「本」の役割を記せ",type:"single",choices:["太郎＝動作主・机＝着点・本＝対象","太郎＝対象・机＝場所・本＝動作主","太郎＝動作主・机＝道具・本＝着点","太郎＝着点・机＝動作主・本＝対象"],ans:[0],exp:"太郎＝動作主（agent：動作を起こす存在）、机＝着点（goal：物が向かう先）、本＝対象（theme/patient：移動する物）。意味役割の基本。"},
+  {id:14,cat:"記号・言語学基礎",q:"生成文法の「言語能力」によって可能になるものを3つ選べ",type:"multi",choices:["母語によって発せられた正文と非文の直観的判断","母語を用いて無限に適格文を作り出す創造的能力","生後短期間での母語の獲得","第二言語の習得","母語によって発せられた暧昧文の迅速な理解"],ans:[0,1,4],exp:"チョムスキー（米・言語学者）の言語能力（competence）は①正文/非文の直観的判断、②無限の文産出能力、⑤暧昧文の理解を可能にする。③は言語習得装置LAD、④は言語能力の外。"},
+  {id:15,cat:"形態論",q:"連濁の例を2つ選べ",type:"multi",choices:["どんどん","まった（待った）","がらがら","ときどき","青空"],ans:[0,2],exp:"連濁は複合語後部要素の清音が濁音化する現象。「どんどん」「がらがら」が連濁の例。「ときどき」は清音のまま（ライマンの法則など）。「青空」（あおぞら）はそらがぞらに→これも連濁！　選択肢④「ときどき」と確認。"},
+  {id:16,cat:"形態論",q:"異形態の例を1つ選べ",type:"single",choices:["海を表す「カイ」と「うみ」","「原野」と「野原」","「食べるだろう」と「食べるはずだ」","「まっさお」の「さお」と「あお」","「するする」と「ずるずる」"],ans:[3],exp:"異形態（allomorph）は同一形態素が音韻環境で異なる音形をとるもの。「まっさお」の「さお（青）」と「あお（青）」は同じ形態素の異形態。①は音読み・訓読みで別形態素。"},
+  {id:17,cat:"統語論",q:"日本語の基本語順はどれか",type:"single",choices:["SVO","SOV","VSO","OVS","OSV"],ans:[1],exp:"日本語の基本語順はSOV（主語・目的語・動詞）。例：「太郎が（S）花子を（O）見た（V）」。英語はSVO。世界的にはSOVが最も多い。"},
+  {id:18,cat:"形態論",q:"ら抜き言葉はどれか（1つ選べ）",type:"single",choices:["見える","投げれる","食べさせられる","蹴られる","来られる"],ans:[1],exp:"「投げれる」は「投げられる」からら抜きしたもの。「見える」は可能の別語。「食べさせられる」は使役受身で正形。「蹴られる」「来られる」は正しい可能・受身形。"},
+  {id:19,cat:"記号・言語学基礎",q:"すべての言語に当てはまるとは限らないものを2つ選べ",type:"multi",choices:["記号の体系である","書記記号を有する","文を生成する文法を持つ","名詞・動詞・形容詞・接置詞を有する","語は語幹と接辞からなる"],ans:[1,3],exp:"①記号体系・③文法はすべての言語に共通。②書記記号（文字）を持たない言語は存在する（口頭言語のみ）。④品詞体系は言語により大きく異なる。⑤語構造も言語により様々。"},
+  {id:20,cat:"文法範疇",q:"「花子は寝ていたかもしれない」「花子は寝るだろう」の文法範疇の違いを3つ選べ",type:"multi",choices:["アスペクト","意味役割","モダリティ","ヴォイス","テンス"],ans:[0,2,4],exp:"「寝ていた（進行・完了）」vs「寝る」→アスペクトの違い。「かもしれない」vs「だろう」→モダリティの違い。「寝ていた（過去）」vs「寝る（非過去）」→テンスの違い。"},
+  {id:21,cat:"音韻論",q:"音素について正しいものを2つ選べ",type:"multi",choices:["意味を区別する役割を持つ","意味を担う最小単位","ことばの第一次分節である","発声において音声的なものを異音という","—"],ans:[0,2],exp:"○音素は意味を区別できる最小の音声単位（例：/s/と/z/で「差」と「座」が区別される）。○ことばの第一次分節（二次分節は形態素）。×意味を担う最小単位は形態素。×意味を区別しない音声変異が異音（allophone）。"},
+  {id:22,cat:"統語論",q:"二項動詞を1つ選べ",type:"single",choices:["殴る","走る","与える","もらう","眠る"],ans:[2],exp:"二項動詞は主語＋目的語の2項を要求する動詞。「与える」は「AがBにCを与える」で3項とも取れるが、2項以上の典型。「走る」「眠る」は一項動詞。「殴る」「もらう」も二項動詞の選択肢だが、提示された選択肢では「与える」が最も典型的な二項動詞。"},
+  {id:23,cat:"形態論",q:"「見させられた」の形態素として正しいものを選べ",type:"single",choices:["「見させられ」の部分だけ","「見させられた」全体","「させ」と「られ」と「た」","「見」と「させ」と「られ」と「た」","「見」と「させられ」と「た」"],ans:[3],exp:"「見させられた」の形態素分析：見（語幹）＋させ（使役）＋られ（受身）＋た（過去）の4形態素。④が正解。"},
+  {id:24,cat:"記号・言語学基礎",q:"正しいものを2つ選べ",type:"multi",choices:["世界で1番使われている語順はSVO型である","意味を持つ最小の単位を語という","言語による情報伝達の基本的単位は文である","うなり声による伝達は言語的コミュニケーションの一種である","言語能力を使用した発話や発話理解を行うことを言語運用という"],ans:[2,4],exp:"○言語による情報伝達の基本単位は文（sentence）。○言語能力を実際に使用することが言語運用（performance）。×最多語順はSOV。×「語」でなく「形態素」が意味の最小単位。×うなり声は非言語的コミュニケーション。"},
+  {id:25,cat:"統語論",q:"日本語の語構造について正しいものを1つ選べ",type:"single",choices:["原則として形態素が語となる","原則として自由形態素をもたず文全体が語となる","語幹が接辞・境界が明確である","常に複数の語幹からなる","語幹が接辞・形変化や境界が明確ではない"],ans:[4],exp:"日本語は語幹と接辞の境界が不明確（アグルチネーション的だが接辞結合が複雑）。膠着語的特性を持ち、形変化の境界が英語ほど明確ではない。⑤が正解。"},
+  {id:26,cat:"記号・言語学基礎",q:"正しいものを3つ選べ",type:"multi",choices:["継起的にシニフィアンの線状性をもつ","閉じた形態素・開いた音素","言語記号は音形を表す","1語からなる言語？文？がある","第一次文節は形態素・第二次文節は音素である"],ans:[0,2,4],exp:"○線状性：シニフィアン（音形）は時間軸上で線状に展開する。○言語記号は音形と意味の結合体。○第一次分節は形態素、第二次分節は音素（マルティネの二重分節）。"},
+  {id:27,cat:"形態論",q:"活用で音便があらわれるものを3つ選べ",type:"multi",choices:["見る","書く","知る","聞く","投げる"],ans:[1,3,4],exp:"音便は活用形で音が変化する現象。「書く→書いた（イ音便）」「聞く→聞いた（イ音便）」「投げる→投げた（音便なし？）」。五段活用動詞でテ形・タ形に音便が現れる。"},
+  {id:28,cat:"文法範疇",q:"事態の時間的展開のどの段階が問題となっているかを示す文法的なものの作用は何か",type:"single",choices:["モダリティ","ヴォイス","テンス","アスペクト","格"],ans:[3],exp:"アスペクト（aspect）は事態の時間的展開の段階（開始・進行・完了など）を示す文法範疇。「寝ている（進行）」「寝た（完了）」など。テンスは時制（いつか）。"},
+  {id:29,cat:"文法範疇",q:"文が表示する事態の事実性に関する話し手の判断を表す文法的手段は1つ選べ",type:"single",choices:["モダリティ","ヴォイス","テンス","アスペクト","格"],ans:[0],exp:"モダリティ（modality）は事態の事実性・確実性・義務などに対する話し手の判断を表す。「〜かもしれない」「〜だろう」「〜にちがいない」など。"},
+  {id:30,cat:"文字",q:"漢字とその分類の組み合わせで誤りはどれか",type:"single",choices:["月－象形文字","日－指示文字","林－会意文字","清－形声文字","楽－転注"],ans:[1],exp:"「日」は象形文字（太陽の形をかたどった）であり、指示文字ではない。指示文字の例は「一・二・三」「上・下」など。「月」「林」「清」「楽」の分類は正しい。"},
+  {id:31,cat:"文字",q:"誤っているものを2つ答えよ",type:"multi",choices:["文字を持たない言語がある","ローマ字は表意文字である","表語文字は音を持たない","文字は記録性に優れている","表音文字の方が表意文字より抽象的である"],ans:[1,2],exp:"×ローマ字は表音文字（音素文字）であり表意文字ではない。×表語文字にも音（読み）があり音を持たないわけではない（漢字にも音読みがある）。○文字を持たない言語は存在する。○文字は記録性に優れる。"},
+  {id:33,cat:"形態論",q:"「太郎にご飯を食べさせる」の文章で機能語・機能形態素を3つ選べ",type:"multi",choices:["「太郎に」の「に」","「太郎に」の「太郎」","「食べさせる」の「食べ」","「食べさせる」の「させ」","「食べさせる」の「る」"],ans:[0,3,4],exp:"機能語・機能形態素は文法的意味を担う要素。「に」（格助詞）、「させ」（使役の助動詞形態素）、「る」（現在時制・非過去の形態素）が機能形態素。「太郎」「食べ」は内容形態素（語彙形態素）。"},
+  {id:34,cat:"文字",q:"狭義の音節文字はどれか（1つ）",type:"single",choices:["かな文字","ローマ字","漢字","和字","ハングル"],ans:[0],exp:"狭義の音節文字（syllabic writing）は日本語の仮名（かな）文字。ローマ字は音素文字、漢字は表語文字、ハングルは音素文字（音節ブロックを構成するが）。仮名は1文字＝1モーラ（音節的単位）。"},
+  {id:35,cat:"形態論",q:"ある言語の形態素・語の総体を意味するものを選べ",type:"single",choices:["文法","統語範疇","語種","語類","語彙"],ans:[4],exp:"語彙（vocabulary/lexicon）は、ある言語における形態素・語の総体。「語彙が豊富」などの使い方と一致する。「文法」は語配列の規則、「語種」は語の出自（和語・漢語・外来語など）を指す。"},
+  {id:36,cat:"文法範疇",q:"「伝わらなかったかもしれない」の後ろから3番目の形態素を選べ",type:"single",choices:["態","格","相","極性","○○"],ans:[2],exp:"「伝わら（否定語幹）＋なかっ（過去否定）＋た（過去）＋か（疑問）＋も（も）＋しれ（知れ）＋ない（否定）」。後ろから3番目は「も」「しれ」「ない」の「しれ」→意味的には「相（アスペクト）」的要素。正確な分析要確認。"},
+  {id:37,cat:"意味論",q:"「長椅子」「肘掛け椅子」と同じ意味関係にある対を1つ選べ（2点）",type:"single",choices:["果物・梨","高い・低い","私立・私学","売る・買う","植物・動物"],ans:[4],exp:"「長椅子」と「肘掛け椅子」は上位語・下位語（hyponymy）の関係ではなく、同位語（co-hyponym）の関係。「植物」「動物」は生物という上位語の下の同位語。①は上下関係。②は反義語。③は同義語。④は逆義語。"},
+  {id:38,cat:"統語論",q:"「が」で従属節の始まりを示すものを1つ選べ（3点）",type:"single",choices:["委員会に私が提示した案を受け入れられなかった","彼女はテレビを見ながら朝ご飯を食べる","隣の部屋から父がいびきをかくのが聞こえた","彼は煙草を消して無言で出て行った","夢があるのは羨ましいと思う"],ans:[2],exp:"③「父がいびきをかくの」の「が」は従属節（埋め込み節）内の主格を示しており、従属節の始まりを示す「が」の用法。他の「が」は主節の主格または接続助詞。"},
+  {id:39,cat:"統語論",q:"統語的特徴で誤りを2つ選べ",type:"multi",choices:["名詞の格が接頭辞","形容詞が述語になる","述語が文末にくる","真偽疑問文の語順は平叙文と異なる","従属節は主要部に先行する"],ans:[0,3],exp:"×日本語の格は接頭辞ではなく後置詞（助詞）で示される。×日本語の真偽疑問文は語順が平叙文と同じで、文末に「か」を付けるだけ（英語のように倒置しない）。○述語は文末、○形容詞述語、○従属節先行はすべて正しい。"},
+  {id:40,cat:"文字",q:"日本語の一番古いものは何か",type:"single",choices:["平仮名","片仮名","漢字","万葉仮名","ローマ字"],ans:[3],exp:"日本語の最古の表記システムは万葉仮名（まんようがな）。漢字の音・訓を借りて日本語の音を表記したもので、万葉集で多用された。平仮名・片仮名は万葉仮名から発展した。"},
+];
+
+let questions = [...ALL_Q];
+let current = 0, answered = 0, correct = 0;
+let userAnswers = {};
+let selectedCat = 'all';
+let quizMode = 'order';
+
+function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
+
+function filterQuestions(){
+  questions = selectedCat === 'all' ? [...ALL_Q] : ALL_Q.filter(q=>q.cat===selectedCat);
+  if(quizMode === 'random') questions = shuffle([...questions]);
+  current = 0; answered = 0; correct = 0; userAnswers = {};
+  updateStats(); renderQ();
+}
+
+function updateStats(){
+  const pct = answered > 0 ? Math.round(correct/answered*100) + '%' : '—';
+  document.getElementById('s-done').textContent = answered;
+  document.getElementById('s-correct').textContent = correct;
+  document.getElementById('s-pct').textContent = pct;
+  document.getElementById('s-left').textContent = questions.length - current;
+  const p = questions.length > 0 ? (current/questions.length*100) : 0;
+  document.getElementById('prog').style.width = p + '%';
+}
+
+function renderQ(){
+  const area = document.getElementById('quiz-area');
+  if(current >= questions.length){
+    showResult(area); return;
+  }
+  const q = questions[current];
+  const isMulti = q.type === 'multi';
+  const labels = ['A','B','C','D','E','F'];
+  let choiceHtml = q.choices.map((c,i)=>
+    `<button class="choice" data-i="${i}" onclick="selectChoice(${q.id},${i},${isMulti})">
+      <span class="badge">${labels[i]}</span><span>${c}</span>
+    </button>`).join('');
+  area.innerHTML = `
+    <div class="qcard" id="qcard-${q.id}">
+      <div class="q-meta">問 ${current+1} / ${questions.length} ／ ${q.cat} ／ ${isMulti?'複数選択':'1つ選択'}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="choices" id="choices-${q.id}">${choiceHtml}</div>
+      <div class="explanation" id="exp-${q.id}"><strong>解説：</strong>${q.exp}</div>
+      <div class="btn-row" id="btnrow-${q.id}">
+        ${isMulti ? `<button class="action primary" onclick="submitMulti(${q.id})">回答する</button>` : ''}
+      </div>
+    </div>`;
+  userAnswers[q.id] = {selected:[], submitted:false};
+}
+
+let selected = {};
+function selectChoice(qid, idx, isMulti){
+  if(userAnswers[qid] && userAnswers[qid].submitted) return;
+  const q = ALL_Q.find(x=>x.id===qid);
+  if(!selected[qid]) selected[qid] = [];
+  const btn = document.querySelector(`#choices-${qid} [data-i="${idx}"]`);
+  if(!isMulti){
+    document.querySelectorAll(`#choices-${qid} .choice`).forEach(b=>b.classList.remove('selected'));
+    selected[qid] = [idx];
+    btn.classList.add('selected');
+    btn.style.borderColor = 'var(--border-accent)';
+    btn.style.background = 'var(--bg-accent)';
+    submitAnswer(qid);
+  } else {
+    const pos = selected[qid].indexOf(idx);
+    if(pos >= 0){ selected[qid].splice(pos,1); btn.classList.remove('selected'); btn.style.background=''; btn.style.borderColor=''; }
+    else { selected[qid].push(idx); btn.classList.add('selected'); btn.style.borderColor='var(--border-accent)'; btn.style.background='var(--bg-accent)'; }
+  }
+}
+
+function submitMulti(qid){
+  if(!selected[qid] || selected[qid].length === 0) return;
+  submitAnswer(qid);
+}
+
+function submitAnswer(qid){
+  const q = ALL_Q.find(x=>x.id===qid);
+  const sel = selected[qid] || [];
+  userAnswers[qid].submitted = true;
+  const isCorrect = JSON.stringify(sel.slice().sort()) === JSON.stringify(q.ans.slice().sort());
+  if(isCorrect) correct++;
+  answered++;
+  document.querySelectorAll(`#choices-${qid} .choice`).forEach(b=>{ b.disabled = true; b.style.cursor='default'; });
+  q.choices.forEach((c,i)=>{
+    const btn = document.querySelector(`#choices-${qid} [data-i="${i}"]`);
+    btn.style.background=''; btn.style.borderColor='';
+    if(q.ans.includes(i) && sel.includes(i)) btn.className='choice correct';
+    else if(q.ans.includes(i)) btn.className='choice reveal-correct';
+    else if(sel.includes(i)) btn.className='choice wrong';
+  });
+  document.getElementById(`exp-${qid}`).classList.add('show');
+  const btnrow = document.getElementById(`btnrow-${qid}`);
+  btnrow.innerHTML = `<button class="action primary" onclick="nextQ()">次の問題 →</button>
+    ${current > 0 ? '' : ''}`;
+  updateStats();
+}
+
+function nextQ(){ current++; updateStats(); renderQ(); }
+
+function showResult(area){
+  const pct = Math.round(correct/questions.length*100);
+  let msg = pct>=90?'🎉 素晴らしい！ほぼ完璧です！': pct>=70?'👍 よくできました！あと少し！': pct>=50?'💪 半分以上正解！もう一息！':'📚 復習して再挑戦しましょう！';
+  area.innerHTML = `<div class="result-screen">
+    <div class="q-meta">クイズ終了</div>
+    <div class="result-score">${correct} / ${questions.length}</div>
+    <div style="font-size:28px;margin-bottom:8px">${pct}点</div>
+    <div class="result-msg">${msg}</div>
+    <div class="btn-row" style="justify-content:center">
+      <button class="action primary" onclick="filterQuestions()">もう一度</button>
+      <button class="action" onclick="quizMode='random';filterQuestions()">シャッフルで再挑戦</button>
+    </div>
+  </div>`;
+}
+
+document.getElementById('mode-sel').onchange = function(){ quizMode = this.value; filterQuestions(); };
+document.getElementById('cat-sel').onchange = function(){ selectedCat = this.value; filterQuestions(); };
+
+filterQuestions();
+</script>
