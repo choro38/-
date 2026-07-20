@@ -1,0 +1,382 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.wrap { padding: 1rem 0; }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.tab {
+  padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
+  border: 0.5px solid var(--border-strong); background: var(--surface-1);
+  color: var(--text-secondary); cursor: pointer; transition: all 0.15s;
+}
+.tab.active { background: var(--fill-accent); color: var(--on-accent); border-color: var(--fill-accent); }
+.section { display: none; }
+.section.active { display: block; }
+.card {
+  background: var(--surface-2); border: 0.5px solid var(--border);
+  border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 12px;
+}
+.card-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.num { font-size: 20px; font-weight: 500; color: var(--text-accent); }
+.label { font-size: 13px; color: var(--text-secondary); }
+.tag { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--bg-accent); color: var(--text-accent); font-weight: 500; }
+.tag.warn { background: var(--bg-warning); color: var(--text-warning); }
+.tag.suc  { background: var(--bg-success); color: var(--text-success); }
+.analogy {
+  font-size: 14px; color: var(--text-primary); line-height: 1.7;
+  border-left: 2px solid var(--border-accent); padding-left: 12px; margin-bottom: 8px;
+  border-radius: 0;
+}
+.trick { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+.trick strong { font-weight: 500; color: var(--text-primary); }
+.bar-wrap { margin: 10px 0 4px; }
+.bar-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.bar-track { height: 8px; background: var(--surface-0); border-radius: 4px; overflow: hidden; border: 0.5px solid var(--border); }
+.bar-fill { height: 100%; border-radius: 4px; background: var(--fill-accent); transition: width 0.6s ease; }
+.bar-fill.warn { background: var(--fill-warning); }
+.bar-fill.suc  { background: var(--fill-success); }
+.bar-fill.danger { background: var(--fill-danger); }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.compare-item { background: var(--surface-1); border-radius: 8px; padding: 8px 10px; font-size: 13px; border: 0.5px solid var(--border); }
+.compare-item .ci-num { font-size: 16px; font-weight: 500; color: var(--text-accent); }
+.compare-item .ci-label { color: var(--text-secondary); font-size: 12px; }
+.h3 { font-size: 13px; font-weight: 500; color: var(--text-muted); margin: 1.2rem 0 0.6rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.visual-row { display: flex; align-items: center; gap: 8px; margin: 8px 0; font-size: 13px; color: var(--text-secondary); }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--fill-accent); flex-shrink: 0; }
+.dot.sm { background: var(--fill-success); }
+.dot.lg { background: var(--fill-danger); }
+</style>
+
+<div class="wrap">
+<h2 class="sr-only">数値を体感で覚えるインタラクティブ解説</h2>
+
+<div class="tabs">
+  <button class="tab active" onclick="show('swallow')">嚥下・食道</button>
+  <button class="tab" onclick="show('blood')">血液ガス</button>
+  <button class="tab" onclick="show('lung')">肺・換気</button>
+  <button class="tab" onclick="show('voice')">発声・声帯</button>
+  <button class="tab" onclick="show('change')">変声期</button>
+</div>
+
+<!-- ===== 嚥下・食道 ===== -->
+<div id="sec-swallow" class="section active">
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">600〜800 msec</span>
+      <span class="label">咽頭期の所要時間</span>
+      <span class="tag warn">超高速！</span>
+    </div>
+    <div class="analogy">
+      まばたき1回が約150〜400msec。咽頭期はまばたき約2回分の時間で喉頭の挙上・気道閉鎖・食道開放をすべてやり遂げる。だから気づかないうちに終わっている。
+    </div>
+    <div class="trick">
+      <strong>覚え方：</strong>「まばたき2回で飲み込み完了」。これが遅れる（1秒超える）と誤嚥リスク急上昇。
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-label">まばたき1回（約300ms）と比較</div>
+      <div style="display:flex;gap:6px;align-items:center;font-size:12px;color:var(--text-muted)">
+        <div style="flex:1">
+          <div class="bar-label">まばたき</div>
+          <div class="bar-track"><div class="bar-fill suc" style="width:37%"></div></div>
+        </div>
+        <div style="flex:1">
+          <div class="bar-label">咽頭期（700ms）</div>
+          <div class="bar-track"><div class="bar-fill warn" style="width:87%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">15 / 25 / 38 cm</span>
+      <span class="label">食道3狭窄部の距離</span>
+      <span class="tag">門歯から</span>
+    </div>
+    <div class="analogy">
+      人差し指の長さが約8cm。自分の口から喉に向かって指で測るイメージ。<br>
+      15cm＝指2本分（のどの入り口）、25cm＝指3本分（大動脈弓の高さ＝胸の中ほど）、38cm＝指5本分（横隔膜の下＝みぞおち付近）。
+    </div>
+    <div class="trick">
+      <strong>語呂：</strong>「いち（15）に（25）さん（38）の食道狭窄」→ 15・25・38<br>
+      <strong>臨床メモ：</strong>内視鏡で異物や腫瘍が引っかかりやすい場所。第1が最も狭い（輪状咽頭筋）。
+    </div>
+    <div style="margin-top:10px;position:relative;height:80px;border-left:2px solid var(--border-strong);margin-left:16px;">
+      <div style="position:absolute;top:0%;left:8px;font-size:12px;color:var(--text-accent);font-weight:500">15cm ── 食道入口部（輪状咽頭筋）</div>
+      <div style="position:absolute;top:38%;left:8px;font-size:12px;color:var(--text-warning);font-weight:500">25cm ── 大動脈弓・左主気管支交差</div>
+      <div style="position:absolute;top:76%;left:8px;font-size:12px;color:var(--text-danger);font-weight:500">38cm ── 横隔膜食道裂孔</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">約2 cm</span>
+      <span class="label">嚥下時の喉頭上昇幅</span>
+      <span class="tag suc">体で感じられる</span>
+    </div>
+    <div class="analogy">
+      自分の喉仏（甲状軟骨）に指を当てて唾を飲んでみて。ぐっと指が押し上げられる感覚が「約2cm上昇」。これが気道を保護する動き。
+    </div>
+    <div class="trick">
+      <strong>確認：</strong>今すぐ試せる数値。麻痺があると喉頭が上がらず誤嚥が起きる。
+    </div>
+  </div>
+</div>
+
+<!-- ===== 血液ガス ===== -->
+<div id="sec-blood" class="section">
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">7.35 〜 7.45</span>
+      <span class="label">動脈血pH</span>
+      <span class="tag suc">超ナイーブな数値</span>
+    </div>
+    <div class="analogy">
+      水道水のpHは約7.0、緑茶は約6.0、重曹水は約8.5。人の血液はほぼ中性でその幅わずか0.1。このたった0.1のずれで臓器が機能不全に。保育園でも「酸・アルカリ」を教えるが、人体はその中立点をミリ単位で守っている。
+    </div>
+    <div class="trick">
+      <strong>覚え方：</strong>「7.4がど真ん中、その前後0.05ずつ」。7.35未満=アシドーシス、7.45超=アルカローシス。
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-label">pH スケール（6.8〜7.8）</div>
+      <div class="bar-track" style="height:14px;border-radius:4px">
+        <div style="display:flex;height:100%">
+          <div style="width:35%;background:var(--fill-danger);border-radius:4px 0 0 4px"></div>
+          <div style="width:10%;background:var(--fill-accent)"></div>
+          <div style="width:55%;background:var(--fill-warning);border-radius:0 4px 4px 0"></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:3px">
+        <span>6.8（致死域）</span><span style="color:var(--text-accent);font-weight:500">7.35-7.45</span><span>7.8（致死域）</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">80〜100 mmHg</span>
+      <span class="label">動脈血酸素分圧（PaO₂）</span>
+      <span class="tag">空気中の酸素圧から考える</span>
+    </div>
+    <div class="analogy">
+      大気圧は760mmHg。空気中の酸素濃度は21%なので酸素分圧は760×0.21≈160mmHg。肺で加湿・交換されるうちに下がり、動脈血では80〜100になる。山に登ると気圧が下がる→酸素分圧も下がる→高山病。
+    </div>
+    <div class="trick">
+      <strong>覚え方：</strong>「80が下限（これ以下で低酸素血症）」。SpO₂（パルスオキシメーター）98〜100%とセットで。
+      <br>PaO₂ 60mmHg以下 → 呼吸不全の定義。
+    </div>
+    <div class="compare">
+      <div class="compare-item"><div class="ci-num">160 mmHg</div><div class="ci-label">大気中の酸素分圧</div></div>
+      <div class="compare-item"><div class="ci-num">80〜100</div><div class="ci-label">動脈血（正常）</div></div>
+      <div class="compare-item"><div class="ci-num" style="color:var(--text-warning)">60〜79</div><div class="ci-label">軽度低酸素血症</div></div>
+      <div class="compare-item"><div class="ci-num" style="color:var(--text-danger)">＜60</div><div class="ci-label">呼吸不全</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">34〜46 mmHg</span>
+      <span class="label">動脈血CO₂分圧（PaCO₂）</span>
+      <span class="tag warn">換気の指標</span>
+    </div>
+    <div class="analogy">
+      CO₂は呼吸で吐き出されるガス。過呼吸（過換気）すると吐きすぎてCO₂が下がり手足がしびれる（保育現場でも見る）。逆に換気が悪いと溜まってpHが下がる（呼吸性アシドーシス）。
+    </div>
+    <div class="trick">
+      <strong>覚え方：</strong>「40がど真ん中、±6で覚える」。CO₂が増える＝肺が換気できていない合図。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">98〜100 %</span>
+      <span class="label">動脈血酸素飽和度（SaO₂）</span>
+      <span class="tag suc">パルスオキシメーターで測れる</span>
+    </div>
+    <div class="analogy">
+      SpO₂が94%を切ると酸素投与の目安。保育園での発熱対応で「SpO₂ 95%以下なら救急」という基準を使ったことがあれば、それと同じ数字。
+    </div>
+  </div>
+</div>
+
+<!-- ===== 肺・換気 ===== -->
+<div id="sec-lung" class="section">
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">350〜500 mL</span>
+      <span class="label">1回換気量（TV）</span>
+      <span class="tag suc">ペットボトル半分弱</span>
+    </div>
+    <div class="analogy">
+      500mLペットボトルの7〜8割が1回の息の量。安静時に肺に出入りするのはこの量だけ。思ったより少ない、が正解。
+    </div>
+    <div class="trick">
+      <strong>覚え方：</strong>「ペットボトル半分」。1分間に15回×400mL＝6Lが分時換気量。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">約 150 mL</span>
+      <span class="label">解剖学的死腔</span>
+      <span class="tag warn">ガス交換に使えない部分</span>
+    </div>
+    <div class="analogy">
+      1回換気量500mLのうち150mL（約30%）は口〜気管で「通過するだけ」。実際に肺胞でガス交換できるのは残り350mL。コップに水を入れても底に穴があったら全部使えないのと同じ。
+    </div>
+    <div class="trick">
+      <strong>計算：</strong>肺胞換気量＝（500−150）×15回＝5,250mL/分<br>
+      <strong>覚え方：</strong>「死腔は換気量の約1/3」→ 150÷500≈30%。
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-label">1回換気量500mLの内訳</div>
+      <div class="bar-track" style="height:14px">
+        <div style="display:flex;height:100%">
+          <div style="width:70%;background:var(--fill-success);border-radius:4px 0 0 4px"></div>
+          <div style="width:30%;background:var(--fill-warning);border-radius:0 4px 4px 0"></div>
+        </div>
+      </div>
+      <div style="display:flex;font-size:11px;color:var(--text-muted);margin-top:3px;gap:12px">
+        <span><span style="color:var(--text-success)">●</span> 肺胞換気 350mL（有効）</span>
+        <span><span style="color:var(--text-warning)">●</span> 死腔 150mL（無効）</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">12〜20 回/分</span>
+      <span class="label">安静時呼吸数</span>
+      <span class="tag suc">今すぐ数えられる</span>
+    </div>
+    <div class="analogy">
+      今すぐ1分間呼吸を数えてみて。約15回なら正常。赤ちゃんは40〜60回（代謝が速い）、お年寄りは少し遅くなる。保育現場でよく観察していたはず。
+    </div>
+    <div class="trick">
+      <strong>覚え方：</strong>「だいたい15回。20超えると頻呼吸」。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">80% 以上</span>
+      <span class="label">%肺活量（%VC）の正常下限</span>
+    </div>
+    <div class="analogy">
+      肺活量を年齢・性別・身長の予測値と比べた割合。80%未満＝「肺が縮んでいる」→ 拘束性障害（肺線維症・胸膜疾患など）。1秒率（FEV1.0%）と必ずセットで覚える。
+    </div>
+    <div class="compare">
+      <div class="compare-item"><div class="ci-num">%VC ↓</div><div class="ci-label">拘束性障害（肺が広がらない）</div></div>
+      <div class="compare-item"><div class="ci-num">FEV1% ↓</div><div class="ci-label">閉塞性障害（空気が出せない）</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 発声・声帯 ===== -->
+<div id="sec-voice" class="section">
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">約 120 Hz / 240 Hz</span>
+      <span class="label">平均話声位（男性/女性）</span>
+      <span class="tag">声帯が1秒に何回振動するか</span>
+    </div>
+    <div class="analogy">
+      ピアノの「ド」は約262Hz（中央ド）。男性の話し声120Hzはそれより1オクターブ低い「ド」あたり。女性240Hzはちょうど中央ドに近い高さ。ピアノを思い浮かべると周波数が具体的になる。
+    </div>
+    <div class="trick">
+      <strong>覚え方：</strong>「男性は低いド（120）、女性は中央ド（240）」。女性が男性のちょうど2倍＝1オクターブ上。
+    </div>
+    <div class="compare">
+      <div class="compare-item"><div class="ci-num">100〜150 Hz</div><div class="ci-label">成人男性の声域</div></div>
+      <div class="compare-item"><div class="ci-num">200〜250 Hz</div><div class="ci-label">成人女性の声域</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">30秒以上 / 20秒以上</span>
+      <span class="label">MPT（最長発声持続時間）正常値（男性/女性）</span>
+    </div>
+    <div class="analogy">
+      「あーーー」と言い続けられる時間。肺活量と声帯閉鎖の両方が関係する。10秒以下になると会話が「息が続かない・頻繁に息継ぎが必要」になる。保育園で先生が読み聞かせで声が続かなくなるのは声帯疲労や閉鎖不全の可能性。
+    </div>
+    <div class="trick">
+      <strong>覚え方：</strong>「男30・女20」。今すぐ/a/を伸ばして測れる検査。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">約 4 cmH₂O</span>
+      <span class="label">発声に必要な最低声門下圧</span>
+    </div>
+    <div class="analogy">
+      4cmH₂Oとは「水を4cm押し上げる圧力」。ストローで4cm水柱を吹き上げるくらいの息の圧力が声帯を振動させる最低条件。囁き声でも必要。
+    </div>
+    <div class="trick">
+      <strong>覚え方：</strong>「4cm水柱」＝ストロー1本分。
+    </div>
+  </div>
+</div>
+
+<!-- ===== 変声期 ===== -->
+<div id="sec-change" class="section">
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">男子：13〜14歳　女子：11〜12歳</span>
+      <span class="label">変声期の時期</span>
+    </div>
+    <div class="analogy">
+      保育士として小学校高学年〜中学生を見ていると、男の子の声が突然低くなるのを経験しているはず。あれがアンドロゲン（男性ホルモン）による喉頭拡大の結果。女子のほうが2年ほど早い（思春期全般が早い）。
+    </div>
+    <div class="trick">
+      <strong>覚え方：</strong>「女子は小6・男子は中1〜2」。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">男子：約1オクターブ　女子：約3度</span>
+      <span class="label">変声による声の低下幅</span>
+    </div>
+    <div class="analogy">
+      ピアノで「ド」から1オクターブ下の「ド」、その差が男子の変声幅（約240Hz→120Hz）。女子の「3度」はドからミの下（約240Hz→200Hz）、わずかしか下がらない。だから女子の変声は気づきにくい。
+    </div>
+    <div class="trick">
+      <strong>覚え方：</strong>「男子は劇的に1オクターブ、女子は控えめに3度（ほぼ変わらない）」。
+    </div>
+    <div class="compare">
+      <div class="compare-item"><div class="ci-num">男子変声</div><div class="ci-label">約1オクターブ低下<br>（240 → 120 Hz）</div></div>
+      <div class="compare-item"><div class="ci-num">女子変声</div><div class="ci-label">約3度低下<br>（目立ちにくい）</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="num">小児期：約5mm　成人男性：約12mm　女性：約9mm</span>
+      <span class="label">声帯の長さ</span>
+    </div>
+    <div class="analogy">
+      小指の爪の幅が約10mm。男性の声帯（12mm）はほぼ小指の爪1枚分。子どもの声帯（5mm）はその半分。この長さが変わることで声の高さが変わる（長い弦＝低い音）。
+    </div>
+    <div class="trick">
+      <strong>覚え方：</strong>「男12・女9・子5（ごくわずか）」。長い＝低い音（ギターの弦と同じ原理）。
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
