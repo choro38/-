@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>臨床心理学 テスト問題集 2026｜全50問</title>
+<style>
+  :root{
+    --ink:#1f3044;        /* カルテのインク色 */
+    --ink-soft:#4a6076;
+    --paper:#f2f5f7;      /* 診察室の白に近いブルーグレー */
+    --card:#ffffff;
+    --line:#d5dee5;
+    --accent:#2a6f77;     /* 深い青緑（落ち着き・集中） */
+    --accent-soft:#e2eff0;
+    --correct:#1d7a4f;
+    --correct-bg:#e7f5ec;
+    --wrong:#b3403a;
+    --wrong-bg:#faecea;
+    --star:#c98a1b;
+    --radius:14px;
+    font-size:16px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px; margin:0 auto; padding:20px 16px 64px;}
+  header.app{
+    border-bottom:2px solid var(--ink);
+    padding:8px 0 14px;
+    margin-bottom:20px;
+  }
+  header.app .kamoku{
+    display:inline-block;
+    font-size:.72rem; letter-spacing:.18em;
+    color:var(--accent);
+    border:1px solid var(--accent);
+    border-radius:999px;
+    padding:1px 10px;
+    margin-bottom:6px;
+  }
+  header.app h1{font-size:1.28rem; font-weight:700;}
+  header.app p{font-size:.8rem; color:var(--ink-soft);}
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px 18px;
+    margin-bottom:16px;
+    box-shadow:0 1px 3px rgba(31,48,68,.06);
+  }
+  button{
+    font-family:inherit; font-size:1rem;
+    cursor:pointer;
+    border:none; border-radius:10px;
+  }
+  button:focus-visible{outline:3px solid var(--accent); outline-offset:2px;}
+  .btn-primary{
+    background:var(--accent); color:#fff;
+    padding:13px 22px; font-weight:700; width:100%;
+  }
+  .btn-primary:disabled{opacity:.4; cursor:not-allowed;}
+  .btn-ghost{
+    background:transparent; color:var(--accent);
+    border:1.5px solid var(--accent);
+    padding:11px 20px; font-weight:700; width:100%;
+  }
+  .mode-btn{
+    display:block; width:100%; text-align:left;
+    background:var(--card);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 18px; margin-bottom:12px;
+    transition:border-color .15s, background .15s;
+  }
+  .mode-btn:hover{border-color:var(--accent); background:var(--accent-soft);}
+  .mode-btn .t{font-weight:700; font-size:1.02rem;}
+  .mode-btn .d{font-size:.82rem; color:var(--ink-soft);}
+  /* 進捗 */
+  .status{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-size:.85rem; color:var(--ink-soft); margin-bottom:6px;
+  }
+  .status b{color:var(--ink); font-size:1rem;}
+  .bar{height:6px; background:var(--line); border-radius:3px; overflow:hidden; margin-bottom:18px;}
+  .bar i{display:block; height:100%; background:var(--accent); width:0; transition:width .3s;}
+  /* 問題 */
+  .qhead{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px;}
+  .qno{
+    font-weight:700; color:var(--accent);
+    border-bottom:2px solid var(--accent);
+    padding-bottom:1px;
+  }
+  .tag{
+    font-size:.72rem; font-weight:700;
+    padding:2px 9px; border-radius:999px;
+  }
+  .tag.multi{background:#fdeede; color:#a35b12;}
+  .tag.single{background:var(--accent-soft); color:var(--accent);}
+  .tag.star{background:#fbf3e0; color:var(--star);}
+  .qtext{font-size:1rem; margin-bottom:16px; white-space:pre-line;}
+  .choice{
+    display:flex; gap:10px; align-items:flex-start;
+    width:100%; text-align:left;
+    background:var(--card);
+    border:1.5px solid var(--line);
+    border-radius:12px;
+    padding:12px 14px; margin-bottom:10px;
+    font-size:.95rem; line-height:1.65;
+    transition:border-color .12s, background .12s;
+  }
+  .choice:hover{border-color:var(--accent);}
+  .choice .mk{
+    flex:0 0 auto;
+    width:26px; height:26px; border-radius:50%;
+    border:1.5px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-size:.8rem; font-weight:700; color:var(--ink-soft);
+    margin-top:1px;
+  }
+  .choice.sel{border-color:var(--accent); background:var(--accent-soft);}
+  .choice.sel .mk{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .choice.hit{border-color:var(--correct); background:var(--correct-bg);}
+  .choice.hit .mk{background:var(--correct); border-color:var(--correct); color:#fff;}
+  .choice.miss{border-color:var(--wrong); background:var(--wrong-bg);}
+  .choice.miss .mk{background:var(--wrong); border-color:var(--wrong); color:#fff;}
+  .choice:disabled{cursor:default; opacity:1;}
+  /* 判定・解説 */
+  .verdict{font-size:1.15rem; font-weight:700; margin-bottom:6px;}
+  .verdict.ok{color:var(--correct);}
+  .verdict.ng{color:var(--wrong);}
+  .cheer{font-size:.88rem; color:var(--ink-soft); margin-bottom:12px;}
+  .kaisetsu{
+    background:#f7f9fa;
+    border-left:4px solid var(--accent);
+    border-radius:0 10px 10px 0;
+    padding:12px 14px;
+    font-size:.9rem;
+    margin-bottom:16px;
+    white-space:pre-line;
+  }
+  .kaisetsu .h{font-weight:700; color:var(--accent); font-size:.8rem; letter-spacing:.1em; display:block; margin-bottom:4px;}
+  /* 結果 */
+  .score-big{text-align:center; padding:8px 0 4px;}
+  .score-big .num{font-size:3.2rem; font-weight:700; color:var(--accent); line-height:1.1;}
+  .score-big .den{font-size:1.1rem; color:var(--ink-soft);}
+  .score-msg{text-align:center; font-weight:700; margin:8px 0 18px;}
+  .wrong-list{font-size:.85rem; color:var(--ink-soft); margin-bottom:16px;}
+  .wrong-list b{color:var(--wrong);}
+  .row2{display:flex; flex-direction:column; gap:10px;}
+  footer{
+    text-align:center; font-size:.72rem; color:var(--ink-soft);
+    margin-top:32px; border-top:1px solid var(--line); padding-top:14px;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="app">
+    <span class="kamoku">臨床心理学</span>
+    <h1>2026年度 テスト問題集（全50問）</h1>
+    <p>試験時間90分・50問中40問出題／★＝国試頻出ポイント</p>
+  </header>
+
+  <main id="app"></main>
+
+  <footer>言語聴覚士（ST：Speech-Language-Hearing Therapist）国家試験対策｜さや専用学習アプリ</footer>
+</div>
+
+<script>
+"use strict";
+/* =========================================================
+   問題データ
+   n   : 問題番号
+   pick: 選択する数（表記どおり）
+   star: 国試頻出
+   c   : 選択肢
+   a   : 正答（0始まりのインデックス配列）
+   e   : 解説
+========================================================= */
+const QUESTIONS = [
+{n:1, pick:1, star:true,
+q:"治療構造論を説明する文として，不適切なものを1つ選択してください。",
+c:["Pt.（patient：患者）・Cl.（client：来談者）がその構造から逸脱した際に，彼らの心の動きを深く理解することにつながる",
+"精神分析家の小此木啓吾が提唱した概念である",
+"面接時間や面接の頻度，料金，場所は治療構造論における「外的構造」にあたる",
+"治療者の技法が重要であり，治療の枠組みは重要ではない"],
+a:[3],
+e:"★治療構造論は小此木啓吾（おこのぎけいご，日本・精神分析家）が提唱。時間・場所・料金などの「枠組み（構造）」そのものが治療的な意味を持ち，枠からの逸脱がCl.の心の動きを理解する手がかりになる。「枠は重要ではない」とする④が不適切。"},
+
+{n:2, pick:1, star:true,
+q:"操作的診断基準を学ぶ意義について，不適切なものを1つ選択してください。",
+c:["精神科医や他の職種との共通言語として扱うため",
+"患者の言動から，診断基準と照合して該当する病理を見立て，具体的な支援に活かすため",
+"患者の言動から，診断を下し，患者や他職種に診断名を伝えたりするため",
+"患者やその家族に医療・福祉・教育制度に接続する根拠を提示できるため"],
+a:[2],
+e:"★「診断」を下せるのは医師のみ（医師法）。ST（言語聴覚士）や心理職ができるのは「見立て（アセスメント）」であり，診断名を確定して伝えることはできない。よって③が不適切。DSM-5（米国精神医学会の操作的診断基準）等は多職種の共通言語として学ぶ。"},
+
+{n:3, pick:1, star:true,
+q:"統合失調症が疑われる症状として不適切なものを1つ選択してください。",
+c:["周囲の者みんなが自分のことを敵視していると思う",
+"通りすがりの人全員が自分の考えを読み取っていると思う",
+"常同姿勢（同じ姿勢を取り続ける）がみられる",
+"他者に「理想化」と「こきおろし」の動きを見せやすい"],
+a:[3],
+e:"★①は被害妄想，②は考想察知（思考が読まれる体験），③は緊張病症状で，いずれも統合失調症を疑う症状。④「理想化とこきおろし」は境界性パーソナリティ症（BPD：Borderline Personality Disorder）に特徴的な対人パターンで，統合失調症の症状ではない。"},
+
+{n:4, pick:1, star:true,
+q:"自閉スペクトラム症に関する記述として不適切なものを1つ選択してください。",
+c:["診断は，心理検査，本人・養育者からの詳細な聴取等，多角的アプローチで実施される。",
+"心的外傷体験（虐待など）によって，自閉スペクトラム症様症状がみられることがある。",
+"子どもの症状は，親の愛情不足などの「不適切な養育」が要因である。",
+"特性は，連続体（スペクトラム）として捉えられる。"],
+a:[2],
+e:"★自閉スペクトラム症（ASD：Autism Spectrum Disorder）は先天的な脳機能の特性が要因であり，「親の愛情不足」説（かつての「冷蔵庫マザー説」）は明確に否定されている。③が不適切。なお②のように，虐待等によりASD様の症状（愛着障害）がみられることは実際にあり，鑑別が重要。"},
+
+{n:5, pick:1, star:true,
+q:"防衛機制とその説明の対応として，不適切なものを1つ選択してください。",
+c:["「昇華」：欲求を社会的な規範やルールに合致させ，芸術・勉強・スポーツなどの社会文化的活動で欲求を満たす。",
+"「抑圧」：受け入れがたい感情・記憶・現実を無意識に閉じ込める。",
+"「知性化」：本当の願望や欲動とは逆のことをする。",
+"「投影性同一視」：認めがたい欲求・感情を相手のものとみなし，さらに，相手をそのような人としてコントロール（操作）する。"],
+a:[2],
+e:"★「本当の願望と逆のことをする」のは反動形成（例：嫌いな相手に過剰に親切にする）。知性化は，感情を切り離して理屈・知識で処理する防衛（例：病気の不安を医学用語で語り続ける）。③の説明が誤り。"},
+
+{n:6, pick:3, star:false,
+q:"病態水準に関する記述として，適切な記述を全て選択してください。（3つ）",
+c:["病態水準のアセスメントに有用な心理検査の一つは「ロールシャッハ・テスト」である。",
+"精神病水準のPt.・Cl.は，著しい現実検討力の弱さ，同一性の拡散，原始的防衛機制の多用が特徴である。",
+"Pt.・Cl.の病態水準の違いは，支援者が治療構造（時間・場所等）を決定する指針となる。",
+"分裂や投影性同一視は，適応能力の高い神経症水準でよくみられる高次の防衛機制である。"],
+a:[0,1,2],
+e:"病態水準は「神経症水準＞境界水準＞精神病水準」の順に現実検討力が低下する。分裂（スプリッティング）や投影性同一視は境界水準以下で多用される原始的（未熟な）防衛機制であり，「神経症水準の高次の防衛」とする④は誤り。神経症水準の高次の防衛は抑圧・昇華など。"},
+
+{n:7, pick:1, star:true,
+q:"エリクソンのライフサイクル論において，発達段階と発達課題の対応として，不適切なものを1つ選択してください。",
+c:["「乳児期」：「基本的信頼感」",
+"「幼児期前期」：「自律性」",
+"「中年期」：「同一性（アイデンティティ）」",
+"「老年期」：「統合」"],
+a:[2],
+e:"★Erikson（エリクソン，米・発達心理学者）の心理社会的発達理論では，同一性（アイデンティティ）確立は青年期（およそ12〜20歳代前半）の課題。中年期（成人期，およそ40〜65歳）の課題は「世代性（generativity）対 停滞」。国試最頻出の対応表なので8段階すべて覚えましょう。"},
+
+{n:8, pick:2, star:true,
+q:"自分の信念や職業選択に対して傾倒（積極的関与）を示すアイデンティティ地位はどれか。2つ選んでください。",
+c:["モラトリアム","アイデンティティ達成","アイデンティティ危機","早期完了","アイデンティティ拡散"],
+a:[1,3],
+e:"★Marcia（マーシア，カナダ出身・米で活躍した心理学者）のアイデンティティ・ステイタス論。「危機（探索）」と「傾倒（積極的関与）」の2軸で分類する。傾倒あり＝②達成（危機あり）と④早期完了（危機なし・親の価値観をそのまま採用）。モラトリアムは危機の最中で傾倒はあいまい，拡散は両方なし。"},
+
+{n:9, pick:1, star:true,
+q:"アタッチメント理論について適切な記述を1つ選択してください。",
+c:["アタッチメントは，早期の養育者である母親とのみ形成される。",
+"アタッチメントは，後天的なシステムではなく，個体に備わった適応のための生物学的システムである。",
+"親子のアタッチメント関係を明らかにする実験的手法「ストレンジ・シチュエーション法」を開発した者は，ボウルビィである。",
+"乳幼児期に最も多いアタッチメント・タイプは「回避型（Aタイプ）」である。"],
+a:[1],
+e:"★Bowlby（ボウルビィ，英・児童精神科医）は，アタッチメントを生存のために生得的に備わった生物学的システムと考えた（②が正しい）。①母親に限らず父親・保育者等とも形成される（保育士経験と直結！）。③ストレンジ・シチュエーション法（SSP）の開発はAinsworth（エインズワース，米・発達心理学者）。④最も多いのは安定型（Bタイプ）。"},
+
+{n:10, pick:1, star:false,
+q:"心理面接におけるアセスメントについて正しいのはどれか。1つ選択してください。",
+c:["受理面接の時点から行われる",
+"情報源となる人物は限定される",
+"投影法と質問紙法は同時に行う",
+"子どもと高齢者の行動観察は行わない"],
+a:[0],
+e:"アセスメントはインテーク面接（受理面接）の時点から始まる（①が正しい）。情報源は本人・家族・他職種など幅広く，検査は目的に応じてテストバッテリー（複数検査の組み合わせ）を組むが「必ず同時」ではない。行動観察はむしろ言語表出が難しい子どもや高齢者で重要。"},
+
+{n:11, pick:2, star:true,
+q:"抑うつのアセスメント法はどれか。2つ選択してください。",
+c:["HTP","MPI","BDI","SDS","SCT"],
+a:[2,3],
+e:"★BDI（Beck Depression Inventory：ベック抑うつ質問票）とSDS（Self-rating Depression Scale：自己評価式抑うつ性尺度）が抑うつの評価尺度。HTP（House-Tree-Person test：家・木・人描画テスト）は投影法の描画検査，MPI（Maudsley Personality Inventory：モーズレイ性格検査）は性格の質問紙，SCT（Sentence Completion Test：文章完成法）は投影法。"},
+
+{n:12, pick:1, star:false,
+q:"誤っている組み合わせはどれか。1つ選択してください。",
+c:["エゴグラム ― 交流分析",
+"EPPS ― マレーの人格理論",
+"BDI ― 痴呆症状",
+"Y-G性格検査 ― 類型判定",
+"MMPI ― 妥当性尺度"],
+a:[2],
+e:"BDI（Beck Depression Inventory）は抑うつの質問紙であり，認知症（痴呆）症状の検査ではない（③が誤り）。認知症スクリーニングはMMSE（Mini-Mental State Examination）やHDS-R（改訂長谷川式簡易知能評価スケール）。EPPS（Edwards Personal Preference Schedule）はMurray（マレー，米・心理学者）の欲求理論に基づく。"},
+
+{n:13, pick:1, star:true,
+q:"性格特性の5因子モデルの因子でないものはどれか，1つ選択してください。",
+c:["楽観性","開放性","誠実性（勤勉性）","協調性","神経症傾向"],
+a:[0],
+e:"★ビッグファイブ（5因子モデル）は，開放性（Openness）・誠実性（Conscientiousness）・外向性（Extraversion）・協調性（Agreeableness）・神経症傾向（Neuroticism）＝頭文字OCEAN。「楽観性」は含まれない。"},
+
+{n:14, pick:2, star:false,
+q:"質問紙法の特徴と対応する記述として適切なものを2つ選択してください。",
+c:["曖昧な刺激を受験者に提示するため，受験者の回答が歪められにくい。",
+"集団の実施が可能であり，短時間で実施できる。",
+"特性論に基づいたパーソナリティ検査である。",
+"無意識レベルのパーソナリティをアセスメントできる。"],
+a:[1,2],
+e:"質問紙法の長所は，集団実施可能・短時間・採点が客観的なこと。多くは特性論（性格を複数の特性の量で捉える立場）に基づく。①「曖昧な刺激」と④「無意識レベル」は投影法の特徴。質問紙法はむしろ意図的に回答を歪めやすい（社会的望ましさ）のが短所。"},
+
+{n:15, pick:1, star:false,
+q:"精神分析学に関する記述として適切な記述を1つ選択してください。",
+c:["精神分析は，ユングが提唱した心理療法の学問である。",
+"人の行動の背景には，意識のみがあることを仮定した理論である。",
+"ヒステリー患者の治療に自由連想法が適さず，催眠療法が生みだされた。",
+"人間の心を「意識」「前意識」「無意識」の3つに分類している。"],
+a:[3],
+e:"精神分析の創始者はFreud, S.（フロイト，オーストリア・精神科医）。心を意識・前意識・無意識に分ける「局所論」が④で正しい。①Jung（ユング，スイス・精神科医）は分析心理学。②無意識を重視する理論。③順序が逆：催眠療法の限界から自由連想法が生み出された。"},
+
+{n:16, pick:3, star:true,
+q:"Freud, S.が3つに分けた心の領域（構造論）はどれか。3つ選んでください。",
+c:["エス","自我","エルグ","超自我","リビドー"],
+a:[0,1,3],
+e:"★構造論（心的装置）は，エス（イド：快楽原則）・自我（現実原則）・超自我（道徳的規範）の3つ。リビドーは性的欲動のエネルギーであり心の領域ではない。「エルグ」という概念は存在しない（ひっかけ）。局所論（意識・前意識・無意識）との区別も国試頻出！"},
+
+{n:17, pick:1, star:true,
+q:"Aの父親は，飲酒と暴力とで家族に苦労をかけ，Aはそのような父親に対して，強烈な恐怖を抱く一方，反発的な感情を抱えてきた。父親が亡くなり，Aは病気にかかり入院。Aは，次第に病棟の男性看護師に対して不自然なほど，拒否的で攻撃的になった。Aにみられる現象は以下のうちどれか，1つ選択してください。",
+c:["退行","転移","逆転移","陽性感情"],
+a:[1],
+e:"★過去の重要な人物（父親）に向けていた感情を，現在の治療者・支援者（男性看護師）に向け直すのが「転移」。特に敵意・反発など否定的な感情の転移を陰性転移という。逆転移は治療者側がPt.に向ける感情。事例問題では「誰が誰に向けた感情か」を整理するのがコツ。"},
+
+{n:18, pick:1, star:false,
+q:"精神分析的アプローチにおける「逆転移」の取り扱いについて，医療・リハビリテーション専門職（ST等）の姿勢として最も適切なものを1つ選択してください。",
+c:["逆転移は，Pt.に対する医療職の未熟さであるため，速やかにその感情を抑圧・排除しなければならない。",
+"Pt.から「先生しかいない」とすがり付かれ，医療職側に「怖い」「途方に暮れる」といった不快な逆転移が生じた場合，その関係は迷惑であるため，速やかに治療を中断すべきである。",
+"逆転移は，Pt.の無意識に抱えているものの自分一人では抱えきれない不安や恐怖を，医療職の心の中に再現させる重要なシグナルになり得る。",
+"Pt.に対して「可哀想だから，時間外でも個人的に相談に乗ってあげたい」という陽性逆転移が湧いた場合は，良好な信頼関係（ラポール）が形成されている証拠であるため，その感情のままに行動することが推奨される。"],
+a:[2],
+e:"現代の精神分析では，逆転移は排除すべきノイズではなく，Pt.の内的世界を理解する重要な手がかり（③が正しい）。④のように感情のまま枠（治療構造）を破って行動化することは，境界侵犯につながるためNG。逆転移に「気づき，抱え，考える」姿勢が専門職に求められる。"},
+
+{n:19, pick:1, star:true,
+q:"エディプス・コンプレックスについて不適切な記述を1つ選択してください。",
+c:["3〜5歳頃（エディプス期）に異性親に対して抱く性愛感情のことである。",
+"未克服は，過度な自己主張/内閉的な性格傾向を示すことが理論的に想定されている。",
+"異性親への愛情を諦め，同性親に同一化することにより，エディプス葛藤が克服される。",
+"エディプス期を通じて，エスが確立される。"],
+a:[3],
+e:"★エディプス期（男根期，3〜5歳頃）を通じて確立されるのは超自我。同性親（父親＝権威）への同一化により道徳・規範が内在化される。エスは生まれつき備わる本能的欲動の領域なので④が不適切。問50とセットで理解すると効率的！"},
+
+{n:20, pick:3, star:false,
+q:"集団療法に関する記述として適切なものを全て選択してください。（3つ）",
+c:["複数のメンバー間で情報共有や意見交換を行い，人間的成長を目指す。",
+"対人関係を学習する機会にもなりうる。",
+"集団が上手くいかない場合，「基底的想定」と呼ばれる病理が理論的に想定できる。",
+"集団療法において，ファシリテーターが不在であるとより効果をもつ。"],
+a:[0,1,2],
+e:"「基底的想定」はBion（ビオン，英・精神分析家）の集団理論の概念で，集団が課題遂行（作動グループ）から逸れて依存・闘争/逃避・つがい形成に流れる状態のこと。集団療法にはファシリテーター（進行促進役）の存在が重要であり，④が誤り。"},
+
+{n:21, pick:3, star:false,
+q:"遊戯療法の説明として正しいのはどれか。3つ選択してください。",
+c:["治療の進行を急がない",
+"安定した人間関係を基盤として，認知機能の向上を支援する。",
+"治療関係において子どもにも責任があることを自覚させる。",
+"子どもが自分の否定的な感情を表出しないようにする。",
+"子どもの会話や行動について具体的に指示する。"],
+a:[0,1,2],
+e:"Axline（アクスライン，米・児童心理療法家）の8原則：ラポール形成／あるがまま受容／許容的な雰囲気／感情の反射／子どもの自己解決力と責任の尊重／非指示（子どもが先導）／治療を急がない／必要な制限のみ。④否定的感情もむしろ表出を促す，⑤指示的に関わらない，が誤り。保育での「見守る保育」の感覚に近いですね。"},
+
+{n:22, pick:1, star:true,
+q:"箱庭療法に関して，不適切な記述を1つ選択してください。",
+c:["箱庭療法は実施すること自体に，カタルシス効果やリラックス効果が見込まれる。",
+"箱庭療法を日本に伝えた人物は，河合隼雄である。",
+"箱庭療法で子どもがパニックや混乱を起こし，箱庭等の道具を破壊的に扱った場合も受容的に見守る。",
+"セラピストは，子どもが作成した箱庭をともに味わう姿勢が第一に求められる。"],
+a:[2],
+e:"★箱庭療法はKalff（カルフ，スイス・心理療法家）が確立し，河合隼雄（かわいはやお，日本・臨床心理学者）が日本に導入した。受容が基本だが，破壊的行動・危険な行動には「治療的な制限」を設ける必要がある（Axlineの原則にも「必要な制限」がある）。よって③が不適切。"},
+
+{n:23, pick:3, star:true,
+q:"Rogersが提唱した治療者の3つの条件はどれか。3つ選んでください。",
+c:["外向性","実証性を重視する姿勢","純粋性","無条件の肯定的関心","共感的理解"],
+a:[2,3,4],
+e:"★Rogers（ロジャーズ，米・臨床心理学者）の治療者の3条件：純粋性（自己一致）・無条件の肯定的関心（配慮）・共感的理解。国試最頻出の3点セット。この3条件がCl.の自己実現傾向を引き出す土壌になる。"},
+
+{n:24, pick:3, star:true,
+q:"Cl.中心療法のセラピストが行うべきことについて正しいのはどれか。3つ選択してください。",
+c:["来談者との関係の中で自分に正直であろうとする",
+"来談者に対して無条件の肯定的な配慮を提供する",
+"来談者を共感的に理解しようとする",
+"来談者の無意識に焦点を当てて治療する",
+"来談者に特有な認知の歪みを変容しようとする"],
+a:[0,1,2],
+e:"★①＝純粋性（自己一致），②＝無条件の肯定的配慮，③＝共感的理解で，Rogersの3条件そのもの。④「無意識への焦点」は精神分析，⑤「認知の歪みの変容」は認知療法のアプローチ。学派ごとの「何に働きかけるか」を対比して覚えると強い！"},
+
+{n:25, pick:2, star:true,
+q:"行動療法における不適切行動の捉え方はどれか。2つ選択してください。",
+c:["無意識の結果","誤学習の結果","未学習の結果","遺伝の結果","欲求不満の結果"],
+a:[1,2],
+e:"★行動療法では，不適応行動を「誤った学習（誤学習）」または「学習されていないこと（未学習）」の結果と捉える。だから再学習・新規学習で修正できると考える。無意識や欲求不満を原因とみるのは精神分析的な発想。"},
+
+{n:26, pick:3, star:true,
+q:"行動療法の特徴として正しいのはどれか。3つ選択してください。",
+c:["転移と逆転移を解釈していくことで問題解決を進展させる",
+"刺激と反応という図式で行動を捉える",
+"観察可能な行動または症状そのものを介入対象とする",
+"無意識領域に抑圧された内容を自覚させ表面化させる",
+"不適応行動は誤った学習または未学習の結果と考える"],
+a:[1,2,4],
+e:"★行動療法はS-R（Stimulus-Response：刺激-反応）図式に基づき，観察可能な行動そのものを標的にする。①転移・逆転移の解釈と④無意識の意識化は精神分析の特徴。学習理論（レスポンデント条件づけ・オペラント条件づけ）が理論的基盤。"},
+
+{n:27, pick:1, star:false,
+q:"行動療法の技法でないのはどれか，1つ選択してください。",
+c:["エクスポージャー","オペラント法","リフレーミング","系統的脱感作法"],
+a:[2],
+e:"リフレーミング（出来事の意味づけ・枠組みを変える技法）は家族療法・ブリーフセラピーの技法。エクスポージャー（曝露法），オペラント技法（強化・弱化の操作），系統的脱感作法（Wolpe〔ウォルピ，南アフリカ出身・米の精神科医〕が開発，リラクセーション＋不安階層表）は行動療法の代表技法。"},
+
+{n:28, pick:3, star:true,
+q:"認知療法に関係するのはどれか。3つ選択してください。",
+c:["スキーマ","集合的無意識","自動思考","自我","推論の誤り"],
+a:[0,2,4],
+e:"★Beck（ベック，米・精神科医）の認知療法のキーワード：スキーマ（深層の認知の枠組み）・自動思考（瞬間的に浮かぶ考え）・推論の誤り（認知の歪み）。②集合的無意識はJung（ユング，スイス・精神科医）の分析心理学，④自我は精神分析の概念。"},
+
+{n:29, pick:1, star:false,
+q:"認知行動療法の技法でないのはどれか，1つ選択してください。",
+c:["コラージュ法","行動活性化","認知再構成法","ソクラテス式質問法","セルフモニタリング"],
+a:[0],
+e:"コラージュ法（雑誌の切り抜きを台紙に貼る表現技法）は芸術療法の一種。行動活性化（快活動を増やす），認知再構成法（考えの検討と置き換え），ソクラテス式質問法（問いかけで気づきを促す），セルフモニタリング（自己観察記録）はいずれも認知行動療法（CBT：Cognitive Behavioral Therapy）の技法。"},
+
+{n:30, pick:1, star:true,
+q:"認知療法理論における『歪んだ認知』でないのはどれか，1つ選択してください。",
+c:["個人化","非言語的思考","二分法的思考","過度の一般化","恣意的推論"],
+a:[1],
+e:"★Beckの認知の歪み：恣意的推論・選択的抽出・過度の一般化・拡大解釈と過小評価・個人化（自分に関係づける）・二分法的（全か無か）思考など。「非言語的思考」という歪みは存在しない。"},
+
+{n:31, pick:2, star:true,
+q:"家族療法の技法はどれか。2つ選択してください。",
+c:["シェーピング","トークンエコノミー","多方面への肩入れ","ジョイニング","集中内観"],
+a:[2,3],
+e:"★多方面への肩入れ（家族メンバー全員に順に共感的に肩入れする：文脈療法）とジョイニング（家族システムに治療者が溶け込む：構造派家族療法）が家族療法の技法。シェーピング・トークンエコノミーは行動療法（オペラント技法），集中内観は内観療法（吉本伊信〔よしもといしん，日本・内観療法の創始者〕）。"},
+
+{n:32, pick:1, star:true,
+q:"20代の女性。1ヶ月前に激しい自動車事故に遭って以来，車に乗ろうとすると動悸や呼吸の荒さ（SUDS90点）が生じるようになった。そのため，最近では外出を一切控え，車を見ることも避けて生活している。この状況に関する学習理論（行動療法）に基づいた記述として，最も適切なものを1つ選択してください。",
+c:["患者が車を避けて外出しないという「回避行動」をとることは，その一瞬だけ不安を低下させるため，回避行動がますます固定化する悪循環に陥っている。",
+"患者の動悸や呼吸の荒さは，事故そのものではない「似た車」に対しても生じており，これは誤った学習が働いている状態である。",
+"この患者に対する適切な曝露法（エクスポージャー）では，車に乗って不安（SUDS）が最高潮に達したパニックの手前で，すぐにセッションを中止して車から降ろすべきである。",
+"この患者の恐怖反応は後天的に学習されたものではないため，行動療法による再学習（消去）やアプローチを行うことは不可能である。"],
+a:[0],
+e:"★SUDS（Subjective Units of Disturbance Scale：主観的障害単位＝不安の自己評価点数）。回避→一時的に不安が下がる→回避が「負の強化」を受けて固定化，という悪循環（Mowrer〔モウラー，米・心理学者〕の二要因理論）を説明した①が最も適切。②の般化も学習理論的には正しい現象だが，本症例の維持メカニズムの中核は①。③不安の途中で降ろすと「逃避で楽になる」学習を強めるため逆効果（馴化するまで留まるのが原則）。④恐怖はレスポンデント条件づけで学習されたものなので消去可能。"},
+
+{n:33, pick:1, star:true,
+q:"精神分析について誤っている組み合わせはどれか，1つ選択してください。",
+c:["防衛機制：意識的作用",
+"エス：快楽原則",
+"リビドー：性的欲動",
+"超自我：道徳的規範",
+"自我：現実原則"],
+a:[0],
+e:"★防衛機制は自我が無意識的に行う心の働きであり，「意識的作用」とする①が誤り。エス＝快楽原則，自我＝現実原則，超自我＝道徳的規範，リビドー＝性的欲動のエネルギー，はすべて正しい対応。"},
+
+{n:34, pick:1, star:true,
+q:"人格検査はどれか，1つ選択してください。",
+c:["CMI","RCPM","WAIS","MMPI","MMSE"],
+a:[3],
+e:"★MMPI（Minnesota Multiphasic Personality Inventory：ミネソタ多面的人格目録）が人格検査。CMI（Cornell Medical Index：コーネル・メディカル・インデックス）は心身の自覚症状調査票，RCPM（Raven's Coloured Progressive Matrices：レーヴン色彩マトリックス検査）は非言語性知能検査（失語症者にも使える★），WAIS（Wechsler Adult Intelligence Scale：ウェクスラー成人知能検査）は知能検査，MMSE（Mini-Mental State Examination）は認知症スクリーニング。"},
+
+{n:35, pick:1, star:false,
+q:"40代の男性患者。脳血管障害による軽度の失語症を患い，リハビリテーション（ST訓練）に励んでいる。この患者は，訓練中にうまく言葉が出ない場面に直面すると，すぐに「あ，昔から人前で話すのは苦手で，占いでも私は内向的だとよく言われていたので，一概にこの病気のせいとは言えないですよね」などと，難解な自己分析や持論を展開し，訓練の次のステップに進もうとしない。カール・ロジャーズの理論におけるこの患者の状態と，STとしての関わり方として最も適切なものを1つ選択してください。",
+c:["患者は「有能で完璧な自分でありたい」という自己概念を守るために，歪曲や否認という防衛を働かせており，STは無理にその持論を論破（分析）して言い返してはならない。",
+"患者は完全に「自己一致（ありのままの自分を受容）」できている状態であり，STは患者の言う通り訓練の難易度を大幅に下げるべきである。",
+"患者は自分の言葉の出づらさ（実際の体験）をありのまま正しく捉えているため，STは「その分析は正しいですね」と全面的に迎合する。",
+"患者の態度はお調子者心理や怠惰から来るものであるため，STは毅然とした権威的な態度を用いて，主観的な感想を述べるのを禁止する。"],
+a:[0],
+e:"Rogersの理論では，自己概念（こうありたい自分）と体験（言葉が出ない現実）のズレ＝自己不一致が生じると，歪曲・否認という防衛が働く。この患者の「持論展開」はまさにその防衛。STは論破も迎合もせず，受容的・共感的に関わることで，患者が体験をありのまま受け入れられる安全な関係を作ることが大切（①が正しい）。"},
+
+{n:36, pick:1, star:true,
+q:"投影法でないのはどれか，1つ選択してください。",
+c:["ロールシャッハ・テスト","YG性格検査","主題統覚検査（TAT）","P-Fスタディ","文章完成法テスト（SCT）"],
+a:[1],
+e:"★YG性格検査（矢田部ギルフォード性格検査）は質問紙法。ロールシャッハ・テスト（インクのしみ），TAT（Thematic Apperception Test：絵から物語を作る），P-Fスタディ（Picture-Frustration Study：欲求不満場面への反応），SCT（Sentence Completion Test：文章完成法）はすべて投影法。検査の分類（質問紙法・投影法・作業検査法）は国試の超定番！"},
+
+{n:37, pick:1, star:false,
+q:"質問紙法による人格検査の特徴として最も適切なものはどれか，1つ選択してください。",
+c:["曖昧な刺激を提示して自由な反応を引き出す事ができる",
+"本人が気づいていない無意識的側面を捉えることができる",
+"回答者によって質問項目の解釈が異なる可能性がある",
+"結果は判定者の主観によって解釈される部分が多い",
+"検査の意図が分かりにくく回答を歪めることが難しい"],
+a:[2],
+e:"質問紙法は文章で問うため，質問文の解釈が回答者によって異なりうる（③が正しい）。①②⑤は投影法の特徴。④質問紙法の採点はむしろ客観的で，判定者の主観が入りやすいのは投影法。長所と短所が表裏一体になっていることを押さえよう。"},
+
+{n:38, pick:1, star:true,
+q:"正しいのはどれか，1つ選択してください。",
+c:["MMPIは臨床尺度と妥当性尺度とによって構成される",
+"SCTは未完成の絵場面を完成させる",
+"TATは動作性知能と言語性知能を測定する",
+"YG性格検査では16個のパーソナリティ因子を測定する",
+"内田クレペリン精神検査では偏差知能指数を求める"],
+a:[0],
+e:"★MMPIは10の臨床尺度＋4の妥当性尺度（回答態度の歪みを検出）で構成される（①が正しい）。②SCTは未完成の「文章」を完成させる。③TATは投影法の人格検査（知能検査ではない）。④YGは12尺度。16因子は16PF（Cattell〔キャッテル，英・心理学者〕）。⑤内田クレペリンは作業検査法（連続加算作業）。"},
+
+{n:39, pick:2, star:true,
+q:"パニック障害について誤っているのはどれか。2つ選択してください。",
+c:["動悸，胸痛などの身体症状がみられる",
+"死の恐怖がみられる",
+"摂食行動の異常がみられる",
+"予期不安がみられる",
+"見捨てられ恐怖がみられる"],
+a:[2,4],
+e:"★パニック障害（パニック症）＝パニック発作（動悸・胸痛・窒息感・死の恐怖など）＋予期不安（また発作が起きるのではという不安）＋広場恐怖を伴うことが多い。③摂食行動の異常は摂食症（摂食障害），⑤見捨てられ恐怖は境界性パーソナリティ症の特徴で，誤り。"},
+
+{n:40, pick:1, star:false,
+q:"不登校気味で心を閉ざしている男児（8歳）に対して，非言語的な自己表現を促す目的で「風景構成法」を実施した。男児はリラックスして楽しそうに絵を描き終えた。面接後，母親から「息子はどんな絵を描いていましたか？ 何か心の問題が表れていましたか？」と強い口調で結果の報告を求められた。アクスラインの基本原則および臨床的倫理に基づいた，母親への最初の対応として最も適切なものを1つ選択してください。",
+c:["男児の描いた作品をそのまま母親に見せ，川や人の配置から読み取れる過去の傷つきやネガティブな深層心理をマニュアル通りに詳細に伝える。",
+"男児にとっての「秘密が守られる安全な枠（空間）」を保護するため，「検査内容は一切お伝えできません」と冷然と拒絶し，報告を拒む。",
+"男児が作った作品そのものは見せず，「今日は自分のペースでリラックスして，エネルギーを表現できていましたよ」と，家庭での見守り方の指針に翻訳して伝える。",
+"母親の焦りや不安（コントロール欲求）に迎合し，「お母さんの言う通り，少しお調子者の傾向が絵の端々に表れていますね」と母親の意見に同意する。"],
+a:[2],
+e:"子どもの「守られた表現の枠」を保護しつつ，保護者の不安にも応える両立が求められる。作品そのものや深層解釈は開示せず，子どもの様子を「家庭での関わりに役立つ形」に翻訳して伝える③が最適。②のような冷たい全面拒絶は母親との協力関係を壊す。風景構成法は中井久夫（なかいひさお，日本・精神科医）が考案した描画法。保護者対応は保育士経験がそのまま活きる場面ですね！"},
+
+{n:41, pick:1, star:true,
+q:"境界性パーソナリティ症でみられないのはどれか，1つ選択してください。",
+c:["リストカット","させられ体験","過剰服薬","衝動行為","異性関係のトラブル"],
+a:[1],
+e:"★させられ体験（作為体験：自分の考え・行動が他者に操られていると感じる）は統合失調症の一級症状。境界性パーソナリティ症（BPD）の特徴は，見捨てられ不安，理想化とこきおろし，自傷（リストカット）・過量服薬，衝動性，不安定な対人関係など。問3・問39とつなげて整理！"},
+
+{n:42, pick:1, star:false,
+q:"誤っているのはどれか，1つ選択してください。",
+c:["箱庭療法は知能検査法として用いられる",
+"認知行動療法はうつ病に有効である",
+"クライアント中心療法は受容と共感を重視する",
+"精神分析療法は関係性の病理に対しても用いられる",
+"集団心理療法は患者の家族にも行われる"],
+a:[0],
+e:"箱庭療法は心理療法（および心理アセスメントの補助）であり，知能検査ではない（①が誤り）。認知行動療法（CBT）のうつ病への有効性はエビデンスが確立している。家族への集団的アプローチ（家族心理教育など）も実際に行われる。"},
+
+{n:43, pick:1, star:true,
+q:"正しいのはどれか，1つ選択してください。",
+c:["Bowlby：記憶の保持の研究",
+"Skinner：道徳性の研究",
+"Erikson：認知療法の開発",
+"Wechsler：知能テストの開発",
+"Piaget：性格のタイプの分類"],
+a:[3],
+e:"★Wechsler（ウェクスラー，ルーマニア出身・米の心理学者）は知能検査（WAIS・WISC・WPPSI）を開発（④が正しい）。Bowlby（英・児童精神科医）＝アタッチメント理論，Skinner（スキナー，米・心理学者）＝オペラント条件づけ，Erikson（米・発達心理学者）＝ライフサイクル論，Piaget（ピアジェ，スイス・心理学者）＝認知発達理論。人名と業績の対応は国試の定番サービス問題，確実に得点！"},
+
+{n:44, pick:2, star:true,
+q:"行動療法の技法で正しいのはどれか，2つ選択してください。",
+c:["自由連想法","自律訓練法","抵抗分析","暴露法","共感的理解"],
+a:[1,3],
+e:"★自律訓練法（Schultz〔シュルツ，独・精神科医〕が開発した自己催眠によるリラクセーション法）と暴露法（エクスポージャー）が行動療法系の技法。自由連想法・抵抗分析は精神分析，共感的理解は来談者中心療法。"},
+
+{n:45, pick:1, star:true,
+q:"正しい組み合わせはどれか，1つ選択してください。",
+c:["P-Fスタディ：知能の測定",
+"内田クレペリン作業検査：言語能力の測定",
+"TAT：活動水準の測定",
+"ロールシャッハ・テスト：精神発達の測定",
+"Y-Gテスト：パーソナリティの測定"],
+a:[4],
+e:"★Y-Gテスト（矢田部ギルフォード性格検査）はパーソナリティを12尺度で測定する質問紙（⑤が正しい）。P-Fスタディ＝欲求不満場面への反応（攻撃の方向・型），内田クレペリン＝作業曲線から性格・行動特徴，TAT＝人格（欲求と圧力），ロールシャッハ＝人格・病態水準。"},
+
+{n:46, pick:1, star:true,
+q:"Cl.中心療法の説明で誤っているのはどれか，1つ選択してください。",
+c:["カウンセラーがCl.に対する感情に正直であることを重視する",
+"カウンセラーの共感的理解を重視する",
+"自己概念と体験の一致をもたらす源としてCl.に対する条件的理解を重視する",
+"Cl.の中にある自己実現傾向を引き出すことを目指す",
+"Cl.が自分の体験や感情を否認したり歪曲したりすることなく，ありのままに受容するように導く"],
+a:[2],
+e:"★正しくは「無条件の肯定的配慮（関心）」。「条件的理解」（〜ならば認める，という条件付きの受容）はむしろ自己不一致を生む要因とされる。③が誤り。「無条件」というキーワードのすり替えは国試で定番のひっかけ！"},
+
+{n:47, pick:1, star:true,
+q:"自我防衛機制について正しいのはどれか，1つ選択してください。",
+c:["精神発達のより未成熟な段階に逆戻りすることを昇華という",
+"自分の感情を相手のせいにすることを反動形成という",
+"空想や病気に逃げ込むことを置き換えという",
+"反社会的な欲求を社会的な方に向けることを退行という",
+"都合の悪い考えや感情を意識の外に閉め出すことを抑圧という"],
+a:[4],
+e:"★⑤抑圧の説明が正しい。①未成熟な段階への逆戻り＝退行，②感情を相手のせいにする＝投影，③空想や病気への逃げ込み＝逃避，④反社会的欲求を社会的活動へ＝昇華。用語の入れ替え問題は，各防衛機制を具体例つきで覚えると崩れない（問5とセットで復習！）。"},
+
+{n:48, pick:1, star:true,
+q:"誤っているのはどれか，1つ選択してください。",
+c:["精神分析療法では，無意識の抑圧を解消することによって症状を取り去ろうとする。",
+"行動療法では，同化と調節の原理にしたがって症状を改善させる",
+"自律訓練法では，自己催眠法を用いて心身の緊張を解き，リラクセーションを達成させる",
+"Cl.中心療法では，体験や感情を否認も歪曲もなくありのままに受容することを促す",
+"認知療法では，不合理で否定的な認知を明らかにし，合理的で肯定的な認知に置き換えようとする。"],
+a:[1],
+e:"★「同化と調節」はPiaget（ピアジェ，スイス・心理学者）の認知発達理論の概念（シェマの働き）であり，行動療法の原理ではない（②が誤り）。行動療法の原理は学習理論（レスポンデント条件づけ・オペラント条件づけ）。"},
+
+{n:49, pick:1, star:false,
+q:"Cl.の内面を評価する心理検査において，質問紙法と投影法の特徴と臨床的解釈に関する記述として，最も適切なものを1つ選択してください。",
+c:["質問紙法は客観的な数値で評価されるため，Cl.が「自分を良く見せよう」と意図的に回答を操作するような防衛（お調子者心理や顔色を窺う態度）を完全に防ぐことができる。",
+"投影法は真っ白な紙や枠という「構造化の度合いが低い刺激」を提示するため，Cl.の意識的な計算や防衛が働きにくく，言語化が難しい心理や主観的世界が表現されやすい。",
+"風景構成法などの投影法において，Cl.が「絵が上手く描けない」「指示通りの現実的な配置ができない」と訴えた場合，検査としての信頼性が失われるため，その時点で検査を中止しなければならない。",
+"投影法は評価者の主観によるブレを排除するために，描かれた個々のアイテム（例：ライオンとシマウマの隣接）の配置や象徴性のみから，Cl.のパーソナリティをマニュアル通りに一意に断定する"],
+a:[1],
+e:"投影法は曖昧で構造化の低い刺激を用いるため，意識的な操作・防衛が働きにくく，無意識的・主観的な世界が表れやすい（②が正しい）。①質問紙法は社会的望ましさによる歪みを完全には防げない。③「描けない」という反応自体も貴重な臨床資料であり中止不要。④解釈は全体の文脈・面接情報と統合して行うもので，一意に断定しない。"},
+
+{n:50, pick:1, star:false,
+q:"子どもの「自己規律（自分を律する力）や感情のコントロール機能」の発達プロセスに関する心理学的記述として，最も適切なものを1つ選択してください。",
+c:["精神分析理論におけるエディプス・コンプレックスの超克プロセスでは，かつて怖い規範であった「父親（権威）」の存在を内面化（同一化）することによって，自分を律する存在（超自我）が子どもの中に育まれる。",
+"愛着理論（アタッチメント理論）において，子どもが自分の感情を自律的に調整する力（内的ワーキングモデル）は，幼少期に親から厳格にルールを課され，甘えを「否認」される経験によってのみ獲得される。",
+"現代社会において「怖い父親（権威・規範）」が機能しにくくなっている場合，発達心理学や認知行動療法では，外的な権威に怯えて従う（外発的動機づけ）ステップこそが，最も自律的なモラル形成に有効であると考える。",
+"虐待や不適切な養育環境にあった子どもが，他者に対して攻撃的な行動（いじめなど）をとるようになる現象は，発達段階における「攻撃者への同一化」という適応的な心理的成長の表れであり，周囲が介入する必要はない。"],
+a:[0],
+e:"エディプス葛藤の克服＝同性親（権威）への同一化により超自我（自分を律する内的な規範）が形成される（①が正しい，問19とセット）。②内的ワーキングモデルは安定したアタッチメント（甘えの受容）から育つので「否認によってのみ」は誤り。③外発的動機づけは自律的モラルの最終形ではない。④虐待児の「攻撃者への同一化」は介入が必要な防衛的反応であり，放置してよい成長ではない。"}
+];
+
+/* ========================= アプリ本体 ========================= */
+const CHEERS_OK = [
+  "ナイス！首席への確かな一歩です✨",
+  "完璧！この調子でいきましょう🔥",
+  "すばらしい！知識が定着していますね💮",
+  "正解！保育現場の経験も活きてます👏",
+  "その通り！国試本番でも取れる一問です🌟"
+];
+const CHEERS_NG = [
+  "大丈夫，間違えた問題こそ伸びしろ！解説を読めばもう忘れません💪",
+  "惜しい！今ここで間違えておけば本番は完璧です🌱",
+  "ドンマイ！解説でしっかり回収していきましょう📖",
+  "ここが今日の収穫ポイント！復習モードでもう一度会いましょう🔁"
+];
+const MARU = ["①","②","③","④","⑤"];
+
+let pool = [];       // 出題順の問題配列
+let idx = 0;         // 現在の問題
+let selected = new Set();
+let answered = false;
+let correctCount = 0;
+let wrongNos = [];   // 間違えた問題番号
+let modeName = "";
+
+const app = document.getElementById("app");
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startScreen(){
+  const starCount = QUESTIONS.filter(q => q.star).length;
+  app.innerHTML = `
+    <div class="card">
+      <p style="font-size:.9rem; margin-bottom:14px;">さやさん，今日もお疲れさまです！モードを選んでスタートしましょう🌱</p>
+      <button class="mode-btn" data-mode="all">
+        <span class="t">📘 全50問（順番どおり）</span><br>
+        <span class="d">問題集の順で全問演習。まずはここから！</span>
+      </button>
+      <button class="mode-btn" data-mode="exam">
+        <span class="t">📝 本番モード（ランダム40問）</span><br>
+        <span class="d">実際の試験と同じ「50問中40問」をランダム出題</span>
+      </button>
+      <button class="mode-btn" data-mode="star">
+        <span class="t">★ 国試頻出のみ（${starCount}問）</span><br>
+        <span class="d">★マークの頻出ポイントだけを集中演習</span>
+      </button>
+    </div>`;
+  app.querySelectorAll(".mode-btn").forEach(b => {
+    b.addEventListener("click", () => startQuiz(b.dataset.mode));
+  });
+}
+
+function startQuiz(mode){
+  if(mode === "all"){ pool = QUESTIONS.slice(); modeName = "全50問"; }
+  else if(mode === "exam"){ pool = shuffle(QUESTIONS).slice(0, 40); modeName = "本番モード（40問）"; }
+  else if(mode === "star"){ pool = QUESTIONS.filter(q => q.star); modeName = "国試頻出★"; }
+  else if(mode === "review"){ pool = QUESTIONS.filter(q => wrongNos.includes(q.n)); modeName = "復習モード"; }
+  idx = 0; correctCount = 0;
+  if(mode !== "review") wrongNos = [];
+  else wrongNos = [];
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = pool[idx];
+  selected = new Set();
+  answered = false;
+  const pickLabel = q.pick === 1 ? "1つ選択" : `${q.pick}つ選択`;
+  app.innerHTML = `
+    <div class="status"><span>${modeName}</span><span><b>${idx + 1}</b> / ${pool.length}問</span></div>
+    <div class="bar"><i style="width:${(idx / pool.length) * 100}%"></i></div>
+    <div class="card">
+      <div class="qhead">
+        <span class="qno">問題 ${q.n}</span>
+        <span class="tag ${q.pick === 1 ? "single" : "multi"}">${pickLabel}</span>
+        ${q.star ? '<span class="tag star">★国試頻出</span>' : ""}
+      </div>
+      <p class="qtext">${q.q}</p>
+      <div id="choices"></div>
+      <div id="feedback"></div>
+      <button class="btn-primary" id="mainBtn" disabled>解答する</button>
+    </div>`;
+
+  const box = document.getElementById("choices");
+  q.c.forEach((text, i) => {
+    const b = document.createElement("button");
+    b.className = "choice";
+    b.innerHTML = `<span class="mk">${MARU[i]}</span><span>${text}</span>`;
+    b.addEventListener("click", () => toggleChoice(i, b));
+    box.appendChild(b);
+  });
+
+  document.getElementById("mainBtn").addEventListener("click", onMainButton);
+}
+
+function toggleChoice(i, btn){
+  if(answered) return;
+  const q = pool[idx];
+  if(selected.has(i)){
+    selected.delete(i);
+    btn.classList.remove("sel");
+  } else {
+    if(q.pick === 1){
+      selected.clear();
+      document.querySelectorAll(".choice").forEach(c => c.classList.remove("sel"));
+    }
+    if(selected.size < q.pick){
+      selected.add(i);
+      btn.classList.add("sel");
+    }
+  }
+  document.getElementById("mainBtn").disabled = (selected.size !== q.pick);
+}
+
+function onMainButton(){
+  if(!answered){ grade(); }
+  else { next(); }
+}
+
+function grade(){
+  answered = true;
+  const q = pool[idx];
+  const ansSet = new Set(q.a);
+  const isCorrect = selected.size === ansSet.size && [...selected].every(i => ansSet.has(i));
+  if(isCorrect) correctCount++;
+  else wrongNos.push(q.n);
+
+  const choices = document.querySelectorAll(".choice");
+  choices.forEach((c, i) => {
+    c.disabled = true;
+    if(ansSet.has(i)) c.classList.add("hit");
+    else if(selected.has(i)) c.classList.add("miss");
+    c.classList.remove("sel");
+  });
+
+  const cheer = isCorrect
+    ? CHEERS_OK[Math.floor(Math.random() * CHEERS_OK.length)]
+    : CHEERS_NG[Math.floor(Math.random() * CHEERS_NG.length)];
+  const ansText = q.a.map(i => MARU[i]).join("・");
+
+  document.getElementById("feedback").innerHTML = `
+    <p class="verdict ${isCorrect ? "ok" : "ng"}">${isCorrect ? "正解！" : "不正解"}　正答：${ansText}</p>
+    <p class="cheer">${cheer}</p>
+    <div class="kaisetsu"><span class="h">解説</span>${q.e}</div>`;
+
+  const btn = document.getElementById("mainBtn");
+  btn.textContent = (idx + 1 < pool.length) ? "次の問題へ" : "結果を見る";
+  btn.disabled = false;
+  btn.focus();
+}
+
+function next(){
+  if(idx + 1 < pool.length){
+    idx++;
+    renderQuestion();
+    window.scrollTo({top: 0});
+  } else {
+    resultScreen();
+  }
+}
+
+function resultScreen(){
+  const total = pool.length;
+  const rate = Math.round((correctCount / total) * 100);
+  let msg;
+  if(rate === 100) msg = "満点！！首席が見えています！！🏆✨";
+  else if(rate >= 80) msg = "合格ライン余裕クリア！この調子です🌸";
+  else if(rate >= 60) msg = "合格ライン到達！間違えた問題を復習して盤石に💪";
+  else msg = "今日の間違いは本番の得点源！復習モードで巻き返しましょう🔥";
+
+  const wrongHtml = wrongNos.length
+    ? `<p class="wrong-list">間違えた問題：<b>${wrongNos.map(n => "問" + n).join("，")}</b></p>`
+    : `<p class="wrong-list">全問正解！復習の必要なし！🎉</p>`;
+
+  app.innerHTML = `
+    <div class="card">
+      <div class="score-big">
+        <span class="num">${correctCount}</span><span class="den"> / ${total}問正解（${rate}%）</span>
+      </div>
+      <p class="score-msg">${msg}</p>
+      ${wrongHtml}
+      <div class="row2">
+        ${wrongNos.length ? '<button class="btn-primary" id="reviewBtn">🔁 間違えた問題だけ復習する</button>' : ""}
+        <button class="btn-ghost" id="homeBtn">モード選択にもどる</button>
+      </div>
+    </div>`;
+
+  const rv = document.getElementById("reviewBtn");
+  if(rv) rv.addEventListener("click", () => startQuiz("review"));
+  document.getElementById("homeBtn").addEventListener("click", startScreen);
+  window.scrollTo({top: 0});
+}
+
+startScreen();
+</script>
+</body>
+</html>
