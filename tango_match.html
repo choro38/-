@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>認知・学習心理学 用語マッチングクイズ</title>
+<style>
+:root{
+  --bg:#f0f4f0;--card:#fff;--primary:#1b5e20;--mid:#2e7d32;
+  --light:#e8f5e9;--accent:#f57f17;--accent-l:#fff8e1;
+  --danger:#b71c1c;--danger-l:#ffebee;
+  --text:#1a1a1a;--sub:#666;--border:#cfd8dc;
+  --r:10px;--sh:0 2px 10px rgba(0,0,0,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
+
+/* ヘッダー */
+header{background:var(--primary);color:#fff;padding:14px 16px 12px;
+  text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+header h1{font-size:1.05rem;font-weight:700}
+header p{font-size:.72rem;margin-top:3px;opacity:.85}
+
+/* 単元タブ */
+#unit-screen{max-width:560px;margin:24px auto;padding:0 14px}
+#unit-screen h2{text-align:center;font-size:1.2rem;color:var(--primary);margin-bottom:6px}
+#unit-screen p{text-align:center;color:var(--sub);font-size:.85rem;margin-bottom:18px}
+.unit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.unit-btn{
+  background:var(--card);border:2px solid var(--border);border-radius:var(--r);
+  padding:14px 12px;cursor:pointer;text-align:left;
+  transition:all .15s;box-shadow:var(--sh)
+}
+.unit-btn:hover{border-color:var(--mid);background:var(--light);transform:translateY(-2px)}
+.unit-btn .u-icon{font-size:1.5rem;display:block;margin-bottom:6px}
+.unit-btn .u-name{font-size:.88rem;font-weight:700;color:var(--primary);display:block}
+.unit-btn .u-count{font-size:.72rem;color:var(--sub);margin-top:3px}
+.unit-btn .u-tag{
+  display:inline-block;font-size:.68rem;font-weight:700;
+  background:var(--accent-l);color:var(--accent);
+  border-radius:4px;padding:2px 7px;margin-top:6px
+}
+
+/* クイズ画面 */
+#quiz-screen{display:none;max-width:600px;margin:0 auto;padding:14px 14px 48px}
+
+/* 上部バー */
+.q-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.btn-back{background:none;border:none;color:var(--sub);font-size:.82rem;
+  cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s}
+.btn-back:hover{background:var(--border)}
+.q-unit-name{font-size:.78rem;font-weight:700;color:var(--primary)}
+.q-prog{margin-left:auto;font-size:.75rem;color:var(--sub)}
+
+/* プログレスバー */
+.prog-wrap{height:5px;background:#ddd;border-radius:3px;margin-bottom:16px}
+.prog-bar{height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
+
+/* 用語カード */
+.word-card{
+  background:var(--primary);color:#fff;border-radius:var(--r);
+  padding:22px 20px;margin-bottom:14px;text-align:center;
+  box-shadow:0 4px 16px rgba(27,94,32,.25)
+}
+.word-label{font-size:.7rem;opacity:.75;letter-spacing:.1em;margin-bottom:8px}
+.word-main{font-size:1.25rem;font-weight:800;line-height:1.5}
+.word-hint{font-size:.75rem;opacity:.7;margin-top:8px;font-style:italic}
+.confuse-badge{
+  display:inline-block;background:var(--accent);color:#fff;
+  font-size:.65rem;font-weight:700;border-radius:4px;
+  padding:2px 8px;margin-top:8px
+}
+
+/* 選択肢 */
+.choices{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+.choice{
+  background:var(--card);border:2px solid var(--border);border-radius:var(--r);
+  padding:13px 15px;cursor:pointer;font-size:.88rem;line-height:1.65;
+  text-align:left;transition:all .15s;display:flex;align-items:flex-start;gap:10px
+}
+.choice:hover:not(:disabled){border-color:var(--mid);background:var(--light);transform:translateX(3px)}
+.choice:disabled{cursor:default}
+.choice.correct{border-color:var(--mid);background:var(--light)}
+.choice.wrong{border-color:var(--danger);background:var(--danger-l)}
+.choice.dim{opacity:.4}
+.choice-mark{
+  flex-shrink:0;width:22px;height:22px;border-radius:50%;
+  background:var(--border);font-size:.72rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--sub);margin-top:1px
+}
+.choice.correct .choice-mark{background:var(--mid);color:#fff}
+.choice.wrong   .choice-mark{background:var(--danger);color:#fff}
+
+/* フィードバック */
+.feedback{
+  border-radius:var(--r);padding:13px 15px;margin-bottom:14px;
+  font-size:.86rem;line-height:1.75;display:none
+}
+.feedback.ok{background:var(--light);border-left:4px solid var(--mid)}
+.feedback.ng{background:var(--danger-l);border-left:4px solid var(--danger)}
+.fb-head{font-weight:800;margin-bottom:5px;font-size:.92rem}
+.feedback.ok .fb-head{color:var(--primary)}
+.feedback.ng .fb-head{color:var(--danger)}
+/* 混同ポイント枠 */
+.confuse-box{
+  background:#fff3e0;border-left:3px solid var(--accent);
+  border-radius:6px;padding:9px 12px;margin-top:9px;font-size:.82rem;color:#5d4037
+}
+.confuse-box strong{color:var(--accent)}
+
+.btn-next{
+  width:100%;background:var(--primary);color:#fff;border:none;
+  border-radius:var(--r);padding:13px;font-size:.95rem;font-weight:700;
+  cursor:pointer;display:none;transition:background .2s
+}
+.btn-next:hover{background:#0a3d0a}
+
+/* 結果 */
+#result-screen{display:none;max-width:500px;margin:24px auto;padding:0 14px 48px;text-align:center}
+.res-card{background:var(--card);border-radius:var(--r);padding:28px 20px;box-shadow:var(--sh);margin-bottom:16px}
+.score-big{font-size:3rem;font-weight:900;color:var(--primary)}
+.res-msg{font-size:.95rem;margin:10px 0;line-height:1.7}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;text-align:left}
+.rg{background:var(--bg);border-radius:8px;padding:10px 13px;font-size:.82rem}
+.rg span{font-weight:800;font-size:1.1rem;display:block}
+.res-btns{display:grid;gap:9px}
+.btn-r{border:none;border-radius:var(--r);padding:12px;font-size:.9rem;font-weight:700;cursor:pointer;transition:background .2s}
+.btn-r.green{background:var(--primary);color:#fff}
+.btn-r.green:hover{background:#0a3d0a}
+.btn-r.red{background:#fff;color:var(--danger);border:2px solid var(--danger)}
+.btn-r.red:hover{background:var(--danger-l)}
+.btn-r.gray{background:var(--border);color:var(--sub)}
+.btn-r.gray:hover{background:#b0bec5}
+
+/* 間違い一覧 */
+#wrong-list{text-align:left;margin-top:18px}
+#wrong-list h3{font-size:.88rem;color:var(--danger);font-weight:800;margin-bottom:10px}
+.wrong-item{background:var(--danger-l);border-left:3px solid var(--danger);
+  border-radius:8px;padding:10px 13px;margin-bottom:8px;font-size:.82rem;line-height:1.65}
+.wrong-item .wi-word{font-weight:800;color:var(--danger);margin-bottom:3px}
+.wrong-item .wi-ans{color:var(--primary)}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔗 認知・学習心理学 用語マッチングクイズ</h1>
+  <p>単元を選んで集中練習 ／ 混同しやすい用語を徹底比較</p>
+</header>
+
+<!-- 単元選択 -->
+<div id="unit-screen">
+  <h2>単元を選んでください</h2>
+  <p>各単元で混同しやすい用語をしっかり確認しよう！</p>
+  <div class="unit-grid" id="unit-grid"></div>
+</div>
+
+<!-- クイズ -->
+<div id="quiz-screen">
+  <div class="q-bar">
+    <button class="btn-back" onclick="goHome()">← 単元選択に戻る</button>
+    <span class="q-unit-name" id="q-unit-name"></span>
+    <span class="q-prog" id="q-prog">1 / 10</span>
+  </div>
+  <div class="prog-wrap"><div class="prog-bar" id="prog-bar"></div></div>
+  <div class="word-card">
+    <div class="word-label">📌 この用語の正しい説明はどれ？</div>
+    <div class="word-main" id="word-main"></div>
+    <div class="word-hint" id="word-hint"></div>
+    <div id="confuse-badge"></div>
+  </div>
+  <div class="choices" id="choices"></div>
+  <div class="feedback" id="feedback">
+    <div class="fb-head" id="fb-head"></div>
+    <div id="fb-body"></div>
+    <div id="confuse-box"></div>
+  </div>
+  <button class="btn-next" id="btn-next" onclick="nextQ()">次の問題 →</button>
+</div>
+
+<!-- 結果 -->
+<div id="result-screen">
+  <div class="res-card">
+    <div class="score-big" id="score-big">0/0</div>
+    <div style="color:var(--sub);font-size:.85rem">正解数 / 全問題数</div>
+    <div class="res-msg" id="res-msg"></div>
+    <div class="res-grid">
+      <div class="rg">正解 ✅<span id="rc">0</span>問</div>
+      <div class="rg">不正解 ❌<span id="wc">0</span>問</div>
+    </div>
+  </div>
+  <div class="res-btns">
+    <button class="btn-r green" onclick="retryAll()">🔁 この単元をもう一度</button>
+    <button class="btn-r red"  id="retry-weak-btn" onclick="retryWeak()">❌ 間違えた問題だけ</button>
+    <button class="btn-r gray" onclick="goHome()">← 別の単元を選ぶ</button>
+  </div>
+  <div id="wrong-list"></div>
+</div>
+
+<script>
+// ===================================================
+// 単元データ
+// ===================================================
+const UNITS = [
+
+// ① オペラント条件づけ
+{id:"op", icon:"🎯", name:"オペラント条件づけ", tag:"最重要★★★",
+ qs:[
+  {w:"好子（こうし）",
+   hint:"強化に使われる刺激のこと",
+   confuse:"嫌子との違いに注意！",
+   correct:"行動の直後に出現することで、その行動の頻度を【増やす】環境刺激。例：褒め言葉・おやつ・笑顔。",
+   wrongs:[
+     "行動の直後に消失することで、その行動の頻度を増やす環境刺激。例：電撃が止まる。",
+     "行動の直後に出現することで、その行動の頻度を【減らす】環境刺激。例：叱責・電撃。",
+     "行動の直前に提示されることで、行動を誘発する弁別刺激のこと。",
+   ]},
+
+  {w:"嫌子（けんし）",
+   hint:"不快な刺激のこと",
+   confuse:"好子との違いに注意！出現で弱化、消失で強化。",
+   correct:"行動の直後に消失することで行動の頻度を増やすか、または出現することで行動の頻度を減らす環境刺激。例：電撃・叱責・痛み。",
+   wrongs:[
+     "行動の直後に出現することで行動の頻度を増やす環境刺激。例：褒め言葉・おやつ。",
+     "行動の直前に提示されることで、特定の行動を誘発する先行刺激のこと。",
+     "行動後に提示されることで、次回の行動を誘発するモデル刺激のこと。",
+   ]},
+
+  {w:"好子出現による強化（正の強化）",
+   hint:"4随伴性のひとつ。行動が増える。",
+   confuse:"「嫌子消失による強化（負の強化）」とどちらも行動が増えるので混同注意！",
+   correct:"行動の直後に【好子が出現】することで、その行動の頻度が増加すること。例：座って食べたら褒められた→着席行動が増える。",
+   wrongs:[
+     "行動の直後に【嫌子が消失】することで、その行動の頻度が増加すること。例：薬を飲んだら頭痛が消えた→服薬行動が増える。",
+     "行動の直後に【好子が消失】することで、その行動の頻度が減少すること。例：タイムアウト法。",
+     "行動の直後に【嫌子が出現】することで、その行動の頻度が減少すること。例：叱責・体罰。",
+   ]},
+
+  {w:"嫌子消失による強化（負の強化）",
+   hint:"行動が増える。「負」＝嫌子が消える。",
+   confuse:"「正の強化」もどちらも行動が増える！「正負」は好子か嫌子か、ではなく出現(＋)か消失(-)かを指す。",
+   correct:"行動の直後に【嫌子が消失】することで、その行動の頻度が増加すること。例：薬を飲んだら頭痛(嫌子)が消えた→服薬行動が増える。",
+   wrongs:[
+     "行動の直後に【好子が出現】することで、その行動の頻度が増加すること。例：褒められた→行動が増える。",
+     "行動の直後に【好子が消失】することで、その行動の頻度が減少すること。例：タイムアウト法。",
+     "行動の直後に【嫌子が出現】することで、その行動の頻度が減少すること。例：叱責・火傷。",
+   ]},
+
+  {w:"好子消失による弱化（負の罰）",
+   hint:"タイムアウト法がこれ。行動が減る。",
+   confuse:"「嫌子出現による弱化（正の罰）＝嫌悪療法」と混同しやすい！",
+   correct:"行動の直後に【好子が消失（奪われる）】ことで、行動の頻度が減少すること。タイムアウト法（友人との関わりや試合出場を奪う）がこれ。",
+   wrongs:[
+     "行動の直後に【嫌子が出現】することで、行動の頻度が減少すること。嫌悪療法がこれ。例：飲酒後に不快感を生じさせる薬を飲む。",
+     "行動の直後に【好子が出現】することで、行動の頻度が増加すること。正の強化がこれ。",
+     "行動の直後に【嫌子が消失】することで、行動の頻度が増加すること。負の強化がこれ。",
+   ]},
+
+  {w:"嫌子出現による弱化（正の罰）",
+   hint:"嫌悪療法がこれ。行動が減る。",
+   confuse:"「好子消失による弱化（タイムアウト法）」と混同しやすい！",
+   correct:"行動の直後に【嫌子が出現】することで、行動の頻度が減少すること。嫌悪療法（飲酒後に不快感を生じさせる）がこれ。",
+   wrongs:[
+     "行動の直後に【好子が消失（奪われる）】ことで、行動の頻度が減少すること。タイムアウト法がこれ。",
+     "行動の直後に【嫌子が消失】することで、行動の頻度が増加すること。負の強化がこれ。",
+     "行動の直後に【好子が出現】することで、行動の頻度が増加すること。正の強化がこれ。",
+   ]},
+
+  {w:"逃避学習",
+   hint:"嫌子が来た「後」",
+   confuse:"「回避学習（嫌子が来る前）」との時系列の違いが最重要ポイント！",
+   correct:"嫌子が【呈示された後】に行動してその嫌子をなくすこと。嫌子消失による強化の一種。例：電撃を受けてから隣の部屋へ移動する。",
+   wrongs:[
+     "嫌子が【呈示される前】に行動して嫌子の出現を防ぐこと。例：警告音が鳴った段階で隣の部屋へ移動する。",
+     "好子が消失した後に行動して好子を取り戻すこと。タイムアウト法が終わった後の行動がこれ。",
+     "中性刺激と無条件刺激を対呈示することで形成される条件反応のこと。",
+   ]},
+
+  {w:"能動回避（回避学習）",
+   hint:"嫌子が来る「前」に行動する",
+   confuse:"「逃避学習（嫌子が来た後）」との違い。「逃げる」か「避ける」かで覚える！",
+   correct:"嫌子が【呈示される前】に行動して嫌子の出現を防ぐこと。例：電撃の警告音が鳴った時点で（電撃が来る前に）隣の部屋へ移動する。",
+   wrongs:[
+     "嫌子が【呈示された後】に行動してその嫌子をなくすこと。例：電撃を受けてから隣の部屋へ移動する。",
+     "好子が出現した後に同じ行動を繰り返すことで行動が増加すること。正の強化がこれ。",
+     "条件刺激のみを繰り返し呈示することで条件反応を弱める手続きのこと。",
+   ]},
+
+  {w:"シェイピング（逐次的接近法）",
+   hint:"目標行動へ段階的に近づける",
+   confuse:"「部分強化（一部の反応のみ強化）」と混同しないこと。シェイピングは段階的な分化強化。",
+   correct:"目標行動に近い反応に対してのみ【分化強化】を段階的に与え、最終的な目標行動の獲得を目指す手続き。例：靴下をはく動作を10ステップに分けて強化。",
+   wrongs:[
+     "何回かに1回だけ行動に好子を与えることで、消去抵抗を高める強化スケジュールのこと。",
+     "条件刺激と無条件刺激を繰り返し対呈示することで、条件反応を形成する手続きのこと。",
+     "問題行動と同時に生じ得ない拮抗行動の獲得を目指す技法のこと。ハビットリバーサル法がこれ。",
+   ]},
+
+  {w:"タイムアウト法",
+   hint:"どの随伴性を使う？嫌悪療法と混同しない！",
+   confuse:"嫌悪療法は「嫌子出現」、タイムアウト法は「好子消失」——この区別が頻出！",
+   correct:"問題行動の後に、友人との関わりや試合出場などの【好子を一定時間奪う（好子消失）】ことで問題行動を弱化させる技法。",
+   wrongs:[
+     "問題行動の後に不快感を生じさせる薬などの【嫌子を出現させる】ことで問題行動を弱化させる技法。嫌悪療法がこれ。",
+     "目標行動に近い反応を段階的に強化して、最終的な目標行動を獲得させる技法。シェイピングがこれ。",
+     "条件刺激のみを繰り返し呈示して、条件反応を消去する手続き。曝露反応妨害法がこれ。",
+   ]},
+ ]
+},
+
+// ② 記憶・WM
+{id:"mem", icon:"🧠", name:"記憶・WM", tag:"先生が明示★★",
+ qs:[
+  {w:"作動記憶（WM: Working Memory）",
+   hint:"短期記憶との最大の違いは？",
+   confuse:"「短期記憶（保持のみ）」と「WM（保持＋処理）」の違いがポイント！",
+   correct:"情報の一時的な【保持】と同時に【情報処理】も行う二重の機能を持つ記憶システム。コンピュータのメモリに相当。",
+   wrongs:[
+     "情報を一時的に保持するだけの記憶。容量は7±2チャンク、約15秒で消失する。これは短期記憶のこと。",
+     "体験した出来事を「いつ・どこで・何をした」という文脈とともに保持する長期記憶のこと。エピソード記憶がこれ。",
+     "言葉の意味や一般的な事実・知識を保持する長期記憶のこと。意味記憶がこれ。",
+   ]},
+
+  {w:"短期貯蔵庫の容量と持続時間",
+   hint:"7±2チャンク、何秒？",
+   confuse:"「数分」ではなく「数十秒（約15秒）」——この数字が頻出の引っかけ！",
+   correct:"容量は【7±2チャンク】。維持リハーサルなしでは【約15秒（数十秒）】で消失する。「数分」ではない。",
+   wrongs:[
+     "容量は7±2チャンク。維持リハーサルなしでは約1秒で消失する。これは感覚記憶の説明。",
+     "容量は7±2チャンク。維持リハーサルなしでは数分で消失する。「数分」は誤り——「数十秒」が正しい。",
+     "容量は制限なし。リハーサルをすることで半永久的に保持できる。これは長期貯蔵庫の説明。",
+   ]},
+
+  {w:"精緻化リハーサル",
+   hint:"長期記憶化に有効な深い処理",
+   confuse:"「維持リハーサル（繰り返し復唱するだけ）」との違いが重要！",
+   correct:"新しい情報を既有の知識と【関連づけて意味を理解する】処理。深い処理になるため、長期記憶への定着が促進される。",
+   wrongs:[
+     "記憶したい情報をそのまま繰り返し声に出して復唱する処理。短期保持には有効だが長期記憶化には限界がある。これは維持リハーサル。",
+     "記憶情報をグループや階層に分類・整理する体制化方略のこと。",
+     "テストで解答を求めることで想起練習を繰り返し、記憶定着を促進する効果のこと。テスト効果がこれ。",
+   ]},
+
+  {w:"エピソード記憶",
+   hint:"「いつ・どこで・何をした」という個人的な体験の記憶",
+   confuse:"「意味記憶（言葉の意味など一般知識）」との違い。繰り返しによって意味記憶へ移行する！",
+   correct:"自分が体験した具体的な出来事に関する記憶。「いつ・どこで・何をした」という文脈を含む。陳述的記憶（顕在記憶）の一種。繰り返しにより意味記憶へ移行する。",
+   wrongs:[
+     "言葉の意味・一般的な事実・概念など、個人の体験とは切り離された知識の記憶。意味記憶がこれ。",
+     "自転車の乗り方など、意識的に想起しなくても使える技能に関する記憶。手続き記憶がこれ。",
+     "事前に見聞きした情報によって知識ネットワークが活性化され、後の情報処理に影響する現象。プライミング効果がこれ。",
+   ]},
+
+  {w:"プライミング効果",
+   hint:"事前情報が後の処理に影響する",
+   confuse:"「符号化特定性原理（記銘時の文脈が検索手がかりになる）」と区別しよう！",
+   correct:"事前に見聞きした情報によって知識ネットワークが【活性化】され、その後の情報処理に影響を与える現象。潜在記憶の一種。",
+   wrongs:[
+     "記銘時の環境（場所・匂い・音楽）が検索時の手がかりとなり、同じ文脈だと想起しやすくなる原理。符号化特定性原理がこれ。",
+     "繰り返しの体験によってエピソード記憶が意味記憶へと変換されていくプロセスのこと。",
+     "その時の気分に合った情報が想起・判断されやすくなる現象。気分一致効果がこれ。",
+   ]},
+
+  {w:"気分一致効果",
+   hint:"今の気分に合った記憶が浮かびやすい",
+   confuse:"「気分不一致効果（意図的にネガティブ気分からポジティブを思い出す）」との違いが重要！",
+   correct:"その時の気分（ポジティブ／ネガティブ）に合った記憶の想起・判断・行動が促進される現象。【無意識・自動的】に生じる。",
+   wrongs:[
+     "ネガティブな気分の時に意図的にポジティブなことを思い出すことで気分が改善される現象。気分不一致効果がこれ。意図的に引き起こす必要がある。",
+     "強い感情体験の際にその場の状況が鮮明に記憶される現象。フラッシュバルブ記憶がこれ。",
+     "記銘時の環境が検索時の手がかりとなり、文脈が一致すると想起しやすくなる原理。符号化特定性原理がこれ。",
+   ]},
+
+  {w:"スクリプト",
+   hint:"「レストランに行く」の流れを自動的に知っている理由",
+   confuse:"「スキーマ（知識の認知的枠組み全般）」の一種。スクリプトは特に「出来事の流れ」に特化した枠組み。",
+   correct:"似たような出来事を繰り返し経験する中でその共通部分をまとめた、【典型的な出来事の流れ】に関する記憶の認知的枠組み（スキーマの一種）。",
+   wrongs:[
+     "カテゴリの最も典型的な事例に関するイメージ・知識の集合体のこと。プロトタイプがこれ。",
+     "過去の体験をもとに再構成される記憶で、必ずしも事実と一致しないプロセスのこと。記憶の再構成がこれ。",
+     "記銘時の文脈情報が想起時の手がかりとなり、文脈が一致すると想起しやすくなる原理。符号化特定性原理がこれ。",
+   ]},
+ ]
+},
+
+// ③ メタ認知
+{id:"meta", icon:"🔍", name:"メタ認知", tag:"論述頻出★",
+ qs:[
+  {w:"メタ認知",
+   hint:"フラヴェルが提唱。「認知の上位」にある働き。",
+   confuse:"「心の理論（他者の心を理解する）」や「自己中心性（ピアジェ）」と混同しないこと！",
+   correct:"「認知している自分を認知している」状態。自分の思考・記憶のクセを自覚し、認知過程を意図的にモニタリング・コントロールする【上位の心の働き】。フラヴェル（米・発達心理学者）が提唱。",
+   wrongs:[
+     "他者が自分とは異なる心の状態を持つという理解・知識のこと。4〜7歳で発達する。心の理論がこれ。",
+     "自分に見えているものは他者にも見えていると思い込む幼児の認知特徴のこと。ピアジェの自己中心性がこれ。",
+     "自分の記憶に関する知識・認識のこと。メタ認知の一種で、より狭い概念。メタ記憶がこれ。",
+   ]},
+
+  {w:"メタ記憶",
+   hint:"メタ認知の一種。記憶に特化した自己知識。",
+   confuse:"「メタ認知（認知全般の上位概念）」の一部。より狭い概念であることを覚えよう！",
+   correct:"メタ認知の一種。【自分の記憶に関する知識・認識】のこと。例：「頭だけでは覚えておけない」と感じて手帳に書く→メタ記憶が機能している。",
+   wrongs:[
+     "自分の思考・記憶のクセ全般を認知し、認知過程全体をモニタリング・コントロールする上位の心の働き。メタ認知がこれ（より広い概念）。",
+     "他者が自分とは異なる心の状態を持つという理解・知識。4〜7歳で発達する。心の理論がこれ。",
+     "自分の学習を振り返り次に活かせる情報を引き出す活動のこと。教訓帰納がこれ。",
+   ]},
+
+  {w:"心の理論（Theory of Mind）",
+   hint:"4〜7歳で発達。サリー・アン課題で測定。",
+   confuse:"「ピアジェの自己中心性」とは逆の概念！自己中心性が「なくなる」ことで心の理論が獲得される。",
+   correct:"他者が自分とは異なる心の状態（信念・欲求・意図）を持つという理解・知識。4〜7歳で正答率上昇（サリー・アン課題）。メタ認知発達の初期ステージとされる。",
+   wrongs:[
+     "自分に見えているものは他者にも見えていると思い込む幼児の認知特徴。ピアジェの自己中心性がこれ——心の理論の「反対」の状態。",
+     "「認知している自分を認知している」状態。自分の思考・記憶のクセを自覚する上位の心の働き。メタ認知がこれ。",
+     "自分の記憶の内容や有無をモニターする機能。「頭だけでは覚えられない」と気づいて手帳を使う。メタ記憶がこれ。",
+   ]},
+
+  {w:"ピアジェの自己中心性（egocentrism）",
+   hint:"利己主義・わがままとは全然違う！発達上の認知特徴。",
+   confuse:"「利己主義・自分勝手」と混同する人が多いが、全く別の概念。ピアジェは認知の特徴として述べている。",
+   correct:"幼児期の認知特徴として、【自分に見えているものは他者にも見えている】【自分が知っていることは他者も知っている】と思い込む状態。利己主義・わがままとは別概念。",
+   wrongs:[
+     "他者のことを気にせず自分の欲求を優先する利己的・自分勝手な性格特性のこと。これは自己中心性の誤解。",
+     "他者が自分とは異なる心の状態を持つという理解・知識。4〜7歳で発達する。心の理論がこれ。",
+     "集団の中で自分の意見が通らない少数派が多数派に合わせてしまう行動のこと。同調行動がこれ。",
+   ]},
+ ]
+},
+
+// ④ 認知バイアス
+{id:"bias", icon:"⚡", name:"認知バイアス", tag:"最重要★★★",
+ qs:[
+  {w:"確証バイアス",
+   hint:"自分の仮説に「合う」情報だけを集める",
+   confuse:"「錯誤相関（無関係な出来事に関係を錯覚）」との違い。確証バイアスは情報収集のプロセス、錯誤相関はその結果！",
+   correct:"自分の持つ期待や仮説に【合致した情報のみを求め】、反証情報にはほとんど注意を払わない情報処理の傾向。錯誤相関が生じる原因の一つ。",
+   wrongs:[
+     "本来は無関係な出来事の間に明確な因果関係があると錯覚する現象。錯誤相関がこれ。確証バイアスの結果として生じることが多い。",
+     "自分の行動の原因を外的要因（状況）に、他者の行動の原因を内的要因（性格）に帰属する傾向。行為者—観察者バイアスがこれ。",
+     "自分を平均以上の能力・特質を持つと過大評価する傾向。平均以上効果（ポジティブ・イリュージョンの一つ）がこれ。",
+   ]},
+
+  {w:"錯誤相関（illusory correlation）",
+   hint:"てるてる坊主と天気は本当に関係がある？",
+   confuse:"「確証バイアス（仮説に合う情報だけ集める）」と区別しよう。錯誤相関はその「結果」として生じる誤信念！",
+   correct:"本来は無関係な出来事の間に、実際には存在しない【明確な関係があると錯覚する】現象。確証バイアスによって肯定的・印象的な事例にのみ注目するために生じる。",
+   wrongs:[
+     "自分の仮説に合った情報のみを求め、反証情報を無視する情報処理の傾向。確証バイアスがこれ——錯誤相関の「原因」となる。",
+     "行動の原因を内的要因（性格・能力）に帰属しすぎる傾向。基本的帰属錯誤がこれ。",
+     "不確実な事態を典型例との類似性で判断する思考の近道。代表性ヒューリスティクスがこれ。",
+   ]},
+
+  {w:"行為者−観察者バイアス",
+   hint:"他者の行動→内的帰属、自分の行動→外的帰属",
+   confuse:"自己奉仕バイアス（成功は自分のおかげ・失敗は状況のせい）と似ているが、こちらは「他者の行動をどう見るか」の方向性の非対称！",
+   correct:"他者の行為の原因を推測する際は【内的帰属（性格・能力）になりやすく】、自分の行為については【外的帰属（状況・環境）になりやすい】傾向。",
+   wrongs:[
+     "成功・良いことは自分の能力のおかげ（内的帰属）、失敗・悪いことは状況のせい（外的帰属）にする自己防衛的傾向。自己奉仕バイアスがこれ。",
+     "自分の仮説に合う情報だけを集め反証を無視する情報処理の傾向。確証バイアスがこれ。",
+     "他者の行動の原因を一般的に内的要因（性格・能力）に帰属しすぎる傾向。基本的帰属錯誤がこれ。",
+   ]},
+
+  {w:"ポジティブ・イリュージョン",
+   hint:"3要素を言える？平均以上・統制感・楽観主義",
+   confuse:"「抑うつの現実主義」との対比が重要！健康な人はイリュージョンあり、抑うつの人はイリュージョンが弱い。",
+   correct:"人が自分に関する情報を都合よく歪める認知バイアスの総称。3要素：①平均以上効果（自分を過大評価）②統制感の幻想③非現実的な楽観主義。心身の健康・適応にも前向きな側面がある。",
+   wrongs:[
+     "抑うつ傾向の人に見られる、良い面も悪い面も偏りなく認知する傾向のこと。「抑うつの現実主義」がこれ——ポジティブ・イリュージョンの逆。",
+     "本来無関係な出来事に関係があると錯覚する認知バイアスのこと。錯誤相関がこれ。",
+     "自分の仮説に合う情報だけを集める情報処理の傾向のこと。確証バイアスがこれ。",
+   ]},
+
+  {w:"抑うつの現実主義",
+   hint:"抑うつ傾向の人の自己認知は正確？不正確？",
+   confuse:"「ポジティブ・イリュージョン（健康な人）」との逆の関係！逆説的だが抑うつの人の方が現実的。",
+   correct:"抑うつ傾向がある人は【ポジティブ・イリュージョンが弱く】、良い面も悪い面も偏りなく認知する傾向がある。逆説的だが「より現実的」な自己認知を持つという知見。",
+   wrongs:[
+     "抑うつ傾向の人は全ての情報をネガティブに歪め、悲観的な認知をするという説明。これは誤り——偏りなく認知するのが「抑うつの現実主義」。",
+     "健康な人が自分に都合よく情報を歪め、過大評価する傾向のこと。ポジティブ・イリュージョンがこれ——「抑うつの現実主義」の逆。",
+     "ネガティブな気分の時にポジティブなことを意図的に思い出す効果のこと。気分不一致効果がこれ。",
+   ]},
+
+  {w:"必要原因",
+   hint:"「それがないと結果が起こらない」原因",
+   confuse:"「十分原因（それさえあれば結果が起こる）」との区別が重要。血液型はB型遅刻の「十分原因」にはならない！",
+   correct:"「それがないと結果が起こらない」原因。例：チューリップが咲くには水が必要——水は必要原因。ただし水だけでは十分ではない。",
+   wrongs:[
+     "「それさえあれば結果が起こる」原因。水・温度・栄養などを集めてはじめてチューリップが咲く——これが十分原因。",
+     "結果の後に確認できる原因のこと。原因帰属（因果推論）の一種で、事後的に判断される。",
+     "結果を引き起こした直接的なきっかけとなる先行刺激のこと。オペラント条件づけの三項随伴性における「A」がこれ。",
+   ]},
+ ]
+},
+
+// ⑤ 協同・集団
+{id:"group", icon:"👥", name:"協同・集団", tag:"記述頻出★★",
+ qs:[
+  {w:"社会的手抜き（リンゲルマン効果）",
+   hint:"集団で作業すると個人の努力量が…",
+   confuse:"「同調行動（多数派に引きずられる）」「集団思考（目的がズレる）」「集団極性化（決定が極端になる）」と混同注意！",
+   correct:"集団で課題を行うことで【一人ひとりの努力量が減少】する現象（リンゲルマン〔独・農学者〕の綱引き実験）。人数が増えるほど1人あたりの努力量が減衰する。責任の分散が要因。",
+   wrongs:[
+     "集団での議論の結果、決定が個人の意見の平均よりも極端な方向に偏る現象。集団極性化がこれ。",
+     "話し合いの目的が「より良い解決策」から「意見の一致」にズレていく現象。集団思考がこれ。",
+     "多数派の圧力に引きずられて自分の判断を変えてしまう行動。同調行動がこれ。",
+   ]},
+
+  {w:"集団思考（group think）",
+   hint:"目的が「より良い解決策」→「意見の一致」にズレる",
+   confuse:"「集団極性化（結論が極端になる）」との違い。集団思考は「プロセスのゆがみ」、集団極性化は「結論の方向性のゆがみ」！",
+   correct:"話し合いの目的が「より良い解決策を出す」から【「集団で意見を一致させる」にズレていく】現象。少ない選択肢しか検討されなくなる。",
+   wrongs:[
+     "集団での議論の結果、決定が個人の意見の平均よりもリスク方向または慎重方向に極端に偏る現象。集団極性化がこれ。",
+     "集団で作業すると一人ひとりの努力量が減少する現象。社会的手抜きがこれ。",
+     "多数派の意見に引きずられて自分の判断を変えてしまう行動。同調行動がこれ。",
+   ]},
+
+  {w:"集団極性化",
+   hint:"個人の平均より「より極端」な方向へ偏る",
+   confuse:"「集団思考（目的がズレる）」との違い。集団極性化は議論後の「結論の方向性」が問題！",
+   correct:"集団での議論の結果、決定が【個人の意見の平均よりも極端な方向に偏る】現象。リスク方向への偏りをリスキー・シフト、慎重方向をコーシャス・シフトという。",
+   wrongs:[
+     "話し合いの目的が「より良い解決策」から「意見の一致」にズレていく現象。集団思考がこれ。",
+     "集団で作業すると一人ひとりの努力量が減少する現象。社会的手抜き（リンゲルマン効果）がこれ。",
+     "多数派の圧力に引きずられて自分の判断を変えてしまう行動。同調行動がこれ。",
+   ]},
+
+  {w:"社会的手抜きの予防策",
+   hint:"3つ言える？見える化・フィードバック・関与",
+   confuse:"「集団全体の成果だけを評価する」は逆効果——これが引っかけ選択肢として頻出！",
+   correct:"①個人の貢献度を【見える化】する ②個人へのフィードバックを実施する ③課題への個人の関与を高める の3つ。「集団の成果だけを評価する」は手抜きを促進する。",
+   wrongs:[
+     "①集団全体の成果だけを評価し個人の貢献を見えないようにする ②グループの人数を増やす ③競争を排除して協力を促す——これらはすべて誤り。",
+     "①多数派と同じ意見を強制する ②少数意見を排除する ③全員が同じ結論に至るよう誘導する——これは集団思考を生む方法。",
+     "①課題を簡単にして全員が達成できるようにする ②発言を禁止して各自が黙々と作業する ③グループの評価のみを重視する——これらは手抜きを悪化させる。",
+   ]},
+ ]
+},
+
+// ⑥ 問題解決・学習指導
+{id:"prob", icon:"💡", name:"問題解決・学習指導", tag:"確認用★",
+ qs:[
+  {w:"良定義問題",
+   hint:"ハノイの塔はどっち？",
+   confuse:"「不良定義問題（日常の問題）」との対比。難しいかどうかとは別の話！",
+   correct:"問題空間・ルール・目標が【明確に定義された】問題のこと。例：ハノイの塔。難しい・簡単とは別の概念分類。",
+   wrongs:[
+     "問題空間が明確でなく、日常生活で直面するほとんどの問題のこと。不良定義問題がこれ——良定義問題の「逆」。",
+     "解決するのが困難で、専門知識が必要な高度な問題のこと。良定義か不良定義かとは別の概念。",
+     "目標が与えられているが解決手順（アルゴリズム）が存在しない問題のこと。",
+   ]},
+
+  {w:"洞察（insight）",
+   hint:"突然ひらめくように見えるが…",
+   confuse:"「準備なしにひらめきは生まれない」——探索プロセスがある点が重要！",
+   correct:"突然答えが浮かぶように見えるが、その前に問題への取り組みや【探索プロセスが必ず存在する】。「準備なしに洞察は生まれない」。",
+   wrongs:[
+     "問題に対してできそうなことを全て試し、難しければ違う手を試す問題解決の方法。試行錯誤がこれ——洞察とは異なる。",
+     "正しく実行すれば必ず解決にたどり着くことが保証されている問題解決方略のこと。アルゴリズムがこれ。",
+     "過去に解いた問題との類似性を利用して新しい問題を解く推論のこと。アナロジー推論がこれ。",
+   ]},
+
+  {w:"形成的評価",
+   hint:"授業の「中」に行う評価",
+   confuse:"「診断的評価（前）・総括的評価（後）」との区別。BDA（Before・During・After）で覚えよう！",
+   correct:"授業【中】に児童生徒のつまずきを発見した場合、授業のプランを修正したりつまずいている児童生徒を支援すること。",
+   wrongs:[
+     "新しい学習に入る【前】に、必要な知識や技能が習得されているかを評価すること。診断的評価がこれ。",
+     "1つの単元や学期が終わった【後】に行う総合的なテストのこと。総括的評価がこれ。",
+     "学習者が自分自身の学習過程を振り返り評価する活動のこと。自己評価がこれ。",
+   ]},
+
+  {w:"診断的評価",
+   hint:"学習の「前」に行う評価",
+   confuse:"「形成的評価（学習中）」と混同しやすい！BDA（Before・During・After）が鉄則。",
+   correct:"新しい学習に入る【前】に、必要な知識や技能が習得されているかを評価すること。",
+   wrongs:[
+     "授業中につまずきを発見した場合、授業プランを修正したりつまずきを支援すること。形成的評価がこれ。",
+     "1つの単元や学期が終わった後に行う総合的なテストのこと。総括的評価がこれ。",
+     "学習者が自分自身の理解度を◎〇△×などで自己報告する活動のこと。自己評価がこれ。",
+   ]},
+
+  {w:"アンダーマイニング効果（過剰正当化効果）",
+   hint:"楽しかったことに報酬を与えると…内発的動機が下がる",
+   confuse:"「物質的報酬が常に悪い」わけではない。もともと【内発的動機が高かった】ときに生じる！",
+   correct:"もともと【内発的に動機づけられていた】活動（楽しいからやっていた）に物質的報酬を与えると、「報酬のためにやっている」と認知が変わり、内発的動機づけが低下する効果。",
+   wrongs:[
+     "外発的動機づけが低い状態の活動に報酬を与えることで、動機づけがさらに下がる効果のこと。これはアンダーマイニング効果の説明として誤り。",
+     "集団で作業すると一人ひとりの努力量が減少する現象のこと。社会的手抜きがこれ。",
+     "強い嫌子の提示によって恐怖反応が生じ、他の行動まで抑制されてしまう弱化の副作用のこと。",
+   ]},
+ ]
+},
+
+];
+
+// ===================================================
+// アプリ制御
+// ===================================================
+let currentUnit=null, questions=[], cur=0, score=0, wrongs=[];
+
+function buildUnitGrid(){
+  const g=document.getElementById('unit-grid');
+  g.innerHTML='';
+  UNITS.forEach(u=>{
+    const b=document.createElement('button');
+    b.className='unit-btn';
+    b.innerHTML=`<span class="u-icon">${u.icon}</span>
+      <span class="u-name">${u.name}</span>
+      <span class="u-count">${u.qs.length}問</span>
+      <span class="u-tag">${u.tag}</span>`;
+    b.onclick=()=>startUnit(u);
+    g.appendChild(b);
+  });
+}
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function startUnit(unit, qs){
+  currentUnit=unit;
+  questions=shuffle(qs||unit.qs);
+  cur=0;score=0;wrongs=[];
+  show('quiz-screen');
+  document.getElementById('q-unit-name').textContent=unit.name;
+  showQ();
+}
+
+function showQ(){
+  const q=questions[cur];
+  document.getElementById('q-prog').textContent=`${cur+1} / ${questions.length}`;
+  document.getElementById('prog-bar').style.width=((cur/questions.length)*100)+'%';
+  document.getElementById('word-main').textContent=q.w;
+  document.getElementById('word-hint').textContent=`💡 ${q.hint}`;
+
+  const cb=document.getElementById('confuse-badge');
+  cb.innerHTML=q.confuse?`<span class="confuse-badge">⚠️ 混同注意</span>`:'';
+
+  // 選択肢シャッフル（正解位置をランダムに）
+  const opts=shuffle([
+    {text:q.correct,ok:true},
+    ...q.wrongs.map(w=>({text:w,ok:false}))
+  ]);
+
+  const box=document.getElementById('choices');
+  box.innerHTML='';
+  const labels=['ア','イ','ウ','エ'];
+  opts.forEach((o,i)=>{
+    const btn=document.createElement('button');
+    btn.className='choice';
+    btn.innerHTML=`<span class="choice-mark">${labels[i]}</span><span>${o.text}</span>`;
+    btn.onclick=()=>answer(o.ok,btn,opts);
+    box.appendChild(btn);
+  });
+
+  document.getElementById('feedback').style.display='none';
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('btn-next').style.display='none';
+}
+
+function answer(ok,clicked,opts){
+  document.querySelectorAll('.choice').forEach(b=>b.disabled=true);
+
+  // 色付け
+  document.querySelectorAll('.choice').forEach((b,i)=>{
+    if(opts[i].ok){
+      b.classList.add('correct');
+      b.querySelector('.choice-mark').textContent='✅';
+    } else if(b===clicked&&!ok){
+      b.classList.add('wrong');
+      b.querySelector('.choice-mark').textContent='❌';
+    } else {
+      b.classList.add('dim');
+    }
+  });
+
+  if(ok) score++;
+  else wrongs.push({n:cur+1,q:questions[cur]});
+
+  const fb=document.getElementById('feedback');
+  const q=questions[cur];
+  fb.className='feedback '+(ok?'ok':'ng');
+  document.getElementById('fb-head').textContent=ok?'✅ 正解！':'❌ 不正解';
+  document.getElementById('fb-body').textContent=ok
+    ?'正しい定義を選べました！'
+    :`正解は「${q.correct.slice(0,30)}…」でした。`;
+
+  const cbox=document.getElementById('confuse-box');
+  if(q.confuse){
+    cbox.innerHTML=`<div class="confuse-box"><strong>⚠️ 混同ポイント：</strong>${q.confuse}</div>`;
+  } else { cbox.innerHTML=''; }
+
+  fb.style.display='block';
+  const nb=document.getElementById('btn-next');
+  nb.textContent=cur+1<questions.length?'次の問題 →':'結果を見る 📊';
+  nb.style.display='block';
+}
+
+function nextQ(){
+  cur++;
+  if(cur<questions.length){showQ();window.scrollTo(0,0);}
+  else showResult();
+}
+
+function showResult(){
+  show('result-screen');
+  document.getElementById('prog-bar').style.width='100%';
+  const total=questions.length, pct=Math.round(score/total*100);
+  document.getElementById('score-big').textContent=`${score}/${total}`;
+  document.getElementById('rc').textContent=score;
+  document.getElementById('wc').textContent=total-score;
+  const msgs=[[90,'🎉 完璧！用語マスターです！'],[70,'👏 よくできました！混同ポイントを再確認！'],[0,'💪 解説をよく読んで再挑戦しよう！']];
+  document.getElementById('res-msg').textContent=`正答率 ${pct}%　${msgs.find(m=>pct>=m[0])[1]}`;
+
+  const wb=document.getElementById('retry-weak-btn');
+  wb.style.display=wrongs.length>0?'block':'none';
+  wb.textContent=`❌ 間違えた${wrongs.length}問だけ復習`;
+
+  const wl=document.getElementById('wrong-list');
+  if(wrongs.length>0){
+    wl.innerHTML=`<h3>❌ 間違えた用語（${wrongs.length}問）</h3>`+
+      wrongs.map(w=>`<div class="wrong-item">
+        <div class="wi-word">${w.q.w}</div>
+        <div class="wi-ans">✅ ${w.q.correct}</div>
+        ${w.q.confuse?`<div style="font-size:.78rem;color:#e65100;margin-top:4px">⚠️ ${w.q.confuse}</div>`:''}
+      </div>`).join('');
+  } else {
+    wl.innerHTML='<div class="wrong-item" style="background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;">🎊 全問正解！完璧です！</div>';
+  }
+}
+
+function retryAll(){ startUnit(currentUnit); }
+function retryWeak(){ if(wrongs.length>0) startUnit(currentUnit,wrongs.map(w=>w.q)); }
+function goHome(){ show('unit-screen'); }
+
+function show(id){
+  ['unit-screen','quiz-screen','result-screen'].forEach(s=>{
+    document.getElementById(s).style.display=s===id?'block':'none';
+  });
+}
+
+buildUnitGrid();
+</script>
+</body>
+</html>
