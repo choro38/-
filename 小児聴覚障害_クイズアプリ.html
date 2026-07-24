@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小児聴覚障害 国試対策クイズ</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
+    background: #f0f4f8;
+    color: #2d3748;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #2b6cb0, #2c7a7b);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  header h1 {
+    font-size: 1.4em;
+    letter-spacing: 0.05em;
+  }
+
+  header p {
+    font-size: 0.85em;
+    opacity: 0.85;
+    margin-top: 4px;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 16px;
+  }
+
+  /* スタート画面 */
+  #start-screen {
+    background: white;
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    margin-top: 24px;
+  }
+
+  #start-screen h2 {
+    font-size: 1.3em;
+    color: #2b6cb0;
+    margin-bottom: 12px;
+  }
+
+  #start-screen p {
+    color: #718096;
+    font-size: 0.9em;
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+
+  .version-select {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .version-btn {
+    flex: 1;
+    min-width: 140px;
+    max-width: 200px;
+    padding: 20px 16px;
+    border-radius: 12px;
+    border: 3px solid #e2e8f0;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95em;
+    font-weight: bold;
+    color: #4a5568;
+  }
+
+  .version-btn:hover {
+    border-color: #2b6cb0;
+    color: #2b6cb0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(43,108,176,0.15);
+  }
+
+  .version-btn.selected {
+    border-color: #2b6cb0;
+    background: #ebf8ff;
+    color: #2b6cb0;
+  }
+
+  .version-btn .badge {
+    display: inline-block;
+    font-size: 0.75em;
+    background: #e2e8f0;
+    color: #718096;
+    border-radius: 20px;
+    padding: 2px 10px;
+    margin-top: 6px;
+    font-weight: normal;
+  }
+
+  .version-btn.selected .badge {
+    background: #bee3f8;
+    color: #2b6cb0;
+  }
+
+  .start-btn {
+    background: linear-gradient(135deg, #2b6cb0, #2c7a7b);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 40px;
+    font-size: 1.05em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+
+  .start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(43,108,176,0.3);
+  }
+
+  .start-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* 進捗バー */
+  .progress-bar-wrap {
+    background: white;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2b6cb0, #2c7a7b);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  .progress-text {
+    font-size: 0.85em;
+    color: #718096;
+    white-space: nowrap;
+  }
+
+  .score-badge {
+    background: #ebf8ff;
+    color: #2b6cb0;
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 0.85em;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  /* 問題カード */
+  .quiz-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+  }
+
+  .quiz-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .q-num {
+    background: linear-gradient(135deg, #2b6cb0, #2c7a7b);
+    color: white;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 0.85em;
+    font-weight: bold;
+  }
+
+  .q-topic {
+    color: #718096;
+    font-size: 0.85em;
+  }
+
+  .q-version {
+    margin-left: auto;
+    font-size: 0.75em;
+    color: #a0aec0;
+    background: #f7fafc;
+    border-radius: 20px;
+    padding: 2px 10px;
+  }
+
+  .question-text {
+    font-size: 1.0em;
+    font-weight: bold;
+    color: #2d3748;
+    margin-bottom: 18px;
+    line-height: 1.6;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .question-direction {
+    display: inline-block;
+    background: #fed7d7;
+    color: #c53030;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 0.82em;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+
+  .question-direction.correct {
+    background: #c6f6d5;
+    color: #276749;
+  }
+
+  /* 選択肢 */
+  .choices {
+    list-style: none;
+    margin-bottom: 18px;
+  }
+
+  .choices li {
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.92em;
+    line-height: 1.5;
+  }
+
+  .choices li:hover:not(.disabled) {
+    border-color: #2b6cb0;
+    background: #ebf8ff;
+  }
+
+  .choices li.selected {
+    border-color: #2b6cb0;
+    background: #ebf8ff;
+    font-weight: bold;
+  }
+
+  .choices li.disabled {
+    cursor: not-allowed;
+  }
+
+  /* 答え合わせ表示 */
+  .answer-section {
+    margin-top: 4px;
+  }
+
+  .answer-label {
+    font-size: 0.85em;
+    color: #718096;
+    margin-bottom: 8px;
+  }
+
+  .items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    font-size: 0.88em;
+  }
+
+  .items-table th {
+    background: #f7fafc;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: bold;
+    color: #4a5568;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .items-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .items-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .mark-correct { color: #276749; font-weight: bold; }
+  .mark-wrong { color: #c53030; font-weight: bold; }
+
+  .result-banner {
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    font-weight: bold;
+    font-size: 0.95em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .result-banner.correct {
+    background: #c6f6d5;
+    color: #276749;
+    border-left: 4px solid #276749;
+  }
+
+  .result-banner.wrong {
+    background: #fed7d7;
+    color: #c53030;
+    border-left: 4px solid #c53030;
+  }
+
+  .explanation {
+    background: #fffaf0;
+    border-left: 4px solid #ed8936;
+    border-radius: 0 10px 10px 0;
+    padding: 12px 16px;
+    font-size: 0.88em;
+    line-height: 1.7;
+    color: #4a5568;
+    margin-bottom: 16px;
+  }
+
+  .explanation strong {
+    color: #c05621;
+  }
+
+  /* ボタン */
+  .btn-next {
+    width: 100%;
+    background: linear-gradient(135deg, #2b6cb0, #2c7a7b);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 1.0em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+
+  .btn-next:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(43,108,176,0.3);
+  }
+
+  /* 答え確認ボタン */
+  .btn-check {
+    width: 100%;
+    background: #ed8936;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 1.0em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+
+  .btn-check:hover {
+    background: #dd6b20;
+    transform: translateY(-1px);
+  }
+
+  /* 選択肢グループ */
+  .choice-group {
+    margin-bottom: 16px;
+  }
+
+  .choice-group-label {
+    font-size: 0.82em;
+    color: #718096;
+    margin-bottom: 8px;
+  }
+
+  .choice-group-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .choice-chip {
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.15s;
+    font-weight: bold;
+  }
+
+  .choice-chip:hover:not(.disabled) {
+    border-color: #2b6cb0;
+    background: #ebf8ff;
+  }
+
+  .choice-chip.selected {
+    border-color: #2b6cb0;
+    background: #ebf8ff;
+    color: #2b6cb0;
+  }
+
+  .choice-chip.disabled {
+    cursor: not-allowed;
+  }
+
+  /* 結果画面 */
+  #result-screen {
+    background: white;
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    margin-top: 24px;
+  }
+
+  .result-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2b6cb0, #2c7a7b);
+    margin: 0 auto 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  .result-circle .score-num {
+    font-size: 2.2em;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  .result-circle .score-denom {
+    font-size: 0.85em;
+    opacity: 0.85;
+  }
+
+  .result-message {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2b6cb0;
+    margin-bottom: 8px;
+  }
+
+  .result-sub {
+    color: #718096;
+    font-size: 0.9em;
+    margin-bottom: 28px;
+  }
+
+  .wrong-list {
+    text-align: left;
+    margin-bottom: 24px;
+  }
+
+  .wrong-list h3 {
+    font-size: 0.95em;
+    color: #c53030;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #fed7d7;
+  }
+
+  .wrong-item {
+    background: #fff5f5;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 0.88em;
+    color: #4a5568;
+    line-height: 1.5;
+  }
+
+  .wrong-item strong {
+    color: #c53030;
+  }
+
+  .btn-retry {
+    background: linear-gradient(135deg, #2b6cb0, #2c7a7b);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 32px;
+    font-size: 1.0em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin: 6px;
+  }
+
+  .btn-retry:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(43,108,176,0.3);
+  }
+
+  .hidden { display: none; }
+
+  /* キーワードタグ */
+  .keyword-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .keyword-tag {
+    background: #ebf8ff;
+    color: #2b6cb0;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.78em;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🦻 小児聴覚障害 国試対策クイズ</h1>
+  <p>1 SLHT｜2026年度 小テスト・過去問 統合版</p>
+</header>
+
+<div class="container">
+
+  <!-- スタート画面 -->
+  <div id="start-screen">
+    <h2>バージョンを選んでください</h2>
+    <p>旧バージョン（昨年の過去問）または<br>新バージョン（2026年度 小テスト）を選んで<br>問1〜問20に挑戦しましょう！</p>
+
+    <div class="version-select">
+      <div class="version-btn" id="btn-old" onclick="selectVersion('old')">
+        📋 旧バージョン
+        <br><span class="badge">昨年の過去問</span>
+      </div>
+      <div class="version-btn" id="btn-new" onclick="selectVersion('new')">
+        📝 新バージョン
+        <br><span class="badge">2026年度 小テスト</span>
+      </div>
+    </div>
+
+    <button class="start-btn" id="start-btn" onclick="startQuiz()" disabled>
+      クイズをスタート →
+    </button>
+  </div>
+
+  <!-- クイズ画面 -->
+  <div id="quiz-screen" class="hidden">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-text" id="progress-text">1 / 20</div>
+      <div class="score-badge" id="score-badge">0 正解</div>
+    </div>
+
+    <div class="quiz-card">
+      <div class="quiz-meta">
+        <span class="q-num" id="q-num">問1</span>
+        <span class="q-topic" id="q-topic"></span>
+        <span class="q-version" id="q-version"></span>
+      </div>
+
+      <div class="question-text">
+        <div id="q-direction"></div>
+        <div id="q-text"></div>
+      </div>
+
+      <!-- 選択肢（個別） -->
+      <ul class="choices" id="choices-list"></ul>
+
+      <!-- 選択肢グループ（a〜e） -->
+      <div class="choice-group">
+        <div class="choice-group-label">▼ 答えを選んでください</div>
+        <div class="choice-group-items" id="choice-chips"></div>
+      </div>
+
+      <!-- 確認ボタン -->
+      <button class="btn-check" id="btn-check" onclick="checkAnswer()">答えを確認する</button>
+
+      <!-- 結果表示 -->
+      <div id="answer-section" class="answer-section hidden">
+        <div class="result-banner" id="result-banner"></div>
+
+        <div class="answer-label">📊 各選択肢の解説</div>
+        <table class="items-table" id="items-table"></table>
+
+        <div class="explanation" id="explanation"></div>
+
+        <div class="keyword-tags" id="keyword-tags"></div>
+
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()">次の問題へ →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結果画面 -->
+  <div id="result-screen" class="hidden">
+    <div class="result-circle">
+      <div class="score-num" id="final-score">0</div>
+      <div class="score-denom" id="final-denom">/ 20問</div>
+    </div>
+    <div class="result-message" id="result-message"></div>
+    <div class="result-sub" id="result-sub"></div>
+
+    <div class="wrong-list" id="wrong-list"></div>
+
+    <button class="btn-retry" onclick="retryQuiz()">🔄 もう一度挑戦</button>
+    <button class="btn-retry" onclick="switchVersion()">📋 バージョンを変える</button>
+  </div>
+
+</div>
+
+<script>
+// ===== 問題データ =====
+const questions = [
+  {
+    num: 1, topic: '選別検査',
+    old: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        'BOA（聴性行動反応聴力検査）の刺激音は90dB・3000Hz・バンドノイズ',
+        '学校保健は1kHz 30dB・4kHz 25dB',
+        '難聴のリスク因子を有する児には必要と思われる場合のみ行う',
+        '新生児では中等度未満の難聴は選別が容易である',
+        '言語聴覚士の診療補助行為から除外される'
+      ],
+      correct_marks: [true, true, false, false, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(2)(5)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'b',
+      explanation: '(3)誤：リスク児のみならず全新生児への実施が推奨される（任意だが重要）。(4)誤：新生児では中等度未満の難聴は選別が困難。',
+      keywords: ['BOA＝90dB・3000Hz・バンドノイズ/ワーブルトーン', '学校保健1kHz30dB・4kHz25dB', 'NHS＝任意（法制化されていない）']
+    },
+    new: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        '新生児では中等度未満の難聴は選別が困難である',
+        '言語聴覚士の診療補助行為である',
+        '難聴のリスク因子を有する児には重点的に行う',
+        'BOA（聴性行動反応聴力検査）では90dB、1000Hzの純音を用いる',
+        '学校保健は1kHz 30dBと4kHz 40dBである'
+      ],
+      correct_marks: [true, false, true, false, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'd',
+      explanation: '(2)誤：STが主体的に実施できる（診療補助行為ではない）。(4)誤：BOAは3000Hz・バンドノイズ（1000Hzの純音は誤り）。(5)誤：4kHzは25dB（40dBではない）。',
+      keywords: ['BOA＝3000Hz・バンドノイズ', '4kHz25dB', 'STは主体的に実施できる']
+    }
+  },
+  {
+    num: 2, topic: 'ティンパノメトリー',
+    old: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '中耳内の圧を変化させて測定する',
+        '耳小骨離断症はティンパノグラムAD型である',
+        '中耳腔が陰圧状態では、ティンパノグラムC型が出現する',
+        '耳硬化症はティンパノグラムAs型である',
+        '鼓膜穿孔がある場合は、測定可能である'
+      ],
+      correct_marks: [false, true, true, true, false],
+      choices: ['a.すべて', 'b.(1)(2)(3)', 'c.(2)(3)(4)', 'd.(3)(4)(5)', 'e.なし'],
+      answer: 'c',
+      explanation: '(1)誤：外耳道内の圧を変化させて測定する（中耳内ではない）。(5)誤：鼓膜穿孔があると密閉できず測定不能。',
+      keywords: ['外耳道内の圧を変化', 'As型＝耳硬化症', 'AD型＝耳小骨離断症', 'C型＝陰圧', 'B型＝液体貯留']
+    },
+    new: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        '鼓膜穿孔がある場合は、測定不可能である',
+        '外耳道内の圧を変化させて測定する',
+        '中耳腔が陰圧状態では、ティンパノグラムB型が出現する',
+        '耳硬化症はティンパノグラムAD型である',
+        '耳小骨離断症はティンパノグラムAs型である'
+      ],
+      correct_marks: [true, true, false, false, false],
+      choices: ['a.すべて', 'b.(1)(2)(3)', 'c.(2)(3)(4)', 'd.(3)(4)(5)', 'e.なし'],
+      answer: 'd',
+      explanation: '(3)誤：陰圧ではC型（B型は液体貯留）。(4)誤：耳硬化症はAs型（AD型は耳小骨離断症）。(5)誤：耳小骨離断症はAD型（As型は耳硬化症）。',
+      keywords: ['C型→B型（滲出性中耳炎の進行）', 'As型＝耳硬化症', 'AD型＝耳小骨離断症']
+    }
+  },
+  {
+    num: 3, topic: '新生児聴覚スクリーニング（NHS）',
+    old: {
+      direction: '間違っているのはどれか（NHSに使用しない検査）',
+      type: 'wrong',
+      items: [
+        '耳音響放射（OAE: Otoacoustic Emissions）',
+        'ティンパノメトリー',
+        '自動聴性脳幹反応（AABR: Automated Auditory Brainstem Response）',
+        '標準純音聴力検査',
+        '内耳機能検査'
+      ],
+      correct_marks: [true, false, true, false, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(2)(5)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'd',
+      explanation: 'NHSで使用するのはOAEとAABRのみ。(2)ティンパノメトリー・(4)標準純音聴力検査・(5)内耳機能検査はNHSには使用しない。',
+      keywords: ['NHSはOAEとAABRのみ', 'ティンパノメトリーはNHSに使わない', '標準純音聴力検査は新生児に不可']
+    },
+    new: {
+      direction: '正しいのはどれか（NHS後の精密検査）',
+      type: 'correct',
+      items: [
+        '標準純音聴力検査',
+        'ティンパノメトリー',
+        '内耳機能検査',
+        '画像検査',
+        '聴性脳幹反応検査（ABR: Auditory Brainstem Response）'
+      ],
+      correct_marks: [false, true, false, true, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(2)(5)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'd',
+      explanation: '精密検査として適切なのは(2)ティンパノメトリー・(4)画像検査・(5)ABR。(1)標準純音聴力検査は新生児に実施不可。(3)内耳機能検査は主体ではない。',
+      keywords: ['精密検査＝ティンパノメトリー・画像検査・ABR', '標準純音聴力検査は新生児に不可']
+    }
+  },
+  {
+    num: 4, topic: '新生児聴覚スクリーニング（NHS）',
+    old: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        '先天性難聴の出現は、他の先天性疾患に比べて比較的頻度は高い',
+        '痛みは無く安全な検査で、数分〜十数分程かかる',
+        '過度の不安を避けるため、家族には十分説明する',
+        '必ずしも睡眠時でなくても測定可能である',
+        '片耳難聴は発見しやすい'
+      ],
+      correct_marks: [true, true, true, true, true],
+      choices: ['a.すべて', 'b.(1)(2)(3)', 'c.(2)(3)(4)', 'd.(3)(4)(5)', 'e.なし'],
+      answer: 'e',
+      explanation: 'すべて正しい。(5)片耳難聴は両耳別々に測定するため検査上は発見しやすい。ただし日常生活では気づかれにくく、補聴器装用は就学前に慎重に検討する。',
+      keywords: ['先天性難聴＝1/1000以上の高頻度', '数分〜十数分', '十分に説明', '睡眠時でなくても可']
+    },
+    new: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '先天性難聴の出現は、他の先天性疾患に比べて頻度は低い',
+        '痛みは無く安全な検査で、約1時間程かかる',
+        '過度の不安を避けるため、家族には最低限の説明に止める',
+        '必ず睡眠時に測定する',
+        '片耳難聴児には早く補聴器を装用し、訓練開始する必要がある'
+      ],
+      correct_marks: [false, false, false, false, false],
+      choices: ['a.すべて', 'b.(1)(2)(3)', 'c.(2)(3)(4)', 'd.(3)(4)(5)', 'e.なし'],
+      answer: 'e',
+      explanation: 'すべて誤り。(1)高頻度。(2)数分〜十数分。(3)十分に説明する。(4)睡眠時でなくても可。(5)片耳難聴は就学前に慎重に検討。',
+      keywords: ['片耳難聴＝就学前に慎重検討', '十分に説明', '睡眠時でなくても可']
+    }
+  },
+  {
+    num: 5, topic: '新生児聴覚スクリーニング検査',
+    old: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '検査結果の説明は慎重に行う',
+        'AABR（自動聴性脳幹反応）のreferの場合、退院までに再検査を行う',
+        'NHSのrefer偽陽性率は比較的高い',
+        'OAE（耳音響放射）でpassは、少なくとも40dBの聴力がある',
+        'AABR（自動聴性脳幹反応）は、35dB刺激で検査する'
+      ],
+      correct_marks: [true, true, true, true, true],
+      choices: ['a.すべて', 'b.(1)(2)(3)', 'c.(2)(3)(4)', 'd.(3)(4)(5)', 'e.なし'],
+      answer: 'a',
+      explanation: 'すべて正しい。特に(3)OAEの偽陽性率は比較的高い・(4)OAEのpassは40dB以上・(5)AABRは35dB刺激は重要な知識。',
+      keywords: ['AABRは35dB刺激', 'OAEのpass＝40dB以上', 'OAE偽陽性率は高い', 'referは確定診断ではない']
+    },
+    new: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        'AABR（自動聴性脳幹反応）は、35dB刺激で検査する',
+        'AABR（自動聴性脳幹反応）のreferは、確定診断できない',
+        'OAE（自動耳音響放射）は、誤陽性率が低い',
+        'OAE（自動耳音響放射）でpassは、少なくとも50dBの聴力あり',
+        '検査結果の説明は最低限に止める'
+      ],
+      correct_marks: [true, true, false, false, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(2)(5)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'e',
+      explanation: '(3)誤：OAEの誤陽性率は比較的高い。(4)誤：OAEのpassは40dB以上（50dBではない）。(5)誤：慎重に・十分に説明する。',
+      keywords: ['OAE誤陽性率は高い', 'OAEpass＝40dB', '慎重に十分に説明']
+    }
+  },
+  {
+    num: 6, topic: '蝸電図（EchoG: Electrocochleography）',
+    old: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '鼓膜麻酔して、経鼓膜的に前庭窓に電極固定する',
+        '音刺激後約10msec以内に認められる反応である',
+        'メニエール病で－SP増大がみられる',
+        '睡眠深度に影響されない',
+        'CM（蝸牛マイクロフォン電位）は外有毛細胞の活動に起因する'
+      ],
+      correct_marks: [false, false, true, true, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(5)', 'c.(2)(3)(4)', 'd.(2)(3)(5)', 'e.(3)(4)(5)'],
+      answer: 'e',
+      explanation: '(1)誤：蝸牛窓（正円窓）付近に固定（前庭窓ではない）。(2)誤：EchoGは5msec以内（10msecはABR）。',
+      keywords: ['蝸牛窓（正円窓）', '5msec以内', 'CM＝外有毛細胞', '睡眠深度に影響されない', 'メニエール病＝－SP増大']
+    },
+    new: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        '音刺激後3msec以内に認められる反応である',
+        '鼓膜麻酔して、経鼓膜的に蝸牛窓に電極固定する',
+        'CM（蝸牛マイクロフォン電位）は蝸牛神経の反応である',
+        '睡眠深度に影響される',
+        'メニエール病で－SP縮小がみられる'
+      ],
+      correct_marks: [true, true, false, false, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(5)', 'c.(2)(3)(4)', 'd.(2)(3)(5)', 'e.(3)(4)(5)'],
+      answer: 'e',
+      explanation: '(3)誤：CMは外有毛細胞の活動（蝸牛神経ではない）。(4)誤：睡眠深度に影響されない。(5)誤：メニエール病では－SP増大（縮小ではない）。',
+      keywords: ['CM＝外有毛細胞', '睡眠深度に影響されない', 'メニエール病＝－SP増大']
+    }
+  },
+  {
+    num: 7, topic: '誘発耳音響放射（TEOAE: Transient Evoked OAE）',
+    old: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '反応は遅成分のみが出現する',
+        '音刺激後15msec以内に出現する',
+        '約35dB以上の難聴でも、検出可能である',
+        'active processにより増強された振動を外耳道で測定する',
+        '外有毛細胞の機能を反映している'
+      ],
+      correct_marks: [false, true, false, true, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(2)(4)', 'c.(1)(2)(5)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'd',
+      explanation: '(1)誤：速成分・遅成分の両方が出現。(3)誤：35dB以上の難聴では検出困難（外有毛細胞障害のため）。',
+      keywords: ['外有毛細胞反映', 'active process', '15msec以内', '速成分・遅成分の両方', '35dB以上で検出困難']
+    },
+    new: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '約35dB以上の難聴では、検出困難となる',
+        'active processにより増強された振動を外耳道で測定する',
+        '反応は速成分と遅成分が出現する',
+        '音刺激後3msec以内に出現する',
+        '内有毛細胞の機能を反映している'
+      ],
+      correct_marks: [true, true, true, false, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(2)(4)', 'c.(1)(2)(5)', 'd.(2)(3)(5)', 'e.(3)(4)(5)'],
+      answer: 'a',
+      explanation: '(4)誤：3msecではなく15msec以内。(5)誤：外有毛細胞（内有毛細胞ではない）を反映。',
+      keywords: ['15msec以内（3msecはEchoG）', '外有毛細胞（内有毛細胞ではない）']
+    }
+  },
+  {
+    num: 8, topic: '歪成分耳音響放射（DPOAE: Distortion Product OAE）',
+    old: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '新生児や乳幼児の難聴スクリーニングに有用である',
+        '異なる周波数を用いるが、2f1−f2（f1＜f2）で最も振幅が大きい',
+        '1Hz以下の低周波数域で有用である',
+        '高音域（約4kHz）まで測定可能',
+        '後迷路性難聴では反応は正常'
+      ],
+      correct_marks: [true, true, false, false, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(2)(4)', 'c.(1)(2)(5)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'c',
+      explanation: '(3)誤：DPOAEは中〜高周波数域（1〜6kHz）が得意（1Hz以下は聞こえない音）。(4)誤：約6kHzまで測定可能（4kHzではない）。',
+      keywords: ['2f1−f2で最大振幅', '中〜高周波数域（1〜6kHz）', '後迷路性難聴は正常', '外有毛細胞反映']
+    },
+    new: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        '後迷路性難聴では反応は消失する',
+        '高音域（約6kHz）まで測定可能',
+        '1Hz以下の低周波数域で有用である',
+        '異なる周波数を用いるが、2f1−f2（f1＜f2）で最も振幅が小さい',
+        '新生児や乳幼児の難聴スクリーニングに有用である'
+      ],
+      correct_marks: [false, true, false, false, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'b',
+      explanation: '(1)誤：後迷路性難聴では外有毛細胞は正常→反応は正常を示す。(3)誤：中〜高周波数域が得意。(4)誤：2f1−f2で最も振幅が大きい（小さいは誤り）。',
+      keywords: ['後迷路性難聴→正常', '2f1−f2＝最大振幅', '約6kHzまで測定可能']
+    }
+  },
+  {
+    num: 9, topic: '聴性脳幹反応（ABR: Auditory Brainstem Response）',
+    old: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        '蝸牛神経から1次聴覚野までの反応である',
+        '刺激音はトーンバースト音を主に用いる',
+        '音刺激後5msec以内の反応である',
+        '約1000回の平均加算処理が必要である',
+        '5〜7つの反応成分からなる'
+      ],
+      correct_marks: [false, false, false, true, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(5)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'a',
+      explanation: '(1)誤：1次聴覚野ではなく下丘（中脳）まで。(2)誤：クリック音が主刺激。(3)誤：10msec以内（5msecはEchoG）。',
+      keywords: ['蝸牛神経〜下丘（中脳）', 'クリック音', '10msec以内', '1000〜2000回', 'Wave I〜V（5〜7つ）']
+    },
+    new: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '音刺激後10msec以内の反応である',
+        '蝸牛神経から下丘までの反応である',
+        '刺激音はクリック音を主に用いる',
+        '約300回の平均加算処理が必要である',
+        '2〜3つの反応成分からなる'
+      ],
+      correct_marks: [true, true, true, false, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(5)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'a',
+      explanation: '(4)誤：1000〜2000回（300回は少なすぎる）。(5)誤：Wave I〜Vの5〜7つ（2〜3つではない）。',
+      keywords: ['10msec以内', '蝸牛神経〜下丘', 'クリック音', '1000〜2000回', 'Wave I〜V']
+    }
+  },
+  {
+    num: 10, topic: '聴性脳幹反応（ABR）',
+    old: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '聴力レベルの推定はV波が指標になる',
+        'Ⅰ−V波間潜時は内耳性難聴の診断に有効である',
+        '後迷路性難聴では閾値付近のV波潜時は延長する',
+        '3歳以上の乳児におけるV波は、成人とほぼ同様である',
+        '反応の恒常性に富んでいる'
+      ],
+      correct_marks: [true, false, false, true, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(1)(4)(5)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'c',
+      explanation: '(2)誤：Ⅰ−V波間潜時は後迷路性難聴の診断に有効（内耳性ではない）。(3)誤：閾値付近のV波潜時延長は感音性難聴でも起こる（後迷路性に特異的ではない）。',
+      keywords: ['V波＝聴力推定の指標', 'Ⅰ−V波間潜時＝後迷路性', '3歳以上で成人と同様', '恒常性に富む']
+    },
+    new: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        '反応の恒常性に富んでいる',
+        '1歳未満の乳児におけるV波は、成人とほぼ同様である',
+        '伝音性難聴では閾値付近のV波潜時は延長する',
+        'Ⅰ−V波間潜時は後迷路性難聴の診断に有効である',
+        '聴力レベルの推定にはⅠ波が指標になる'
+      ],
+      correct_marks: [true, false, false, true, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(5)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'c',
+      explanation: '(2)誤：3歳以上で成人と同様（1歳未満ではV波潜時が延長）。(3)誤：伝音性難聴では全Waveが一様に延長。(5)誤：聴力推定はV波（Ⅰ波ではない）。',
+      keywords: ['3歳以上で成人と同様', 'V波＝聴力推定', 'Ⅰ−V波間潜時＝後迷路性']
+    }
+  },
+  {
+    num: 11, topic: '聴性定常反応（ASSR: Auditory Steady-State Response）',
+    old: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '刺激音はクリック音を用いる',
+        '80Hz ASSRは睡眠時で反応が良い',
+        '振幅および周波数の変調音が用いられる',
+        '加算回数は1000回である',
+        '推定聴力レベルはASSR閾値より一般に10dB小さい'
+      ],
+      correct_marks: [false, true, true, false, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(3)(5)', 'e.(3)(4)(5)'],
+      answer: 'd',
+      explanation: '(1)誤：変調音（AM/FM）を使用（クリック音はABR）。(4)誤：ASSRの加算回数は約500回（1000回はABR）。',
+      keywords: ['変調音（AM/FM）', '80Hz＝睡眠時・乳幼児', '40Hz＝覚醒時・成人', '加算約500回', 'ASSR閾値−10dB']
+    },
+    new: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '加算回数は1000回〜2000回程度である',
+        '40Hz ASSRは睡眠時で反応が良い',
+        '刺激音に振幅および周波数の変調音が用いられる',
+        '周波数特異性のある刺激音を用いる',
+        '推定聴力レベルはASSR閾値より一般に10dB小さい'
+      ],
+      correct_marks: [false, false, true, true, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(3)(5)', 'e.(3)(4)(5)'],
+      answer: 'e',
+      explanation: '(1)誤：ASSRの加算回数は約500回（1000〜2000回はABR）。(2)誤：40Hzは覚醒時に反応が良い（睡眠時は80Hz）。',
+      keywords: ['40Hz＝覚醒時', '80Hz＝睡眠時・乳幼児', '加算約500回（500回以上は有意差なし）', 'ASSR閾値−10dB']
+    }
+  },
+  {
+    num: 12, topic: '自記オージオメトリー（Jerger分類）',
+    old: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '内耳性難聴 ──── JergerⅢ型',
+        'JergerⅡ型 ──── 一過性閾値上昇（TTS: Temporary Threshold Shift）',
+        '機能性難聴 ──── JergerV型',
+        '補充現象 ──── JergerⅡ型',
+        'JergerⅡ型 ──── 持続音と断続音の乖離'
+      ],
+      correct_marks: [false, false, true, true, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(3)(5)', 'e.(3)(4)(5)'],
+      answer: 'e',
+      explanation: '(1)誤：内耳性難聴はⅡ型（Ⅲ型は後迷路性）。(2)誤：TTSはJergerⅢ・Ⅳ型（後迷路性）でみられる。',
+      keywords: ['Ⅱ型＝内耳性・補充現象・乖離', 'Ⅲ型＝後迷路性・疲労現象', 'Ⅴ型＝機能性', 'TTS＝後迷路性（Ⅲ・Ⅳ型）']
+    },
+    new: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '内耳性難聴 ──── JergerⅢ型',
+        'JergerⅡ型 ──── 一過性閾値上昇（TTS）',
+        '機能性難聴 ──── JergerV型',
+        '補充現象 ──── JergerⅡ型',
+        'JergerⅡ型 ──── 持続音と断続音の乖離'
+      ],
+      correct_marks: [false, false, true, true, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(3)(5)', 'e.(3)(4)(5)'],
+      answer: 'e',
+      explanation: '旧バージョンと同じ問題。(1)内耳性難聴はⅡ型。(2)TTSはⅢ・Ⅳ型。(3)(4)(5)は正しい。',
+      keywords: ['Ⅱ型＝内耳性', 'Ⅲ型＝後迷路性', 'Ⅴ型＝機能性・閾値不安定', 'TTS＝音響外傷']
+    }
+  },
+  {
+    num: 13, topic: '小児聴覚障害',
+    old: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        '1-3-6ルールでは、生後6ヶ月までに精密検査を実施する',
+        '思春期前期での聴覚補償は、言語獲得が十分可能である',
+        '重度難聴の場合、言語発達の遅れにより3歳以降で発見されることが多い',
+        '言語能力や言語運用に影響する',
+        '難聴児には9歳の壁がある'
+      ],
+      correct_marks: [false, false, false, true, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'a',
+      explanation: '(1)誤：1-3-6ルールの精密検査は生後3ヶ月以内。(2)誤：臨界期を過ぎており言語獲得は困難。(3)誤：重度難聴は早期に気づかれやすい（見逃されやすいのは軽〜中等度）。',
+      keywords: ['1-3-6＝3ヶ月以内に精密検査', '9歳の壁', '重度＝早期発見', '軽〜中等度＝2歳以降']
+    },
+    new: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '軽度〜中等度の場合、言語発達の遅れにより2歳以降で発見される',
+        '臨界期を過ぎると言語獲得が難しくなる',
+        '1−3−6ルールでは、生後3ヶ月までに精密検査を実施する',
+        '難聴児には13歳の壁がある',
+        '言語能力や言語運用には影響しない'
+      ],
+      correct_marks: [true, true, true, false, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'a',
+      explanation: '(4)誤：9歳の壁（13歳ではない）。(5)誤：言語能力・言語運用に大きく影響する。',
+      keywords: ['9歳の壁（13歳ではない）', '軽〜中等度＝2歳以降', '1-3-6＝3ヶ月に精密検査']
+    }
+  },
+  {
+    num: 14, topic: '遺伝性難聴',
+    old: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        '常染色体優性遺伝形式をとる難聴の多くは先天性で高度難聴である',
+        '常染色体劣性遺伝形式をとる難聴のほとんどは後天性で進行性難聴',
+        'SLC26A4遺伝子変異は先天性高度難聴を示す',
+        'Waarddenburg症候群は症候群性難聴である',
+        '非症候群性難聴は遺伝性難聴の70%を占める'
+      ],
+      correct_marks: [false, false, false, true, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'a',
+      explanation: '(1)誤：優性遺伝は後天性・進行性が多い。(2)誤：劣性遺伝は先天性・高度難聴が多い。(3)誤：SLC26A4（Pendred症候群）は進行性難聴。',
+      keywords: ['劣性＝先天性・高度難聴', '優性＝後天性・進行性', 'SLC26A4＝進行性', '非症候群性＝70%']
+    },
+    new: {
+      direction: '正しいのはどか',
+      type: 'correct',
+      items: [
+        '常染色体劣性遺伝形式をとる難聴の多くは先天性で高度難聴である',
+        '常染色体優性遺伝形式をとる難聴のほとんどは後天性で進行性難聴',
+        'SLC26A4遺伝子変異の難聴は進行する',
+        'Waarddenburg症候群は非症候群性難聴である',
+        '症候群性難聴は遺伝性難聴の70%を占める'
+      ],
+      correct_marks: [true, true, true, false, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'a',
+      explanation: '(4)誤：Waardenburg症候群は症候群性難聴（虹彩異色・白斑・白髪を伴う）。(5)誤：非症候群性難聴が70%（症候群性は30%）。',
+      keywords: ['劣性＝先天性・高度難聴', '優性＝後天性・進行性', 'Waardenburg＝症候群性', '非症候群性＝70%']
+    }
+  },
+  {
+    num: 15, topic: '遺伝性難聴（GJB2・Pendred症候群）',
+    old: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        'Pendred症候群のおよそ約80%にSLC26A4遺伝子変異が認められる',
+        'コネキシン26遺伝子（GJB2）による難聴は日本人難聴家系の1/3にみられる',
+        'コネキシン26遺伝子（GJB2）による難聴は人工内耳の成績は良好である',
+        'Pendred症候群は難聴が進行する',
+        'Pendred症候群の約30%に前庭水管拡大を認める'
+      ],
+      correct_marks: [false, true, true, true, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'c',
+      explanation: '(1)誤：SLC26A4変異は約50〜60%（80%は過大）。(5)誤：前庭水管拡大は約80〜90%（30%は過小）。',
+      keywords: ['GJB2＝日本人難聴家系1/3・人工内耳良好', 'SLC26A4変異＝約50〜60%', 'Pendred＝進行性・前庭水管拡大80〜90%']
+    },
+    new: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        'コネキシン26遺伝子（GJB2）による難聴は日本人難聴家系の3/4にみられる',
+        'Pendred症候群のおよそ半数にSLC26A4遺伝子変異が認められる',
+        'コネキシン26遺伝子（GJB2）による難聴は人工内耳の成績が不良である',
+        'Pendred症候群は難聴が進行しない',
+        'Pendred症候群の約80%に前庭水管拡大を認める'
+      ],
+      correct_marks: [false, true, false, false, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'b',
+      explanation: '(1)誤：GJB2は日本人難聴家系の1/3（3/4は過大）。(3)誤：GJB2の人工内耳成績は良好（不良は誤り）。(4)誤：Pendredは進行性難聴（進行しないは誤り）。',
+      keywords: ['GJB2＝1/3（3/4ではない）', 'GJB2＝人工内耳良好', 'Pendred＝進行性', '前庭水管拡大＝80〜90%']
+    }
+  },
+  {
+    num: 16, topic: '遺伝性難聴（症候群性）',
+    old: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        'Waarddenburg症候群Ⅰ型は網膜色素変性症が出現する',
+        'Usher症候群Ⅰ型は虹彩異色を発症する',
+        'Alport症候群は進行性糸球体腎炎を発症する',
+        'ミトコンドリアDNAの変異の難聴は感音性で糖尿病の発症後に進行する',
+        'Waarddenburg症候群は人工内耳適応である'
+      ],
+      correct_marks: [false, false, true, true, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'e',
+      explanation: '(1)誤：網膜色素変性はUsher症候群の特徴。(2)誤：虹彩異色はWaardenburg症候群の特徴。',
+      keywords: ['Waardenburg＝虹彩異色・白斑・白髪・人工内耳適応', 'Usher＝網膜色素変性・前庭機能障害', 'Alport＝進行性糸球体腎炎', 'ミトコンドリア＝感音性・糖尿病後']
+    },
+    new: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        'Usher症候群Ⅰ型は網膜色素変性症を発症する',
+        'Waarddenburg症候群Ⅰ型は虹彩異色が出現する',
+        'Alport症候群は進行性糸球体腎炎を発症する',
+        'ミトコンドリアDNAの変異の難聴は両側伝音性難聴である',
+        'Waarddenburg症候群は人工内耳適応でない'
+      ],
+      correct_marks: [true, true, true, false, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'a',
+      explanation: '(4)誤：ミトコンドリア変異は感音性難聴（伝音性ではない）。(5)誤：Waardenburg症候群は人工内耳適応あり。',
+      keywords: ['Usher＝網膜色素変性', 'Waardenburg＝虹彩異色・人工内耳適応あり', 'ミトコンドリア＝感音性（伝音性ではない）']
+    }
+  },
+  {
+    num: 17, topic: 'Auditory Neuropathy（ANSD: Auditory Neuropathy Spectrum Disorder）',
+    old: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        '純音聴力検査は正常',
+        '耳音響放射（DPOAE）は正常を示す',
+        '最高明瞭度は100%を示す',
+        '聴性脳幹反応（ABR）は無反応',
+        '人工内耳の効果に期待できない'
+      ],
+      correct_marks: [false, true, false, true, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(5)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'b',
+      explanation: '(1)誤：純音聴力検査は正常〜軽度低下（正常とは限らない）。(3)誤：最高明瞭度は著明低下（50%以下）。(5)誤：人工内耳適応あり・効果が期待できる。',
+      keywords: ['OAE正常', 'ABR無反応', '純音＝正常〜軽度低下', '最高明瞭度50%以下', '人工内耳適応あり']
+    },
+    new: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        '人工内耳の効果に期待できる',
+        '耳音響放射（DPOAE）は無反応を示す',
+        '最高明瞭度は50%以下を示す',
+        '聴性脳幹反応（ABR）は正常',
+        '純音聴力検査は正常'
+      ],
+      correct_marks: [true, false, true, false, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'd',
+      explanation: '(2)誤：DPOAEは正常（外有毛細胞は正常なため）→無反応は誤り。(4)誤：ABRは無反応または著明異常（正常は誤り）。(5)誤：正常〜軽度低下（正常とは限らない）。',
+      keywords: ['OAE正常・ABR無反応', '最高明瞭度50%以下', '人工内耳適応あり']
+    }
+  },
+  {
+    num: 18, topic: '心因性難聴',
+    old: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        '女児に多い',
+        '意識レベル上の問題である',
+        '中等度水平型伝音性難聴を示すことが多い',
+        '語音聴力検査は不良である',
+        '両側性が多い'
+      ],
+      correct_marks: [true, false, false, false, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'c',
+      explanation: '(2)誤：意識レベル下（無意識）の問題（詐聴とは異なる）。(3)誤：感音性難聴（伝音性ではない）。(4)誤：語音聴力検査は純音検査より良好。',
+      keywords: ['女児・両側性', '感音性難聴', '語音検査は純音より良好', '意識レベル下（無意識）']
+    },
+    new: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '一側性が多い',
+        '男児に多い',
+        '中等度水平型感音性難聴を示すことが多い',
+        '語音聴力検査は良好である',
+        '意識レベル下の問題である'
+      ],
+      correct_marks: [false, false, true, true, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'e',
+      explanation: '(1)誤：両側性が多い。(2)誤：女児に多い。(3)(4)(5)は正しい。',
+      keywords: ['女児・両側性', '感音性難聴', '語音検査良好', '意識レベル下']
+    }
+  },
+  {
+    num: 19, topic: '滲出性中耳炎',
+    old: {
+      direction: '正しいのはどれか',
+      type: 'correct',
+      items: [
+        '耳管機能は3歳くらいまでは未熟である',
+        'ムンプスが原因でなることがある',
+        '耳管の開大は口蓋帆張筋の収縮による',
+        '90%は自然治癒する',
+        '初期ではティンパノメトリーはC型である'
+      ],
+      correct_marks: [false, false, true, true, true],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'e',
+      explanation: '(1)誤：耳管機能は6〜7歳頃まで未熟。(2)誤：主因は上気道炎・アレルギー・アデノイド増殖（ムンプスは突発性難聴の原因）。',
+      keywords: ['口蓋帆張筋', '6〜7歳まで未熟', '自然治癒90%', 'C型（初期）→B型（進行期）']
+    },
+    new: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        'アデノイド増殖が原因でなることがある',
+        '耳管機能は10歳くらいまでは未熟である',
+        '耳管の開大は口蓋帆挙筋の収縮による',
+        '30%は自然治癒する',
+        'ティンパノメトリーはAs型である'
+      ],
+      correct_marks: [true, true, false, false, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'e',
+      explanation: '(3)誤：口蓋帆張筋が正しい（挙筋ではない）。(4)誤：90%が自然治癒（30%は過小）。(5)誤：B型（進行期）またはC型（初期）が正しい（As型は耳硬化症）。',
+      keywords: ['口蓋帆張筋（挙筋ではない）', '自然治癒90%', 'C型（初期）→B型（進行期）', 'As型は耳硬化症']
+    }
+  },
+  {
+    num: 20, topic: '感染症と難聴',
+    old: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        'サイトメガロウイルス（CMV）は子宮内感染により、出生後難聴をきたす',
+        '細菌性髄膜炎罹患後に蝸牛内が骨化する',
+        '妊娠6週頃までの風疹ウイルスの感染により難聴を発症する',
+        'ムンプス難聴は進行性である',
+        'サイトメガロウイルスはワクチン接種が重要である'
+      ],
+      correct_marks: [true, true, false, false, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'e',
+      explanation: '(3)誤：風疹は妊娠12週（3ヶ月）まで危険（6週に限定は誤り）。(4)誤：ムンプス難聴は一側性・突発性・非進行性。(5)誤：CMVにはワクチンがない。',
+      keywords: ['CMV＝子宮内感染・ワクチンなし', '風疹＝妊娠12週まで危険', 'ムンプス＝一側性・突発性・非進行性', '細菌性髄膜炎＝蝸牛骨化・早期人工内耳']
+    },
+    new: {
+      direction: '間違っているのはどれか',
+      type: 'wrong',
+      items: [
+        'サイトメガロウイルス（CMV）は子宮内感染により、出生後難聴をきたす',
+        '細菌性髄膜炎罹患後に蝸牛内が骨化する',
+        '妊娠6週頃までの風疹ウイルスの感染により難聴を発症する',
+        'ムンプス難聴は進行性である',
+        'サイトメガロウイルスはワクチン接種が重要である'
+      ],
+      correct_marks: [true, true, false, false, false],
+      choices: ['a.(1)(2)(3)', 'b.(1)(3)(4)', 'c.(2)(3)(4)', 'd.(2)(4)(5)', 'e.(3)(4)(5)'],
+      answer: 'e',
+      explanation: '(3)誤：風疹は妊娠12週（3ヶ月）まで危険。(4)誤：ムンプス難聴は非進行性。(5)誤：CMVにはワクチンがない（妊婦の感染予防行動が重要）。',
+      keywords: ['風疹＝妊娠12週まで', 'ムンプス＝非進行性', 'CMV＝ワクチンなし', '細菌性髄膜炎＝蝸牛骨化']
+    }
+  }
+];
+
+// ===== 状態管理 =====
+let selectedVersion = null;
+let currentIndex = 0;
+let score = 0;
+let selectedAnswer = null;
+let answered = false;
+let wrongQuestions = [];
+
+function selectVersion(v) {
+  selectedVersion = v;
+  document.getElementById('btn-old').classList.toggle('selected', v === 'old');
+  document.getElementById('btn-new').classList.toggle('selected', v === 'new');
+  document.getElementById('start-btn').disabled = false;
+}
+
+function startQuiz() {
+  currentIndex = 0;
+  score = 0;
+  wrongQuestions = [];
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('result-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  showQuestion();
+}
+
+function showQuestion() {
+  answered = false;
+  selectedAnswer = null;
+
+  const q = questions[currentIndex];
+  const data = selectedVersion === 'old' ? q.old : q.new;
+
+  // 進捗
+  const pct = (currentIndex / questions.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = (currentIndex + 1) + ' / ' + questions.length;
+  document.getElementById('score-badge').textContent = score + ' 正解';
+
+  // 問題
+  document.getElementById('q-num').textContent = '問' + q.num;
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-version').textContent = selectedVersion === 'old' ? '旧バージョン' : '新バージョン';
+
+  const dirEl = document.getElementById('q-direction');
+  dirEl.textContent = data.direction;
+  dirEl.className = 'question-direction ' + (data.type === 'wrong' ? '' : 'correct');
+
+  document.getElementById('q-text').textContent = '';
+
+  // 個別選択肢
+  const list = document.getElementById('choices-list');
+  list.innerHTML = '';
+  data.items.forEach((item, i) => {
+    const li = document.createElement('li');
+    li.textContent = '(' + (i+1) + ') ' + item;
+    list.appendChild(li);
+  });
+
+  // 選択肢チップ
+  const chips = document.getElementById('choice-chips');
+  chips.innerHTML = '';
+  data.choices.forEach(ch => {
+    const btn = document.createElement('div');
+    btn.className = 'choice-chip';
+    btn.textContent = ch;
+    btn.onclick = () => selectChip(btn, ch);
+    chips.appendChild(btn);
+  });
+
+  document.getElementById('btn-check').classList.remove('hidden');
+  document.getElementById('answer-section').classList.add('hidden');
+}
+
+function selectChip(el, val) {
+  if (answered) return;
+  document.querySelectorAll('.choice-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedAnswer = val.charAt(0); // a, b, c, d, e
+}
+
+function checkAnswer() {
+  if (!selectedAnswer) {
+    alert('答えを選んでください！');
+    return;
+  }
+  answered = true;
+
+  const q = questions[currentIndex];
+  const data = selectedVersion === 'old' ? q.old : q.new;
+  const isCorrect = selectedAnswer === data.answer;
+
+  if (isCorrect) {
+    score++;
+  } else {
+    wrongQuestions.push({ num: q.num, topic: q.topic, yourAnswer: selectedAnswer, correct: data.answer });
+  }
+
+  // スコア更新
+  document.getElementById('score-badge').textContent = score + ' 正解';
+
+  // チップ無効化
+  document.querySelectorAll('.choice-chip').forEach(c => c.classList.add('disabled'));
+
+  // 結果バナー
+  const banner = document.getElementById('result-banner');
+  banner.className = 'result-banner ' + (isCorrect ? 'correct' : 'wrong');
+  banner.textContent = isCorrect ? '✅ 正解！' : '❌ 不正解…　正答：' + data.answer.toUpperCase() + '　' + data.choices.find(c => c.startsWith(data.answer));
+
+  // 各選択肢解説表
+  const table = document.getElementById('items-table');
+  table.innerHTML = '<tr><th>選択肢</th><th>正誤</th><th>内容</th></tr>';
+  data.items.forEach((item, i) => {
+    const tr = document.createElement('tr');
+    const isOk = data.correct_marks[i];
+    tr.innerHTML = `
+      <td style="white-space:nowrap">（${i+1}）</td>
+      <td class="${isOk ? 'mark-correct' : 'mark-wrong'}">${isOk ? '○' : '×'}</td>
+      <td>${item}</td>
+    `;
+    table.appendChild(tr);
+  });
+
+  // 解説
+  document.getElementById('explanation').innerHTML = '💡 ' + data.explanation;
+
+  // キーワード
+  const kw = document.getElementById('keyword-tags');
+  kw.innerHTML = '<div style="font-size:0.8em;color:#718096;margin-bottom:4px;width:100%">★ キーワード</div>';
+  data.keywords.forEach(k => {
+    const tag = document.createElement('span');
+    tag.className = 'keyword-tag';
+    tag.textContent = k;
+    kw.appendChild(tag);
+  });
+
+  document.getElementById('btn-check').classList.add('hidden');
+  document.getElementById('answer-section').classList.remove('hidden');
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex >= questions.length) {
+    showResult();
+  } else {
+    showQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('result-screen').classList.remove('hidden');
+
+  document.getElementById('final-score').textContent = score;
+  document.getElementById('final-denom').textContent = '/ ' + questions.length + '問';
+
+  const pct = Math.round(score / questions.length * 100);
+  let msg = '', sub = '';
+  if (pct === 100) { msg = '🎉 満点！パーフェクト！'; sub = '国試も絶対合格できます！'; }
+  else if (pct >= 80) { msg = '👏 すばらしい！'; sub = '自信を持って本番に臨みましょう！'; }
+  else if (pct >= 60) { msg = '💪 もう一息！'; sub = '間違えた問題を復習してみましょう！'; }
+  else { msg = '📚 もう一度チャレンジ！'; sub = '繰り返し解くことで必ず定着します！'; }
+
+  document.getElementById('result-message').textContent = msg;
+  document.getElementById('result-sub').textContent = sub;
+
+  const wrongList = document.getElementById('wrong-list');
+  if (wrongQuestions.length > 0) {
+    wrongList.innerHTML = '<h3>❌ 間違えた問題（' + wrongQuestions.length + '問）</h3>';
+    wrongQuestions.forEach(w => {
+      const div = document.createElement('div');
+      div.className = 'wrong-item';
+      div.innerHTML = `<strong>問${w.num}</strong>　${w.topic}<br>あなたの答え：${w.yourAnswer.toUpperCase()}　→　正解：${w.correct.toUpperCase()}`;
+      wrongList.appendChild(div);
+    });
+  } else {
+    wrongList.innerHTML = '';
+  }
+}
+
+function retryQuiz() {
+  startQuiz();
+}
+
+function switchVersion() {
+  document.getElementById('result-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('start-screen').classList.remove('hidden');
+  document.getElementById('btn-old').classList.remove('selected');
+  document.getElementById('btn-new').classList.remove('selected');
+  document.getElementById('start-btn').disabled = true;
+  selectedVersion = null;
+}
+</script>
+</body>
+</html>
