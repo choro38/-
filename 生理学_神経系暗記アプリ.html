@@ -3,744 +3,574 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>生理学 神経系 暗記アプリ</title>
+<title>生理学 穴埋め暗記アプリ</title>
 <style>
-  :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #222536;
-    --border: #2e3250;
-    --accent: #6c63ff;
-    --accent2: #00c9a7;
-    --warn: #ff6b6b;
-    --text: #e8eaf6;
-    --text-dim: #7b82b0;
-    --card-bg: #1e2133;
-    --hidden-bg: #2a1f4e;
-    --hidden-border: #6c63ff;
-    --correct: #00c9a7;
-    --wrong: #ff6b6b;
-    --font: 'Segoe UI', 'Noto Sans JP', sans-serif;
-  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font);
+    font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    background: #f0f4f8;
+    color: #1a2a3a;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
   }
 
-  /* ── Header ── */
   header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
+    background: #1F4E79;
+    color: #fff;
+    padding: 16px 20px;
+    text-align: center;
   }
-  header h1 {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: .02em;
-  }
-  header h1 span { color: var(--accent2); }
+  header h1 { font-size: 1.2rem; letter-spacing: 0.05em; }
+  header p { font-size: 0.78rem; opacity: 0.75; margin-top: 4px; }
 
-  .mode-btns {
+  /* Section tabs */
+  #section-tabs {
     display: flex;
+    flex-wrap: wrap;
     gap: 6px;
+    padding: 14px 16px;
+    background: #fff;
+    border-bottom: 2px solid #e8eef4;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
-  .mode-btn {
+  .tab-btn {
     padding: 6px 14px;
     border-radius: 20px;
-    border: 1.5px solid var(--border);
-    background: transparent;
-    color: var(--text-dim);
-    font-size: .8rem;
+    border: 2px solid #1F4E79;
+    background: #fff;
+    color: #1F4E79;
+    font-size: 0.82rem;
+    font-weight: bold;
     cursor: pointer;
-    transition: all .2s;
+    transition: all 0.15s;
   }
-  .mode-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
+  .tab-btn.active, .tab-btn:hover {
+    background: #1F4E79;
     color: #fff;
-    font-weight: 600;
-  }
-  .mode-btn:hover:not(.active) {
-    border-color: var(--accent);
-    color: var(--text);
   }
 
-  /* ── Category tabs ── */
-  .cat-bar {
-    background: var(--surface);
-    padding: 8px 16px;
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    border-bottom: 1px solid var(--border);
+  /* Progress bar */
+  #progress-bar-wrap {
+    background: #e8eef4;
+    height: 6px;
   }
-  .cat-btn {
-    padding: 5px 12px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text-dim);
-    font-size: .78rem;
-    cursor: pointer;
-    transition: all .15s;
-  }
-  .cat-btn.active {
-    background: var(--surface2);
-    border-color: var(--accent2);
-    color: var(--accent2);
-    font-weight: 600;
+  #progress-bar {
+    height: 6px;
+    background: linear-gradient(90deg, #E36C0A, #f5a623);
+    width: 0%;
+    transition: width 0.4s;
   }
 
-  /* ── Progress bar ── */
-  .progress-wrap {
-    background: var(--surface);
-    padding: 8px 20px;
+  /* Stats */
+  #stats {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
-    font-size: .78rem;
-    color: var(--text-dim);
-    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    font-size: 0.8rem;
+    color: #555;
+    background: #fff;
+    border-bottom: 1px solid #e8eef4;
   }
-  .progress-bar {
-    flex: 1;
-    height: 5px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 3px;
-    transition: width .3s;
-  }
-  .score-badge {
-    display: flex;
-    gap: 10px;
-  }
-  .badge { display: flex; align-items: center; gap: 3px; }
-  .badge .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-  }
-  .dot-ok { background: var(--correct); }
-  .dot-ng { background: var(--wrong); }
+  #stats span b { color: #1F4E79; }
+  #score-display { font-weight: bold; color: #E36C0A; font-size: 0.9rem; }
 
-  /* ── Main ── */
-  main {
-    flex: 1;
+  /* Card */
+  #card-area {
     padding: 16px;
-    max-width: 900px;
-    width: 100%;
+    max-width: 680px;
     margin: 0 auto;
   }
 
-  /* ── Cloze mode ── */
-  #cloze-view { display: flex; flex-direction: column; gap: 14px; }
-
-  .q-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 18px;
-    transition: border-color .2s;
-  }
-  .q-card.revealed { border-color: var(--accent2); }
-
-  .q-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-  }
-  .q-tag {
-    font-size: .68rem;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 2px 8px;
-    color: var(--text-dim);
-  }
-  .q-num { font-size: .7rem; color: var(--text-dim); }
-
-  .q-text {
-    font-size: .92rem;
-    line-height: 1.8;
-    color: var(--text);
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(31,78,121,0.10);
+    padding: 22px 20px;
+    margin-bottom: 14px;
+    border-left: 5px solid #E36C0A;
   }
 
-  .blank {
+  .card-section-tag {
     display: inline-block;
-    background: var(--hidden-bg);
-    border: 1.5px solid var(--hidden-border);
-    border-radius: 4px;
-    padding: 0 6px;
-    min-width: 80px;
-    text-align: center;
-    cursor: pointer;
-    color: transparent;
-    font-weight: 700;
-    user-select: none;
-    transition: all .2s;
-    vertical-align: baseline;
-    position: relative;
-    top: 1px;
+    background: #1F4E79;
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 2px 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
   }
-  .blank::before {
-    content: '？';
-    color: var(--accent);
-    font-weight: 700;
-    position: absolute;
-    left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
-  }
-  .blank.open {
-    background: transparent;
-    border-color: var(--accent2);
-    color: var(--accent2);
-  }
-  .blank.open::before { display: none; }
 
-  .q-actions {
+  .card-text {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #222;
+    margin-bottom: 14px;
+    word-break: break-all;
+  }
+
+  /* blank inputs inside template */
+  .blank-input {
+    display: inline-block;
+    border: none;
+    border-bottom: 2px solid #E36C0A;
+    background: transparent;
+    min-width: 60px;
+    max-width: 280px;
+    width: auto;
+    font-size: 0.93rem;
+    font-family: inherit;
+    color: #E36C0A;
+    font-weight: bold;
+    text-align: center;
+    outline: none;
+    padding: 1px 4px;
+    vertical-align: baseline;
+    transition: border-color 0.2s;
+  }
+  .blank-input:focus { border-bottom-color: #1F4E79; }
+  .blank-input.correct { border-bottom-color: #27ae60; color: #27ae60; background: #eafbf0; border-radius: 4px; }
+  .blank-input.wrong { border-bottom-color: #e74c3c; color: #e74c3c; background: #fdf0f0; border-radius: 4px; }
+  .blank-input[readonly] { cursor: default; }
+
+  .answer-hint {
+    font-size: 0.78rem;
+    color: #999;
+    margin-top: 6px;
+    display: none;
+  }
+  .answer-hint.show { display: block; }
+  .answer-hint span { color: #27ae60; font-weight: bold; }
+
+  /* Buttons */
+  .btn-row {
     display: flex;
     gap: 8px;
-    margin-top: 12px;
     flex-wrap: wrap;
+    margin-top: 10px;
   }
-  .btn-reveal-all, .btn-ok, .btn-ng {
+  .btn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-check { background: #E36C0A; color: #fff; }
+  .btn-skip { background: #e8eef4; color: #555; }
+  .btn-hint { background: #fff; color: #1F4E79; border: 2px solid #1F4E79; }
+
+  /* Result overlay on card */
+  .result-badge {
+    display: none;
+    font-size: 0.85rem;
+    font-weight: bold;
     padding: 6px 14px;
     border-radius: 8px;
-    border: 1.5px solid;
-    font-size: .78rem;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all .15s;
+    margin-top: 10px;
   }
-  .btn-reveal-all {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: transparent;
-  }
-  .btn-reveal-all:hover { background: var(--accent); color: #fff; }
-  .btn-ok {
-    border-color: var(--correct);
-    color: var(--correct);
-    background: transparent;
-  }
-  .btn-ok:hover, .btn-ok.selected { background: var(--correct); color: #000; }
-  .btn-ng {
-    border-color: var(--wrong);
-    color: var(--wrong);
-    background: transparent;
-  }
-  .btn-ng:hover, .btn-ng.selected { background: var(--wrong); color: #fff; }
+  .result-badge.ok { background: #eafbf0; color: #27ae60; display: inline-block; }
+  .result-badge.ng { background: #fdf0f0; color: #e74c3c; display: inline-block; }
 
-  /* ── Card mode ── */
-  #card-view {
+  /* Navigation */
+  #nav-row {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    gap: 16px;
-  }
-  .flashcard {
-    width: 100%;
-    max-width: 680px;
-    min-height: 240px;
-    background: var(--card-bg);
-    border: 1.5px solid var(--border);
-    border-radius: 18px;
-    padding: 30px 28px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    cursor: pointer;
-    transition: border-color .2s, transform .1s;
-    position: relative;
-    user-select: none;
-  }
-  .flashcard:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .flashcard .fc-label {
-    font-size: .72rem;
-    color: var(--text-dim);
-    position: absolute;
-    top: 14px; left: 18px;
-  }
-  .flashcard .fc-q {
-    font-size: .88rem;
-    color: var(--text-dim);
-    text-align: center;
-    line-height: 1.7;
-  }
-  .flashcard .fc-a {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--accent2);
-    text-align: center;
-    line-height: 1.6;
-    display: none;
-    border-top: 1px solid var(--border);
-    padding-top: 14px;
-    width: 100%;
-  }
-  .flashcard.flipped .fc-a { display: block; }
-  .flashcard .fc-hint {
-    font-size: .72rem;
-    color: var(--text-dim);
-    position: absolute;
-    bottom: 12px;
-  }
-  .fc-cat-tag {
-    position: absolute;
-    top: 14px; right: 18px;
-    font-size: .65rem;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 2px 7px;
-    color: var(--text-dim);
-  }
-
-  .card-nav {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
+    padding: 12px 16px;
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    border-top: 2px solid #e8eef4;
+    z-index: 10;
   }
   .nav-btn {
     padding: 10px 22px;
     border-radius: 10px;
-    border: 1.5px solid var(--border);
-    background: var(--surface2);
-    color: var(--text);
-    font-size: .85rem;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: bold;
     cursor: pointer;
-    transition: all .15s;
-    font-weight: 600;
+    transition: all 0.15s;
   }
-  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .nav-btn.ok { border-color: var(--correct); color: var(--correct); }
-  .nav-btn.ok:hover { background: var(--correct); color: #000; }
-  .nav-btn.ng { border-color: var(--wrong); color: var(--wrong); }
-  .nav-btn.ng:hover { background: var(--wrong); color: #fff; }
-  .card-counter {
-    font-size: .82rem;
-    color: var(--text-dim);
-    min-width: 70px;
-    text-align: center;
-  }
+  #btn-prev { background: #e8eef4; color: #555; }
+  #btn-next { background: #1F4E79; color: #fff; }
+  #q-counter { font-size: 0.82rem; color: #888; }
 
-  /* ── Summary ── */
-  #summary-view {
+  /* Summary screen */
+  #summary {
     display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    padding: 30px 0;
-  }
-  #summary-view h2 { font-size: 1.3rem; color: var(--accent); }
-  .sum-stats {
-    display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;
-  }
-  .sum-stat {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 24px;
+    padding: 30px 20px;
     text-align: center;
-    min-width: 120px;
+    max-width: 500px;
+    margin: 0 auto;
   }
-  .sum-stat .num { font-size: 2rem; font-weight: 700; }
-  .sum-stat .lbl { font-size: .72rem; color: var(--text-dim); margin-top: 4px; }
-  .num-ok { color: var(--correct); }
-  .num-ng { color: var(--wrong); }
-  .num-rate { color: var(--accent); }
-  .restart-btn {
-    padding: 12px 28px;
-    background: var(--accent);
+  #summary h2 { font-size: 1.5rem; color: #1F4E79; margin-bottom: 10px; }
+  #summary .score-big { font-size: 3rem; color: #E36C0A; font-weight: bold; line-height: 1; }
+  #summary .score-sub { font-size: 0.9rem; color: #888; margin-bottom: 20px; }
+  #summary .msg { font-size: 1rem; color: #444; margin-bottom: 24px; line-height: 1.6; }
+  #btn-restart {
+    background: #E36C0A; color: #fff;
+    padding: 14px 32px;
+    border-radius: 12px;
     border: none;
-    border-radius: 10px;
-    color: #fff;
-    font-size: .95rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-    transition: opacity .2s;
+    margin: 6px;
   }
-  .restart-btn:hover { opacity: .85; }
-
-  /* ── Scroll to top ── */
-  .top-btn {
-    position: fixed;
-    bottom: 20px; right: 20px;
-    background: var(--accent);
+  #btn-retry-wrong {
+    background: #1F4E79; color: #fff;
+    padding: 14px 32px;
+    border-radius: 12px;
     border: none;
-    border-radius: 50%;
-    width: 40px; height: 40px;
-    color: #fff;
-    font-size: 1.1rem;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-    opacity: .7;
-    transition: opacity .2s;
-    display: flex; align-items: center; justify-content: center;
+    margin: 6px;
+    display: none;
   }
-  .top-btn:hover { opacity: 1; }
 
-  @media(max-width:600px){
-    .q-text { font-size: .85rem; }
-    .flashcard { min-height: 200px; }
-    .fc-a { font-size: 1rem; }
+  /* Empty state */
+  #empty-state {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    color: #aaa;
+    font-size: 1rem;
   }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>⚡ 生理学 神経系 <span>暗記アプリ</span></h1>
-  <div class="mode-btns">
-    <button class="mode-btn active" onclick="setMode('cloze')">穴埋めモード</button>
-    <button class="mode-btn" onclick="setMode('card')">カードモード</button>
-  </div>
+  <h1>🧠 生理学 穴埋め暗記アプリ</h1>
+  <p>オレンジキーワードを入力して覚えよう！</p>
 </header>
 
-<div class="cat-bar" id="cat-bar"></div>
-
-<div class="progress-wrap">
-  <span id="prog-txt">0 / 0</span>
-  <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
-  <div class="score-badge">
-    <span class="badge"><span class="dot dot-ok"></span><span id="cnt-ok">0</span></span>
-    <span class="badge"><span class="dot dot-ng"></span><span id="cnt-ng">0</span></span>
-  </div>
+<div id="section-tabs">
+  <button class="tab-btn active" data-section="all">すべて（87問）</button>
+  <button class="tab-btn" data-section="血液">血液</button>
+  <button class="tab-btn" data-section="代謝">代謝</button>
+  <button class="tab-btn" data-section="ホルモン">ホルモン</button>
+  <button class="tab-btn" data-section="神経">神経</button>
+  <button class="tab-btn" data-section="脳梗塞">脳梗塞</button>
 </div>
 
-<main>
-  <div id="cloze-view"></div>
-  <div id="card-view" style="display:none">
-    <div class="flashcard" id="fc" onclick="flipCard()">
-      <span class="fc-label">Q.</span>
-      <div class="fc-q" id="fc-q">カードをクリックして裏返す</div>
-      <span class="fc-cat-tag" id="fc-cat"></span>
-      <div class="fc-a" id="fc-a"></div>
-      <span class="fc-hint" id="fc-hint">タップして答えを見る</span>
-    </div>
-    <div class="card-nav">
-      <button class="nav-btn ng" onclick="markCard(false)">✗ もう一度</button>
-      <span class="card-counter" id="card-counter">0 / 0</span>
-      <button class="nav-btn ok" onclick="markCard(true)">✓ 覚えた！</button>
-    </div>
-  </div>
-  <div id="summary-view">
-    <h2>🎉 完了！</h2>
-    <div class="sum-stats">
-      <div class="sum-stat"><div class="num num-ok" id="s-ok">0</div><div class="lbl">覚えた</div></div>
-      <div class="sum-stat"><div class="num num-ng" id="s-ng">0</div><div class="lbl">要復習</div></div>
-      <div class="sum-stat"><div class="num num-rate" id="s-rate">0%</div><div class="lbl">正答率</div></div>
-    </div>
-    <button class="restart-btn" onclick="restart()">🔄 もう一度挑戦</button>
-  </div>
-</main>
+<div id="progress-bar-wrap"><div id="progress-bar"></div></div>
 
-<button class="top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div id="stats">
+  <span>問題 <b id="stat-current">1</b> / <b id="stat-total">87</b></span>
+  <span id="score-display">正解: <span id="stat-correct">0</span> 問</span>
+</div>
+
+<div id="card-area">
+  <div id="main-card" class="card" style="display:none;"></div>
+  <div id="empty-state">このセクションの問題がありません</div>
+</div>
+
+<div id="summary">
+  <h2>✨ お疲れさまでした！</h2>
+  <div class="score-big" id="sum-score">0</div>
+  <div class="score-sub" id="sum-detail">/ 0 問</div>
+  <div class="msg" id="sum-msg"></div>
+  <button id="btn-restart">🔄 最初からやり直す</button>
+  <button id="btn-retry-wrong">❌ 間違えた問題だけ</button>
+</div>
+
+<div id="nav-row">
+  <button class="nav-btn" id="btn-prev">◀ 前へ</button>
+  <span id="q-counter"></span>
+  <button class="nav-btn" id="btn-next">次へ ▶</button>
+</div>
 
 <script>
-/* ================================================================
-   DATA  — カテゴリ × 問題
-================================================================ */
-const QUESTIONS = [
-  // ── 血液
-  {cat:"血液", q:"血液は成人で体重の【A】%で、pH【B】（弱アルカリ性）の液体である。", blanks:{A:"7〜8", B:"7.4±0.05"}},
-  {cat:"血液", q:"血液の機能4つ：①物質の運搬 ②恒常性の維持 ③【A】 ④【B】", blanks:{A:"生体防御", B:"止血作用"}},
-  {cat:"血液", q:"血漿タンパク質の【A】は量が多く、膠質浸透圧を保ち栄養状態の指標となる。", blanks:{A:"アルブミン"}},
-  {cat:"血液", q:"【A】は体内に侵入した細菌・ウイルスに対する免疫を担う血漿タンパク質である。", blanks:{A:"グロブリン"}},
-  {cat:"血液", q:"【A】は出血時にフィブリンへ変換され血液凝固に関わる血漿タンパク質である。", blanks:{A:"フィブリノーゲン"}},
-  {cat:"血液", q:"赤血球は【A】核で、ヘモグロビンが酸素を全身に搬送する。寿命は【B】日で、脾臓で破壊される。", blanks:{A:"無", B:"120"}},
-  {cat:"血液", q:"白血球（顆粒球）のうち最も多く、細菌・真菌を貪食するのは【A】である。", blanks:{A:"好中球"}},
-  {cat:"血液", q:"【A】球は寄生虫を攻撃し花粉などを排除する。【B】球はアレルギー反応の開始に関与する。", blanks:{A:"好酸", B:"好塩基"}},
-  {cat:"血液", q:"単球は組織へ移動すると【A】や樹状細胞に変わる。", blanks:{A:"マクロファージ"}},
-  {cat:"血液", q:"T細胞は【A】で育ち、B細胞は【B】で育ち抗体を産生（液性免疫）する。", blanks:{A:"胸腺", B:"骨髄"}},
-  {cat:"血液", q:"【A】細胞は命令がなくても単独でがん細胞を攻撃できる。", blanks:{A:"NK"}},
-  {cat:"血液", q:"腎臓で産生される造血ホルモンを【A】という。これが骨髄の【B】に作用し赤血球へ分化を促す。", blanks:{A:"エリスロポエチン", B:"造血幹細胞"}},
+const ALL_QUESTIONS = [{"section": "血液", "full": "血液は成人で体重の7〜8%で、粘性を持ち、比重1.06、pH7.4±0.05（弱アルカリ性）の液体である。", "template": "血液は成人で体重の[0]で、粘性を持ち、比重1.06、[1]（弱アルカリ性）の液体である。", "blanks": ["7〜8%", "pH7.4±0.05"]}, {"section": "血液", "full": "1. 物質の運搬：酸素・酸化炭素・栄養素・代謝産物・ホルモンを血管を通して全身へ届ける。", "template": "1. [0]：酸素・酸化炭素・栄養素・代謝産物・ホルモンを血管を通して全身へ届ける。", "blanks": ["物質の運搬"]}, {"section": "血液", "full": "2. 恒常性の維持：体液量・体温・酸塩基平衡・浸透圧を一定に保つ。", "template": "2. [0]：体液量・体温・酸塩基平衡・浸透圧を一定に保つ。", "blanks": ["恒常性の維持"]}, {"section": "血液", "full": "3. 生体防御：白血球による免疫作用。", "template": "3. [0]：白血球による免疫作用。", "blanks": ["生体防御"]}, {"section": "血液", "full": "4. 止血作用：血小板による血液凝固。", "template": "4. [0]：血小板による血液凝固。", "blanks": ["止血作用"]}, {"section": "血液", "full": "水（90%）：物質の溶解・運搬", "template": "[0]：物質の溶解・運搬", "blanks": ["水（90%）"]}, {"section": "血液", "full": "血漿タンパク質（7%）：血液中に最も多く溶けている固形成分。主に肝臓で作られる。", "template": "[0]：血液中に最も多く溶けている固形成分。主に肝臓で作られる。", "blanks": ["血漿タンパク質（7%）"]}, {"section": "血液", "full": "アルブミン：量が多い。細胞のアミノ酸供給源になり、栄養状態の指標。膠質浸透圧を保つ。", "template": "[0]：量が多い。細胞のアミノ酸供給源になり、栄養状態の指標。膠質浸透圧を保つ。", "blanks": ["アルブミン"]}, {"section": "血液", "full": "グロブリン：体内に侵入した細菌やウイルスと戦う免疫を担う。", "template": "[0]：体内に侵入した細菌やウイルスと戦う免疫を担う。", "blanks": ["グロブリン"]}, {"section": "血液", "full": "フィブリノーゲン：出血時に止血の第3段階（フィブリンへと変換）。カルシウムイオンでトロンビンが作用し血液を線維組織によって血液凝固する。", "template": "[0]：出血時に止血の第3段階（フィブリンへと変換）。カルシウムイオンでトロンビンが作用し血液を線維組織によって血液凝固する。", "blanks": ["フィブリノーゲン"]}, {"section": "血液", "full": "電解質：水バランスを保ち、筋肉・神経の働きをコントロール。", "template": "[0]：水バランスを保ち、筋肉・神経の働きをコントロール。", "blanks": ["電解質"]}, {"section": "血液", "full": "栄養素：エネルギー源や膜・ホルモン・体を作る材料になる。", "template": "[0]：エネルギー源や膜・ホルモン・体を作る材料になる。", "blanks": ["栄養素"]}, {"section": "血液", "full": "老廃物：代謝で生じたゴミ。", "template": "[0]：代謝で生じたゴミ。", "blanks": ["老廃物"]}, {"section": "血液", "full": "赤血球：無核。血管をスムーズに通り循環するようになっている。ヘモグロビンが酸素と結合し全身へ搬送。不要なCO2を回収する。寿命は120日。骨髄の赤骨髄で生産。脾臓で破壊される。", "template": "[0]：無核。血管をスムーズに通り循環するようになっている。[1]が酸素と結合し全身へ搬送。不要なCO2を回収する。寿命は[2]。骨髄の赤骨髄で生産。脾臓で破壊される。", "blanks": ["赤血球", "ヘモグロビン", "120日"]}, {"section": "血液", "full": "白血球（顆粒球）", "template": "[0]（顆粒球）", "blanks": ["白血球"]}, {"section": "血液", "full": "・好中球：最も多い。細菌や真菌などの病原体が入った際に貪食する。", "template": "・[0]：最も多い。細菌や真菌などの病原体が入った際に貪食する。", "blanks": ["好中球"]}, {"section": "血液", "full": "・好酸球：寄生虫などを攻撃する。花粉などを排除する。", "template": "・[0]：寄生虫などを攻撃する。花粉などを排除する。", "blanks": ["好酸球"]}, {"section": "血液", "full": "・好塩基球：免疫監視・アレルギー反応の開始に関与する。", "template": "・[0]：免疫監視・アレルギー反応の開始に関与する。", "blanks": ["好塩基球"]}, {"section": "血液", "full": "白血球（単球・リンパ球）", "template": "[0]（単球・リンパ球）", "blanks": ["白血球"]}, {"section": "血液", "full": "・単球：抗原提示と貪食し、組織へ移動するとマクロファージや樹状細胞に変わる。", "template": "・[0]：抗原提示と貪食し、組織へ移動するとマクロファージや樹状細胞に変わる。", "blanks": ["単球"]}, {"section": "血液", "full": "・リンパ球（T細胞）：胸腺で育ち、攻撃の司令塔となる。ヘルパーT細胞は全身にウイルスの危険を知らせ排除するキラーT細胞（細胞性免疫）がある。", "template": "・[0]：胸腺で育ち、攻撃の司令塔となる。ヘルパーT細胞は全身にウイルスの危険を知らせ排除するキラーT細胞（細胞性免疫）がある。", "blanks": ["リンパ球（T細胞）"]}, {"section": "血液", "full": "・リンパ球（B細胞）：骨髄で育ち、敵を記憶し抗体を産生（液性免疫）する。", "template": "・[0]：骨髄で育ち、敵を記憶し抗体を産生（液性免疫）する。", "blanks": ["リンパ球（B細胞）"]}, {"section": "血液", "full": "・NK細胞：命令がなくても単独でがん細胞を攻撃できる。異常の活性化によって生じる。", "template": "・[0]：命令がなくても単独でがん細胞を攻撃できる。異常の活性化によって生じる。", "blanks": ["NK細胞"]}, {"section": "血液", "full": "血小板：血管が傷ついたときに集まり、血液凝固を促す。", "template": "[0]：血管が傷ついたときに集まり、血液凝固を促す。", "blanks": ["血小板"]}, {"section": "血液", "full": "体内の酸素不足を感じると腎臓でエリスロポエチンという造血ホルモンが出て、骨髄の造血幹細胞に作用し赤血球へ分化・増殖を促す。高地トレーニングは低酸素下でトレーニングすることで全身の細胞への酸素を届ける運動能力があがるので持久力があがるのです。", "template": "体内の酸素不足を感じると[0]で[1]という造血ホルモンが出て、[2]に作用し赤血球へ分化・増殖を促す。[3]は低酸素下でトレーニングすることで全身の細胞への酸素を届ける運動能力があがるので持久力があがるのです。", "blanks": ["腎臓", "エリスロポエチン", "骨髄の造血幹細胞", "高地トレーニング"]}, {"section": "血液", "full": "血液は肝臓に25%、静脈容量血管には40%ある。血液は全身をポンプの役割である心臓によって循環している。", "template": "血液は肝臓に[0]、静脈容量血管には[1]ある。血液は全身をポンプの役割である心臓によって循環している。", "blanks": ["25%", "40%"]}, {"section": "血液", "full": "心臓は右心房・右心室・左心房・左心室の4部屋から形成される。", "template": "心臓は[0]の4部屋から形成される。", "blanks": ["右心房・右心室・左心房・左心室"]}, {"section": "血液", "full": "右と左の間にある。右：三尖弁、左：僧帽弁", "template": "右と左の間にある。右：[0]、左：[1]", "blanks": ["三尖弁", "僧帽弁"]}, {"section": "血液", "full": "動脈との間にある。右：肺動脈弁、左：大動脈弁（最も重要な弁）", "template": "動脈との間にある。右：[0]、左：[1]", "blanks": ["肺動脈弁", "大動脈弁（最も重要な弁）"]}, {"section": "血液", "full": "動脈：壁が厚く弾性繊維が豊富で全身の組織に分配する。血液量が少ない。", "template": "[0]：壁が厚く弾性繊維が豊富で全身の組織に分配する。血液量が少ない。", "blanks": ["動脈"]}, {"section": "血液", "full": "毛細血管：一層の内皮細胞のみ。細胞との物質交換を行う。", "template": "[0]：一層の内皮細胞のみ。細胞との物質交換を行う。", "blanks": ["毛細血管"]}, {"section": "血液", "full": "静脈：壁が薄く内側の弁がある。全身から心臓へ血液を戻す。", "template": "[0]：壁が薄く内側の弁がある。全身から心臓へ血液を戻す。", "blanks": ["静脈"]}, {"section": "血液", "full": "体循環：左心室→大動脈→全身組織→大静脈→右心房の順に流れる。", "template": "[0]：左心室→大動脈→全身組織→大静脈→右心房の順に流れる。", "blanks": ["体循環"]}, {"section": "血液", "full": "肺循環：右心室→肺動脈（CO2から酸素交換）→肺静脈→左心房の順に流れる。", "template": "[0]：右心室→肺動脈（CO2から酸素交換）→肺静脈→左心房の順に流れる。", "blanks": ["肺循環"]}, {"section": "血液", "full": "肺動脈には静脈血が流れ、肺静脈には動脈血が流れる。", "template": "肺動脈には[0]が流れ、肺静脈には[1]が流れる。", "blanks": ["静脈血", "動脈血"]}, {"section": "代謝", "full": "代謝とは生体内で起こる化学反応のことで、摂取した食物は消化と腸管での吸収の後、エネルギーや体の構成成分に変換される。物質が合成されることを同化、分解されることを異化という。", "template": "[0]とは生体内で起こる化学反応のことで、摂取した食物は消化と腸管での吸収の後、[1]に変換される。物質が[2]されることを[3]、分解されることを[4]という。", "blanks": ["代謝", "エネルギーや体の構成成分", "合成", "同化", "異化"]}, {"section": "代謝", "full": "人体を構成する主要元素はO61%・C23%・H10%・N2.6%の4元素で約97%を占める。これらの元素からなる糖質・脂質・タンパク質が代謝の対象となる。", "template": "人体を構成する主要元素は[0]の4元素で約97%を占める。これらの元素からなる糖質・脂質・タンパク質が代謝の対象となる。", "blanks": ["O61%・C23%・H10%・N2.6%"]}, {"section": "代謝", "full": "エネルギー代謝の種類は、生命維持に必要な基礎代謝・身体活動に必要な活動代謝・食事誘発性熱産生などがある。", "template": "エネルギー代謝の種類は、生命維持に必要な[0]・身体活動に必要な[1]・[2]などがある。", "blanks": ["基礎代謝", "活動代謝", "食事誘発性熱産生"]}, {"section": "代謝", "full": "糖質は主エネルギー源として働く。グルコースは血中に多く含まれ血糖と呼ばれる。各細胞に取りこまれ、ATPが合成される。1つのグルコースから最大38個のATPが作られる。", "template": "[0]として働く。グルコースは血中に多く含まれ血糖と呼ばれる。各細胞に取りこまれ、[1]が合成される。1つのグルコースから最大[2]が作られる。", "blanks": ["糖質は主エネルギー源", "ATP", "38個のATP"]}, {"section": "代謝", "full": "解糖系（細胞質外）では、グルコースがピルビン酸へ分解され、ミトコンドリアでピルビン酸からアセチルCoAに変換しクエン酸回路（TCA）に取り込まれCO2とH2Oまで分解する。これらの過程で生じた電子を運ぶNADH・FADという物質（コエンザイム）により電子伝達系に運ばれATPが合成される。", "template": "解糖系（細胞質外）では、グルコースがピルビン酸へ分解され、ミトコンドリアでピルビン酸から[0]に変換しクエン酸回路（TCA）に取り込まれCO2とH2Oまで分解する。これらの過程で生じた電子を運ぶNADH・FADという物質（コエンザイム）により電子伝達系に運ばれATPが合成される。", "blanks": ["アセチルCoA"]}, {"section": "代謝", "full": "ここで生じたエネルギーは約1/3となり2/3は熱となる。", "template": "[0]", "blanks": ["ここで生じたエネルギーは約1/3となり2/3は熱となる。"]}, {"section": "代謝", "full": "嫌気的条件の場合：O2を使用せずピルビン酸を少量の乳酸へ分解される。", "template": "[0]：O2を使用せずピルビン酸を少量の乳酸へ分解される。", "blanks": ["嫌気的条件の場合"]}, {"section": "代謝", "full": "余剰なグルコースは、肝細胞を含む筋細胞でグリコーゲンとして貯蔵される。骨格筋グリコーゲンはグルコース-6-ホスファターゼを持たないので筋内貯蔵後に自身で使用される。肝臓は血糖値が下がると分解しグルコースを血中に送る。", "template": "余剰なグルコースは、肝細胞を含む筋細胞でグリコーゲンとして貯蔵される。[0]される。肝臓は血糖値が下がると分解しグルコースを血中に送る。", "blanks": ["骨格筋グリコーゲンはグルコース-6-ホスファターゼを持たないので筋内貯蔵後に自身で使用"]}, {"section": "代謝", "full": "TG＝脂肪酸3とグリセロール1からなる。エネルギー貯蔵・細胞膜形成・ホルモン・脂溶性ビタミンの運搬機能がある。", "template": "TG＝脂肪酸3とグリセロール1からなる。[0]・細胞膜形成・ホルモン・脂溶性ビタミンの運搬機能がある。", "blanks": ["エネルギー貯蔵"]}, {"section": "代謝", "full": "グリセロールは解糖系に入りATPを産生。脂肪酸はβ酸化とされ、アセチルCoAを生成し、クエン酸回路に入る。", "template": "[0]は解糖系に入りATPを産生。脂肪酸は[1]とされ、アセチルCoAを生成し、クエン酸回路に入る。", "blanks": ["グリセロール", "β酸化"]}, {"section": "代謝", "full": "20種類からなるアミノ酸がペプチド結合によりつながっている。細胞内組織の重要な成分。酵素・受容体・抗体・アルブミンの輸送・ホルモンの原料となる。必須アミノ酸（9種類）以外は体内で合成できる。", "template": "20種類からなるアミノ酸がペプチド結合によりつながっている。[0]。酵素・受容体・抗体・アルブミンの輸送・ホルモンの原料となる。[1]（9種類）以外は体内で合成できる。", "blanks": ["細胞内組織の重要な成分", "必須アミノ酸"]}, {"section": "代謝", "full": "アミノ酸はアミノ基転移反応によって有機酸とアンモニアを生じる。有機酸はクエン酸回路（TCA）によりエネルギーを産む。アンモニアは肝臓で尿素に転換され尿中に排泄される。", "template": "アミノ酸はアミノ基転移反応によって有機酸とアンモニアを生じる。[0]によりエネルギーを産む。[1]され尿中に排泄される。", "blanks": ["有機酸はクエン酸回路（TCA）", "アンモニアは肝臓で尿素に転換"]}, {"section": "代謝", "full": "糖新生：絶食時によりグルコースが供給されない場合、糖質以外の成分（乳酸・グリセロール・糖原性アミノ酸等）からグルコースを生成する。", "template": "[0]：絶食時によりグルコースが供給されない場合、糖質以外の成分（[1]）からグルコースを生成する。", "blanks": ["糖新生", "乳酸・グリセロール・糖原性アミノ酸等"]}, {"section": "ホルモン", "full": "ホルモンは内分泌腺・内分泌細胞から血中へ分泌され、遠く離れた標的細胞・臓器に作用して体機能を調節する化学伝達物質である。", "template": "[0]は内分泌腺・内分泌細胞から血中へ分泌され、遠く離れた標的細胞・臓器に作用して体機能を調節する化学伝達物質である。", "blanks": ["ホルモン"]}, {"section": "ホルモン", "full": "ホルモンは血液により全身へ運ばれるが、受容体（レセプター）を持つ細胞だけが反応するため、ごく微量でも強い作用を示す。", "template": "ホルモンは血液により全身へ運ばれるが、[0]するため、ごく微量でも強い作用を示す。", "blanks": ["受容体（レセプター）を持つ細胞だけが反応"]}, {"section": "ホルモン", "full": "ホルモンの働きは、①恒常性の維持②代謝の調節・血糖値の調節③水・電解質のバランス調節④成長・発育⑤生殖機能の調節⑥ストレスへの適応などがある。", "template": "ホルモンの働きは、①[0]②[1]③[2]④[3]⑤[4]⑥[5]などがある。", "blanks": ["恒常性の維持", "代謝の調節・血糖値の調節", "水・電解質のバランス調節", "成長・発育", "生殖機能の調節", "ストレスへの適応"]}, {"section": "ホルモン", "full": "①ペプチドホルモン：水溶性で細胞膜上の受容体に結合する。セカンドメッセンジャーを介して作用し、速さが速い。", "template": "①[0]：水溶性で細胞膜上の受容体に結合する。セカンドメッセンジャーを介して作用し、速さが速い。", "blanks": ["ペプチドホルモン"]}, {"section": "ホルモン", "full": "②ステロイドホルモン：脂溶性で細胞内容受体に結合する。コレステロールから生成される。効果は比較的ゆっくりだが長く続く。", "template": "②[0]：脂溶性で細胞内容受体に結合する。コレステロールから生成される。効果は比較的ゆっくりだが長く続く。", "blanks": ["ステロイドホルモン"]}, {"section": "ホルモン", "full": "③アミノ酸誘導体ホルモン：チロシンから生成され、水溶性のカテコールアミンと脂溶性の甲状腺ホルモンがある。", "template": "③[0]：チロシンから生成され、水溶性のカテコールアミンと脂溶性の甲状腺ホルモンがある。", "blanks": ["アミノ酸誘導体ホルモン"]}, {"section": "ホルモン", "full": "多くのホルモンは視床下部と下垂体によって調節される。", "template": "多くのホルモンは[0]によって調節される。", "blanks": ["視床下部と下垂体"]}, {"section": "ホルモン", "full": "視床下部は体性感覚や内臓感覚の入力を受け、自律神経系および内分泌系の最高中枢として身体の恒常性の維持に働く。", "template": "視床下部は体性感覚や内臓感覚の入力を受け、自律神経系および内分泌系の[0]として身体の恒常性の維持に働く。", "blanks": ["最高中枢"]}, {"section": "ホルモン", "full": "下垂体は頭蓋底にある、トルコ鞍の内腔に位置し、直径1cm程度の小さな器官である。視床下部の下に位置し、視床下部とは下垂体茎を介する。", "template": "下垂体は頭蓋底にある、トルコ鞍の内腔に位置し、直径[0]である。視床下部の下に位置し、視床下部とは下垂体茎を介する。", "blanks": ["1cm程度の小さな器官"]}, {"section": "ホルモン", "full": "下垂体は前葉と後葉（神経葉）からなる。視床下部からの刺激により、血流を少し下垂体前葉に運ばれ下垂体前葉ホルモンの産生・分泌を調節する。", "template": "下垂体は[0]と[1]（神経葉）からなる。視床下部からの刺激により、血流を少し下垂体前葉に運ばれ下垂体前葉ホルモンの産生・分泌を調節する。", "blanks": ["前葉", "後葉"]}, {"section": "ホルモン", "full": "階層的支配を受けるホルモンは、分泌が過剰になると上位ホルモンからネガティブフィードバックにより分泌が抑制される。逆に不足で分泌されたことを上位ホルモンの分泌をさらに高める場合はポジティブフィードバックという。", "template": "階層的支配を受けるホルモンは、分泌が過剰になると上位ホルモンから[0]により分泌が抑制される。逆に不足で分泌されたことを上位ホルモンの分泌をさらに高める場合は[1]という。", "blanks": ["ネガティブフィードバック", "ポジティブフィードバック"]}, {"section": "ホルモン", "full": "1. 成長ホルモン（GH）：発育・成長を促進するホルモン。入眠初期の深い睡眠時に多く分泌。①骨端での軟骨成長促進②タンパク質合成促進③血糖値の上昇④筋肉組織・内臓脂肪の分解促進。", "template": "1. [0]：発育・成長を促進するホルモン。入眠初期の深い睡眠時に多く分泌。①骨端での軟骨成長促進②タンパク質合成促進③血糖値の上昇④筋肉組織・内臓脂肪の分解促進。", "blanks": ["成長ホルモン（GH）"]}, {"section": "ホルモン", "full": "2. プロラクチン（PRL）：乳汁分泌ホルモン。①乳腺を発達させる②乳汁の産生・分泌③排卵の抑制。", "template": "2. [0]：乳汁分泌ホルモン。①乳腺を発達させる②乳汁の産生・分泌③排卵の抑制。", "blanks": ["プロラクチン（PRL）"]}, {"section": "ホルモン", "full": "3. 甲状腺刺激ホルモン（TSH）：甲状腺を刺激して、甲状腺ホルモンの産生・分泌を促す。", "template": "3. [0]：甲状腺を刺激して、甲状腺ホルモンの産生・分泌を促す。", "blanks": ["甲状腺刺激ホルモン（TSH）"]}, {"section": "ホルモン", "full": "4. 副腎皮質刺激ホルモン（ACTH）：主に糖質コルチコイドの分泌を促進。", "template": "4. [0]：主に糖質コルチコイドの分泌を促進。", "blanks": ["副腎皮質刺激ホルモン（ACTH）"]}, {"section": "ホルモン", "full": "5. 卵胞刺激ホルモン（FSH）と黄体形成ホルモン（LH）：性腺活動を調節する。", "template": "5. [0]：性腺活動を調節する。", "blanks": ["卵胞刺激ホルモン（FSH）と黄体形成ホルモン（LH）"]}, {"section": "神経", "full": "神経系は中枢神経系（脳・脊髄）と末梢神経系に分けられる。", "template": "神経系は[0][1]と[2]に分けられる。", "blanks": ["中枢神経系", "（脳・脊髄）", "末梢神経系"]}, {"section": "神経", "full": "末梢神経系はさらに体性神経系と自律神経系に分類される。", "template": "末梢神経系はさらに[0][1][2]に分類される。", "blanks": ["体性神経系", "と", "自律神経系"]}, {"section": "神経", "full": "体性神経系は、体性感覚神経（求心路）と体性運動神経（遠心路）から構成される。", "template": "体性神経系は、[0]から構成される。", "blanks": ["体性感覚神経（求心路）と体性運動神経（遠心路）"]}, {"section": "神経", "full": "体性感覚神経は皮膚・骨格筋・腱・関節などの体性感覚（触覚、圧覚、温度覚、痛覚、深部感覚など）", "template": "体性感覚神経は[0]などの[1]", "blanks": ["皮膚・骨格筋・腱・関節", "体性感覚（触覚、圧覚、温度覚、痛覚、深部感覚など）"]}, {"section": "神経", "full": "一方、体性運動神経は中枢神経系から骨格筋へ運動指令を伝え、随意運動を行う。", "template": "一方、体性運動神経は[0]神経系から[1]へ運動指令を伝え[2]運動を行う。", "blanks": ["中枢", "骨格筋", "、随意"]}, {"section": "神経", "full": "体性運動神経の遠心路は、脊髄前角または脳幹の運動神経核から出る1個の下位運動ニューロンが骨格筋まで直接支配するため、神経節を介さないことが特徴である。神経筋接合部ではアセチルコリン（ACh）が放出され、ニコチン性アセチルコリン受容体（Nm受容体）に作用して骨格筋を収縮させる。", "template": "体性運動神経の遠心路は、[0]または[1]から出る[2]個の[3]が骨格筋まで直接支配するため、[4]を介さないことが特徴である。神経筋接合部では[5]が放出され、[6]に作用して骨格筋を[7]させる。", "blanks": ["脊髄前角", "脳幹の運動神経核", "1", "下位運動ニューロン", "神経節", "アセチルコリン（ACh）", "ニコチン性アセチルコリン受容体（Nm受容体）", "収縮"]}, {"section": "神経", "full": "体性神経系は主に外界との関わりや姿勢保持、歩行、巧緻運動などの随意運動を担い、自律神経系とは異なり二重支配や拮抗支配は受けない。", "template": "体性神経系は主に[0]との関わりや[1]などの随意運動を担い、自律神経系とは異なり二重支配や拮抗支配は受けない。", "blanks": ["外界", "姿勢保持、歩行、巧緻運動"]}, {"section": "神経", "full": "一方、自律神経系は、心筋・平滑筋・腺などの内臓器官の働きを無意識（不随意）に調節し、生体の恒常性（ホメオスタシス）を維持する神経系である。", "template": "一方、自律神経系は、[0]を[1]に調節し、[2]神経系である。", "blanks": ["心筋・平滑筋・腺などの内臓器官の働き", "無意識（不随意）", "生体の恒常性（ホメオスタシス）を維持する"]}, {"section": "神経", "full": "末梢自律神経系は、①交感神経系、②副交感神経系、③内臓求心性線維の3つから構成される。", "template": "末梢自律神経系は、[0]の3つから構成される。", "blanks": ["①交感神経系、②副交感神経系、③内臓求心性線維"]}, {"section": "神経", "full": "交感神経系と副交感神経系は遠心路として循環・呼吸・消化・代謝・体温調節などの自律機能を調節し、内臓求心性線維は求心路として内臓の状態を中枢へ伝える。", "template": "交感神経系と副交感神経系は[0]路として[1]を調節し、内臓求心性線維は[2]路として[3]を中枢へ伝える。", "blanks": ["遠心", "循環・呼吸・消化・代謝・体温調節などの自律機能", "求心", "内臓の状態"]}, {"section": "神経", "full": "自律神経系の特徴は、①自律性（不随意性）、②二重支配、③拮抗支配である。二重支配とは、多くの内臓が交感神経と副交感神経の両方から支配を受けることであり、拮抗支配とは、両神経が互いに反対の作用を及ぼすことである。一般に交感神経は「闘争・逃走（Fight or Flight）」、副交感神経は「休息・消化（Rest and Digest）」に働く。", "template": "自律神経系の特徴は、[0]である。二重支配とは、多くの内臓が交感神経と副交感神経の両方から支配を受けることであり、拮抗支配とは、両神経が互いに反対の作用を及ぼすことである。一般に交感神経は「[1]」、副交感神経は「[2]」に働く。", "blanks": ["①自律性（不随意性）、②二重支配、③拮抗支配", "闘争・逃走（Fight or Flight）", "休息・消化（Rest and Digest）"]}, {"section": "神経", "full": "交感神経は胸腰髄性であり、第1胸髄（T1）から第３腰髄の側柱にある節前ニューロンから起始する。節前線維は交感神経節（傍脊椎神経節または椎前神経節）で節後ニューロンとシナプスを形成し、節後線維が効果器へ分布する。節前線維は短く、節後線維は長いことが特徴である。", "template": "交感神経は[0]であり、第[1]から第[2][3]の[4]にある節前ニューロンから起始する。節前線維は交感神経節（[5]）で節後ニューロンとシナプスを形成し、節後線維が[6]へ分布する。節前線維は短く、節後線維は長いことが特徴である。", "blanks": ["胸腰髄性", "1胸髄（T1）", "３", "腰髄", "側柱", "傍脊椎神経節または椎前神経節", "効果器"]}, {"section": "神経", "full": "神経伝達物質は、節前ニューロンからACh、節後ニューロンからは主にノルアドレナリン（NA）が放出される。ただし、汗腺を支配する交感神経節後線維ではAChが放出される。また、副腎髄質は交感神経節後ニューロンに相当する特殊な器官で、節前ニューロンが直接シナプスを形成し、アドレナリンとノルアドレナリンをホルモンとして血液中へ分泌する。", "template": "神経伝達物質は、節前ニューロンから[0]、節後ニューロンからは主に[1]が放出される。ただし、汗腺を支配する交感神経節後線維では[2]が放出される。また、[3]は交感神経節後ニューロンに相当する[4]で、[5]し、[6]と[7]を[8]として[9]へ分泌する。", "blanks": ["ACh", "ノルアドレナリン（NA）", "ACh", "副腎髄質", "特殊な器官", "節前ニューロンが直接シナプスを形成", "アドレナリン", "ノルアドレナリン", "ホルモン", "血液中"]}, {"section": "神経", "full": "副交感神経は脳仙髄性（であり、中脳のEdinger-Westphal核（動眼神経副核）、橋の上唾液核・下唾液核、延髄の迷走神経背側核・疑核、および第2〜第4仙髄（S2〜S4）の側柱から起始する。節前線維は効果器近く、または壁内神経節で節後ニューロンとシナプスを形成する。節前線維は長く、節後線維は短いことが特徴である。神経伝達物質は、節前・節後ニューロンともにAChである。", "template": "副交感神経は[0]であり、[1]、[2]、[3]・[4]、および[5]の[6]から起始する。節前線維は効果器近く、または[7]で節後ニューロンとシナプスを形成する。[8]ことが特徴である。神経伝達物質は、節前・節後ニューロンともに[9]である。", "blanks": ["脳仙髄性（", "中脳のEdinger-Westphal核（動眼神経副核）", "橋の上唾液核・下唾液核", "延髄の迷走神経背側核", "疑核", "第2〜第4仙髄（S2〜S4）", "側柱", "壁内神経節", "節前線維は長く、節後線維は短い", "ACh"]}, {"section": "神経", "full": "内臓求心性線維は、交感神経・副交感神経に伴走して内臓からの感覚情報を脊髄や脳幹へ伝える。これらの情報は通常ほとんど意識されないが、中枢で統合されて自律神経反射を引き起こし、内臓機能の調節に重要な役割を果たす。例えば、頸動脈洞や大動脈弓の圧受容体からの血圧情報は、舌咽神経（第Ⅸ脳神経）および迷走神経（第Ⅹ脳神経）を介して延髄の孤束核へ伝えられ、**動脈圧受容体反射（圧受容体反射）**によって血圧が調節される。", "template": "内臓求心性線維は、交感神経・副交感神経に[0]して内臓からの感覚情報を[1]伝える。これらの情報は通常ほとんど意識されないが、中枢で統合されて[2]を引き起こし、内臓機能の調節に重要な役割を果たす。例えば、[3]からの血圧情報は、[4]へ伝えられ、**[5]**によって血圧が調節される。", "blanks": ["伴走", "脊髄や脳幹へ", "自律神経反射", "頸動脈洞や大動脈弓の圧受容体", "舌咽神経（第Ⅸ脳神経）および迷走神経（第Ⅹ脳神経）を介して延髄の孤束核", "動脈圧受容体反射（圧受容体反射）"]}, {"section": "脳梗塞", "full": "脳梗塞とは、脳血管の狭窄や閉塞により脳組織への血流が低下・途絶し、神経細胞が虚血に陥って壊死する虚血性脳血管障害である。", "template": "脳梗塞とは、脳血管の[0][1][2]により脳組織への血流が[3]し、神経細胞が[4]虚血性脳血管障害である。", "blanks": ["狭窄", "や", "閉塞", "低下・途絶", "虚血に陥って壊死する"]}, {"section": "脳梗塞", "full": "病型は主に①アテローム血栓性脳梗塞、②心原性脳塞栓症、③ラクナ梗塞の3つに分類される。", "template": "病型は主に①[0]の3つに分類される。", "blanks": ["アテローム血栓性脳梗塞、②心原性脳塞栓症、③ラクナ梗塞"]}, {"section": "脳梗塞", "full": "アテローム血栓性脳梗塞は、内頸動脈や中大脳動脈などの主幹動脈にアテローム性動脈硬化（プラーク）が形成され、プラークの破綻と血栓形成によって血管内腔が狭窄・閉塞して発症する。症状は睡眠中から起床時にかけて緩徐に出現することが多く、側副血行路が発達している場合には症状が軽減されることがある。前兆としてTIA（一過性脳虚血発作）がみられることがあり、神経症状は24時間以内（多くは1時間以内）に消失するが、その後90日以内、特に発症早期は脳梗塞の危険性が高い。TIAの一型である一過性黒内障は、内頸動脈由来の眼動脈の虚血によって一時的に片眼の視力が消失する。危険因子として高血圧、糖尿病、脂質異常症、喫煙、大量飲酒がある。", "template": "アテローム血栓性脳梗塞は、[0]などの[1]動脈に[2]）が形成され、プラークの[3]によって[4]して発症する。症状は睡眠中から起床時にかけて緩徐に出現することが多く、[5]が発達している場合には症状が軽減されることがある。前兆として[6]がみられることがあり、神経症状は[7]に消失するが、その後[8]以内、特に発症早期は脳梗塞の危険性が高い。TIAの一型である[9]は、内[10]の虚血によって一時的に片眼の視力が消失する。危険因子として高血圧、糖尿病、脂質異常症、喫煙、大量飲酒がある。", "blanks": ["内頸動脈や中大脳動脈", "主幹", "アテローム性動脈硬化（プラーク", "破綻と血栓形成", "血管内腔が狭窄・閉塞", "側副血行路", "TIA（一過性脳虚血発作）", "24時間以内（多くは1時間以内）", "90日", "一過性黒内障", "頸動脈由来の眼動脈"]}, {"section": "脳梗塞", "full": "心原性脳塞栓症は、心房細動などの心疾患により心臓内で形成された血栓（塞栓子）が血流に乗って脳血管を突然閉塞することで発症する。症状は活動中に発症し、短時間で症状が完成する。中大脳動脈に好発し、失語症、失認、半側空間無視、片麻痺などの重篤な神経症状を呈することが多い。発症（最終健常確認時刻）から4.5時間以内の適応症例では、rt-PAによる静注血栓溶解療法が行われる。また、主幹動脈閉塞では適応があれば機械的血栓回収療法が行われる。rt-PAはプラスミノーゲンをプラスミンへ変換し、フィブリンを分解することで血栓を溶解する。劇的な効果が期待できる治療である一方で出血をはじめとする重篤な合併症（頭蓋内出血）のリスクがある。危険因子として、心疾患（心房細動、心筋梗塞）があげられる。", "template": "心原性脳塞栓症は、[0]などの心疾患により[1]が血流に乗って脳血管を[2]することで発症する[3]症状は[4]完成する。[5]好発し、[6]などの重篤な神経症状を呈することが多い。発症（最終健常確認時刻）から[7]の適応症例では[8][9]による[10]が行われる。また、[11]では適応があれば[12]が行われる。rt-PAはプラスミノーゲンをプラスミンへ変換し、フィブリンを分解することで血栓を溶解する。劇的な効果が期待できる治療である一方で出血をはじめとする重篤な合併症（[13]）のリスクがある。危険因子として、[14]があげられる。", "blanks": ["心房細動", "心臓内で形成された血栓（塞栓子）", "突然閉塞", "。", "活動中に発症し、短時間で症状が", "中大脳動脈に", "失語症、失認、半側空間無視、片麻痺", "4.5時間以内", "、rt-P", "A", "静注血栓溶解療法", "主幹動脈閉塞", "機械的血栓回収療法", "頭蓋内出血", "心疾患（心房細動、心筋梗塞）"]}, {"section": "脳梗塞", "full": "ラクナ梗塞は、高血圧を背景とした穿通枝のリポヒアリン変性や細動脈硬化によって血管が閉塞し、直径15mm以下の小梗塞を生じる病型である。被殻、視床、内包、橋などの深部脳構造に好発する。", "template": "ラクナ梗塞は、高血圧を背景とした[0]の[1]によって血管が[2]し、[3]を生じる病型である。[4]に好発する。", "blanks": ["穿通枝", "リポヒアリン変性や細動脈硬化", "閉塞", "直径15mm以下の小梗塞", "被殻、視床、内包、橋などの深部脳構造"]}, {"section": "脳梗塞", "full": "なお、血行力学性脳梗塞は、血栓や塞栓による脳血管閉鎖がなくても全身の血圧低下により脳局所への血流が著しく低下することで脳梗塞を起こす。前大脳動脈と中大脳動脈境界部、中大脳動脈と後大脳動脈の境界部、中大脳動脈の皮質枝と穿通枝の境界部などに好発する", "template": "なお、[0]梗塞は、[1]することで脳梗塞を起こす。[2]境界部、[3]の境界部、中大脳動脈の皮質枝と穿通枝の境界部などに好発する", "blanks": ["血行力学性脳", "血栓や塞栓による脳血管閉鎖がなくても全身の血圧低下により脳局所への血流が著しく低下", "前大脳動脈と中大脳動脈", "中大脳動脈と後大脳動脈"]}, {"section": "脳梗塞", "full": "再発予防には、心原性脳塞栓症では抗凝固薬（ワルファリンやDOAC）が、アテローム血栓性脳梗塞やラクナ梗塞では抗血小板薬（アスピリン、クロピドグレル）が用いられる。", "template": "再発予防には、心原性脳塞栓症では[0]が、アテローム血栓性脳梗塞やラクナ梗塞では[1][2]が用いられる。", "blanks": ["抗凝固薬（ワルファリンやDOAC）", "抗血小板薬", "（アスピリン、クロピドグレル）"]}, {"section": "脳梗塞", "full": "脳梗塞によって錐体路（外側皮質脊髄路）が障害されると対側の痙性片麻痺が出現し、小脳や小脳脚が障害されると運動失調や協調運動障害が生じる。また、左半球の病変では失語症、右半球病変では半側空間無視などの高次脳機能障害を認めることがある。言語聴覚士は急性期から失語症、構音障害、嚥下障害、高次脳機能障害の評価・訓練に関与し、早期リハビリテーションは機能回復と予後改善に重要である。", "template": "脳梗塞によって[0]が障害されると対側の[1]が出現し、小脳や小脳脚が障害されると運動失調や協調運動障害が生じる。また、左半球の病変では失語症、右半球病変では半側空間無視などの高次脳機能障害を認めることがある。言語聴覚士は急性期から失語症、構音障害、嚥下障害、高次脳機能障害の[2]に重要である。", "blanks": ["錐体路（外側皮質脊髄路）", "痙性片麻痺", "評価・訓練に関与し、早期リハビリテーションは機能回復と予後改善"]}];
 
-  // ── 代謝
-  {cat:"代謝", q:"物質が合成されることを【A】、分解されることを【B】という。", blanks:{A:"同化", B:"異化"}},
-  {cat:"代謝", q:"人体の主要元素4種：【A】61%・C23%・H10%・N2.6%", blanks:{A:"O（酸素）"}},
-  {cat:"代謝", q:"糖質1gは【A】kcal、脂質1gは【B】kcal、タンパク質1gは【C】kcalのエネルギーを産む。", blanks:{A:"4", B:"9", C:"4"}},
-  {cat:"代謝", q:"1つのグルコースから最大【A】個のATPが合成される。", blanks:{A:"38"}},
-  {cat:"代謝", q:"解糖系でグルコースが【A】へ分解され、ミトコンドリアで【B】に変換されクエン酸回路（TCA）へ入る。", blanks:{A:"ピルビン酸", B:"アセチルCoA"}},
-  {cat:"代謝", q:"嫌気的条件ではピルビン酸が少量の【A】へ分解される。", blanks:{A:"乳酸"}},
-  {cat:"代謝", q:"骨格筋グリコーゲンは【A】を持たないため、筋内貯蔵後に自身でのみ使用される。", blanks:{A:"グルコース-6-ホスファターゼ"}},
-  {cat:"代謝", q:"脂質：グリセロールは解糖系へ、脂肪酸は【A】されてアセチルCoAを生成しクエン酸回路へ入る。", blanks:{A:"β酸化"}},
-  {cat:"代謝", q:"必須アミノ酸は【A】種類で体内では合成できない。アンモニアは肝臓で【B】に転換され排泄される。", blanks:{A:"9", B:"尿素"}},
-  {cat:"代謝", q:"絶食時に糖質以外の成分（乳酸・グリセロール・糖原性アミノ酸等）からグルコースを生成することを【A】という。", blanks:{A:"糖新生"}},
+let currentSection = 'all';
+let filteredQ = [];
+let currentIndex = 0;
+let scores = {}; // index in filteredQ -> true/false
+let answered = {}; // index -> bool answered
+let wrongIndices = [];
 
-  // ── ホルモン
-  {cat:"ホルモン", q:"ホルモンは受容体（【A】）を持つ細胞だけが反応するため、ごく微量でも強い作用を示す。", blanks:{A:"レセプター"}},
-  {cat:"ホルモン", q:"①ペプチドホルモンは【A】溶性で細胞膜上受容体に結合。②ステロイドホルモンは【B】溶性で細胞内受容体に結合。", blanks:{A:"水", B:"脂"}},
-  {cat:"ホルモン", q:"ステロイドホルモンは【A】から生成される。効果は比較的ゆっくりだが長続きする。", blanks:{A:"コレステロール"}},
-  {cat:"ホルモン", q:"③アミノ酸誘導体ホルモンはチロシンから生成され、水溶性の【A】と脂溶性の【B】がある。", blanks:{A:"カテコールアミン", B:"甲状腺ホルモン"}},
-  {cat:"ホルモン", q:"ホルモン分泌の最高中枢は【A】と【B】による階層的調節である。", blanks:{A:"視床下部", B:"下垂体"}},
-  {cat:"ホルモン", q:"分泌が過剰になると上位ホルモンが抑制するフィードバックを【A】フィードバックという。", blanks:{A:"ネガティブ"}},
-  {cat:"ホルモン", q:"成長ホルモン（GH）は【A】初期の深い睡眠時に多く分泌される。", blanks:{A:"入眠"}},
-  {cat:"ホルモン", q:"プロラクチン（PRL）の作用：①乳腺発達 ②乳汁産生・分泌 ③【A】の抑制", blanks:{A:"排卵"}},
-  {cat:"ホルモン", q:"TSHは【A】を刺激してホルモン産生を促し、ACTHは主に【B】の分泌を促進する。", blanks:{A:"甲状腺", B:"糖質コルチコイド"}},
-  {cat:"ホルモン", q:"FSHと【A】は性腺活動を調節する下垂体前葉ホルモンである。", blanks:{A:"LH（黄体形成ホルモン）"}},
-
-  // ── 神経系（体性・自律）
-  {cat:"神経系", q:"神経系は【A】（脳・脊髄）と【B】に分けられ、末梢神経系はさらに体性・自律神経系に分類される。", blanks:{A:"中枢神経系", B:"末梢神経系"}},
-  {cat:"神経系", q:"体性感覚神経（求心路）は皮膚・骨格筋などの感覚を中枢へ伝え、体性運動神経（遠心路）は【A】へ運動指令を伝える。", blanks:{A:"骨格筋"}},
-  {cat:"神経系", q:"体性運動神経の神経筋接合部では【A】（ACh）が放出され、【B】受容体に作用して骨格筋を収縮させる。", blanks:{A:"アセチルコリン", B:"ニコチン性アセチルコリン（Nm）"}},
-  {cat:"神経系", q:"体性神経系は【A】支配や拮抗支配は受けない点が自律神経系と異なる。", blanks:{A:"二重"}},
-  {cat:"神経系", q:"自律神経系の特徴3つ：①自律性（不随意性）②【A】③【B】", blanks:{A:"二重支配", B:"拮抗支配"}},
-  {cat:"神経系", q:"交感神経は「【A】」、副交感神経は「【B】」に働く。", blanks:{A:"闘争・逃走（Fight or Flight）", B:"休息・消化（Rest and Digest）"}},
-  {cat:"神経系", q:"交感神経は【A】（T1〜L2）の側柱から起始する。節前線維は【B】く、節後線維は【C】い。", blanks:{A:"胸腰髄性", B:"短", C:"長"}},
-  {cat:"神経系", q:"交感神経節前ニューロンからは【A】、節後ニューロンからは主に【B】が放出される。", blanks:{A:"ACh（アセチルコリン）", B:"ノルアドレナリン（NA）"}},
-  {cat:"神経系", q:"汗腺を支配する交感神経節後線維からは例外的に【A】が放出される。", blanks:{A:"ACh（アセチルコリン）"}},
-  {cat:"神経系", q:"副腎髄質は節前ニューロンが直接シナプスを形成し、【A】と【B】をホルモンとして血液中へ分泌する。", blanks:{A:"アドレナリン", B:"ノルアドレナリン"}},
-  {cat:"神経系", q:"副交感神経は【A】（脳仙髄性）であり、節前線維は【B】く、節後線維は【C】い。", blanks:{A:"craniosacral outflow", B:"長", C:"短"}},
-  {cat:"神経系", q:"副交感神経は節前・節後ニューロンともに【A】が神経伝達物質である。", blanks:{A:"ACh（アセチルコリン）"}},
-  {cat:"神経系", q:"頸動脈洞・大動脈弓の圧受容体情報は【A】・【B】を介して延髄の孤束核へ伝わり血圧を調節する。", blanks:{A:"舌咽神経（第Ⅸ脳神経）", B:"迷走神経（第Ⅹ脳神経）"}},
-
-  // ── 循環
-  {cat:"循環", q:"心臓は右心房・右心室・左心房・【A】の4部屋から形成される。", blanks:{A:"左心室"}},
-  {cat:"循環", q:"房室弁：右は【A】弁、左は【B】弁。動脈弁：右は【C】弁、左は【D】弁（最も重要）。", blanks:{A:"三尖", B:"僧帽", C:"肺動脈", D:"大動脈"}},
-  {cat:"循環", q:"体循環：【A】→大動脈→全身組織→大静脈→右心房", blanks:{A:"左心室"}},
-  {cat:"循環", q:"肺循環：右心室→肺動脈（CO₂→O₂交換）→【A】→左心房", blanks:{A:"肺静脈"}},
-  {cat:"循環", q:"肺動脈には【A】が流れ、肺静脈には【B】が流れる。", blanks:{A:"静脈血", B:"動脈血"}},
-  {cat:"循環", q:"血液量：肝臓に【A】%、静脈容量血管には【B】%分布する。", blanks:{A:"25", B:"40"}},
-
-  // ── 脳梗塞
-  {cat:"脳梗塞", q:"脳梗塞の3病型：①【A】血栓性脳梗塞 ②【B】脳塞栓症 ③ラクナ梗塞", blanks:{A:"アテローム", B:"心原性"}},
-  {cat:"脳梗塞", q:"アテローム血栓性脳梗塞の前兆となる一過性脳虚血発作を【A】という。神経症状は【B】時間以内に消失する。", blanks:{A:"TIA", B:"24"}},
-  {cat:"脳梗塞", q:"心原性脳塞栓症は発症から【A】時間以内の適応例に【B】による静注血栓溶解療法が行われる。", blanks:{A:"4.5", B:"rt-PA"}},
-  {cat:"脳梗塞", q:"rt-PAはプラスミノーゲンを【A】へ変換し【B】を分解して血栓を溶解する。", blanks:{A:"プラスミン", B:"フィブリン"}},
-  {cat:"脳梗塞", q:"心原性脳塞栓症の再発予防には【A】薬（ワルファリン・DOAC）が使われる。", blanks:{A:"抗凝固"}},
-  {cat:"脳梗塞", q:"ラクナ梗塞は直径【A】mm以下の小梗塞で、【B】・視床・内包・橋などの深部に好発する。", blanks:{A:"15", B:"被殻"}},
-  {cat:"脳梗塞", q:"脳梗塞で錐体路（外側皮質脊髄路）が障害されると対側の【A】が出現する。", blanks:{A:"痙性片麻痺"}},
-  {cat:"脳梗塞", q:"優位半球の病変では【A】、右半球病変では【B】などの高次脳機能障害を認める。", blanks:{A:"失語症", B:"半側空間無視"}},
-];
-
-/* ================================================================
-   STATE
-================================================================ */
-let mode = 'cloze';
-let activeCat = 'すべて';
-let cardIdx = 0;
-let cardFlipped = false;
-let scores = {};   // qIdx -> 'ok'|'ng'|null
-
-const allCats = ['すべて', ...new Set(QUESTIONS.map(q=>q.cat))];
-
-function filteredQs() {
-  return activeCat === 'すべて' ? QUESTIONS
-    : QUESTIONS.filter(q=>q.cat===activeCat);
+function getFiltered(section) {
+  if (section === 'all') return [...ALL_QUESTIONS];
+  return ALL_QUESTIONS.filter(q => q.section === section);
 }
 
-/* ================================================================
-   INIT
-================================================================ */
-window.onload = () => {
-  renderCatBar();
-  render();
-};
-
-function renderCatBar() {
-  const bar = document.getElementById('cat-bar');
-  bar.innerHTML = allCats.map(c=>`
-    <button class="cat-btn ${c===activeCat?'active':''}" onclick="setCat('${c}')">${c}</button>
-  `).join('');
-}
-
-function setCat(c) {
-  activeCat = c;
-  cardIdx = 0; cardFlipped = false;
-  renderCatBar();
-  render();
-}
-
-function setMode(m) {
-  mode = m;
-  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
-  cardIdx = 0; cardFlipped = false;
-  render();
-}
-
-function render() {
-  const qs = filteredQs();
-  updateProgress(qs);
-  if (mode==='cloze') {
-    document.getElementById('cloze-view').style.display='flex';
-    document.getElementById('card-view').style.display='none';
-    document.getElementById('summary-view').style.display='none';
-    renderCloze(qs);
-  } else {
-    document.getElementById('cloze-view').style.display='none';
-    document.getElementById('card-view').style.display='flex';
-    document.getElementById('summary-view').style.display='none';
-    renderCard(qs);
-  }
-}
-
-/* ================================================================
-   PROGRESS
-================================================================ */
-function updateProgress(qs) {
-  const total = qs.length;
-  let ok=0, ng=0;
-  qs.forEach((q,i)=>{
-    const gIdx = QUESTIONS.indexOf(q);
-    if(scores[gIdx]==='ok') ok++;
-    else if(scores[gIdx]==='ng') ng++;
-  });
-  const done = ok+ng;
-  document.getElementById('prog-txt').textContent = `${done} / ${total}`;
-  document.getElementById('prog-fill').style.width = total ? (done/total*100)+'%' : '0%';
-  document.getElementById('cnt-ok').textContent = ok;
-  document.getElementById('cnt-ng').textContent = ng;
-}
-
-/* ================================================================
-   CLOZE MODE
-================================================================ */
-function renderCloze(qs) {
-  const view = document.getElementById('cloze-view');
-  view.innerHTML = qs.map((q,i)=>{
-    const gIdx = QUESTIONS.indexOf(q);
-    const sc = scores[gIdx];
-    return `
-    <div class="q-card" id="qcard-${gIdx}" ${sc?'data-scored="'+sc+'"':''}>
-      <div class="q-header">
-        <span class="q-tag">${q.cat}</span>
-        <span class="q-num">${i+1} / ${qs.length}</span>
-      </div>
-      <div class="q-text">${buildClozeHTML(q, gIdx)}</div>
-      <div class="q-actions">
-        <button class="btn-reveal-all" onclick="revealAll(${gIdx})">全て表示</button>
-        <button class="btn-ok ${sc==='ok'?'selected':''}" onclick="markCloze(${gIdx},'ok')">✓ 覚えた</button>
-        <button class="btn-ng ${sc==='ng'?'selected':''}" onclick="markCloze(${gIdx},'ng')">✗ 要復習</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function buildClozeHTML(q, gIdx) {
-  let html = q.q;
-  Object.entries(q.blanks).forEach(([key,val])=>{
-    const id = `blank-${gIdx}-${key}`;
-    html = html.replace(`【${key}】`,
-      `<span class="blank" id="${id}" onclick="toggleBlank('${id}','${val.replace(/'/g,"\\'")}')"
-        data-val="${val.replace(/"/g,'&quot;')}">${val}</span>`
+function buildTemplate(q, qIndex) {
+  // Replace [0], [1], ... with input fields
+  let html = q.template;
+  for (let i = 0; i < q.blanks.length; i++) {
+    const len = Math.max(4, Math.min(20, q.blanks[i].length + 2));
+    const sizeAttr = `size="${len}"`;
+    html = html.replace(
+      `[${i}]`,
+      `<input class="blank-input" id="blank-${qIndex}-${i}" type="text" ${sizeAttr} autocomplete="off" autocorrect="off" placeholder="　" data-answer="${encodeURIComponent(q.blanks[i])}">`
     );
-  });
+  }
   return html;
 }
 
-function toggleBlank(id, val) {
-  const el = document.getElementById(id);
-  el.classList.toggle('open');
-}
+function renderCard(index) {
+  const q = filteredQ[index];
+  const card = document.getElementById('main-card');
+  card.style.display = 'block';
+  document.getElementById('empty-state').style.display = 'none';
 
-function revealAll(gIdx) {
-  const q = QUESTIONS[gIdx];
-  Object.keys(q.blanks).forEach(key=>{
-    const el = document.getElementById(`blank-${gIdx}-${key}`);
-    if(el) el.classList.add('open');
+  const alreadyAnswered = answered[index];
+  const isCorrect = scores[index];
+
+  let cardHTML = `<div class="card-section-tag">${q.section}</div>`;
+  cardHTML += `<div class="card-text">${buildTemplate(q, index)}</div>`;
+
+  if (!alreadyAnswered) {
+    cardHTML += `
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(${index})">✔ 答え合わせ</button>
+        <button class="btn btn-hint" onclick="showHint(${index})">💡 答えを見る</button>
+        <button class="btn btn-skip" onclick="skipCard(${index})">→ スキップ</button>
+      </div>
+      <div class="answer-hint" id="hint-${index}">
+        正解：${q.blanks.map(b => `<span>${b}</span>`).join('　')}
+      </div>
+    `;
+  } else {
+    const badge = isCorrect
+      ? `<div class="result-badge ok">✅ 正解！</div>`
+      : `<div class="result-badge ng">❌ 要確認　正解：${q.blanks.map(b => `<span style="color:#e74c3c;font-weight:bold">${b}</span>`).join('　　')}</div>`;
+    cardHTML += badge;
+  }
+
+  card.innerHTML = cardHTML;
+
+  // If already answered, fill inputs and disable
+  if (alreadyAnswered) {
+    q.blanks.forEach((ans, i) => {
+      const inp = document.getElementById(`blank-${index}-${i}`);
+      if (inp) {
+        inp.value = ans;
+        inp.readOnly = true;
+        inp.classList.add(isCorrect ? 'correct' : 'wrong');
+      }
+    });
+  }
+
+  // Auto-resize inputs on typing
+  card.querySelectorAll('.blank-input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      inp.size = Math.max(4, inp.value.length + 2);
+    });
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkAnswer(index);
+    });
   });
-  document.getElementById(`qcard-${gIdx}`).classList.add('revealed');
+
+  // Update progress & stats
+  updateStats();
 }
 
-function markCloze(gIdx, sc) {
-  scores[gIdx] = sc;
-  const card = document.getElementById(`qcard-${gIdx}`);
-  card.querySelectorAll('.btn-ok,.btn-ng').forEach(b=>b.classList.remove('selected'));
-  card.querySelector(sc==='ok'?'.btn-ok':'.btn-ng').classList.add('selected');
-  updateProgress(filteredQs());
+function normalize(str) {
+  return str.trim()
+    .replace(/\s+/g, '')
+    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+    .toLowerCase();
 }
 
-/* ================================================================
-   CARD MODE
-================================================================ */
-function renderCard(qs) {
-  if(!qs.length) return;
-  if(cardIdx >= qs.length) { showSummary(qs); return; }
-  const q = qs[cardIdx];
-  const gIdx = QUESTIONS.indexOf(q);
-
-  // Build Q and A text
-  let qText = q.q;
-  let aText = '';
-  Object.entries(q.blanks).forEach(([key,val])=>{
-    qText = qText.replace(`【${key}】`, `<span style="color:var(--accent);font-weight:700">[　　]</span>`);
-    aText += `<span style="color:var(--text-dim);font-size:.75rem">${key}:</span> ${val}　`;
+function checkAnswer(index) {
+  const q = filteredQ[index];
+  let allCorrect = true;
+  q.blanks.forEach((ans, i) => {
+    const inp = document.getElementById(`blank-${index}-${i}`);
+    if (!inp) return;
+    const userAns = normalize(inp.value);
+    const correct = normalize(ans);
+    if (userAns === correct) {
+      inp.classList.add('correct');
+      inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong');
+      inp.classList.remove('correct');
+      allCorrect = false;
+    }
+    inp.readOnly = true;
   });
 
-  const fc = document.getElementById('fc');
-  fc.classList.remove('flipped');
-  cardFlipped = false;
-  document.getElementById('fc-q').innerHTML = qText;
-  document.getElementById('fc-a').innerHTML = aText;
-  document.getElementById('fc-cat').textContent = q.cat;
-  document.getElementById('fc-hint').textContent = 'タップして答えを見る';
-  document.getElementById('card-counter').textContent = `${cardIdx+1} / ${qs.length}`;
+  answered[index] = true;
+  scores[index] = allCorrect;
+
+  const card = document.getElementById('main-card');
+  // Remove btn-row
+  const btnRow = card.querySelector('.btn-row');
+  if (btnRow) btnRow.remove();
+  const hint = card.querySelector('.answer-hint');
+  if (hint) hint.remove();
+
+  const badge = document.createElement('div');
+  badge.className = 'result-badge ' + (allCorrect ? 'ok' : 'ng');
+  if (allCorrect) {
+    badge.textContent = '✅ 正解！';
+  } else {
+    badge.innerHTML = '❌ 要確認　正解：' + q.blanks.map(b => `<span style="color:#e74c3c;font-weight:bold">${b}</span>`).join('　　');
+  }
+  card.appendChild(badge);
+
+  updateStats();
+  updateProgressBar();
+
+  // Auto-advance after short delay if correct
+  if (allCorrect && currentIndex < filteredQ.length - 1) {
+    setTimeout(() => goNext(), 900);
+  }
 }
 
-function flipCard() {
-  if(cardFlipped) return;
-  cardFlipped = true;
-  document.getElementById('fc').classList.add('flipped');
-  document.getElementById('fc-hint').textContent = '覚えた？判定してください';
+function showHint(index) {
+  const hint = document.getElementById(`hint-${index}`);
+  if (hint) hint.classList.add('show');
 }
 
-function markCard(ok) {
-  const qs = filteredQs();
-  const q = qs[cardIdx];
-  const gIdx = QUESTIONS.indexOf(q);
-  scores[gIdx] = ok ? 'ok' : 'ng';
-  cardIdx++;
-  updateProgress(qs);
-  if(cardIdx >= qs.length) { showSummary(qs); return; }
-  renderCard(qs);
+function skipCard(index) {
+  answered[index] = true;
+  scores[index] = false;
+  goNext();
 }
 
-/* ================================================================
-   SUMMARY
-================================================================ */
-function showSummary(qs) {
-  document.getElementById('card-view').style.display='none';
-  document.getElementById('cloze-view').style.display='none';
-  const sv = document.getElementById('summary-view');
-  sv.style.display='flex';
-  let ok=0,ng=0;
-  qs.forEach(q=>{
-    const s = scores[QUESTIONS.indexOf(q)];
-    if(s==='ok') ok++; else if(s==='ng') ng++;
+function goNext() {
+  if (currentIndex < filteredQ.length - 1) {
+    currentIndex++;
+    renderCard(currentIndex);
+    scrollToTop();
+  } else {
+    showSummary();
+  }
+}
+
+function goPrev() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderCard(currentIndex);
+    scrollToTop();
+  }
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateStats() {
+  const total = filteredQ.length;
+  const correctCount = Object.values(scores).filter(v => v === true).length;
+  document.getElementById('stat-current').textContent = currentIndex + 1;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-correct').textContent = correctCount;
+  document.getElementById('q-counter').textContent = `${currentIndex + 1} / ${total}`;
+}
+
+function updateProgressBar() {
+  const answeredCount = Object.keys(answered).length;
+  const pct = (answeredCount / filteredQ.length) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+function showSummary() {
+  document.getElementById('card-area').style.display = 'none';
+  document.getElementById('nav-row').style.display = 'none';
+  document.getElementById('summary').style.display = 'block';
+
+  const total = filteredQ.length;
+  const correct = Object.values(scores).filter(v => v === true).length;
+  const pct = Math.round((correct / total) * 100);
+
+  document.getElementById('sum-score').textContent = correct;
+  document.getElementById('sum-detail').textContent = `/ ${total} 問　(${pct}%)`;
+
+  let msg = '';
+  if (pct === 100) msg = '🎉 パーフェクト！国試合格間違いなし！';
+  else if (pct >= 80) msg = '🌟 素晴らしい！あと少し！';
+  else if (pct >= 60) msg = '👍 いい調子！間違えた箇所を復習しよう！';
+  else msg = '💪 もう一回チャレンジ！繰り返しが力になる！';
+  document.getElementById('sum-msg').textContent = msg;
+
+  wrongIndices = filteredQ.map((_, i) => i).filter(i => scores[i] === false || scores[i] === undefined);
+  if (wrongIndices.length > 0) {
+    document.getElementById('btn-retry-wrong').style.display = 'inline-block';
+  }
+}
+
+function startQuiz(section, qs) {
+  currentSection = section;
+  filteredQ = qs;
+  currentIndex = 0;
+  scores = {};
+  answered = {};
+  wrongIndices = [];
+
+  document.getElementById('card-area').style.display = 'block';
+  document.getElementById('nav-row').style.display = 'flex';
+  document.getElementById('summary').style.display = 'none';
+  document.getElementById('progress-bar').style.width = '0%';
+
+  if (filteredQ.length === 0) {
+    document.getElementById('main-card').style.display = 'none';
+    document.getElementById('empty-state').style.display = 'block';
+    updateStats();
+    return;
+  }
+  renderCard(0);
+}
+
+// Tab click
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const sec = btn.dataset.section;
+    startQuiz(sec, getFiltered(sec));
   });
-  const total = qs.length;
-  document.getElementById('s-ok').textContent = ok;
-  document.getElementById('s-ng').textContent = ng;
-  document.getElementById('s-rate').textContent = total ? Math.round(ok/total*100)+'%' : '0%';
-}
+});
 
-function restart() {
-  const qs = filteredQs();
-  qs.forEach(q=>{ delete scores[QUESTIONS.indexOf(q)]; });
-  cardIdx=0; cardFlipped=false;
-  document.getElementById('summary-view').style.display='none';
-  render();
-}
+// Nav
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (document.getElementById('summary').style.display === 'block') return;
+  goNext();
+});
+document.getElementById('btn-prev').addEventListener('click', () => {
+  if (document.getElementById('summary').style.display === 'block') return;
+  goPrev();
+});
+
+// Restart
+document.getElementById('btn-restart').addEventListener('click', () => {
+  startQuiz(currentSection, getFiltered(currentSection));
+});
+
+// Retry wrong
+document.getElementById('btn-retry-wrong').addEventListener('click', () => {
+  const wrongQs = wrongIndices.map(i => filteredQ[i]);
+  startQuiz(currentSection, wrongQs);
+});
+
+// Update tab counts
+const sectionCounts = {};
+ALL_QUESTIONS.forEach(q => {
+  sectionCounts[q.section] = (sectionCounts[q.section] || 0) + 1;
+});
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  const sec = btn.dataset.section;
+  if (sec !== 'all') {
+    btn.textContent = `${sec}（${sectionCounts[sec] || 0}問）`;
+  }
+});
+
+// Init
+startQuiz('all', getFiltered('all'));
 </script>
 </body>
 </html>
