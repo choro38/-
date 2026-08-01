@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知的障害 試験練習アプリ</title>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --card: #ffffff;
+    --accent: #2d6a4f;
+    --accent-light: #e8f5ee;
+    --accent2: #1a4a8a;
+    --accent2-light: #e8eef8;
+    --warn: #b85c00;
+    --warn-light: #fff3e8;
+    --ok: #1a6b3a;
+    --ok-light: #e6f4ec;
+    --ng: #a32020;
+    --ng-light: #fdeaea;
+    --text: #1a1a1a;
+    --sub: #555;
+    --border: #ddd;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: 'Helvetica Neue', 'Hiragino Sans', sans-serif; color: var(--text); font-size: 15px; line-height: 1.7; }
+
+  header { background: var(--accent); color: #fff; padding: 20px 24px 16px; }
+  header h1 { font-size: 18px; font-weight: 700; letter-spacing: .03em; }
+  header p { font-size: 12px; opacity: .8; margin-top: 3px; }
+
+  /* 進捗バー */
+  #progress-bar-wrap { background: rgba(255,255,255,.25); height: 6px; border-radius: 3px; margin-top: 12px; }
+  #progress-bar { background: #fff; height: 6px; border-radius: 3px; transition: width .4s; width: 0%; }
+  #progress-label { font-size: 11px; opacity: .8; margin-top: 4px; }
+
+  /* ナビ */
+  #nav { display: flex; gap: 6px; padding: 14px 20px; flex-wrap: wrap; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .nav-btn { font-size: 12px; padding: 5px 11px; border: 1.5px solid var(--border); border-radius: 20px; background: #fff; cursor: pointer; color: var(--sub); transition: all .15s; }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .nav-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .nav-btn.done { border-color: var(--ok); color: var(--ok); }
+
+  /* メイン */
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  /* 問題カード */
+  .q-card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 24px; overflow: hidden; display: none; }
+  .q-card.visible { display: block; }
+  .q-header { padding: 14px 20px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 12px; }
+  .q-num { background: var(--accent); color: #fff; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; margin-top: 2px; }
+  .q-title { font-size: 14px; color: var(--text); font-weight: 500; line-height: 1.65; }
+  .q-body { padding: 18px 20px; }
+
+  /* 記述エリア */
+  .section-label { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 6px; margin-top: 14px; }
+  .section-label:first-child { margin-top: 0; }
+  textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: inherit; line-height: 1.65; resize: vertical; min-height: 80px; color: var(--text); background: #fafafa; transition: border-color .15s; }
+  textarea:focus { outline: none; border-color: var(--accent); background: #fff; }
+
+  /* 模範解答ボタン */
+  .show-ans-btn { margin-top: 12px; background: var(--accent2-light); color: var(--accent2); border: 1.5px solid var(--accent2); border-radius: 8px; padding: 8px 18px; font-size: 13px; cursor: pointer; font-weight: 600; transition: all .15s; }
+  .show-ans-btn:hover { background: var(--accent2); color: #fff; }
+
+  /* 模範解答表示ボックス */
+  .answer-box { display: none; margin-top: 12px; background: var(--accent2-light); border: 1px solid #b0c4e8; border-radius: 8px; padding: 14px 16px; }
+  .answer-box.visible { display: block; }
+  .answer-box h4 { font-size: 12px; font-weight: 700; color: var(--accent2); margin-bottom: 8px; }
+  .answer-box p, .answer-box li { font-size: 13px; line-height: 1.75; color: #1a1a1a; }
+  .answer-box ul { padding-left: 18px; }
+  .answer-box .key { background: #fff3cd; padding: 2px 5px; border-radius: 4px; font-weight: 700; font-size: 12px; color: #7a5200; }
+
+  /* 計算入力（問7・8） */
+  .calc-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .calc-label { font-size: 13px; color: var(--sub); min-width: 160px; }
+  .calc-input { border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 12px; font-size: 14px; width: 160px; font-family: inherit; transition: border-color .15s; }
+  .calc-input:focus { outline: none; border-color: var(--accent); }
+  .check-btn { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: 13px; cursor: pointer; font-weight: 700; transition: background .15s; }
+  .check-btn:hover { background: #1e4f3a; }
+  .result-badge { font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 20px; display: none; }
+  .result-badge.ok { background: var(--ok-light); color: var(--ok); display: inline-block; }
+  .result-badge.ng { background: var(--ng-light); color: var(--ng); display: inline-block; }
+  .hint-text { font-size: 12px; color: var(--warn); margin-top: 4px; display: none; }
+  .hint-text.visible { display: block; }
+
+  /* 問8 テーブル */
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 18px; }
+  .exam-table th { background: #2d6a4f; color: #fff; padding: 6px 8px; text-align: left; font-weight: 600; }
+  .exam-table td { padding: 5px 8px; border: 1px solid var(--border); vertical-align: top; }
+  .exam-table tr:nth-child(even) td { background: #f8f8f8; }
+  .age-cell { font-weight: 700; color: var(--accent); background: var(--accent-light) !important; }
+  .pass { color: var(--ok); font-weight: 700; }
+  .fail { color: var(--ng); font-weight: 700; }
+
+  /* スコアサマリー */
+  #score-panel { display: none; background: var(--card); border-radius: var(--radius); border: 2px solid var(--accent); padding: 24px; text-align: center; margin-bottom: 24px; }
+  #score-panel h2 { color: var(--accent); font-size: 20px; margin-bottom: 8px; }
+  #score-num { font-size: 48px; font-weight: 900; color: var(--accent); }
+  #score-msg { color: var(--sub); font-size: 14px; margin-top: 8px; }
+  .reset-btn { margin-top: 16px; background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 10px 28px; font-size: 14px; cursor: pointer; font-weight: 700; }
+  .reset-btn:hover { background: #1e4f3a; }
+
+  .note { font-size: 12px; color: var(--sub); margin-top: 6px; line-height: 1.6; }
+  .note-warn { font-size: 12px; color: var(--warn); background: var(--warn-light); border-radius: 6px; padding: 8px 12px; margin-top: 10px; }
+  hr.divider { border: none; border-top: 1px dashed var(--border); margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>知的障害 試験練習アプリ</h1>
+  <p>言語聴覚士養成課程｜問２〜問10</p>
+  <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+  <div id="progress-label">進捗：0 / 9 問完了</div>
+</header>
+
+<div id="nav">
+  <button class="nav-btn active" onclick="showQ('all')">すべて</button>
+  <button class="nav-btn" onclick="showQ('q2')">問２</button>
+  <button class="nav-btn" onclick="showQ('q3')">問３</button>
+  <button class="nav-btn" onclick="showQ('q4')">問４</button>
+  <button class="nav-btn" onclick="showQ('q5')">問５</button>
+  <button class="nav-btn" onclick="showQ('q6')">問６</button>
+  <button class="nav-btn" onclick="showQ('q7')">問７</button>
+  <button class="nav-btn" onclick="showQ('q8')">問８</button>
+  <button class="nav-btn" onclick="showQ('q9')">問９</button>
+  <button class="nav-btn" onclick="showQ('q10')">問10</button>
+</div>
+
+<main>
+<div id="score-panel">
+  <h2>🎉 計算問題の結果</h2>
+  <div id="score-num">—</div>
+  <div id="score-msg"></div>
+  <button class="reset-btn" onclick="resetAll()">もう一度やり直す</button>
+</div>
+
+<!-- ===== 問２ ===== -->
+<div class="q-card visible" id="q2">
+  <div class="q-header">
+    <span class="q-num">問２</span>
+    <span class="q-title">知能指数について、<strong>比例IQ</strong>とは何か。<strong>偏差IQ</strong>とは何か。</span>
+  </div>
+  <div class="q-body">
+    <div class="section-label">〔比例IQ〕</div>
+    <textarea placeholder="比例IQについて記述してください..." rows="3"></textarea>
+    <div class="section-label">〔偏差IQ〕</div>
+    <textarea placeholder="偏差IQについて記述してください..." rows="3"></textarea>
+    <button class="show-ans-btn" onclick="toggleAns('ans2')">▼ 模範解答を確認する</button>
+    <div class="answer-box" id="ans2">
+      <h4>模範解答</h4>
+      <p><span class="key">比例IQ</span></p>
+      <p>年齢尺度を採用し、それぞれの年齢に相当した問題が段階的に配列されている。結果は精神年齢で表す。<br>計算式：<strong>比例IQ ＝ MA（精神年齢）÷ CA（生活年齢）× 100</strong></p>
+      <hr class="divider">
+      <p><span class="key">偏差IQ</span></p>
+      <p>同一年代の集団内における個人の相対的位置を示す知能指数。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 問３ ===== -->
+<div class="q-card visible" id="q3">
+  <div class="q-header">
+    <span class="q-num">問３</span>
+    <span class="q-title">適応機能の評価に使われる検査を２つ書け。</span>
+  </div>
+  <div class="q-body">
+    <textarea placeholder="検査名を2つ記述してください..." rows="3"></textarea>
+    <button class="show-ans-btn" onclick="toggleAns('ans3')">▼ 模範解答を確認する</button>
+    <div class="answer-box" id="ans3">
+      <h4>模範解答</h4>
+      <ul>
+        <li>① <strong>ASA 旭出式社会適応スキル検査</strong></li>
+        <li>② <strong>Vineland-Ⅱ 適応行動尺度</strong>（半構造化面接法）</li>
+        <li>※その他：S-M社会生活能力検査第３版、社会生活能力プログラム なども可</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 問４ ===== -->
+<div class="q-card visible" id="q4">
+  <div class="q-header">
+    <span class="q-num">問４</span>
+    <span class="q-title">知的障害児の記憶の特性について、<strong>短期記憶</strong>と<strong>長期記憶</strong>それぞれ述べよ。</span>
+  </div>
+  <div class="q-body">
+    <p class="note">図3-5（Elis, N.R., & Woodridge, P.W., 1983）・図3-10（McCartney J.R. 1987）参照</p>
+    <div class="section-label">〔短期記憶〕</div>
+    <textarea placeholder="短期記憶の特性を記述してください..." rows="4"></textarea>
+    <div class="section-label">〔長期記憶〕</div>
+    <textarea placeholder="長期記憶の特性を記述してください..." rows="4"></textarea>
+    <button class="show-ans-btn" onclick="toggleAns('ans4')">▼ 模範解答を確認する</button>
+    <div class="answer-box" id="ans4">
+      <h4>模範解答</h4>
+      <p><span class="key">短期記憶</span></p>
+      <p>知的障害児においては10秒間における衰退速度がとても速く一気に忘れる。そして、絵より単語の方が顕著である。視空間情報の短期記憶では健常者とほぼ変わらない。</p>
+      <hr class="divider">
+      <p><span class="key">長期記憶</span></p>
+      <p>長期記憶に一度保存された情報の保持率は、定型発達児と大きな差はないとされる。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 問５ ===== -->
+<div class="q-card visible" id="q5">
+  <div class="q-header">
+    <span class="q-num">問５</span>
+    <span class="q-title">弁別学習の「２つの段階」を説明し、知的障害児の学習の特性を書け。</span>
+  </div>
+  <div class="q-body">
+    <p class="note">図6-3（Zeaman, D. & House B.J. 1963）・図6-5 参照</p>
+    <div class="section-label">〔２つの段階の説明〕</div>
+    <textarea placeholder="2つの段階について記述してください..." rows="5"></textarea>
+    <div class="section-label">〔知的障害児の学習の特性〕</div>
+    <textarea placeholder="学習の特性を記述してください..." rows="4"></textarea>
+    <button class="show-ans-btn" onclick="toggleAns('ans5')">▼ 模範解答を確認する</button>
+    <div class="answer-box" id="ans5">
+      <h4>模範解答</h4>
+      <p><span class="key">第1段階（定常期・プラトー）</span></p>
+      <p>学習初期はチャンスレベル（偶然の正答率）に近い低い成績が長く続く。適切な刺激次元（「色」か「形」か）に注意を向けられていない状態。どっちに注目すればいいかわからず、だいたいで答えている。</p>
+      <hr class="divider">
+      <p><span class="key">第2段階（急上昇期）</span></p>
+      <p>正しい刺激次元に注意が向き始めると、急激に成績が上昇する。</p>
+      <hr class="divider">
+      <p><span class="key">知的障害児の学習の特性</span></p>
+      <ul>
+        <li>遅い学習者ほど選択的注意に時間がかかる。道具的弁別学習の過程では急激に成績が上昇する</li>
+        <li>第1段階の長さは人により異なるが、知的障害の重症度による</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 問６ ===== -->
+<div class="q-card visible" id="q6">
+  <div class="q-header">
+    <span class="q-num">問６</span>
+    <span class="q-title">発達検査と知能検査の違いについて説明せよ。</span>
+  </div>
+  <div class="q-body">
+    <textarea placeholder="発達検査と知能検査の違いを記述してください..." rows="6"></textarea>
+    <button class="show-ans-btn" onclick="toggleAns('ans6')">▼ 模範解答を確認する</button>
+    <div class="answer-box" id="ans6">
+      <h4>模範解答</h4>
+      <p><span class="key">発達検査</span></p>
+      <p>主に乳幼児や発達年齢の低い子どもを対象に、認知・言語・運動・社会性・生活習慣など、発達全体の状況を評価する検査。直接子供に課題を実施する直接法と質問紙を用いて保護者から情報を得る質問紙法がある。<br>（例：新版K式発達検査2020、遠城寺式乳幼児分析的発達検査法）</p>
+      <hr class="divider">
+      <p><span class="key">知能検査</span></p>
+      <p>児童から成人まで幅広い年齢を対象に、知的水準を評価する検査。知能の定義は研究者によって異なり、知能検査により測定される。検査結果から、得られる情報を正しく理解する必要がある。<br>（例：WISC-Ⅴ知能検査、田中ビネー知能検査V）</p>
+      <hr class="divider">
+      <p>→ まとめ：発達検査は「発達全体の状態」を、知能検査は「知的能力」を評価する。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 問７ ===== -->
+<div class="q-card visible" id="q7">
+  <div class="q-header">
+    <span class="q-num">問７</span>
+    <span class="q-title">以下の３ケースについて、検査実施日での生活年齢（CA）を求めよ。（1か月＝30日）</span>
+  </div>
+  <div class="q-body">
+    <p class="note-warn">⚠️ 入力形式：「3年4か月28日」のように入力してください</p>
+
+    <!-- ケース1 -->
+    <div class="section-label">◆ ケース１</div>
+    <p class="note">生年月日：平成25年7月3日（2013/7/3）　検査日：平成28年12月1日（2016/12/1）</p>
+    <div class="calc-row" style="margin-top:8px;">
+      <span class="calc-label">CA（例：3年4か月28日）</span>
+      <input class="calc-input" id="q7c1" placeholder="○年○か月○日" type="text">
+      <button class="check-btn" onclick="checkCA('q7c1','3年4か月28日','r7c1','h7c1')">確認</button>
+      <span class="result-badge" id="r7c1"></span>
+    </div>
+    <div class="hint-text" id="h7c1"></div>
+
+    <!-- ケース2 -->
+    <div class="section-label" style="margin-top:16px;">◆ ケース２</div>
+    <p class="note">生年月日：令和2年8月18日（2020/8/18）　検査日：令和5年4月24日（2023/4/24）</p>
+    <div class="calc-row" style="margin-top:8px;">
+      <span class="calc-label">CA</span>
+      <input class="calc-input" id="q7c2" placeholder="○年○か月○日" type="text">
+      <button class="check-btn" onclick="checkCA('q7c2','2年8か月6日','r7c2','h7c2')">確認</button>
+      <span class="result-badge" id="r7c2"></span>
+    </div>
+    <div class="hint-text" id="h7c2"></div>
+
+    <!-- ケース3 -->
+    <div class="section-label" style="margin-top:16px;">◆ ケース３</div>
+    <p class="note">生年月日：平成30年9月23日（2018/9/23）　検査日：令和5年7月1日（2023/7/1）</p>
+    <div class="calc-row" style="margin-top:8px;">
+      <span class="calc-label">CA</span>
+      <input class="calc-input" id="q7c3" placeholder="○年○か月○日" type="text">
+      <button class="check-btn" onclick="checkCA('q7c3','4年9か月8日','r7c3','h7c3')">確認</button>
+      <span class="result-badge" id="r7c3"></span>
+    </div>
+    <div class="hint-text" id="h7c3"></div>
+
+    <!-- 計算手順 -->
+    <button class="show-ans-btn" onclick="toggleAns('ans7')" style="margin-top:16px;">▼ 計算手順を確認する</button>
+    <div class="answer-box" id="ans7">
+      <h4>計算手順（1か月＝30日）</h4>
+      <p><span class="key">ケース１</span> 年：2016－2013＝3年　月：12－7＝5か月　日：1－3＝マイナス→1か月借りて31－3＝28日、月は5－1＝4か月<br>→ <strong>CA＝3年4か月28日</strong></p>
+      <hr class="divider">
+      <p><span class="key">ケース２</span> 年：2023－2020＝3年　月：4－8＝マイナス→1年借りて(4+12)－8＝8か月、年は3－1＝2年　日：24－18＝6日<br>→ <strong>CA＝2年8か月6日</strong></p>
+      <hr class="divider">
+      <p><span class="key">ケース３</span> 年：2023－2018＝5年　月：7－9＝マイナス→1年借りて(7+12)－9＝10か月、年は5－1＝4年　日：1－23＝マイナス→1か月借りて(1+30)－23＝8日、月は10－1＝9か月<br>→ <strong>CA＝4年9か月8日</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 問８ ===== -->
+<div class="q-card visible" id="q8">
+  <div class="q-header">
+    <span class="q-num">問８</span>
+    <span class="q-title">生活年齢（CA）・精神年齢（MA）・知能指数（IQ）を算出せよ。（1か月＝30日）</span>
+  </div>
+  <div class="q-body">
+    <p class="note">生年月日：平成25年9月5日（2013/9/5）　実施検査：田中ビネー知能検査V　検査日：平成29年7月28日（2017/7/28）</p>
+
+    <!-- 検査結果表 -->
+    <div style="overflow-x:auto; margin:14px 0;">
+    <table class="exam-table">
+      <thead><tr><th>年齢級</th><th>問題名</th><th>合否基準</th><th>正答数</th><th>合否</th></tr></thead>
+      <tbody>
+        <tr><td class="age-cell" rowspan="12">1歳級</td><td>1 チップ差し</td><td>1:1以上</td><td></td><td></td></tr>
+        <tr><td>2 大さがし</td><td></td><td></td><td></td></tr>
+        <tr><td>3 身体各部の指示（客体）</td><td>2/3</td><td>3</td><td></td></tr>
+        <tr><td>4 語彙（物）★14</td><td>2/4</td><td>4</td><td></td></tr>
+        <tr><td>5 積木つみ</td><td></td><td></td><td></td></tr>
+        <tr><td>6 名称による物の指示★12</td><td>1/6</td><td>4</td><td></td></tr>
+        <tr><td>7 簡単な指図に従う★19</td><td></td><td></td><td></td></tr>
+        <tr><td>8 3種の型のはめこみ</td><td></td><td></td><td></td></tr>
+        <tr><td>9 用途による物の指示★21</td><td>1/3</td><td>1</td><td></td></tr>
+        <tr><td>10 語彙（絵）★24,25,37</td><td></td><td></td><td></td></tr>
+        <tr><td>11 チップ差し★1</td><td></td><td></td><td></td></tr>
+        <tr><td>12 名称による物の指示★6</td><td></td><td></td><td></td></tr>
+        <tr><td class="age-cell" rowspan="12">2歳級</td><td>13 動物の見分け</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>14 語彙（物）★4</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>15 大きさの比較</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>16 2語文の復唱</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>17 色分け</td><td>1:7以上</td><td>6</td><td></td></tr>
+        <tr><td>18 身体各部の指示（主体）</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>19 簡単な指図に従う★7</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>20 斜の線を引く</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>21 用途による物の指示★9</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>22 トンネル作り</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>23 絵の組み合わせ</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>24 語彙（絵）★10,25,37</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td class="age-cell" rowspan="12">3歳級</td><td>25 語彙（絵）★24,37</td><td></td><td></td><td class="fail">×</td></tr>
+        <tr><td>26 小鳥の絵の完成</td><td></td><td></td><td class="fail">×</td></tr>
+        <tr><td>27 短文の復唱（A）</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>28 属性による物の指示</td><td></td><td></td><td></td></tr>
+        <tr><td>29 位置の記憶</td><td></td><td></td><td></td></tr>
+        <tr><td>30 数概念（2個）</td><td></td><td></td><td></td></tr>
+        <tr><td>31 物の定義</td><td></td><td></td><td></td></tr>
+        <tr><td>32 絵の異同弁別</td><td></td><td></td><td></td></tr>
+        <tr><td>33 理解（基本的生活習慣）</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>34 円を描く</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>35 反対類推（A）</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>36 数概念（3個）</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td class="age-cell" rowspan="6">4歳級</td><td>37 語彙（絵）★10,24,25</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>38 順序の記憶</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>39 理解（身体機能）</td><td></td><td></td><td class="fail">×</td></tr>
+        <tr><td>40 数概念（1対1の対応）</td><td></td><td></td><td class="pass">○</td></tr>
+        <tr><td>41 長方形の組み合わせ</td><td></td><td></td><td class="fail">×</td></tr>
+        <tr><td>42 反対類推（B）</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- CA入力 -->
+    <div class="section-label">〔生活年齢（CA）〕</div>
+    <div class="calc-row">
+      <span class="calc-label">CA（例：3年10か月23日）</span>
+      <input class="calc-input" id="q8ca" placeholder="○年○か月○日" type="text">
+      <button class="check-btn" onclick="checkCA('q8ca','3年10か月23日','r8ca','h8ca')">確認</button>
+      <span class="result-badge" id="r8ca"></span>
+    </div>
+    <div class="hint-text" id="h8ca"></div>
+
+    <!-- MA入力 -->
+    <div class="section-label" style="margin-top:14px;">〔精神年齢（MA）〕</div>
+    <p class="note">※田中ビネーVでは基底年齢から通過問題を1問1か月として加算します</p>
+    <div class="calc-row" style="margin-top:6px;">
+      <span class="calc-label">MA（例：2年9か月）</span>
+      <input class="calc-input" id="q8ma" placeholder="○年○か月" type="text">
+      <button class="check-btn" onclick="checkMA('q8ma','r8ma','h8ma')">確認</button>
+      <span class="result-badge" id="r8ma"></span>
+    </div>
+    <div class="hint-text" id="h8ma"></div>
+
+    <!-- IQ入力 -->
+    <div class="section-label" style="margin-top:14px;">〔知能指数（IQ）〕</div>
+    <p class="note">計算式：IQ ＝ MA（か月）÷ CA（か月）× 100</p>
+    <div class="calc-row" style="margin-top:6px;">
+      <span class="calc-label">IQ（整数で答えよ）</span>
+      <input class="calc-input" id="q8iq" placeholder="数値を入力" type="number">
+      <button class="check-btn" onclick="checkIQ('q8iq','r8iq','h8iq')">確認</button>
+      <span class="result-badge" id="r8iq"></span>
+    </div>
+    <div class="hint-text" id="h8iq"></div>
+
+    <button class="show-ans-btn" onclick="toggleAns('ans8')" style="margin-top:16px;">▼ 解説を確認する</button>
+    <div class="answer-box" id="ans8">
+      <h4>計算手順</h4>
+      <p><span class="key">MA算出の考え方</span></p>
+      <ol style="padding-left:18px; font-size:13px; line-height:1.8;">
+        <li>生活年齢を出す（1か月＝30日、30日で繰り上げ）</li>
+        <li>生活年齢からアセスメントする</li>
+        <li>基底年齢を求める　<strong>基底年齢＝全問正解の年齢級＋1歳</strong></li>
+        <li>精神年齢（MA）　基底年齢より上の級の○の数を換算する<br>（12問の年齢級：1問×1か月、6問の年齢級：1問×2か月）＋基底年齢</li>
+        <li>IQ ＝ MA ÷ CA × 100</li>
+      </ol>
+      <hr class="divider">
+      <p><span class="key">CA</span> 2017－2013＝4年、7－9＝マイナス→1年借りて(7+12)－9＝10か月・年は3年、28－5＝23日<br>→ <strong>CA＝3年10か月23日（≒46.77か月）</strong></p>
+      <hr class="divider">
+      <p><span class="key">MA（基底年齢＋加算）</span></p>
+      <ul>
+        <li>2歳級：全問○ → 基底年齢＝2歳（24か月）</li>
+        <li>3歳級：○が5問（27・33・34・35・36番） → ＋5か月</li>
+        <li>4歳級：○が4問（37・38・40番など） → ＋4か月</li>
+        <li>合計：24＋5＋4＝33か月 → <strong>MA＝2歳9か月</strong></li>
+      </ul>
+      <hr class="divider">
+      <p><span class="key">IQ</span> 33 ÷ 46.77 × 100 ≒ 70.6 → <strong>IQ＝71</strong></p>
+      <p class="note-warn" style="margin-top:8px;">※IQ70前後は知的障害の目安（IQ70未満が一般的な基準）</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 問９ ===== -->
+<div class="q-card visible" id="q9">
+  <div class="q-header">
+    <span class="q-num">問９</span>
+    <span class="q-title">5歳の知的障害児（有意味語：数語）。語彙拡大のための教材を、<strong>問４の長期記憶の特性</strong>を踏まえて述べよ。</span>
+  </div>
+  <div class="q-body">
+    <p class="note-warn">📌 ポイント：「長期記憶に一度保存されると保持されやすい」「体験との結びつきが必要」を根拠に</p>
+    <textarea placeholder="教材の例と、長期記憶の特性との関係を記述してください..." rows="6"></textarea>
+    <button class="show-ans-btn" onclick="toggleAns('ans9')">▼ 模範解答を確認する</button>
+    <div class="answer-box" id="ans9">
+      <h4>模範解答</h4>
+      <p><span class="key">長期記憶の特性を踏まえた支援のポイント</span></p>
+      <p>知的障害児は長期記憶に一度保存された情報の保持は比較的良好だが、短期記憶（ワーキングメモリ）が弱く、新しい語を定着させるまでに繰り返しの入力と具体的な体験との結びつきが必要になる。</p>
+      <hr class="divider">
+      <p><span class="key">教材の工夫</span></p>
+      <p>本人の生活に身近なもの（食べ物・おもちゃ・家族など）有意味語の数語に近いカテゴリーのものを、視覚的手がかりのある教材（絵カード・実物・絵本など）を利用し、長期記憶につながるまで繰り返す。異なるカテゴリーよりも同じカテゴリーを増やし、横の知識を増やす。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 問10 ===== -->
+<div class="q-card visible" id="q10">
+  <div class="q-header">
+    <span class="q-num">問10</span>
+    <span class="q-title">3歳の知的障害児（有意味語：なし）。絵のマッチング課題の教材を、<strong>問５の2段階学習</strong>を踏まえて述べよ。</span>
+  </div>
+  <div class="q-body">
+    <p class="note-warn">📌 ポイント：「第1段階（定常期）が長い」「選択的注意の弱さ」を根拠に</p>
+    <textarea placeholder="教材の例と、2段階学習の特性との関係を記述してください..." rows="6"></textarea>
+    <button class="show-ans-btn" onclick="toggleAns('ans10')">▼ 模範解答を確認する</button>
+    <div class="answer-box" id="ans10">
+      <h4>模範解答</h4>
+      <p><span class="key">2段階の学習（Zeaman & House）を踏まえた支援のポイント</span></p>
+      <p>知的障害児は弁別学習の第1段階（注意の焦点化）が長く続く。正しい刺激次元に注意を向けさせる工夫が必要。</p>
+      <hr class="divider">
+      <p><span class="key">教材の工夫</span></p>
+      <p>数を最小限にする、身近な物で特徴（形・色・大きさなど）がわかりやすいもの（弁別しやすいもの）を使用する。</p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ===== ナビ =====
+function showQ(id) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.q-card').forEach(c => {
+    c.classList.toggle('visible', id === 'all' || c.id === id);
+  });
+  if (id !== 'all') {
+    setTimeout(() => document.getElementById(id)?.scrollIntoView({behavior:'smooth', block:'start'}), 50);
+  }
+}
+
+// ===== 模範解答トグル =====
+function toggleAns(id) {
+  const box = document.getElementById(id);
+  box.classList.toggle('visible');
+  const btn = box.previousElementSibling;
+  btn.textContent = box.classList.contains('visible') ? '▲ 模範解答を閉じる' : '▼ 模範解答を確認する';
+  updateProgress();
+}
+
+// ===== CA判定（問7・問8CA） =====
+function normalizeCA(str) {
+  return str.replace(/\s/g,'').replace(/ヶ/g,'か').replace(/ケ/g,'か').replace(/箇/g,'か');
+}
+function checkCA(inputId, correct, resultId, hintId) {
+  const val = normalizeCA(document.getElementById(inputId).value.trim());
+  const correctN = normalizeCA(correct);
+  const badge = document.getElementById(resultId);
+  const hint = document.getElementById(hintId);
+  if (!val) { badge.className='result-badge'; hint.className='hint-text'; return; }
+  if (val === correctN) {
+    badge.textContent = '✓ 正解！'; badge.className = 'result-badge ok';
+    hint.className = 'hint-text';
+  } else {
+    badge.textContent = '✗ 不正解'; badge.className = 'result-badge ng';
+    hint.textContent = '正解：' + correct; hint.className = 'hint-text visible';
+  }
+  updateProgress();
+}
+
+// ===== MA判定（問8） =====
+function checkMA(inputId, resultId, hintId) {
+  const raw = document.getElementById(inputId).value.trim();
+  const val = normalizeCA(raw);
+  const badge = document.getElementById(resultId);
+  const hint = document.getElementById(hintId);
+  if (!val) { badge.className='result-badge'; hint.className='hint-text'; return; }
+  // 許容：2歳9か月 / 33か月 / 2年9か月
+  const ok = ['2歳9か月','33か月','2年9か月'].map(normalizeCA);
+  if (ok.includes(val)) {
+    badge.textContent = '✓ 正解！'; badge.className = 'result-badge ok';
+    hint.className = 'hint-text';
+  } else {
+    badge.textContent = '✗ 不正解'; badge.className = 'result-badge ng';
+    hint.textContent = '正解：2歳9か月（33か月）　基底2歳(24か月)＋3歳級5問＋4歳級4問'; hint.className = 'hint-text visible';
+  }
+  updateProgress();
+}
+
+// ===== IQ判定（問8） =====
+function checkIQ(inputId, resultId, hintId) {
+  const val = parseInt(document.getElementById(inputId).value);
+  const badge = document.getElementById(resultId);
+  const hint = document.getElementById(hintId);
+  if (isNaN(val)) { badge.className='result-badge'; hint.className='hint-text'; return; }
+  // 許容範囲：70〜71（四捨五入・切り捨ての差を考慮）
+  if (val >= 70 && val <= 71) {
+    badge.textContent = '✓ 正解！'; badge.className = 'result-badge ok';
+    hint.className = 'hint-text';
+  } else {
+    badge.textContent = '✗ 不正解'; badge.className = 'result-badge ng';
+    hint.textContent = '正解：70〜71　33÷46.77×100≒70.6'; hint.className = 'hint-text visible';
+  }
+  updateProgress();
+}
+
+// ===== 進捗更新 =====
+function updateProgress() {
+  const total = 9;
+  let done = 0;
+  // 記述：模範解答を開いたら完了扱い
+  ['ans2','ans3','ans4','ans5','ans6','ans9','ans10'].forEach(id => {
+    if (document.getElementById(id)?.classList.contains('visible')) done++;
+  });
+  // 計算：正解バッジがあったら完了
+  ['r7c1','r7c2','r7c3'].forEach(id => {
+    if (document.getElementById(id)?.classList.contains('ok')) done++;
+  });
+  // 問8：CA・MA・IQ全部正解で1カウント（重複しないよう3つ全部okなら1加算）
+  const q8ok = ['r8ca','r8ma','r8iq'].every(id => document.getElementById(id)?.classList.contains('ok'));
+  if (q8ok) done++;
+  // ※問7は3ケースで3カウント、問8は1カウントなので合計9問ではなく調整
+  // 全合計で進捗を出す
+  const pct = Math.round(done / total * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `進捗：${done} / ${total} 問完了`;
+}
+
+// ===== リセット =====
+function resetAll() {
+  document.querySelectorAll('textarea').forEach(t => t.value = '');
+  document.querySelectorAll('.calc-input').forEach(i => i.value = '');
+  document.querySelectorAll('input[type=number]').forEach(i => i.value = '');
+  document.querySelectorAll('.result-badge').forEach(b => b.className = 'result-badge');
+  document.querySelectorAll('.hint-text').forEach(h => h.className = 'hint-text');
+  document.querySelectorAll('.answer-box').forEach(b => b.classList.remove('visible'));
+  document.querySelectorAll('.show-ans-btn').forEach(b => {
+    if (b.textContent.includes('閉じる')) b.textContent = b.textContent.replace('▲','▼').replace('閉じる','確認する');
+  });
+  document.getElementById('score-panel').style.display = 'none';
+  updateProgress();
+}
+</script>
+</body>
+</html>
