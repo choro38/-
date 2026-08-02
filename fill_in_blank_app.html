@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>穴埋め練習アプリ｜神経系・脳梗塞</title>
+<style>
+  :root {
+    --bg: #F7F5F0;
+    --card: #FFFFFF;
+    --primary: #2D6A4F;
+    --primary-light: #52B788;
+    --accent: #D4845A;
+    --accent-light: #F4A87A;
+    --text: #1A1A1A;
+    --text-soft: #555;
+    --border: #DDD;
+    --correct: #40916C;
+    --wrong: #C1121F;
+    --correct-bg: #D8F3DC;
+    --wrong-bg: #FFE8E8;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ヘッダー */
+  header {
+    background: var(--primary);
+    color: #fff;
+    padding: 16px 20px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  header h1 { font-size: 16px; font-weight: 700; letter-spacing: 0.02em; }
+  header p { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+
+  /* メイン */
+  main { padding: 16px; max-width: 640px; margin: 0 auto; }
+
+  /* 科目選択 */
+  #subject-select {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 24px 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  #subject-select h2 { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--primary); }
+  .subject-btn {
+    display: block;
+    width: 100%;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    border: 2px solid var(--primary-light);
+    background: #fff;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--primary);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+  }
+  .subject-btn:last-child { margin-bottom: 0; }
+  .subject-btn:hover, .subject-btn.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .subject-btn .sub { font-size: 12px; font-weight: 400; opacity: 0.75; display: block; margin-top: 2px; }
+
+  /* モード切替 */
+  #mode-toggle {
+    display: flex;
+    background: #E8E6E0;
+    border-radius: 10px;
+    padding: 3px;
+    margin-bottom: 16px;
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mode-btn.active {
+    background: #fff;
+    color: var(--primary);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  }
+
+  /* 進捗バー */
+  #progress-area {
+    margin-bottom: 14px;
+  }
+  #progress-label {
+    font-size: 12px;
+    color: var(--text-soft);
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+  #progress-bar-bg {
+    background: #E0DDD6;
+    border-radius: 4px;
+    height: 6px;
+  }
+  #progress-bar {
+    background: var(--primary-light);
+    height: 6px;
+    border-radius: 4px;
+    transition: width 0.4s;
+    width: 0%;
+  }
+
+  /* カード */
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+  }
+  .card-num {
+    font-size: 11px;
+    color: var(--text-soft);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .sentence {
+    font-size: 15px;
+    line-height: 1.9;
+    margin-bottom: 16px;
+  }
+
+  /* 穴埋め表示 */
+  .blank-word {
+    display: inline-block;
+    background: #E8F4ED;
+    border: 1.5px dashed var(--primary-light);
+    border-radius: 4px;
+    padding: 0 6px;
+    min-width: 60px;
+    color: transparent;
+    font-size: 14px;
+    transition: all 0.3s;
+    vertical-align: middle;
+    margin: 0 2px;
+  }
+  .blank-word.revealed {
+    background: #D8F3DC;
+    border: 1.5px solid var(--correct);
+    color: var(--correct);
+    font-weight: 700;
+  }
+  .blank-word.wrong-reveal {
+    background: var(--wrong-bg);
+    border: 1.5px solid var(--wrong);
+    color: var(--wrong);
+    font-weight: 700;
+  }
+
+  /* 入力モード */
+  .input-area { margin-bottom: 14px; }
+  .blank-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .blank-label {
+    font-size: 12px;
+    color: var(--text-soft);
+    min-width: 56px;
+    flex-shrink: 0;
+  }
+  .blank-input {
+    flex: 1;
+    min-width: 120px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .blank-input:focus { border-color: var(--primary-light); }
+  .blank-input.correct { border-color: var(--correct); background: var(--correct-bg); }
+  .blank-input.wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+
+  /* 選択肢モード */
+  .choices-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .choice-btn {
+    padding: 10px 8px;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    line-height: 1.4;
+  }
+  .choice-btn:hover { border-color: var(--primary-light); background: #F0FAF4; }
+  .choice-btn.correct { border-color: var(--correct); background: var(--correct-bg); color: var(--correct); font-weight: 700; }
+  .choice-btn.wrong { border-color: var(--wrong); background: var(--wrong-bg); color: var(--wrong); }
+  .choice-btn:disabled { cursor: default; }
+
+  /* 現在の空欄インジケーター */
+  .current-blank-info {
+    font-size: 13px;
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background: #E8F4ED;
+    border-radius: 8px;
+  }
+
+  /* ボタン */
+  .btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+    width: 100%;
+    text-align: center;
+  }
+  .btn-primary:hover { background: #235E42; }
+  .btn-secondary {
+    background: #E8E6E0;
+    color: var(--text);
+  }
+  .btn-secondary:hover { background: #D8D5CE; }
+  .btn-accent {
+    background: var(--accent);
+    color: #fff;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* フィードバック */
+  .feedback {
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: var(--correct-bg); color: #1B4332; border: 1px solid #B7E4C7; }
+  .feedback.wrong-fb { background: var(--wrong-bg); color: #7F1D1D; border: 1px solid #FCA5A5; }
+
+  /* 結果 */
+  #result-area {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 28px 20px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    display: none;
+  }
+  #result-area h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
+  #result-score { font-size: 40px; font-weight: 900; color: var(--primary); margin: 16px 0; }
+  #result-msg { font-size: 14px; color: var(--text-soft); margin-bottom: 20px; }
+
+  /* ナビ */
+  .nav-area {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .nav-area .btn { flex: 1; }
+
+  /* 戻るリンク */
+  #back-btn {
+    font-size: 13px;
+    color: var(--text-soft);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 0;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: inherit;
+  }
+  #back-btn:hover { color: var(--primary); }
+
+  /* 解説ボックス */
+  .hint-box {
+    background: #FFF8F0;
+    border: 1px solid #F0C090;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #7A4010;
+    margin-top: 10px;
+    display: none;
+  }
+  .hint-box.show { display: block; }
+
+  /* 答えを見るボタン */
+  .reveal-btn {
+    background: none;
+    border: none;
+    color: var(--text-soft);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 6px 0;
+    text-decoration: underline;
+  }
+  .reveal-btn:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🧠 穴埋め練習アプリ</h1>
+  <p>神経系・脳梗塞｜ST国試対策</p>
+</header>
+
+<main>
+  <!-- 科目選択 -->
+  <div id="subject-select">
+    <h2>📚 科目を選んでください</h2>
+    <button class="subject-btn" onclick="startSubject('neuro')">
+      神経系
+      <span class="sub">体性神経系・自律神経系・内臓求心性線維</span>
+    </button>
+    <button class="subject-btn" onclick="startSubject('stroke')">
+      脳梗塞
+      <span class="sub">病型・治療・再発予防・ST関連</span>
+    </button>
+    <button class="subject-btn" onclick="startSubject('both')">
+      両方まとめて
+      <span class="sub">神経系 + 脳梗塞 全問</span>
+    </button>
+  </div>
+
+  <!-- 問題エリア -->
+  <div id="quiz-area" style="display:none;">
+    <button id="back-btn" onclick="backToSelect()">← 科目選択に戻る</button>
+
+    <!-- モード切替 -->
+    <div id="mode-toggle">
+      <button class="mode-btn active" id="btn-input" onclick="setMode('input')">✏️ 入力モード</button>
+      <button class="mode-btn" id="btn-choice" onclick="setMode('choice')">🔘 選択肢モード</button>
+    </div>
+
+    <!-- 進捗 -->
+    <div id="progress-area">
+      <div id="progress-label">
+        <span id="progress-text">問題 1 / 1</span>
+        <span id="score-text">正解 0問</span>
+      </div>
+      <div id="progress-bar-bg"><div id="progress-bar"></div></div>
+    </div>
+
+    <!-- 問題カード -->
+    <div class="card" id="question-card">
+      <div class="card-num" id="card-num">Q1</div>
+      <div class="sentence" id="sentence-display"></div>
+      <div id="current-blank-info" class="current-blank-info" style="display:none;"></div>
+
+      <!-- 入力モード -->
+      <div class="input-area" id="input-mode-area">
+        <div id="inputs-container"></div>
+        <button class="reveal-btn" onclick="revealAll()">答えを見る</button>
+      </div>
+
+      <!-- 選択肢モード -->
+      <div id="choice-mode-area" style="display:none;">
+        <div class="choices-area" id="choices-container"></div>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+    </div>
+
+    <!-- ナビ -->
+    <div class="nav-area">
+      <button class="btn btn-secondary" onclick="prevQ()">◀ 前へ</button>
+      <button class="btn btn-primary" id="next-btn" onclick="nextQ()">次へ ▶</button>
+    </div>
+  </div>
+
+  <!-- 結果 -->
+  <div id="result-area">
+    <h2>🎉 お疲れさまでした！</h2>
+    <div id="result-score"></div>
+    <div id="result-msg"></div>
+    <button class="btn btn-primary" onclick="restart()" style="margin-bottom:10px;">もう一度挑戦</button>
+    <br>
+    <button class="btn btn-secondary" onclick="backToSelect()">科目選択に戻る</button>
+  </div>
+</main>
+
+<script>
+// =====================
+// 問題データ
+// =====================
+const DATA = {
+  neuro: [
+    {
+      text: "神経系は[中枢神経系]（脳・脊髄）と[末梢神経系]に分けられる。",
+      blanks: ["中枢神経系", "末梢神経系"]
+    },
+    {
+      text: "末梢神経系はさらに[体性神経系]と[自律神経系]に分類される。",
+      blanks: ["体性神経系", "自律神経系"]
+    },
+    {
+      text: "体性神経系は、体性感覚神経（[求心路]）と体性運動神経（[遠心路]）から構成される。",
+      blanks: ["求心路", "遠心路"]
+    },
+    {
+      text: "体性感覚神経は皮膚・骨格筋・腱・関節などの体性感覚（触覚、圧覚、温度覚、痛覚、[深部感覚]など）を中枢神経系へ伝える。",
+      blanks: ["深部感覚"]
+    },
+    {
+      text: "体性運動神経の遠心路は、[脊髄前角]または脳幹の[運動神経核]から出る1個の下位運動ニューロンが骨格筋まで直接支配するため、[神経節]を介さないことが特徴である。",
+      blanks: ["脊髄前角", "運動神経核", "神経節"]
+    },
+    {
+      text: "神経筋接合部では[アセチルコリン（ACh）]が放出され、[ニコチン性アセチルコリン受容体（Nm受容体）]に作用して骨格筋を収縮させる。",
+      blanks: ["アセチルコリン（ACh）", "ニコチン性アセチルコリン受容体（Nm受容体）"]
+    },
+    {
+      text: "体性神経系は主に随意運動を担い、自律神経系とは異なり[二重支配]や[拮抗支配]は受けない。",
+      blanks: ["二重支配", "拮抗支配"]
+    },
+    {
+      text: "自律神経系は、心筋・平滑筋・腺などの内臓器官の働きを無意識（不随意）に調節し、生体の[恒常性（ホメオスタシス）]を維持する神経系である。",
+      blanks: ["恒常性（ホメオスタシス）"]
+    },
+    {
+      text: "末梢自律神経系は、①[交感神経系]、②[副交感神経系]、③[内臓求心性線維]の3つから構成される。",
+      blanks: ["交感神経系", "副交感神経系", "内臓求心性線維"]
+    },
+    {
+      text: "自律神経系の特徴は、①[自律性（不随意性）]、②[二重支配]、③[拮抗支配]である。",
+      blanks: ["自律性（不随意性）", "二重支配", "拮抗支配"]
+    },
+    {
+      text: "一般に交感神経は「[闘争・逃走（Fight or Flight）]」、副交感神経は「[休息・消化（Rest and Digest）]」に働く。",
+      blanks: ["闘争・逃走（Fight or Flight）", "休息・消化（Rest and Digest）"]
+    },
+    {
+      text: "交感神経は[胸腰髄性]であり、第[1]胸髄（T1）から第[3]腰髄の側柱にある節前ニューロンから起始する。",
+      blanks: ["胸腰髄性", "1", "3"]
+    },
+    {
+      text: "交感神経の節前線維は[交感神経節]（[傍脊椎神経節]または[椎前神経節]）で節後ニューロンとシナプスを形成する。",
+      blanks: ["交感神経節", "傍脊椎神経節", "椎前神経節"]
+    },
+    {
+      text: "交感神経の節前線維は[短く]、節後線維は[長い]ことが特徴である。",
+      blanks: ["短く", "長い"]
+    },
+    {
+      text: "交感神経の節前ニューロンから[ACh]、節後ニューロンからは主に[ノルアドレナリン（NA）]が放出される。",
+      blanks: ["ACh", "ノルアドレナリン（NA）"]
+    },
+    {
+      text: "ただし、[汗腺]を支配する交感神経節後線維では[ACh]が放出される。",
+      blanks: ["汗腺", "ACh"]
+    },
+    {
+      text: "[副腎髄質]は交感神経節後ニューロンに相当する特殊な器官で、節前ニューロンが直接シナプスを形成し、[アドレナリン]と[ノルアドレナリン]をホルモンとして血液中へ分泌する。",
+      blanks: ["副腎髄質", "アドレナリン", "ノルアドレナリン"]
+    },
+    {
+      text: "副交感神経は[頭仙髄性]であり、中脳の[Edinger-Westphal核（動眼神経副核）]、橋の[上唾液核]・[下唾液核]、延髄の[迷走神経背側核]・[疑核]、および第2〜第4仙髄（S2〜S4）の側柱から起始する。",
+      blanks: ["頭仙髄性", "Edinger-Westphal核（動眼神経副核）", "上唾液核", "下唾液核", "迷走神経背側核", "疑核"]
+    },
+    {
+      text: "副交感神経の節前線維は効果器近く、または[壁内神経節]で節後ニューロンとシナプスを形成する。節前線維は[長く]、節後線維は[短い]ことが特徴である。",
+      blanks: ["壁内神経節", "長く", "短い"]
+    },
+    {
+      text: "副交感神経の神経伝達物質は、節前・節後ニューロンともに[ACh（アセチルコリン）]である。",
+      blanks: ["ACh（アセチルコリン）"]
+    },
+    {
+      text: "内臓求心性線維は、交感神経・副交感神経に[伴走]して内臓からの感覚情報を[脊髄]や[脳幹]へ伝える。",
+      blanks: ["伴走", "脊髄", "脳幹"]
+    },
+    {
+      text: "動脈圧受容体からの血圧情報は、[舌咽神経（第Ⅸ脳神経）]および[迷走神経（第Ⅹ脳神経）]を介して延髄の[孤束核]へ伝えられ、[動脈圧受容体反射（圧受容体反射）]によって血圧が調節される。",
+      blanks: ["舌咽神経（第Ⅸ脳神経）", "迷走神経（第Ⅹ脳神経）", "孤束核", "動脈圧受容体反射（圧受容体反射）"]
+    }
+  ],
+  stroke: [
+    {
+      text: "脳梗塞とは、脳血管の[狭窄]や[閉塞]により脳組織への血流が低下・途絶し、神経細胞が[虚血]に陥って壊死する[虚血性脳血管障害]である。",
+      blanks: ["狭窄", "閉塞", "虚血", "虚血性脳血管障害"]
+    },
+    {
+      text: "病型は主に①[アテローム血栓性脳梗塞]、②[心原性脳塞栓症]、③[ラクナ梗塞]の3つに分類される。",
+      blanks: ["アテローム血栓性脳梗塞", "心原性脳塞栓症", "ラクナ梗塞"]
+    },
+    {
+      text: "アテローム血栓性脳梗塞は、[内頸動脈]や[中大脳動脈]などの主幹動脈に[アテローム性動脈硬化（プラーク）]が形成され発症する。",
+      blanks: ["内頸動脈", "中大脳動脈", "アテローム性動脈硬化（プラーク）"]
+    },
+    {
+      text: "アテローム血栓性脳梗塞の前兆として[TIA（一過性脳虚血発作）]がみられることがあり、神経症状は[24時間]以内に消失する。",
+      blanks: ["TIA（一過性脳虚血発作）", "24時間"]
+    },
+    {
+      text: "一過性黒内障は、[内頸動脈]由来の[眼動脈]の虚血によって一時的に片眼の視力が消失する。",
+      blanks: ["内頸動脈", "眼動脈"]
+    },
+    {
+      text: "アテローム血栓性脳梗塞の危険因子として[高血圧]、[糖尿病]、[脂質異常症]、[喫煙]、[大量飲酒]がある。",
+      blanks: ["高血圧", "糖尿病", "脂質異常症", "喫煙", "大量飲酒"]
+    },
+    {
+      text: "心原性脳塞栓症は、[心房細動]などの心疾患により心臓内で形成された[塞栓子]が脳血管を閉塞して発症する。",
+      blanks: ["心房細動", "塞栓子"]
+    },
+    {
+      text: "心原性脳塞栓症は[中大脳動脈]に好発し、[失語症]、[失認]、[半側空間無視]、[片麻痺]などの重篤な神経症状を呈することが多い。",
+      blanks: ["中大脳動脈", "失語症", "失認", "半側空間無視", "片麻痺"]
+    },
+    {
+      text: "ラクナ梗塞は、高血圧を背景とした穿通枝の[リポヒアリン変性]や[細動脈硬化（微小アテローム）]によって血管が閉塞し、直径[15mm]以下の小梗塞を生じる。",
+      blanks: ["リポヒアリン変性", "細動脈硬化（微小アテローム）", "15mm"]
+    },
+    {
+      text: "ラクナ梗塞は[被殻]、[視床]、[内包]、[橋]などの深部脳構造に好発する。",
+      blanks: ["被殻", "視床", "内包", "橋"]
+    },
+    {
+      text: "発症から[4.5時間]以内であれば[rt-PA（組織プラスミノーゲン活性化因子）]を静注血栓溶解療法する。",
+      blanks: ["4.5時間", "rt-PA（組織プラスミノーゲン活性化因子）"]
+    },
+    {
+      text: "rt-PAは[プラスミノーゲン]を[プラスミン]に変換し[フィブリン]を分解することで血栓を溶解する。",
+      blanks: ["プラスミノーゲン", "プラスミン", "フィブリン"]
+    },
+    {
+      text: "主幹動脈閉塞では[機械的血栓回収術]も適応となる。",
+      blanks: ["機械的血栓回収術"]
+    },
+    {
+      text: "抗凝固薬である[ヘパリン]は[アンチトロンビンIII]を介して[トロンビン]を阻害し、血栓の拡大を防ぐ。",
+      blanks: ["ヘパリン", "アンチトロンビンIII", "トロンビン"]
+    },
+    {
+      text: "脳保護薬[エダラボン]は虚血により生じた[フリーラジカル（活性酸素種）]を除去し、神経細胞の酸化障害を防ぐ。",
+      blanks: ["エダラボン", "フリーラジカル（活性酸素種）"]
+    },
+    {
+      text: "アテローム血栓性脳梗塞・ラクナ梗塞の再発予防には[抗血小板薬（アスピリン・クロピドグレル）]を、心原性脳塞栓症には[抗凝固薬（ワルファリンまたはDOAC）]を用いる。",
+      blanks: ["抗血小板薬（アスピリン・クロピドグレル）", "抗凝固薬（ワルファリンまたはDOAC）"]
+    },
+    {
+      text: "脳梗塞によって[錐体路（外側皮質脊髄路）]が障害されると対側の[痙性片麻痺]が出現し、[小脳]や小脳脚が障害されると[運動失調]や[協調運動障害]が生じる。",
+      blanks: ["錐体路（外側皮質脊髄路）", "痙性片麻痺", "小脳", "運動失調", "協調運動障害"]
+    },
+    {
+      text: "左半球の病変では[失語症]、右半球病変では[半側空間無視]などの高次脳機能障害を認めることがある。",
+      blanks: ["失語症", "半側空間無視"]
+    },
+    {
+      text: "言語聴覚士は急性期から[失語症]、[構音障害]、[嚥下障害]、[高次脳機能障害]の評価・訓練に関与する。",
+      blanks: ["失語症", "構音障害", "嚥下障害", "高次脳機能障害"]
+    }
+  ]
+};
+
+// =====================
+// 状態
+// =====================
+let questions = [];
+let currentIndex = 0;
+let mode = 'input';
+let scores = [];
+let currentBlankIndex = 0;
+let blankAnswered = [];
+
+function buildQuestions(subject) {
+  if (subject === 'both') {
+    return [...DATA.neuro, ...DATA.stroke];
+  }
+  return [...DATA[subject]];
+}
+
+function startSubject(subject) {
+  questions = buildQuestions(subject);
+  currentIndex = 0;
+  scores = new Array(questions.length).fill(null);
+  document.getElementById('subject-select').style.display = 'none';
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('result-area').style.display = 'none';
+  renderQuestion();
+}
+
+function backToSelect() {
+  document.getElementById('subject-select').style.display = 'block';
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('result-area').style.display = 'none';
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('btn-input').classList.toggle('active', m === 'input');
+  document.getElementById('btn-choice').classList.toggle('active', m === 'choice');
+  renderQuestion();
+}
+
+// =====================
+// 問題描画
+// =====================
+function renderQuestion() {
+  const q = questions[currentIndex];
+  currentBlankIndex = 0;
+  blankAnswered = new Array(q.blanks.length).fill(false);
+
+  // 進捗
+  const total = questions.length;
+  const done = scores.filter(s => s !== null).length;
+  const correct = scores.filter(s => s === true).length;
+  document.getElementById('progress-text').textContent = `問題 ${currentIndex + 1} / ${total}`;
+  document.getElementById('score-text').textContent = `正解 ${correct}問`;
+  document.getElementById('progress-bar').style.width = `${(done / total) * 100}%`;
+  document.getElementById('card-num').textContent = `Q${currentIndex + 1}`;
+
+  // 文章の空欄表示
+  let html = q.text;
+  q.blanks.forEach((b, i) => {
+    const spaces = '　'.repeat(Math.max(1, Math.floor(b.length * 0.8)));
+    html = html.replace(`[${b}]`, `<span class="blank-word" id="blank-${i}">${spaces}</span>`);
+  });
+  document.getElementById('sentence-display').innerHTML = html;
+
+  // フィードバック非表示
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.textContent = '';
+
+  if (mode === 'input') {
+    renderInputMode(q);
+  } else {
+    renderChoiceMode(q);
+  }
+}
+
+function renderInputMode(q) {
+  document.getElementById('input-mode-area').style.display = 'block';
+  document.getElementById('choice-mode-area').style.display = 'none';
+  document.getElementById('current-blank-info').style.display = 'none';
+
+  const container = document.getElementById('inputs-container');
+  container.innerHTML = '';
+  q.blanks.forEach((b, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'blank-input-wrap';
+    wrap.innerHTML = `
+      <span class="blank-label">空欄${i + 1}</span>
+      <input class="blank-input" id="input-${i}" type="text" placeholder="入力してください" autocomplete="off">
+    `;
+    container.appendChild(wrap);
+
+    const inp = wrap.querySelector('input');
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') checkInput(i);
+    });
+    inp.addEventListener('blur', () => checkInput(i));
+  });
+}
+
+function checkInput(i) {
+  const q = questions[currentIndex];
+  const inp = document.getElementById(`input-${i}`);
+  const blankSpan = document.getElementById(`blank-${i}`);
+  if (!inp || blankAnswered[i]) return;
+
+  const userAns = inp.value.trim();
+  if (!userAns) return;
+
+  const correct = q.blanks[i];
+  // 正規化して比較（括弧・スペース・全角半角を緩めに）
+  const normalize = s => s.replace(/[（(）)\s　]/g, '').toLowerCase();
+  const isCorrect = normalize(userAns) === normalize(correct) ||
+    normalize(correct).includes(normalize(userAns)) && normalize(userAns).length >= 2;
+
+  blankAnswered[i] = true;
+
+  if (isCorrect) {
+    inp.classList.add('correct');
+    blankSpan.textContent = correct;
+    blankSpan.classList.add('revealed');
+  } else {
+    inp.classList.add('wrong');
+    blankSpan.textContent = correct;
+    blankSpan.classList.add('wrong-reveal');
+    inp.value = userAns;
+  }
+
+  // 全部答えたらスコア確定
+  if (blankAnswered.every(Boolean)) {
+    const allCorrect = Array.from(document.querySelectorAll('.blank-input')).every(el => el.classList.contains('correct'));
+    scores[currentIndex] = allCorrect;
+    showFeedback(allCorrect, null);
+  }
+}
+
+function revealAll() {
+  const q = questions[currentIndex];
+  q.blanks.forEach((b, i) => {
+    if (!blankAnswered[i]) {
+      const inp = document.getElementById(`input-${i}`);
+      const blankSpan = document.getElementById(`blank-${i}`);
+      if (inp && blankSpan) {
+        blankAnswered[i] = true;
+        blankSpan.textContent = b;
+        blankSpan.classList.add('wrong-reveal');
+        inp.classList.add('wrong');
+      }
+    }
+  });
+  scores[currentIndex] = false;
+  showFeedback(false, null);
+}
+
+// =====================
+// 選択肢モード
+// =====================
+function renderChoiceMode(q) {
+  document.getElementById('input-mode-area').style.display = 'none';
+  document.getElementById('choice-mode-area').style.display = 'block';
+
+  const infoEl = document.getElementById('current-blank-info');
+  infoEl.style.display = 'block';
+  infoEl.textContent = `▶ 空欄${currentBlankIndex + 1} を選んでください`;
+
+  renderChoices(q, currentBlankIndex);
+}
+
+function renderChoices(q, blankIdx) {
+  const correct = q.blanks[blankIdx];
+  // ダミー選択肢を他の空欄やデータから収集
+  let pool = [];
+  q.blanks.forEach((b, i) => { if (i !== blankIdx) pool.push(b); });
+
+  // 他の問題からも補充
+  questions.forEach(qq => {
+    qq.blanks.forEach(b => {
+      if (!pool.includes(b) && b !== correct) pool.push(b);
+    });
+  });
+
+  // シャッフルして3つ選ぶ
+  pool = pool.sort(() => Math.random() - 0.5).slice(0, 3);
+  const choices = [...pool, correct].sort(() => Math.random() - 0.5);
+
+  const container = document.getElementById('choices-container');
+  container.innerHTML = '';
+  choices.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = () => selectChoice(c, correct, blankIdx, btn);
+    container.appendChild(btn);
+  });
+}
+
+function selectChoice(selected, correct, blankIdx, btn) {
+  const q = questions[currentIndex];
+  const blankSpan = document.getElementById(`blank-${blankIdx}`);
+  const allBtns = document.querySelectorAll('.choice-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  const isCorrect = selected === correct;
+  blankAnswered[blankIdx] = true;
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    blankSpan.textContent = correct;
+    blankSpan.classList.add('revealed');
+  } else {
+    btn.classList.add('wrong');
+    blankSpan.textContent = correct;
+    blankSpan.classList.add('wrong-reveal');
+    // 正解を緑に
+    allBtns.forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
+  }
+
+  setTimeout(() => {
+    currentBlankIndex++;
+    if (currentBlankIndex < q.blanks.length) {
+      // 次の空欄へ
+      document.getElementById('current-blank-info').textContent = `▶ 空欄${currentBlankIndex + 1} を選んでください`;
+      renderChoices(q, currentBlankIndex);
+    } else {
+      // 全空欄終了
+      const allOK = blankAnswered.every(Boolean);
+      const correctCount = Array.from(document.querySelectorAll('.blank-word.revealed')).length;
+      scores[currentIndex] = correctCount === q.blanks.length;
+      document.getElementById('current-blank-info').style.display = 'none';
+      showFeedback(scores[currentIndex], null);
+    }
+  }, 800);
+}
+
+function showFeedback(isCorrect, msg) {
+  const fb = document.getElementById('feedback');
+  if (isCorrect) {
+    fb.className = 'feedback correct-fb show';
+    fb.textContent = '✅ 正解！すばらしい！';
+  } else {
+    fb.className = 'feedback wrong-fb show';
+    fb.textContent = '❌ 不正解。赤字が正しい答えです。次の問題で確認しましょう！';
+  }
+}
+
+function nextQ() {
+  if (currentIndex < questions.length - 1) {
+    currentIndex++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function prevQ() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('result-area').style.display = 'block';
+  const correct = scores.filter(s => s === true).length;
+  const total = questions.length;
+  const pct = Math.round((correct / total) * 100);
+  document.getElementById('result-score').textContent = `${correct} / ${total}問 (${pct}%)`;
+  let msg = '';
+  if (pct >= 90) msg = '🏆 完璧！国試も余裕ですね！';
+  else if (pct >= 70) msg = '💪 よくできました！あと一息！';
+  else if (pct >= 50) msg = '📖 半分以上正解！苦手な部分を復習しましょう。';
+  else msg = '🔄 もう一度チャレンジ！繰り返しが大切です。';
+  document.getElementById('result-msg').textContent = msg;
+}
+
+function restart() {
+  scores = new Array(questions.length).fill(null);
+  currentIndex = 0;
+  document.getElementById('result-area').style.display = 'none';
+  document.getElementById('quiz-area').style.display = 'block';
+  renderQuestion();
+}
+</script>
+</body>
+</html>
