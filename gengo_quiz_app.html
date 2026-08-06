@@ -1,246 +1,1019 @@
-
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>言語学 過去問アプリ｜ST国試対策</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans);background:var(--surface-0);color:var(--text-primary)}
-.app{max-width:680px;margin:0 auto;padding:1rem 0}
-.header{padding:1rem 0 0.5rem;border-bottom:0.5px solid var(--border);margin-bottom:1rem}
-.header h1{font-size:18px;font-weight:500;color:var(--text-primary)}
-.header p{font-size:13px;color:var(--text-secondary);margin-top:4px}
-.progress-bar-wrap{background:var(--surface-1);border-radius:4px;height:6px;margin:12px 0 0;overflow:hidden}
-.progress-bar{height:6px;background:var(--fill-accent);border-radius:4px;transition:width 0.3s}
-.stats{display:flex;gap:12px;margin:8px 0 1rem;flex-wrap:wrap}
-.stat{background:var(--surface-1);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:var(--text-secondary);flex:1;min-width:80px;text-align:center}
-.stat strong{display:block;font-size:18px;font-weight:500;color:var(--text-primary)}
-.qcard{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
-.q-meta{font-size:11px;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em}
-.q-text{font-size:15px;font-weight:500;line-height:1.6;margin-bottom:1rem;color:var(--text-primary)}
-.choices{display:flex;flex-direction:column;gap:8px}
-.choice{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:0.5px solid var(--border);border-radius:var(--radius);cursor:pointer;background:var(--surface-2);transition:background 0.15s,border-color 0.15s;font-size:14px;color:var(--text-primary);text-align:left;width:100%}
-.choice:hover:not(:disabled){background:var(--surface-1);border-color:var(--border-strong)}
-.choice .badge{min-width:22px;height:22px;border-radius:50%;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--text-secondary);flex-shrink:0;background:var(--surface-0)}
-.choice.correct{background:var(--bg-success);border-color:var(--border-success)}
-.choice.correct .badge{background:var(--fill-success);border-color:var(--fill-success);color:#fff}
-.choice.wrong{background:var(--bg-danger);border-color:var(--border-danger)}
-.choice.wrong .badge{background:var(--fill-danger);border-color:var(--fill-danger);color:#fff}
-.choice.reveal-correct{background:var(--bg-success);border-color:var(--border-success);opacity:0.7}
-.choice:disabled{cursor:default}
-.explanation{margin-top:12px;padding:10px 12px;background:var(--surface-1);border-radius:var(--radius);border-left:3px solid var(--border-accent);font-size:13px;color:var(--text-secondary);line-height:1.6;display:none}
-.explanation.show{display:block}
-.explanation strong{color:var(--text-accent)}
-.btn-row{display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap}
-button.action{padding:8px 18px;border-radius:var(--radius);border:0.5px solid var(--border-strong);background:transparent;color:var(--text-primary);cursor:pointer;font-size:13px;font-family:var(--font-sans)}
-button.action:hover{background:var(--surface-1)}
-button.action.primary{background:var(--fill-accent);color:#fff;border-color:var(--fill-accent)}
-button.action.primary:hover{background:var(--fill-accent-hover,#1a56db);border-color:var(--fill-accent-hover,#1a56db)}
-.result-screen{text-align:center;padding:2rem 1rem}
-.result-score{font-size:48px;font-weight:500;color:var(--text-primary);margin:1rem 0 0.25rem}
-.result-msg{font-size:16px;color:var(--text-secondary);margin-bottom:1.5rem}
-.tag{display:inline-block;padding:2px 8px;border-radius:var(--radius);font-size:11px;background:var(--bg-accent);color:var(--text-accent);margin-bottom:8px}
-.filter-row{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
-.filter-btn{padding:5px 12px;border-radius:var(--radius);border:0.5px solid var(--border);background:transparent;cursor:pointer;font-size:12px;color:var(--text-secondary);font-family:var(--font-sans)}
-.filter-btn:hover,.filter-btn.active{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
-.mode-select{margin-bottom:1rem;display:flex;gap:8px;align-items:center}
-.mode-select label{font-size:13px;color:var(--text-secondary)}
-select{padding:5px 10px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-2);color:var(--text-primary);font-size:13px;font-family:var(--font-sans);cursor:pointer}
+:root{--bg:#f0f4f8;--card:#fff;--pr:#2d6a9f;--pl:#e8f1fa;--ac:#e85d2f;--al:#fff0eb;--ok:#1a7f5a;--okl:#e6f7f1;--ng:#c0392b;--ngl:#fdecea;--tx:#1a202c;--mu:#6b7280;--bd:#d1dce8;--sh:0 2px 12px rgba(45,106,159,.10);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Hiragino Kaku Gothic ProN","Meiryo",sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:60px;}
+header{background:linear-gradient(135deg,#1b4f7a,#2d6a9f 60%,#3b82c4);color:#fff;padding:20px 16px 14px;text-align:center;}
+header .sub{font-size:11px;letter-spacing:3px;opacity:.75;margin-bottom:4px;}
+header h1{font-size:19px;font-weight:700;}
+header .tag{margin-top:5px;font-size:11px;opacity:.8;}
+.pw{background:rgba(255,255,255,.2);border-radius:4px;height:5px;margin:11px auto 0;max-width:280px;overflow:hidden;}
+.pb{background:#7ecfff;height:100%;border-radius:4px;transition:width .4s;}
+.pl{font-size:10px;opacity:.7;margin-top:3px;}
+main{max-width:720px;margin:0 auto;padding:14px 12px;}
+/* score */
+.sb{background:#fff;border:1.5px solid var(--bd);border-radius:12px;padding:11px 14px;display:flex;gap:12px;align-items:center;margin-bottom:13px;box-shadow:var(--sh);flex-wrap:wrap;}
+.si{text-align:center;flex:1;min-width:50px;}
+.sn{font-size:22px;font-weight:700;line-height:1;}
+.sn.c{color:var(--ok);}.sn.w{color:var(--ng);}.sn.r{color:var(--pr);}
+.sl{font-size:10px;color:var(--mu);margin-top:2px;}
+.sd{width:1px;height:30px;background:var(--bd);}
+.rb{padding:7px 12px;background:var(--al);border:1.5px solid var(--ac);border-radius:8px;color:var(--ac);font-size:11px;cursor:pointer;font-weight:500;margin-left:auto;}
+/* tabs */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px;}
+.tab{padding:5px 11px;border:1.5px solid var(--bd);border-radius:18px;background:#fff;color:var(--mu);font-size:11px;cursor:pointer;font-weight:500;}
+.tab.on{background:var(--pr);border-color:var(--pr);color:#fff;}
+/* block tabs */
+.btabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px;}
+.btab{padding:5px 11px;border:1.5px solid var(--bd);border-radius:18px;background:#fff;color:var(--mu);font-size:11px;cursor:pointer;font-weight:500;}
+.btab.on{color:#fff;}
+.btab[data-b="1"].on{background:#2d6a9f;border-color:#2d6a9f;}
+.btab[data-b="2"].on{background:#1a7f5a;border-color:#1a7f5a;}
+.btab[data-b="3"].on{background:#7b3f9e;border-color:#7b3f9e;}
+.btab[data-b="4"].on{background:#b5540b;border-color:#b5540b;}
+.btab[data-b="5"].on{background:#b5200b;border-color:#b5200b;}
+.btab[data-b="6"].on{background:#555;border-color:#555;}
+/* card */
+.qc{background:#fff;border:1.5px solid var(--bd);border-radius:12px;padding:15px;margin-bottom:11px;box-shadow:var(--sh);}
+.qm{display:flex;align-items:center;gap:5px;margin-bottom:8px;flex-wrap:wrap;}
+.qn{font-size:10px;font-weight:700;color:var(--pr);background:var(--pl);padding:2px 7px;border-radius:9px;}
+.qcat{font-size:10px;color:var(--mu);background:#f3f4f6;padding:2px 7px;border-radius:9px;}
+.star{font-size:10px;background:#fffbeb;border:1px solid #fcd34d;color:#92400e;padding:2px 6px;border-radius:9px;}
+.ab{font-size:10px;margin-left:auto;padding:2px 7px;border-radius:9px;font-weight:600;}
+.ab.ok{background:var(--okl);color:var(--ok);}.ab.ng{background:var(--ngl);color:var(--ng);}
+.qt{font-size:14px;line-height:1.65;margin-bottom:12px;font-weight:500;}
+.ml{font-size:11px;color:var(--ac);font-weight:600;margin-left:3px;}
+.opts{display:flex;flex-direction:column;gap:6px;}
+.ob{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;border:1.5px solid var(--bd);border-radius:9px;background:#fafbfc;cursor:pointer;text-align:left;font-size:13px;line-height:1.5;color:var(--tx);width:100%;}
+.ob:hover:not([disabled]){border-color:var(--pr);background:var(--pl);color:var(--pr);}
+.ob[disabled]{cursor:default;}
+.ob.ok{border-color:var(--ok);background:var(--okl);color:var(--ok);font-weight:600;}
+.ob.ng{border-color:var(--ng);background:var(--ngl);color:var(--ng);font-weight:600;}
+.on2{font-weight:700;font-size:12px;min-width:16px;margin-top:1px;flex-shrink:0;}
+.cbtn{margin-top:9px;padding:7px 18px;background:var(--pr);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;}
+.exp{margin-top:11px;border-top:1px solid var(--bd);padding-top:10px;display:none;}
+.exp.show{display:block;}
+.eh{font-size:11px;font-weight:700;color:var(--pr);margin-bottom:4px;}
+.eb{font-size:12px;line-height:1.75;color:#374151;}
+.eb strong{color:var(--pr);}
+.empty{text-align:center;padding:40px 16px;color:var(--mu);font-size:14px;}
+.fin{background:var(--okl);border:2px solid var(--ok);border-radius:12px;padding:20px;text-align:center;margin-bottom:15px;display:none;}
+.fin.show{display:block;}
+.fin h2{font-size:18px;color:var(--ok);margin-bottom:4px;}
+.fin p{color:#065f46;font-size:12px;}
+.sh{font-size:12px;font-weight:700;padding:6px 10px;background:var(--pl);border-radius:7px;margin-bottom:8px;margin-top:4px;color:var(--pr);}
 </style>
-
-<div class="app">
-  <div class="header">
-    <div class="tag">言語学</div>
-    <h1>言語学 過去問クイズ</h1>
-    <p>授業で出題された選択問題を練習できます</p>
-    <div class="progress-bar-wrap"><div class="progress-bar" id="prog"></div></div>
+</head>
+<body>
+<header>
+  <div class="sub">ST 国試対策</div>
+  <h1>言語学 過去問アプリ</h1>
+  <div class="tag">全6ブロック・第1〜26回収録 💪</div>
+  <div class="pw"><div class="pb" id="pb" style="width:0%"></div></div>
+  <div class="pl" id="pl">0 / 0 問 回答済み</div>
+</header>
+<main>
+  <div class="sb">
+    <div class="si"><div class="sn c" id="sC">0</div><div class="sl">正解</div></div>
+    <div class="sd"></div>
+    <div class="si"><div class="sn w" id="sW">0</div><div class="sl">不正解</div></div>
+    <div class="sd"></div>
+    <div class="si"><div class="sn r" id="sR">0</div><div class="sl">未回答</div></div>
+    <button class="rb" id="resetBtn">🔄 リセット</button>
   </div>
 
-  <div id="stats-row" class="stats">
-    <div class="stat"><strong id="s-done">0</strong>回答済み</div>
-    <div class="stat"><strong id="s-correct">0</strong>正解</div>
-    <div class="stat"><strong id="s-pct">—</strong>正答率</div>
-    <div class="stat"><strong id="s-left">0</strong>残り</div>
+  <div class="btabs">
+    <button class="btab on" data-b="0">すべて</button>
+    <button class="btab" data-b="1">①言語一般</button>
+    <button class="btab" data-b="2">②形態論</button>
+    <button class="btab" data-b="3">③統語論</button>
+    <button class="btab" data-b="4">④文字論</button>
+    <button class="btab" data-b="5">⑤意味論</button>
+    <button class="btab" data-b="6">⑥語彙・社会言語学</button>
+  </div>
+  <div class="tabs">
+    <button class="tab on" data-f="all">すべて</button>
+    <button class="tab" data-f="unanswered">未回答</button>
+    <button class="tab" data-f="wrong">間違えた</button>
+    <button class="tab" data-f="star">★頻出</button>
   </div>
 
-  <div class="filter-row" id="filter-row"></div>
-  <div class="mode-select">
-    <label>出題順：</label>
-    <select id="mode-sel">
-      <option value="order">出題順</option>
-      <option value="random">シャッフル</option>
-    </select>
-    <label style="margin-left:8px">カテゴリ：</label>
-    <select id="cat-sel">
-      <option value="all">すべて</option>
-      <option value="記号・言語学基礎">記号・言語学基礎</option>
-      <option value="形態論">形態論</option>
-      <option value="統語論">統語論</option>
-      <option value="意味論">意味論</option>
-      <option value="音韻論">音韻論</option>
-      <option value="文字">文字</option>
-      <option value="文法範疇">文法範疇</option>
-    </select>
-  </div>
-
-  <div id="quiz-area"></div>
-</div>
+  <div class="fin" id="fin"><h2>🎉 全問回答完了！</h2><p id="ft"></p></div>
+  <div id="qz"></div>
+</main>
 
 <script>
-const ALL_Q = [
-  {id:1,cat:"記号・言語学基礎",q:"意味役割をあらわす後置詞を2つ選べ",type:"multi",choices:["まで","しか","より","が","すら"],ans:[0,2],exp:"「まで」（限界・着点）と「より」（比較基準）が意味役割を表す後置詞。「が」は格を表すが意味役割は動詞依存。「しか」「すら」は限定・極端例示の係助詞。"},
-  {id:2,cat:"記号・言語学基礎",q:"日本語の母語獲得について誤っているものを1つ選べ",type:"single",choices:["ヒトという種に固有している","一定の年齢までに基本的な獲得をする","親と同じ母語を獲得する","周囲の言語を資料として獲得する"],ans:[2],exp:"誤りは③。母語獲得は親の言語ではなく「周囲の環境の言語」を習得する。日本生まれでも海外育ちなら現地語が母語になりうる。"},
-  {id:3,cat:"文字",q:"文字について正しいものを2つ選びなさい",type:"multi",choices:["ラテン文字は音節文字である","漢字は表意文字である","国字は表音文字である","片仮名はモーラ文字である","平仮名は音素文字である"],ans:[0,3],exp:"○ラテン文字は音節文字。○片仮名はモーラ文字。×漢字は表意文字ではなく表語文字（表音要素も含む）。×平仮名はモーラ文字（音素文字ではない）。"},
-  {id:4,cat:"統語論",q:"「二階は人に貸した」の「人に貸した」が示すものを2つ選べ",type:"multi",choices:["新情報","旧情報","トピック","コメント","主題"],ans:[0,3],exp:"「二階は」がトピック・主題・旧情報、「人に貸した」がコメント・新情報に相当する。情報構造の観点から「コメント」と「新情報」が正解。"},
-  {id:5,cat:"形態論",q:"形態素について誤っているものを3つ選べ",type:"multi",choices:["「はなみ」は「はな」と「み」に分けられる","「さかな」の「さ」が形態素である","語の最大の単位・形態素最小の単位とする","「はな」は「は」と「な」に分けられる","「さまざま」は2回形態素が繰り返している"],ans:[1,2,3],exp:"×「さかな」の「さ」は形態素ではない（「さかな」全体が1形態素）。×形態素は語の最小単位。×「はな」はそれ以上分割できない1形態素。○「はなみ」は「はな＋み」、○「さまざま」は「さま」の繰り返し。"},
-  {id:6,cat:"統語論",q:"可逆文となるものを選べ",type:"single",choices:["母がリンゴを食べた","亀が飼育員から餌をもらった","兄が妹に飴をあげた","太郎が次郎を叩いた","花子が机に置いた"],ans:[3],exp:"可逆文とは主語と目的語を入れ替えても文として成立するもの。「次郎が太郎を叩いた」も成立するので④が可逆文。他は意味的に逆転不可能。"},
-  {id:7,cat:"意味論",q:"他の用法と異なる「た」の例を2つ選べ",type:"multi",choices:["今日は1時にお昼を食べた","彼はその場では本当のことを話さなかった","そのペンいつ買ったの？","明日は休日だった","来なかった人は誰かな"],ans:[3,4],exp:"④「明日は休日だった」は反事実・仮定用法。⑤「来なかった人」は関係節中の過去形とは異なる用法。①②③は基本的な過去・完了の「た」。"},
-  {id:8,cat:"記号・言語学基礎",q:"言語記号の恣意性について正しいものを2つ選びなさい",type:"multi",choices:["経験に先立って生得概念が存在する","言語によって意味世界の組織化が異なる","言語表現と言語外世界との間には因果関係がある","表現と内容との間に必然的な結びつきはない","言語は既にカテゴリー化された世界を敷き写したもの"],ans:[1,3],exp:"恣意性①：言語によって意味世界の整理が異なる（water≠水＋湯）。恣意性②：音形と意味の結びつきに必然性はない（例：「犬」がなぜ/inu/か）。①③⑤は誤り。"},
-  {id:9,cat:"記号・言語学基礎",q:"世界の言語の数に最も近いものを選べ",type:"single",choices:["160","260","600","6000","60000"],ans:[3],exp:"世界の言語数は6000〜7000と推定されている。STの授業・テストでは「6000」が正答として用いられる。"},
-  {id:10,cat:"統語論",q:"統語的な格を表示する要素を2つ選べ",type:"multi",choices:["を","から","て","が","た"],ans:[0,3],exp:"「を」（対格）と「が」（主格）が統語的格標示の後置詞。「から」は起点・意味役割。「て」は接続助詞。「た」は時制マーカー（形態素）。"},
-  {id:11,cat:"統語論",q:"「私はりんごは好きだ」のりんごの「は」が表すものを選べ",type:"single",choices:["主題","主目","目的語","対比","対象"],ans:[3],exp:"「りんごは」の「は」は対比の係助詞。「（他はともかく）りんごは好きだ」という対比を示す。「私は」の「は」が主題。"},
-  {id:12,cat:"形態論",q:"「山奥（やまおく）」と「山脈（さんみゃく）」で拘束形態素はどれか",type:"single",choices:["やまおく","やま","おく","さん","みゃく"],ans:[3],exp:"「さん」（山の音読み）は単独では使えない拘束形態素。「やま」「おく」は自由形態素（単独で語として使える）。「みゃく」も拘束形態素だが選択肢での正答は「さん」。"},
-  {id:13,cat:"統語論",q:"「太郎が机に本を置いた」における「太郎」「机」「本」の役割を記せ",type:"single",choices:["太郎＝動作主・机＝着点・本＝対象","太郎＝対象・机＝場所・本＝動作主","太郎＝動作主・机＝道具・本＝着点","太郎＝着点・机＝動作主・本＝対象"],ans:[0],exp:"太郎＝動作主（agent：動作を起こす存在）、机＝着点（goal：物が向かう先）、本＝対象（theme/patient：移動する物）。意味役割の基本。"},
-  {id:14,cat:"記号・言語学基礎",q:"生成文法の「言語能力」によって可能になるものを3つ選べ",type:"multi",choices:["母語によって発せられた正文と非文の直観的判断","母語を用いて無限に適格文を作り出す創造的能力","生後短期間での母語の獲得","第二言語の習得","母語によって発せられた暧昧文の迅速な理解"],ans:[0,1,4],exp:"チョムスキー（米・言語学者）の言語能力（competence）は①正文/非文の直観的判断、②無限の文産出能力、⑤暧昧文の理解を可能にする。③は言語習得装置LAD、④は言語能力の外。"},
-  {id:15,cat:"形態論",q:"連濁の例を2つ選べ",type:"multi",choices:["どんどん","まった（待った）","がらがら","ときどき","青空"],ans:[0,2],exp:"連濁は複合語後部要素の清音が濁音化する現象。「どんどん」「がらがら」が連濁の例。「ときどき」は清音のまま（ライマンの法則など）。「青空」（あおぞら）はそらがぞらに→これも連濁！　選択肢④「ときどき」と確認。"},
-  {id:16,cat:"形態論",q:"異形態の例を1つ選べ",type:"single",choices:["海を表す「カイ」と「うみ」","「原野」と「野原」","「食べるだろう」と「食べるはずだ」","「まっさお」の「さお」と「あお」","「するする」と「ずるずる」"],ans:[3],exp:"異形態（allomorph）は同一形態素が音韻環境で異なる音形をとるもの。「まっさお」の「さお（青）」と「あお（青）」は同じ形態素の異形態。①は音読み・訓読みで別形態素。"},
-  {id:17,cat:"統語論",q:"日本語の基本語順はどれか",type:"single",choices:["SVO","SOV","VSO","OVS","OSV"],ans:[1],exp:"日本語の基本語順はSOV（主語・目的語・動詞）。例：「太郎が（S）花子を（O）見た（V）」。英語はSVO。世界的にはSOVが最も多い。"},
-  {id:18,cat:"形態論",q:"ら抜き言葉はどれか（1つ選べ）",type:"single",choices:["見える","投げれる","食べさせられる","蹴られる","来られる"],ans:[1],exp:"「投げれる」は「投げられる」からら抜きしたもの。「見える」は可能の別語。「食べさせられる」は使役受身で正形。「蹴られる」「来られる」は正しい可能・受身形。"},
-  {id:19,cat:"記号・言語学基礎",q:"すべての言語に当てはまるとは限らないものを2つ選べ",type:"multi",choices:["記号の体系である","書記記号を有する","文を生成する文法を持つ","名詞・動詞・形容詞・接置詞を有する","語は語幹と接辞からなる"],ans:[1,3],exp:"①記号体系・③文法はすべての言語に共通。②書記記号（文字）を持たない言語は存在する（口頭言語のみ）。④品詞体系は言語により大きく異なる。⑤語構造も言語により様々。"},
-  {id:20,cat:"文法範疇",q:"「花子は寝ていたかもしれない」「花子は寝るだろう」の文法範疇の違いを3つ選べ",type:"multi",choices:["アスペクト","意味役割","モダリティ","ヴォイス","テンス"],ans:[0,2,4],exp:"「寝ていた（進行・完了）」vs「寝る」→アスペクトの違い。「かもしれない」vs「だろう」→モダリティの違い。「寝ていた（過去）」vs「寝る（非過去）」→テンスの違い。"},
-  {id:21,cat:"音韻論",q:"音素について正しいものを2つ選べ",type:"multi",choices:["意味を区別する役割を持つ","意味を担う最小単位","ことばの第一次分節である","発声において音声的なものを異音という","—"],ans:[0,2],exp:"○音素は意味を区別できる最小の音声単位（例：/s/と/z/で「差」と「座」が区別される）。○ことばの第一次分節（二次分節は形態素）。×意味を担う最小単位は形態素。×意味を区別しない音声変異が異音（allophone）。"},
-  {id:22,cat:"統語論",q:"二項動詞を1つ選べ",type:"single",choices:["殴る","走る","与える","もらう","眠る"],ans:[2],exp:"二項動詞は主語＋目的語の2項を要求する動詞。「与える」は「AがBにCを与える」で3項とも取れるが、2項以上の典型。「走る」「眠る」は一項動詞。「殴る」「もらう」も二項動詞の選択肢だが、提示された選択肢では「与える」が最も典型的な二項動詞。"},
-  {id:23,cat:"形態論",q:"「見させられた」の形態素として正しいものを選べ",type:"single",choices:["「見させられ」の部分だけ","「見させられた」全体","「させ」と「られ」と「た」","「見」と「させ」と「られ」と「た」","「見」と「させられ」と「た」"],ans:[3],exp:"「見させられた」の形態素分析：見（語幹）＋させ（使役）＋られ（受身）＋た（過去）の4形態素。④が正解。"},
-  {id:24,cat:"記号・言語学基礎",q:"正しいものを2つ選べ",type:"multi",choices:["世界で1番使われている語順はSVO型である","意味を持つ最小の単位を語という","言語による情報伝達の基本的単位は文である","うなり声による伝達は言語的コミュニケーションの一種である","言語能力を使用した発話や発話理解を行うことを言語運用という"],ans:[2,4],exp:"○言語による情報伝達の基本単位は文（sentence）。○言語能力を実際に使用することが言語運用（performance）。×最多語順はSOV。×「語」でなく「形態素」が意味の最小単位。×うなり声は非言語的コミュニケーション。"},
-  {id:25,cat:"統語論",q:"日本語の語構造について正しいものを1つ選べ",type:"single",choices:["原則として形態素が語となる","原則として自由形態素をもたず文全体が語となる","語幹が接辞・境界が明確である","常に複数の語幹からなる","語幹が接辞・形変化や境界が明確ではない"],ans:[4],exp:"日本語は語幹と接辞の境界が不明確（アグルチネーション的だが接辞結合が複雑）。膠着語的特性を持ち、形変化の境界が英語ほど明確ではない。⑤が正解。"},
-  {id:26,cat:"記号・言語学基礎",q:"正しいものを3つ選べ",type:"multi",choices:["継起的にシニフィアンの線状性をもつ","閉じた形態素・開いた音素","言語記号は音形を表す","1語からなる言語？文？がある","第一次文節は形態素・第二次文節は音素である"],ans:[0,2,4],exp:"○線状性：シニフィアン（音形）は時間軸上で線状に展開する。○言語記号は音形と意味の結合体。○第一次分節は形態素、第二次分節は音素（マルティネの二重分節）。"},
-  {id:27,cat:"形態論",q:"活用で音便があらわれるものを3つ選べ",type:"multi",choices:["見る","書く","知る","聞く","投げる"],ans:[1,3,4],exp:"音便は活用形で音が変化する現象。「書く→書いた（イ音便）」「聞く→聞いた（イ音便）」「投げる→投げた（音便なし？）」。五段活用動詞でテ形・タ形に音便が現れる。"},
-  {id:28,cat:"文法範疇",q:"事態の時間的展開のどの段階が問題となっているかを示す文法的なものの作用は何か",type:"single",choices:["モダリティ","ヴォイス","テンス","アスペクト","格"],ans:[3],exp:"アスペクト（aspect）は事態の時間的展開の段階（開始・進行・完了など）を示す文法範疇。「寝ている（進行）」「寝た（完了）」など。テンスは時制（いつか）。"},
-  {id:29,cat:"文法範疇",q:"文が表示する事態の事実性に関する話し手の判断を表す文法的手段は1つ選べ",type:"single",choices:["モダリティ","ヴォイス","テンス","アスペクト","格"],ans:[0],exp:"モダリティ（modality）は事態の事実性・確実性・義務などに対する話し手の判断を表す。「〜かもしれない」「〜だろう」「〜にちがいない」など。"},
-  {id:30,cat:"文字",q:"漢字とその分類の組み合わせで誤りはどれか",type:"single",choices:["月－象形文字","日－指示文字","林－会意文字","清－形声文字","楽－転注"],ans:[1],exp:"「日」は象形文字（太陽の形をかたどった）であり、指示文字ではない。指示文字の例は「一・二・三」「上・下」など。「月」「林」「清」「楽」の分類は正しい。"},
-  {id:31,cat:"文字",q:"誤っているものを2つ答えよ",type:"multi",choices:["文字を持たない言語がある","ローマ字は表意文字である","表語文字は音を持たない","文字は記録性に優れている","表音文字の方が表意文字より抽象的である"],ans:[1,2],exp:"×ローマ字は表音文字（音素文字）であり表意文字ではない。×表語文字にも音（読み）があり音を持たないわけではない（漢字にも音読みがある）。○文字を持たない言語は存在する。○文字は記録性に優れる。"},
-  {id:33,cat:"形態論",q:"「太郎にご飯を食べさせる」の文章で機能語・機能形態素を3つ選べ",type:"multi",choices:["「太郎に」の「に」","「太郎に」の「太郎」","「食べさせる」の「食べ」","「食べさせる」の「させ」","「食べさせる」の「る」"],ans:[0,3,4],exp:"機能語・機能形態素は文法的意味を担う要素。「に」（格助詞）、「させ」（使役の助動詞形態素）、「る」（現在時制・非過去の形態素）が機能形態素。「太郎」「食べ」は内容形態素（語彙形態素）。"},
-  {id:34,cat:"文字",q:"狭義の音節文字はどれか（1つ）",type:"single",choices:["かな文字","ローマ字","漢字","和字","ハングル"],ans:[0],exp:"狭義の音節文字（syllabic writing）は日本語の仮名（かな）文字。ローマ字は音素文字、漢字は表語文字、ハングルは音素文字（音節ブロックを構成するが）。仮名は1文字＝1モーラ（音節的単位）。"},
-  {id:35,cat:"形態論",q:"ある言語の形態素・語の総体を意味するものを選べ",type:"single",choices:["文法","統語範疇","語種","語類","語彙"],ans:[4],exp:"語彙（vocabulary/lexicon）は、ある言語における形態素・語の総体。「語彙が豊富」などの使い方と一致する。「文法」は語配列の規則、「語種」は語の出自（和語・漢語・外来語など）を指す。"},
-  {id:36,cat:"文法範疇",q:"「伝わらなかったかもしれない」の後ろから3番目の形態素を選べ",type:"single",choices:["態","格","相","極性","○○"],ans:[2],exp:"「伝わら（否定語幹）＋なかっ（過去否定）＋た（過去）＋か（疑問）＋も（も）＋しれ（知れ）＋ない（否定）」。後ろから3番目は「も」「しれ」「ない」の「しれ」→意味的には「相（アスペクト）」的要素。正確な分析要確認。"},
-  {id:37,cat:"意味論",q:"「長椅子」「肘掛け椅子」と同じ意味関係にある対を1つ選べ（2点）",type:"single",choices:["果物・梨","高い・低い","私立・私学","売る・買う","植物・動物"],ans:[4],exp:"「長椅子」と「肘掛け椅子」は上位語・下位語（hyponymy）の関係ではなく、同位語（co-hyponym）の関係。「植物」「動物」は生物という上位語の下の同位語。①は上下関係。②は反義語。③は同義語。④は逆義語。"},
-  {id:38,cat:"統語論",q:"「が」で従属節の始まりを示すものを1つ選べ（3点）",type:"single",choices:["委員会に私が提示した案を受け入れられなかった","彼女はテレビを見ながら朝ご飯を食べる","隣の部屋から父がいびきをかくのが聞こえた","彼は煙草を消して無言で出て行った","夢があるのは羨ましいと思う"],ans:[2],exp:"③「父がいびきをかくの」の「が」は従属節（埋め込み節）内の主格を示しており、従属節の始まりを示す「が」の用法。他の「が」は主節の主格または接続助詞。"},
-  {id:39,cat:"統語論",q:"統語的特徴で誤りを2つ選べ",type:"multi",choices:["名詞の格が接頭辞","形容詞が述語になる","述語が文末にくる","真偽疑問文の語順は平叙文と異なる","従属節は主要部に先行する"],ans:[0,3],exp:"×日本語の格は接頭辞ではなく後置詞（助詞）で示される。×日本語の真偽疑問文は語順が平叙文と同じで、文末に「か」を付けるだけ（英語のように倒置しない）。○述語は文末、○形容詞述語、○従属節先行はすべて正しい。"},
-  {id:40,cat:"文字",q:"日本語の一番古いものは何か",type:"single",choices:["平仮名","片仮名","漢字","万葉仮名","ローマ字"],ans:[3],exp:"日本語の最古の表記システムは万葉仮名（まんようがな）。漢字の音・訓を借りて日本語の音を表記したもので、万葉集で多用された。平仮名・片仮名は万葉仮名から発展した。"},
+var Q=[
+/* ==============================
+   ブロック1：言語の一般的特徴
+   ============================== */
+{id:1,b:1,sec:"言語の一般的特徴",star:true,
+ text:"【第1回 問題84】誤っているのはどれか。",
+ opts:["言語とは、その言語の単語の集合のことである。","言語は、音素や形態素などいくつかのレベルの単位に分けることができる。","音声言語は、音素という単位が時間軸上に並んで成り立っているとみなせる。","どの言語も、文を成り立たせる仕組みとしての文法をもつ。","世界中の言語の数は、数千にのぼると言われている。"],
+ ans:[0],multi:false,
+ exp:"言語は<strong>語彙＋文法</strong>から成る。「単語の集合」では文法が含まれないので誤り。世界の言語数は<strong>6000〜7000</strong>と考えられている。正答1"},
+{id:2,b:1,sec:"言語の一般的特徴",star:true,
+ text:"【第2回 問題84】正しいのはどれか。",
+ opts:["言語によっては音素・語など異なるレベルの言語単位を取り出すことができない。","言語単位や文法をもつ言語はヒトに特有ではない。","文法とは文を無数に作り出す仕組みと捉えることができる。","統語装置としての文法をもたない言語もある。","人類の進化史上、文字言語は音声言語よりも早く出現した。"],
+ ans:[2],multi:false,
+ exp:"<strong>文法＝文を無数に作り出す統語装置</strong>なので3は正しい。言語単位・文法はヒト固有（2は誤り）。書き言葉のない言語は存在するが話し言葉のない言語はない（5は誤り）。正答3"},
+{id:3,b:1,sec:"言語の一般的特徴",star:false,
+ text:"【第3回 問題84】誤っているのはどれか。",
+ opts:["どの民族も言語を持つ。","どの言語も母音と子音を持つ。","どの言語も語や形態素を持つ。","どの言語も文を成立たせる仕組みとしての文法を持つ。","どの言語も文字を持つ。"],
+ ans:[4],multi:false,
+ exp:"<strong>文字（書き言葉）を持たない言語は存在する</strong>（例：かつてのアイヌ語）。1〜4は言語普遍性として正しい。正答5"},
+{id:4,b:1,sec:"言語の一般的特徴",star:true,
+ text:"【第3回 問題85】言語の単位を小さい順に並べたのはどれか。",
+ opts:["音素＜音節＜語＜形態素＜文","音素＜音節＜形態素＜語＜文","音素＜形態素＜音節＜語＜文","音節＜音素＜語＜形態素＜文","音節＜音素＜形態素＜語＜文"],
+ ans:[1],multi:false,
+ exp:"正しい順序：<strong>音素＜音節＜形態素＜語＜文</strong>。音素・音節は表面のみに関わる単位。形態素は意味も担うため複合的で大きい。正答2"},
+{id:5,b:1,sec:"言語の一般的特徴",star:true,
+ text:"【第4回 問題87】どの言語も持つ性質として該当しないのはどれか。",
+ opts:["音と意味との関係の恣意性","音声言語の時間的線条性","二重分節性","文を無数に作り出すことができる創造性","文字の表意性"],
+ ans:[4],multi:false,
+ exp:"<strong>文字の表意性</strong>は表意文字を有する言語にしか該当しない。話し言葉としてしか存在しない言語もある。1〜4はすべての言語の性質として正しい。正答5"},
+{id:6,b:1,sec:"二重分節性",star:true,
+ text:"【第5回 問題86】言語の二重分節性について正しいのはどれか。",
+ opts:["線条性と階層性との二つの観点からの分節","音声レベルでの分節と文字レベルでの分節","音素への分節と音節への分節","形態素への分節と音素への分節","統語論と意味論との二つの観点からの分節"],
+ ans:[3],multi:false,
+ exp:"二重分節性とは<strong>第1次分節（文→形態素）と第2次分節（形態素の記号表現→音素）</strong>の2段階の分節のこと。正答4（★頻出）"},
+{id:7,b:1,sec:"ラングとパロール",star:true,
+ text:"【第6回 問題82】ラング（langue）について正しいのはどれか。",
+ opts:["言語の個人的な側面を指す。","現実に使用されている日常の言語を指す。","その社会に共有されている言語知識を指す。","一回一回使われるものとしての言葉を指す。","歴史的な規範に基づく言語を指す。"],
+ ans:[2],multi:false,
+ exp:"ソシュール（Saussure、スイス・言語学者）の概念。<strong>ラング＝「ある言語の話し手が集団的に共有していると考えられる言語的知識」</strong>。パロール＝個人が実際に発した言葉。正答3（★頻出）"},
+{id:8,b:1,sec:"言語記号の恣意性",star:true,
+ text:"【第8回 問題84】言語の恣意性について正しいのはどれか。",
+ opts:["音素やその組み合わせである語の数に制約がない。","語の意味が使用の文脈による影響を受け一定しない。","語の自由な組み合わせで新しい文を無限に産出できる。","音素レベルの分節と形態素レベルの分節に分かれる。","語の音と意味の結びつきに必然性がない。"],
+ ans:[4],multi:false,
+ exp:"<strong>言語記号の恣意性＝語の音（記号表現）と意味（記号内容）の結びつきに必然性がないこと</strong>。1は生産性、3は創造性、4は二重分節性の説明。正答5（★頻出）"},
+{id:9,b:1,sec:"言語記号の恣意性",star:false,
+ text:"【第9回 問題84】言語の恣意性の反例とされることがあるのはどれか。",
+ opts:["類義語","外来語","翻訳語","合成語","擬音・擬態語"],
+ ans:[4],multi:false,
+ exp:"<strong>オノマトペ（擬音語・擬態語）</strong>は音と意味の間に何らかの必然性（有契性）が認められるため恣意性の反例とされる。正答5"},
+{id:10,b:1,sec:"二重分節性",star:true,
+ text:"【第10回 問題84】「限られた数の音を組合わせて語を作り、語をつなぎ合わせて文を作る」という言語の性質を表すのはどれか。",
+ opts:["恣意性","二重分節","線状性","普遍文法","有契性"],
+ ans:[1],multi:false,
+ exp:"「限られた数の音（音素）を組合わせて形態素を作り（第2次分節）、語をつなぎ合わせて文を作る（第1次分節）」は<strong>二重分節性</strong>の説明。正答2（★頻出）"},
+{id:11,b:1,sec:"言語の性質",star:false,
+ text:"【第12回（午前）問題43】言語の性質として認められないのはどれか。",
+ opts:["恣意性","線状性","反射性","二重性","有契性"],
+ ans:[2],multi:false,
+ exp:"<strong>反射性</strong>は言語の一般的性質として挙げられない。恣意性・線状性・二重性（二重分節性）・有契性はいずれも言語の性質。正答3"},
+{id:12,b:1,sec:"言語の性質",star:false,
+ text:"【第16回（午前）問題43】誤っているのはどれか。",
+ opts:["音や単語が一次元に配列される性質を「線状性」という。","新たな単語や文を作り出す性質を「生産性」という。","意味するものと意味されるものとの間に必然的な関係がないことを「恣意性」という。","文が文脈中で適切に使用されているか否かの母語話者の直観的判断を「文法性判断」という。","文を形態素に、形態素を音素に分解できる性質を「二重分節性」という。"],
+ ans:[3],multi:false,
+ exp:"「文脈中で適切かどうかの判断」は<strong>語用論的適切性判断</strong>。<strong>文法性判断</strong>とは文脈なしに文が文法的かどうかを判断すること。正答4"},
+{id:13,b:1,sec:"言語の生産性",star:false,
+ text:"【第18回（午前）問題43】言語の「生産性」と最も関係の深いのはどれか。",
+ opts:["線条性","規範性","共時性","二重分節性","言語変異"],
+ ans:[3],multi:false,
+ exp:"チョムスキー（Chomsky）の「言語の創造性＝生産性」は<strong>二重分節性</strong>（文は形態素の継起からなる）が必要。正答4"},
+{id:14,b:1,sec:"有契性",star:true,
+ text:"【第22回（午前）問題43】下線部について記号表現（能記）と記号内容（所記）との間に有契性がないのはどれか。",
+ opts:["公園でわんわんを見たよ。","日々もんもんと暮らしている。","鐘がごーんと鳴った。","外からぼんぼんと音がする。","上の住民がどんどんとうるさい。"],
+ ans:[1],multi:false,
+ exp:"「わんわん」「ごーん」「ぼんぼん」「どんどん」は擬音語で有契性あり。<strong>「もんもん（悶々）」は漢語由来で擬音語・擬態語ではなく有契性がない</strong>。正答2（★頻出）"},
+{id:15,b:1,sec:"言語的コミュニケーション",star:false,
+ text:"【第24回（午前）問題51】言語的コミュニケーションについて誤っているのはどれか。",
+ opts:["文字は記号の一種である。","伝達すべき意味内容のことをメッセージという。","受信した記号から意味を抽出することを符号化という。","文脈はコミュニケーションを構成する要素の一つである。","コード体系は言語間で異なる。"],
+ ans:[2],multi:false,
+ exp:"「受信した記号から意味を抽出する」操作は<strong>解読（decoding）</strong>。<strong>符号化（encoding）＝伝達すべき情報をコードを介して記号列に置き換えること</strong>。正答3"},
+{id:16,b:1,sec:"擬音語・擬態語",star:false,
+ text:"【第26回 問題43】擬態語を含むのはどれか。a.雷がごろごろと響く　b.ネコがのどをごろごろ鳴らしている　c.父が床にごろごろしている　d.目にゴミが入ってごろごろする　e.良い選手がごろごろいる",
+ opts:["a, b, c","a, b, e","a, d, e","b, c, d","c, d, e"],
+ ans:[4],multi:false,
+ exp:"<strong>擬態語</strong>は非音響的な物事の状態・様子を感覚的に音声化したもの。c「床にごろごろ」・d「ゴミがごろごろ」・e「選手がごろごろ」が擬態語。a・bは音を模した擬音語。正答5"},
+
+/* ==============================
+   ブロック2：形態論
+   ============================== */
+{id:17,b:2,sec:"形態素の定義",star:true,
+ text:"【第1回 問題85】形態素について誤っているのはどれか。",
+ opts:["意味をになう最小の言語単位である。","「くろねこ」は「くろ」と「ねこ」の二つの形態素からなる。","「ねこ」は「ね」と「こ」の二つの形態素からなる。","「厚み」の「み」は形態素である。","一つの語は一つ以上の形態素からなる。"],
+ ans:[2],multi:false,
+ exp:"「ねこ」の「ね」と「こ」にはそれぞれ意味を認めることは難しいので<strong>「ねこ」は1形態素</strong>。「厚－み」は「厚－い」「深－み」と比較して「-み」も形態素。正答3（★頻出）"},
+{id:18,b:2,sec:"形態素の定義",star:true,
+ text:"【第2回 問題85】意味をになう最小の言語単位はどれか。",
+ opts:["音素","意義素","形態素","語（単語）","語彙"],
+ ans:[2],multi:false,
+ exp:"<strong>形態素＝意味を担う最小の言語単位＝最小の言語記号</strong>。意義素とは「発話の意味を『意味』、文の意味を『意義』と読んで区別した場合の文を構成する形態素の意味」を指す。正答3（★頻出）"},
+{id:19,b:2,sec:"連濁",star:true,
+ text:"【第3回 問題72】複合語形成において生じる音韻現象はどれか。",
+ opts:["連濁化","無声化","口蓋化","鼻音化","促音化"],
+ ans:[0],multi:false,
+ exp:"例えば「上り」＋「坂」→「上り坂」という複合語形成で生じるのは<strong>連濁化</strong>（清音→濁音）。正答1（★頻出）"},
+{id:20,b:2,sec:"異形態",star:true,
+ text:"【第4回 問題86】異形態の例はどれか。",
+ opts:["「ころころ」と「ごろごろ」","「ほんだな」の「だな」と「たな」","「山」を表す「サン」と「やま」","「やまみち」と「さかみち」","「たべる」と「たべられる」"],
+ ans:[1],multi:false,
+ exp:"異形態とは<strong>同一形態素が有する異なった複数の形態</strong>。「本棚」の「だな」と単独の「たな」は同一形態素/tana/の異形態。「サン」と「やま」は漢字の音読みと訓読みで<strong>別々の形態素</strong>。正答2（★頻出）"},
+{id:21,b:2,sec:"語の類型",star:true,
+ text:"【第4回 問題89】類型論的に分類した場合、日本語はどれか。",
+ opts:["孤立語","屈折語","膠着語","抱合語","複合語"],
+ ans:[2],multi:false,
+ exp:"日本語は<strong>膠着語（agglutinative language）</strong>の典型例。「語幹に接辞が膠着し、語幹と接辞の境界が明確な言語」。正答3（★頻出）"},
+{id:22,b:2,sec:"形態素の分析",star:true,
+ text:"【第5回 問題85】日本語の形態素の例で正しいのはどれか。",
+ opts:["/s/","「しろ（白）」の「し」","「しろ（白）」","「しろさ（白さ）」","「しろくま（白熊）」"],
+ ans:[2],multi:false,
+ exp:"/s/は音素。「し」は単独で意味を持たない。<strong>「しろ（白）」は意味を有する最小の言語単位で1形態素</strong>。「しろさ」は「しろ」＋「-さ」の2形態素（派生語）。正答3"},
+{id:23,b:2,sec:"青白さの形態素分析",star:false,
+ text:"【第6回 問題86】「青白さ」における形態素として正しいのはどれか。",
+ opts:["「青白さ」全体","「青白」と「さ」","「青白」の部分だけ","「青」と「白」と「さ」","「青」と「白」だけ"],
+ ans:[3],multi:false,
+ exp:"「青白さ」は「青」＋「白」＋「さ」の3形態素。語根「青」＋語根「白」からなる「青白-」が<strong>派生基部</strong>で、派生接尾辞「-さ」が結合。正答4"},
+{id:24,b:2,sec:"連濁",star:true,
+ text:"【第7回 問題85】連濁の例はどれか。",
+ opts:["こども（子ども）","ぎらぎら","さんがつ（三月）","ほんだな（本棚）","ぎゅうどん（牛丼）"],
+ ans:[0],multi:false,
+ exp:"<strong>連濁＝複合語の後部要素の語頭清音が濁音化する現象</strong>。「子ども」/ko+tomo/→[ko-domo]の「ども」が連濁の例（「とも」が「ども」に変化）。「本棚」も連濁だが、正答は1（こども）。「ぎらぎら」「さんがつ」「ぎゅうどん」は初めから濁音。正答1（★頻出）"},
+{id:25,b:2,sec:"形態素分析",star:true,
+ text:"【第7回 問題86】「言語学を勉強する。」の形態素分析で誤っているのはどれか。",
+ opts:["「言語」は自由形態素である。","「学」は自由形態素である。","「を」は拘束形態素である。","「勉強」は自由形態素である。","「する」は拘束形態素である。"],
+ ans:[0],multi:false,
+ exp:"「する」は「するの、しないの」のように単独で語として使用可能なので自由形態素だが拘束形態素的性格もある。完全な誤りは<strong>1「言語」</strong>：「言語」は「言」＋「語」の複合語なので単一の自由形態素ではない。正答1"},
+{id:26,b:2,sec:"使役受身の形態素分析",star:true,
+ text:"【第8回 問題86】「調べさせられた」を構成する形態素は何個か。",
+ opts:["3","4","5","6","7"],
+ ans:[1],multi:false,
+ exp:"「調べさせられた」＝<strong>「調べ」（語幹）＋「させ」（使役）＋「られ」（受身）＋「た」（過去）</strong>の4形態素。同様の例「食べさせられた」「調べられた」「調べさせた」「調べさせられる」で練習を。正答2（★頻出）"},
+{id:27,b:2,sec:"音便",star:true,
+ text:"【第9回 問題89】「〜テ」形に活用したとき擦音便が現れるのはどれか。",
+ opts:["切る","付く","着る","飛ぶ","食べる"],
+ ans:[3],multi:false,
+ exp:"動詞の音便形を判別するには中止形に「-て」を加えると判断できる。<strong>「飛ぶ」の中止形「飛び」→「飛んで」が撥音便</strong>（「び」→「ん」）。「切る」→「切って」（促音便）、「付く」→「付いて」（イ音便）。正答4（★頻出）"},
+{id:28,b:2,sec:"可能動詞",star:true,
+ text:"【第12回（午後）問題44】可能動詞が作れるのはどれか。",
+ opts:["見る","好む","寝る","行く","降る"],
+ ans:[3],multi:false,
+ exp:"可能動詞とは「意志的な動作・行為を表す子音語幹動詞の語幹＋e＋ru」を終止形とする派生動詞。子音語幹動詞（命令形がエ段で終わる）のうち意志的な動作を表すのは<strong>「行く」</strong>→「行ける」。正答4（★頻出）"},
+{id:29,b:2,sec:"形態素分析",star:false,
+ text:"【第13回（午前）問題43】「約束しております」を形態素に分けたのはどれか。",
+ opts:["「約束して」「おります」","「約束」「して」「おります」","「約束」「してお り」「ます」","「約束」「して」「おり」「ます」","「約束」「し」「て」「おり」「ます」"],
+ ans:[4],multi:false,
+ exp:"最も細かく分けると#jakusoku#si-te#or-i-mas-u#と分析可能。「約束」「し」「て」「おり」「ます」の5形態素が最も詳細な分析。正答5"},
+{id:30,b:2,sec:"異形態",star:false,
+ text:"【第13回（午前）問題44】下線部が異形態の関係にない組み合わせはどれか。",
+ opts:["おおあめ（大雨）－こさめ（小雨）","あめもよう（雨模様）－こうりょう（降雨量）","あまやどり（雨宿り）－あめふり（雨降り）","さかや（酒屋）－さけかす（酒粕）","さかむし（酒蒸し）－あまざけ（甘酒）"],
+ ans:[1],multi:false,
+ exp:"同一漢字の音読みと訓読みは<strong>異形態の関係にない</strong>（別々の形態素の音声的現われ）。「降雨量」の「こうう」は「雨」/ame/の異形態ではなく漢語の音読みなので正答2"},
+{id:31,b:2,sec:"ら抜き言葉",star:true,
+ text:"【第13回（午後）問題44】「ら抜き言葉」でないのはどれか。",
+ opts:["考えれる","切れる","食べれる","見れる","寝れる"],
+ ans:[1],multi:false,
+ exp:"ら抜き言葉＝<strong>母音語幹動詞の語幹＋られ＋る</strong>を終止形とする派生動詞のら脱落形。「切る」は命令形「切れ」とエ段で終わる<strong>子音語幹動詞</strong>なので「切れる」はら抜き言葉ではなく可能動詞。正答2（★頻出）"},
+{id:32,b:2,sec:"子音語幹動詞",star:false,
+ text:"【第14回（午後）問題43】子音語幹動詞（五段動詞）が存在しないのはどの行か。",
+ opts:["か行","が行","さ行","ざ行","ば行"],
+ ans:[3],multi:false,
+ exp:"子音語幹動詞とは「命令形がエ段で終わる動詞」。「ざ行」の命令形が「-ぜ」で終わる動詞は現代日本語に存在しない。正答4"},
+{id:33,b:2,sec:"異形態",star:false,
+ text:"【第15回（午前）問題44】同一形態素を含まない組合せはどれか。",
+ opts:["部屋－部室","眼鏡－金物","腐る－臭い","落ちる－落とす","おずおず－怖気づく（おじけづく）"],
+ ans:[0],multi:false,
+ exp:"同じ漢字の音読みと訓読みは異形態の関係にない（授業プリントp.17）。<strong>「部屋」の「へ（部）」と「部室」の「ぶ（部）」は同一漢字の訓読みと音読みで異形態の関係にはない</strong>。正答1"},
+{id:34,b:2,sec:"異形態",star:true,
+ text:"【第16回（午前）問題44】異形態に関する説明として適切でないのはどれか。",
+ opts:["ら抜き可能形はその一例である。","同一音素の場合に限られる。","屈折、派生、複合、いずれにも現れ得る。","母語話者はその音韻的な違いが分かる。","表記上区別されないこともある。"],
+ ans:[1],multi:false,
+ exp:"異形態は<strong>同一音素の場合に限られるのではなく</strong>、異なる音素レベルで交替することもある（「本」/hon/→[hom-]→[hon-]→[hoŋ-]など）。正答2"},
+{id:35,b:2,sec:"可能動詞",star:false,
+ text:"【第17回（午前）問題44】可能形として用いることができないのはどれか。",
+ opts:["乗れる","取れる","立てる","見える","会える"],
+ ans:[3],multi:false,
+ exp:"可能動詞は意志的な動作・行為を指示する子音語幹動詞から作られる。<strong>「見える」は「見る」に対応する可能形ではなく</strong>、「見られる」（ら有り言葉）か「見れる」（ら抜き言葉）が可能形。正答4"},
+{id:36,b:2,sec:"複合動詞",star:false,
+ text:"【第17回（午前）問題45】複合動詞はどれか。",
+ opts:["汗ばむ","寒がる","春めく","気付く","大人ぶる"],
+ ans:[3],multi:false,
+ exp:"複合動詞＝語幹が2つ以上の語根の結合からなる動詞。<strong>「気付く」は語幹「気付k-」が「気」と「付k-」の複合</strong>。「汗ばむ」「寒がる」「春めく」「大人ぶる」は派生動詞。正答4"},
+{id:37,b:2,sec:"異形態",star:false,
+ text:"【第18回（午前）問題44】同一形態素を含まないのはどれか。a.愛す－愛しい　b.教える－教わる　c.漬ける－浸かる（つかる）　d.座る－据える　e.押す－惜しい",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[1],multi:false,
+ exp:"漢字の訓読みと音読みは同一形態素の異形態ではない（p.17）。「愛す」と「愛しい」の「あい」と「いとし」は別々の形態素、e「押す-」と「惜し-」の間には意味的関連なし。正答2"},
+{id:38,b:2,sec:"母音語幹動詞",star:true,
+ text:"【第18回（午後）問題43】母音語幹動詞でないのはどれか。",
+ opts:["減る","寝る","出る","得る","似る"],
+ ans:[0],multi:false,
+ exp:"母音語幹動詞は命令形が「-ろ」か「-よ」で終わる。選択肢の命令形：1「減れ」2「寝ろ」3「出ろ」4「得ろ」5「似ろ」。<strong>「減る」だけが命令形がエ段（「減れ」）で終わる子音語幹動詞</strong>。正答1（★頻出）"},
+{id:39,b:2,sec:"異形態",star:false,
+ text:"【第20回（午前）問題44】「長雨（ながあめ）」の「あめ」と同一形態素の異形態であるのはどれか。a.雨合羽（あまがっぱ）　b.小雨（こさめ）　c.豪雨（ごうう）　d.五月雨（さみだれ）　e.水飴（みずあめ）",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[0],multi:false,
+ exp:"異形態は記号内容（意味）が同一で音形が異なるもの。「長雨」の「あめ」と同じ「大気から水の滴が落下する気象現象」の意味を持ちながら音形が異なるのは<strong>a「雨合羽」の「あま」とb「小雨」の「さめ」</strong>。正答1"},
+{id:40,b:2,sec:"ら抜き言葉",star:true,
+ text:"【第21回（午前）問題45】「ら抜き言葉」はどれか。a.切れる　b.食べれる　c.見れる　d.踊れる　e.走れる",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[2],multi:false,
+ exp:"ら抜き言葉は<strong>母音語幹動詞</strong>（命令形が-ろ/-よで終わる）から派生する。「食べる」「見る」は母音語幹動詞なので、「食べれる」「見れる」がら抜き言葉。「切る」「踊る」「走る」は子音語幹動詞なので「切れる」等はら抜き言葉ではなく可能動詞。正答3（★頻出）"},
+{id:41,b:2,sec:"子音語幹動詞",star:false,
+ text:"【第21回（午後）問題42】子音語幹動詞（五段活用動詞）はどれか。",
+ opts:["帰る","落ちる","化ける","モテる","カビる"],
+ ans:[0],multi:false,
+ exp:"子音語幹動詞は命令形がエ段で終わる。「帰る」の命令形は「帰れ」→エ段で終わる<strong>子音語幹動詞</strong>。残りはすべて命令形「落ちろ」「化けろ」「モテろ」「カビろ」で母音語幹動詞。正答1"},
+{id:42,b:2,sec:"重複",star:false,
+ text:"【第23回（午前）問題44】形態論的プロセスとしての重複には完全重複と部分重複があるが、いずれでもないのはどれか。",
+ opts:["やまやま","ひとびと","しんじん","つつく","あやや"],
+ ans:[2],multi:false,
+ exp:"完全重複＝形態素の全体の繰り返し（やまやま・ひとびと）。部分重複＝形態素の一部の繰り返し（つつく・あやや）。<strong>「しんじん（新人・信心・深甚・審尋）」は同じ形態素が繰り返されているわけではない</strong>。正答3"},
+{id:43,b:2,sec:"語形成",star:false,
+ text:"【第25回（午前）問題44】「高等学校」→「高校」と同じプロセスによる語形成はどれか。a.やった、学割が使える　b.今日は温度が低い　c.学校へ行くには道路を渡って行く　d.海水はしょっぱい　e.基地に空母が配備された",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[1],multi:false,
+ exp:"「高等学校」→「高校」は刈り込み（clipping）というプロセス。同様に<strong>「学生割引」→「学割」（a）</strong>と<strong>「航空母艦」→「空母」（e）</strong>が刈り込みの例。正答2"},
+{id:44,b:2,sec:"名詞派生",star:false,
+ text:"【第26回 問題142】「み」が形容詞から名詞を派生しているのはどれか。a.重み　b.励み　c.好み　d.歩み　e.厚み",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[1],multi:false,
+ exp:"「形容詞の語幹＋み」が名詞を派生させるのは「重い→重－み」「厚い→厚－み」。<strong>a「重み」とe「厚み」</strong>が該当。「励む」「好む」「歩む」は動詞から「励み・好み・歩み」が派生（動詞からの派生）。正答2"},
+
+/* ==============================
+   ブロック3：統語論
+   ============================== */
+{id:45,b:3,sec:"句構造・樹形図",star:true,
+ text:"【第1回 問題86】「目がとても美しい少女」の統語構造について正しいのはどれか。",
+ opts:["[[目がとも][美しい少女]]","[[[目がとも]美しい]少女]","[目が[[とても美しい]少女]]","[目が[とも[美しい少女]]]","[[目が[とても美しい]]少女]"],
+ ans:[4],multi:false,
+ exp:"NPの主要部「少女」とそれを修飾する「目がとても美しい」に分かれる。関係節「目がとても美しい」はAdv「とても」とA「美しい」に分かれる。最終的に<strong>[[目が[とても美しい]]少女]</strong>。正答5（★頻出）"},
+{id:46,b:3,sec:"日本語の統語的特徴",star:true,
+ text:"【第1回 問題88】日本語の統語的特徴について誤っているのはどれか。",
+ opts:["述語である動詞は文末に位置する。","主語は、英語などと異なり、平叙文・疑問文を問わず文頭に位置する。","修飾部（修飾語句）が主要部（被修飾語句）に先行する。","疑問詞を含む文は、対応する平叙文と語順が同じである。","名詞がその後に助詞（後置詞）を伴うタイプの言語である。"],
+ ans:[1],multi:false,
+ exp:"日本語の主語（ガ格名詞句）の位置は固定されていない（かきまぜ語順／スクランブル語順）。2は誤り。1・3・4・5は正しい日本語の特徴。正答2（★頻出）"},
+{id:47,b:3,sec:"母語獲得",star:false,
+ text:"【第1回 問題89】人間の言語（母語）の習得について誤っているのはどれか。",
+ opts:["ヒトという種に特有のものである。","一定の年齢までに基本的な習得は完成する。","周囲で話されている言語を資料として、習得する。","母語としては親と同じ言語を習得する。","同じ言語を習得する複数の個人の習得結果は、本質的な点では同じであるとみなせる。"],
+ ans:[3],multi:false,
+ exp:"<strong>母語は親の言語とは関係なく、周囲の社会で話されている言語を獲得する</strong>（例：日本人の親を持つ子が英語圏で育てば英語が母語）。「習得」は正確には「獲得」。正答4"},
+{id:48,b:3,sec:"日本語の基本語順",star:true,
+ text:"【第2回 問題87】日本語の基本語順はどれか。",
+ opts:["OSV","SVO","OVS","VSO","SOV"],
+ ans:[4],multi:false,
+ exp:"日本語の基本語順は<strong>SOV（主語Subject＋目的語Object＋動詞Verb）</strong>型。「太郎が（S）次郎を（O）殴った（V）」。英語はSVO型。正答5（★頻出）"},
+{id:49,b:3,sec:"母語獲得",star:false,
+ text:"【第2回 問題89】人間の言語（母語）の習得について誤っているのはどれか。",
+ opts:["同一の言語社会ではどの幼児もほぼ等質的な資料に基づいて言語を習得する。","同一の言語社会ではどの幼児も本質的に同じ習得結果に到達する。","幼児は人種・民族とは関係なく周囲の社会で話されている言語を習得する。","特別な訓練を与えなくても達成される。","一定の年齢までに達成される。"],
+ ans:[0],multi:false,
+ exp:"「周囲で話されている言語が等質的ではなくても、ヒトに普遍の言語獲得装置LADに導かれて本質的に同じ獲得結果に到達する」というのがチョムスキーの主張。1は誤り。正答1"},
+{id:50,b:3,sec:"句構造",star:true,
+ text:"【第3回 問題86】「言葉の回復を支える言語聴覚士」の統語構造として正しいのはどれか。",
+ opts:["[言葉の[回復を[支える言語聴覚士]]]","[言葉の[[回復を支える]言語聴覚士]]","[[言葉の[回復を支える]]言語聴覚士]","[[[言葉の回復]を支える]言語聴覚士]"],
+ ans:[3],multi:false,
+ exp:"NPの主要部「言語聴覚士」と付加詞「言葉の回復を支える」に分かれ、さらに「言葉の回復を」と「支える」に分かれる。<strong>[[[言葉の回復]を支える]言語聴覚士]</strong>が正しい構造。正答4（★頻出）"},
+{id:51,b:3,sec:"日本語の配列規則",star:false,
+ text:"【第4回 問題90】日本語の配列上の規則性として誤っているのはどれか。",
+ opts:["音配列の基本はCVである。","主語の位置は文頭である。","述語は文あるいは節の末尾に置かれる。","名詞を修飾する要素は名詞に先行する。","名詞の格を示す助詞が名詞の直後に置かれる。"],
+ ans:[1],multi:false,
+ exp:"日本語の主語の位置は文頭に固定されていない（かきまぜ語順）。2は誤り。他はすべて日本語の配列規則として正しい。正答2"},
+{id:52,b:3,sec:"句構造分析",star:false,
+ text:"【第6回 問題87】「白い犬と猫が私のペットだ」という文の構造として、あり得るのはどれか。a.[白い][[[犬と猫]が][私のペットだ]]　b.[白い][[犬と][[猫が][私のペットだ]]]　c.[[[白い][犬と猫]]が][私のペットだ]　d.[[[白い犬]と猫]が][私のペットだ]　e.[[白い犬]と][[猫が][私のペットだ]]",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[3],multi:false,
+ exp:"「白い」が「犬と猫」全体を修飾する場合はc、「白い」が「犬」のみを修飾してdの構造となる。<strong>c, d</strong>がいずれもあり得る構造。正答4（★頻出）"},
+{id:53,b:3,sec:"言語獲得理論",star:true,
+ text:"【第6回 問題89】Chomskyの言語獲得理論に含まれないのはどれか。",
+ opts:["大人の働き掛けがあれば文法を獲得できる。","言語の違いを超えて普遍文法が存在する。","文法知識は言語使用の知識から独立している。","言語獲得は生得的にプログラムされている。","特別な練習をしなくても文法規則を獲得する。"],
+ ans:[0],multi:false,
+ exp:"チョムスキー（Chomsky）の言語獲得理論では<strong>「大人の働き掛けがなくても文法を獲得できる（生得的）」</strong>とする。「大人の働き掛けがあれば」は行動主義的考え方で、チョムスキーの対極。正答1（★頻出）"},
+{id:54,b:3,sec:"日本語の文の特徴",star:false,
+ text:"【第7回 問題88】日本語文の文法的記述として誤っているのはどれか。",
+ opts:["語順が格を表す。","基本語順はSOVである。","形容詞も述語となる。","述語に形態素を膠着的に付加できる。","述語以外の要素の語順変更が可能である。"],
+ ans:[0],multi:false,
+ exp:"日本語では<strong>格は語順ではなく格助詞によって表示される</strong>。「太郎が花子に飴を貰った」と「花子に太郎が飴を貰った」は語順が異なっても格関係は同じ。正答1（★頻出）"},
+{id:55,b:3,sec:"句構造",star:false,
+ text:"【第8回 問題88】「君の好きなあの赤い花」の統語構造として正しいのはどれか。",
+ opts:["[[[君の好きな]あの赤い]花]","[君の[好きな][あの]赤い花]","[[君の好きな][あの赤い]花]","[[[君の][好きな]][[あの][赤い花]]]","[[君の][好きな]][[あの][赤い花]]"],
+ ans:[4],multi:false,
+ exp:"「君の好きなあの赤い花」のNPは、関係節「君の好きな（=君が好きな）」と名詞句「あの赤い花」に分かれ、「あの」はDetで「赤い花」全体に付く。最終的に<strong>[[君の][好きな]][[あの][赤い花]]</strong>。正答5"},
+{id:56,b:3,sec:"日本語の類型論",star:true,
+ text:"【第8回 問題89】日本語の類型論的特徴として正しいのはどれか。",
+ opts:["SVO型、前置詞型","SVO型、後置詞型","VSO型、前置詞型","SOV型、後置詞型","SOV型、前置詞型"],
+ ans:[3],multi:false,
+ exp:"日本語は<strong>SOV型</strong>であり、θ役割・主題役割・意味役割の表示に前置詞ではなく<strong>後置詞（格助詞）が用いられる</strong>。正答4（★頻出）"},
+{id:57,b:3,sec:"格",star:false,
+ text:"【第8回 問題90】文法的な格関係を表さない助詞はどれか。",
+ opts:["は","を","で","の","から"],
+ ans:[0],multi:false,
+ exp:"非生成文法的な日本語学では「は」のみが「とりたて助詞」であり異質。格助詞（が・を・に・の一部）と後置詞（に・で・へ・から・より・まで）を一括して「格助詞」として扱うことが多い。<strong>「は」だけが格関係を表さない</strong>。正答1"},
+{id:58,b:3,sec:"句構造",star:false,
+ text:"【第9回 問題87】「大きな桜のきれいな庭」の統語構造としてあり得るのはどれか。a.[[[大きな桜の]きれいな]庭]　b.[[大きな桜の][きれいな庭]]　c.[大きな桜の][きれいな][庭]　d.[[大きな][桜のきれいな]庭]　e.[[大きな][桜のきれいな]庭]",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[0],multi:false,
+ exp:"「大きな」が「桜」を修飾する場合はa、「大きな」が「庭」を修飾する場合はb。<strong>a, b</strong>の2通りがあり得る構造。正答1"},
+{id:59,b:3,sec:"日本語の特徴",star:false,
+ text:"【第11回（午後）問題44】日本語の特徴で正しいのはどれか。a.述語の位置は文末に近い傾向がある　b.格助詞は原則として省略されない　c.活用の仕方はヨーロッパ諸語に近い　d.語順によって文法的関係を表す　e.前置詞ではなく後置詞を用いる",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[1],multi:false,
+ exp:"a（述語が文末傾向）とe（後置詞を用いる）は正しい。b「格助詞の省略は口語では存在する」c「ヨーロッパ諸語の活用＝屈折、日本語は膠着」d「文法関係は語順でなく格助詞で表す」。正答2"},
+{id:60,b:3,sec:"SOV型言語",star:false,
+ text:"【第13回（午前）問題45】SOVタイプの言語の説明として適切でないのはどれか。a.後置詞を持つことが多い　b.連体修飾が名詞の後ろに置かれることが多い　c.接続辞による屈折や派生が一般的なことが多い　d.複合語の主要部が最後に来ることが多い　e.日本語は通時的に見てもこのタイプに属する",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[2],multi:false,
+ exp:"日本語（SOV型）の特徴：a（後置詞あり）b（連体修飾は名詞の前）d（複合語の主要部は最後）e（上代から常にSOV）は正しい。<strong>c「接続辞による屈折は誤り。日本語は接頭辞より接尾辞による派生が優勢な膠着語」</strong>。正答3"},
+{id:61,b:3,sec:"ヲ格",star:false,
+ text:"【第15回（午前）問題45】ヲ格を要求する2項述語はどれか。",
+ opts:["渡る","もらう","詳しい","散歩する","泣く"],
+ ans:[0],multi:false,
+ exp:"「渡る」は「AがBを渡る」で二項述語。「もらう」は「AがBからCをもらう」で三項述語。「詳しい」は「AがBに詳しい」で二項述語（ヲ格不要）。「散歩する」は一項述語。<strong>ヲ格を要求する二項述語は「渡る」</strong>。正答1"},
+{id:62,b:3,sec:"従属節",star:true,
+ text:"【第15回（午前）問題46】「[」が従属節の初めを示さないのはどれか。",
+ opts:["彼は彼女に[婚約を解消することを告げた。","友人から[頼んでいた資料をやっと受け取った。","先週[旅行先で気になっていたバッグを買った。","彼は[大学を卒業した直後にアメリカに留学した。","生鮮食品も[家族がネットで見つけた店で買っている。"],
+ ans:[2],multi:false,
+ exp:"3「先週[旅行先で気になっていたバッグを買った」において「[」は従属節の始まりを示していない（「旅行先で」は従属節ではなく主節の動詞「買った」の付加詞）。正答3（★頻出）"},
+{id:63,b:3,sec:"三項述語",star:false,
+ text:"【第17回（午後）問題43】三項述語として用いられないのはどれか。",
+ opts:["超える","はずす","渡す","注ぐ","約束する"],
+ ans:[0],multi:false,
+ exp:"「はずす」「渡す」「注ぐ」「約束する」はいずれも「AがBにCを…」または「AがBからCを…」の構文をとる三項動詞。<strong>「超える」は「AがCを超える」の形で用いられる二項動詞</strong>。正答1"},
+{id:64,b:3,sec:"従属節",star:true,
+ text:"【第17回（午後）問題44】「[」が従属節の始まりを示していないのはどれか。",
+ opts:["やっと今日[彼女に三日前に頼んでおいた資料を受け取ることができた。","彼女が[もし出席できないとしたら残念だ。","彼女から[我々が提案した案件について反対意見が出された。","彼は[机の下に置いてある箱の中から雑誌を取り出した。","彼は[退院してからすぐに温泉旅行に出かけた。"],
+ ans:[1],multi:false,
+ exp:"2「彼女が[もし出席できないとしたら残念だ」の「[」は従属節の途中に置かれている（主節「残念だ」を修飾する副詞節の始まりは「もし」でなく「彼女が」）。正答2"},
+{id:65,b:3,sec:"受身文",star:true,
+ text:"【第19回（午前）問題46】間接受身文はどれか。",
+ opts:["花子が先生からほめられた。","妹が犬にかみつかれた。","姉が駅員に呼び止められた。","太郎が友だちに足を踏まれた。","弟が社長に転勤を命じられた。"],
+ ans:[3],multi:false,
+ exp:"間接受身（所有受身）とは「基本文の内項NP（太郎の足）に含まれる所有者NP（太郎の）が受動形態素『られ』の働きによって最上位NPとして取り出された文」。<strong>「太郎が友だちに足を踏まれた」が所有受身文</strong>。正答4（★頻出）"},
+{id:66,b:3,sec:"使役受身",star:true,
+ text:"【第20回（午前）問題46】「花子は太郎にご飯を無理やり食べさせられた」の下線部「られ」の文法機能はどれか。",
+ opts:["可能","尊敬","自発","受身","使役"],
+ ans:[3],multi:false,
+ exp:"この文は「花子がご飯を食べた」を基本文とする使役受動文。「食べ-させ-られ-た」の「させ」が<strong>使役</strong>を、<strong>「られ」が受身</strong>を表示する。正答4（★頻出）"},
+{id:67,b:3,sec:"動作主のが格",star:false,
+ text:"【第20回（午後）問題42】「が」が動作主を表しているのはどれか。",
+ opts:["花子はリンゴが食べたい。","太郎は中国語が分かる。","花子は英語が話せる。","太郎は足が速い。","荷物は花子が送った。"],
+ ans:[4],multi:false,
+ exp:"各述語の項構造を検討すると、1「食べ-」の動作主は「花子」（「リンゴが」は対象）、2「分かr-」の「中国語が」は経験者・対象、3「話s-」の「英語が」は対象。<strong>5「送r-」の動作主が「花子が」</strong>。正答5"},
+{id:68,b:3,sec:"複合動詞",star:false,
+ text:"【第20回（午後）問題43】語彙的複合動詞はどれか。",
+ opts:["飛び上がる","食べ残す","歌い終える","歩き続ける","話し始める"],
+ ans:[0],multi:false,
+ exp:"「語彙的複合動詞」は第1要素をそうし-に置き換え不可。「飛び上がる」→「*そうし上がる」で置き換え不可。<strong>「飛び上がる」が語彙的複合動詞</strong>。「歌い終える」「歩き続ける」「話し始める」は統語的複合動詞（第1要素を「そうし-」に置き換え可能）。正答1"},
+{id:69,b:3,sec:"自他動詞",star:false,
+ text:"【第21回（午後）問題44】自動詞と他動詞の組み合わせでないのはどれか。",
+ opts:["起きる－起こす","裂ける－裂く","溶ける－溶かす","はいる－いれる","走る－走れる"],
+ ans:[4],multi:false,
+ exp:"他動詞の目語「Bを」が自動詞文では主語「Bが」となる対応を確認。「走る」→「走れる」は自動詞とその可能動詞の対であり、<strong>自動詞と他動詞の対ではない</strong>。正答5"},
+{id:70,b:3,sec:"他動詞",star:false,
+ text:"【第22回（午前）問題45】述語が他動詞である文はどれか。a.小包が母から届いた　b.みきが電車に乗った　c.まやがボールを蹴った　d.ゆうきがケーキを食べた　e.あすかがバイクにまたがった",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[3],multi:false,
+ exp:"他動詞＝「S構造においてヲ格NP/対格NPを項として要求する動詞」。c「蹴る」（ボールを）・d「食べる」（ケーキを）がヲ格NPを項とする他動詞。正答4"},
+{id:71,b:3,sec:"条件節",star:false,
+ text:"【第22回（午後）問題43】従属節が条件節である複文はどれか。a.宿題が終わるまで、遊びに行けない　b.友達が来るので、お菓子を用意する　c.走っている間、何も考えない　d.雨が降ったら、コンサートに行けない　e.春になれば、花が咲き乱れる",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[4],multi:false,
+ exp:"条件節とは主節が表示する事態の成立・不成立に関わる条件を表示している従属節。<strong>d「雨が降ったら」とe「春になれば」が条件節</strong>。a「終わるまで」は継続の終了時、b「来るので」は理由、c「走っている間」は期間。正答5"},
+{id:72,b:3,sec:"三項動詞",star:false,
+ text:"【第23回（午後）問題43】3項動詞（複他動詞）を述語とする文はどれか。a.AさんがBさんを公園で待った　b.AさんがBさんを車に乗せた　c.AさんがBさんに本をあげた　d.AさんがBさんにフランス語を教えた　e.AさんがBさんに電話でどなった",
+ opts:["a, b","a, e","b, c, d","c, d","d, e"],
+ ans:[3],multi:false,
+ exp:"3項動詞はb「乗せる（AがBをCに乗せる）」c「あげる（AがBにCをあげる）」d「教える（AがBにCを教える）」の3つ。a「待つ」は2項動詞、e「どなる」は2項動詞。公式解答は4のみ（b,c,dのうちb,cは2項動詞の解釈も可）。正答4"},
+{id:73,b:3,sec:"自他動詞",star:false,
+ text:"【第26回 問題144】他動詞と自動詞の組み合わせでないのはどれか。",
+ opts:["落とす－落ちる","付ける－付く","外す－外れる","流す－流れる","書く－書ける"],
+ ans:[4],multi:false,
+ exp:"「落とす/落ちる」「付ける/付く」「外す/外れる」「流す/流れる」はいずれも共通の語根を有する他動詞と自動詞の対。<strong>「書く」と「書ける」は意志的な動詞とその可能動詞の対であり、自動詞と他動詞の対ではない</strong>。正答5"},
+
+/* ==============================
+   ブロック4：文字論
+   ============================== */
+{id:74,b:4,sec:"文字の分類",star:true,
+ text:"【第2回 問題88】正しいのはどれか。a.文字には表音文字と表意文字とがある　b.仮名は表意文字である　c.表意文字は音をもたない　d.文字は思考を明確にするのに寄与する　e.黙読の方が音読より速く読める",
+ opts:["a, b, c","a, b, e","a, d, e","b, c, d","c, d, e"],
+ ans:[2],multi:false,
+ exp:"<strong>a（表音文字と表意文字がある）・d（思考を明確にする）・e（黙読は音読より速い）が正しい</strong>。仮名は表音文字（bは誤り）、表意文字（漢字）にも読みがある（cは誤り）。正答3（★頻出）"},
+{id:75,b:4,sec:"文字の分類",star:true,
+ text:"【第3回 問題90】誤っているのはどれか。",
+ opts:["漢字は表意文字である。","仮名は音素文字である。","表意文字も音を有する。","表音文字は表意文字より字種が少ない。","文字の習得は音声の習得より遅れる。"],
+ ans:[1],multi:false,
+ exp:"仮名は<strong>音素文字ではなくモーラ文字（音節文字）</strong>。1・3・4・5はすべて正しい（表音文字が表す音素・モーラ・音節の数よりも表意文字が表す形態素・語の数のほうが圧倒的に多いので4は正しい）。正答2（★頻出）"},
+{id:76,b:4,sec:"文字の分類",star:true,
+ text:"【第7回 問題87】アルファベット、仮名、漢字について正しいのはどれか。",
+ opts:["どれも表音文字である。","どれも表意文字である。","アルファベットだけが表意文字である。","仮名は音節文字ではない。","漢字だけが表意文字である。"],
+ ans:[4],multi:false,
+ exp:"<strong>漢字だけが表意文字（表語文字）</strong>。アルファベットは音素文字（表音文字）、仮名は正確にはモーラ文字だが広義の音節文字に含める場合もある。正答5（★頻出）"},
+{id:77,b:4,sec:"文字の種類",star:true,
+ text:"【第10回 問題89】文字について正しいのはどれか。",
+ opts:["漢字は元来1文字が1語なので表語文字と呼ばれる。","片仮名は平仮名に基づいて後の時代に作られた。","アルファベットはまとまって音を表す音節文字である。","平仮名は漢字の部首を利用した表音記号から発達した。","アラビア数字は物の形を図案化した象形文字である。"],
+ ans:[0],multi:false,
+ exp:"<strong>漢字は元来1文字が1語（表語文字）</strong>。片仮名は平仮名に基づくのではなく万葉仮名に用いられていた漢字の草書体から一部を取り出した文字。アルファベットは音素文字。平仮名は万葉仮名の草書体から発達。正答1"},
+{id:78,b:4,sec:"漢字の特徴",star:true,
+ text:"【第11回（午前）問題43】漢字「晴」「請」「清」に共通する特徴はどれか。",
+ opts:["音読みをしたときに長さが1モーラである。","訓読みしたときに同じ音である。","意符と音符のうち音符が同じである。","会意文字と呼ばれる成り立ちをしている。","象形文字なので形と意味が合致している。"],
+ ans:[2],multi:false,
+ exp:"「晴」「請」「清」はいずれも音符「青」/セイ/もしくは/セー/を共有する。<strong>意符と音符からなる漢字は形声文字</strong>。正答3（★頻出）"},
+{id:79,b:4,sec:"漢字の特徴",star:false,
+ text:"【第13回（午後）問題43】漢字の特徴として誤っているものはどれか。",
+ opts:["漢字全体の約7割を占めているのが象形文字である。","「上」のように抽象概念を図案化したものを指示文字という。","「林」のように象形文字を組み合わせたものを会意文字と呼ぶ。","1字が1語に相当するので表語文字とも呼ばれる。","漢字の意味に相当する和語を当てる手法を訓読みという。"],
+ ans:[0],multi:false,
+ exp:"漢字全体の<strong>約9割以上を占めるのは形声文字</strong>（象形文字ではない）。2〜5はすべて正しい。正答1（★頻出）"},
+{id:80,b:4,sec:"形態素と漢字",star:false,
+ text:"【第16回（午後）問題44】単字として形態素を表さない漢字表記はどれか。a.珈琲　b.空廐　c.本箱　d.夕刊　e.小豆",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[1],multi:false,
+ exp:"当て字として使われているのは<strong>「珈琲」（コーヒー）と「小豆」（あずき）</strong>。これらは全体で1つの形態素を表す。b〜dはそれぞれ個々の漢字が独自の意味を有する形態素を表している。正答2"},
+{id:81,b:4,sec:"当て字",star:false,
+ text:"【第19回（午後）問題42】当て字（漢字の表音的使用）はどれか。",
+ opts:["田舎","海女","雪崩","部屋","土産"],
+ ans:[3],multi:false,
+ exp:"当て字とは漢字を音として使用すること。「部屋」の「部」が音的に/へ/に対応し「屋」は/や/に対応する。これに対し他の選択肢は漢字の音や訓が利用されていない読み方。<strong>「部屋」の「部」と「屋」のみが表音的に用いられている</strong>。正答4"},
+{id:82,b:4,sec:"表意文字と表音文字",star:true,
+ text:"【第21回（午前）問題46】1文字で表音と表意の両方の役割を担うのはどれか。",
+ opts:["ローマ字","漢字","ひらがな","ギリシャ文字","カタカナ"],
+ ans:[1],multi:false,
+ exp:"<strong>漢字</strong>だけが表意文字であり、仮借によって表音文字としても使用可能。この1文字で表音と表意両方の役割を担う。正答2（★頻出）"},
+{id:83,b:4,sec:"漢字の読み",star:false,
+ text:"【第22回（午前）問題46】各々の漢字に決まった読み方を利用していないのはどれか。a.雨傘　b.天女　c.女王蜂　d.五月雨　e.五月蝿い",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[4],multi:false,
+ exp:"漢字の字音も訓音も利用していないのは<strong>d「五月雨」＝「さみだれ」</strong>と<strong>e「五月蠅い」＝「うるさい」</strong>（当て字）。正答5（d, e）"},
+{id:84,b:4,sec:"漢字の読み",star:false,
+ text:"【第25回（午前）問題46】漢字の音読みを含むのはどれか。a.鹿の子（かのこ）　b.残り香（のこりが）　c.生死（せいし）　d.お新香（おしんこ）　e.犬死（いぬじに）",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[3],multi:false,
+ exp:"「漢字の中国語における発音を日本語化したもの」が音読み。c「生死」の「生（セイ）」も「死（シ）」も音読み、d「お新香」の「新（シン）」も音読み。<strong>c, dが音読みを含む</strong>。正答4"},
+
+/* ==============================
+   ブロック5：意味論（追加分）
+   ============================== */
+{id:85,b:5,sec:"機能語・内容語",star:true,
+ text:"【第3回 問題87】機能語はどれか。",
+ opts:["動詞","名詞","助詞","形容詞","形容動詞"],
+ ans:[2],multi:false,
+ exp:"<strong>機能語・機能形態素＝意味役割や事態の成立時点・事態の成立可能性などの文法的機能を表す語・形態素</strong>。助詞（後置詞・格助詞・とりたて助詞・並列助詞・接続助詞・終助詞など）・接辞一般が該当。正答3（★頻出）"},
+{id:86,b:5,sec:"テンス",star:true,
+ text:"【第4回 問題88】「読む」と「読んだ」との違いを表す用語はどれか。",
+ opts:["格","アスペクト","ヴォイス","モダリティ","テンス"],
+ ans:[4],multi:false,
+ exp:"「読む」と「読んだ」を形態論的に分析すると[jom-u]と[jon-da]となる。「読む」の[-u]は「非過去」を表す形態素「-る」/-ru/の異形態、「読んだ」の[-da]は「過去」を表す形態素「-た」/-ta/の異形態。<strong>テンス（時制）</strong>において異なっている。正答5（★頻出）"},
+{id:87,b:5,sec:"格",star:false,
+ text:"【第5回 問題87】「太郎が花子に指輪を贈った」において「格」で異なるのはどれか。",
+ opts:["「太郎が」と「花子に」","「太郎が」と「指輪を」","「花子に」と「指輪を」","「太郎が」と「太郎が花子に指輪を贈った」","「花子に」と「太郎が花子に指輪を贈った」"],
+ ans:[0],multi:false,
+ exp:"「太郎が」は主格NP、「花子に」は与格NP、「指輪を」は対格NP。<strong>「太郎が」（主格）と「花子に」（与格）が格において異なる</strong>。正答1（★頻出）"},
+{id:88,b:5,sec:"モダリティ",star:true,
+ text:"【第6回 問題88】「ようだ」「らしい」の働きはどれか。",
+ opts:["対人モダリティ","証拠性モダリティ（対事モダリティの一種）","アスペクト","ヴォイス","テンス"],
+ ans:[1],multi:false,
+ exp:"助動詞「ようだ」「らしい」の働きは「対事モダリティ」の中でも特に<strong>「証拠性モダリティ」（話し手が何らかの証拠・根拠をもとに判断する）</strong>を表す（選択肢2が正解）。終助詞「ね」「よ」の働きは「対人モダリティ」。なお「助動詞」「終助詞」は統語範疇（品詞）であって、機能の名称ではない。★頻出"},
+{id:89,b:5,sec:"機能形態素の順序",star:true,
+ text:"【第9回 問題90】「彼の家は、もう建てられていーるーだろう」の文の中に含まれる機能形態素の順番として正しいのはどれか。",
+ opts:["トピック→ヴォイス→アスペクト→テンス→モダリティ","ヴォイス→トピック→アスペクト→テンス→モダリティ","トピック→アスペクト→ヴォイス→テンス→モダリティ","モダリティ→テンス→アスペクト→ヴォイス→トピック","トピック→ヴォイス→テンス→アスペクト→モダリティ"],
+ ans:[0],multi:false,
+ exp:"「彼の家<strong>は</strong>（トピック）、もう建て<strong>られ</strong>（ヴォイス／受動態）<strong>てい</strong>（アスペクト／非完結相）<strong>る</strong>（テンス／非過去）<strong>だろう</strong>（モダリティ／推定）」。正答1（★頻出）"}
+,
+/* ==================== 意味論追加問題 ==================== */
+{id:90,b:5,sec:"モダリティ",star:true,
+ text:"【第9回 問題90】日本語の文で最も後ろ寄りの位置に現れるのはどれか。",
+ opts:["アスペクト","モダリティ","テンス","トピック","ヴォイス"],
+ ans:[1],multi:false,
+ exp:"「彼の家は もう 建て－られ－てい－る－だろう」の順番は：トピック「は」→ヴォイス「られ」→アスペクト「てい」→テンス「る」→<strong>モダリティ「だろう」</strong>。モダリティ形式は常に文の述語の最後尾に現れる。正答2（★頻出）"},
+{id:91,b:5,sec:"複合語の意味構造",star:false,
+ text:"【第10回 問題86】複合語「好き嫌い」と「食わず嫌い」との内部構造の違いに関係するのはどれか。a.並列関係　b.強調関係　c.主述関係　d.否定関係　e.修飾関係",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[1],multi:false,
+ exp:"「好き嫌い」は「好きと嫌い」の意で並列関係（a）。「食わず嫌い」は「食べずに嫌っている」の意で「食べずに」が「嫌い」を修飾する修飾関係（e）。正答2"},
+{id:92,b:5,sec:"ヴォイスとアスペクト",star:true,
+ text:"【第10回 問題87】「次の一手を読まれた」と「次の一手を読んでいた」の違いを表すのはどれか。a.テンス　b.アスペクト　c.ヴォイス　d.ムード　e.モダリティ",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[2],multi:false,
+ exp:"「読まれた」にあって「読んでいた」にない「[-are-]」は<strong>受動態（ヴォイス）</strong>を表す形態素「-られ」の異形態。「読んでいた」にあって「読まれた」にない「[-de-i-]」は<strong>アスペクト（非完結相）</strong>を示す形態素連続「てい」の変異形。正答3（★頻出）"},
+{id:93,b:5,sec:"主題",star:true,
+ text:"【第10回 問題90】下線部が文の「主題」なのはどれか。a.星を見ていた　b.駅まで行ってくる　c.海も好きだ　d.昨日は雨だった　e.空がきれいだ",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[3],multi:false,
+ exp:"「を」「まで」「が」は後置詞・格助詞で主題を表さない。「も」と「は」はとりたて詞で主題を示す。<strong>「海も」（c）と「昨日は」（d）が主題</strong>。正答4（★頻出）"},
+{id:94,b:5,sec:"極性と文法要素の順序",star:true,
+ text:"【第11回（午前）問題45】「読まれなかったらしい」を文法的要素に分解して並べたとき、後ろから3番目はどれか。",
+ opts:["否定","テンス","ヴォイス","アスペクト","モダリティ"],
+ ans:[0],multi:false,
+ exp:"「読まれなかったらしい」→「読m－aれ（ヴォイス）－φ（アスペクト）－なかっ（否定/極性）－た（テンス）－らしい（モダリティ）」と分析。後ろから：らしい→た→<strong>なかっ＝後ろから3番目＝否定（極性）</strong>→φ→られ。正答1（★頻出）"},
+{id:95,b:5,sec:"は・が",star:true,
+ text:"【第11回（午後）問題45】助詞「は」と「が」について当てはまらないものはどれか。",
+ opts:["従属節の中では原則的に「が」を用いる。","二者の対比を示したいときには「は」を用いる。","新情報であることを示すときは「は」を用いる。","主語には「が」を用い、主題には「は」を用いる。","語と語の文法的関係を示すには「が」を用いる。"],
+ ans:[2],multi:false,
+ exp:"<strong>新情報を示すときは「が」を用い、旧情報・主題を示すときは「は」を用いる</strong>（3は誤り）。「は」の主要な機能は「旧情報の提示」と「対比」。正答3（★頻出）"},
+{id:96,b:5,sec:"とりたて詞・格助詞",star:false,
+ text:"【第12回（午前）問題45】文法的な働きの異なる助詞はどれか。",
+ opts:["も","こそ","ばかり","より","しか"],
+ ans:[3],multi:false,
+ exp:"1〜5の助詞は「後置詞」と「とりたて詞」に二分される。「より」だけが後置詞（名詞句のθ役割を表示する）であり、「も」「こそ」「ばかり」「しか」はとりたて詞。正答4"},
+{id:97,b:5,sec:"アスペクト・テンス",star:true,
+ text:"【第12回（午後）問題42】「きっと読んでいないだろうね」と「きっと読まなかっただろうね」の違いは何か。a.モダリティ　b.ヴォイス　c.否定　d.テンス　e.アスペクト",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[4],multi:false,
+ exp:"2文の差は「でいない」と「なかった」の部分。前者「でい＋ない＋φ」は「てい」が<strong>非完結相（アスペクト）</strong>で「φ」が非過去（テンス）。後者「φ＋なかっ＋た」は「た」が<strong>過去（テンス）</strong>。アスペクトとテンスにおいて異なる。正答5（★頻出）"},
+{id:98,b:5,sec:"上位語・下位語",star:true,
+ text:"【第12回（午後）問題43】上位語－下位語の関係にある組合せはどれか。",
+ opts:["山－火山","日本－東京都","自動車－自転車","草木－草花","赤－黄"],
+ ans:[0],multi:false,
+ exp:"「火山は山の一種である」と言えるので<strong>「山」が上位語、「火山」が下位語</strong>。「日本－東京都」「自動車－自転車」「草木－草花」「赤－黄」はいずれもこの関係が成り立たない。正答1（★頻出）"},
+{id:99,b:5,sec:"「た」の用法",star:true,
+ text:"【第13回（午後）問題45】下線部「た」の用法が他と異なるものはどれか。",
+ opts:["あ、あっちから車が来たよ。","明日、出張だったっけ？","危ない！どいたどいた！","ご飯、もう食べちゃったよ。","このカバン、あなたのだったよね。"],
+ ans:[3],multi:false,
+ exp:"1・2・3・5の「た」は非タ形に置き換えても大意が変わらない<strong>モダリティ（想起・確認・発見・命令・要求）</strong>用法。4の「食べちゃった」の「た」は非タ形に置き換えると意味がまったく変わる<strong>アスペクト（完了・結果状態）</strong>用法。正答4（★頻出）"},
+{id:100,b:5,sec:"ヴォイス",star:false,
+ text:"【第14回（午前）問題45】ヴォイスの現象の例として適切でないのはどれか。",
+ opts:["多重主語文","可能文","希望文","受け身文","使役文"],
+ ans:[2],multi:false,
+ exp:"ヴォイス／態とは「事態のどの参与者に認知的プロミネンスが置かれているかを表示する文法的手段」。日本語でヴォイスとして認められるのは<strong>受身・使役・使役受身</strong>。<strong>「希望文」はモダリティ</strong>に分類される。正答3"},
+{id:101,b:5,sec:"認識モダリティ",star:false,
+ text:"【第15回（午後）問題43】認識のモダリティ形式と共起する必要のあるのはどれか。",
+ opts:["恐らく","困ったことに","必ずしも","僭越ながら","どうせ"],
+ ans:[0],multi:false,
+ exp:"日本語の認識モダリティの代表的形式は「かもしれない」「だろう」「ちがいない」「はずだ」。選択肢のうち認識モダリティ形式と共に用いられないと不自然なのは<strong>「恐らく」</strong>（「恐らく…だろう」が最も一般的な組み合わせ）。正答1"},
+{id:102,b:5,sec:"格助詞・とりたて詞",star:false,
+ text:"【第16回（午前）問題45】下線部の助詞が格関係を表さないのはどれか。",
+ opts:["バスで行く。","イギリスも島国だ。","公園を散歩する。","テニスが得意だ。","その意見に賛成だ。"],
+ ans:[1],multi:false,
+ exp:"非生成文法的な伝統日本語学では1・3・4・5はすべて格助詞。<strong>「も」だけがとりたて詞</strong>であり、格助詞とは異なる機能（主題化と対比）を持つ。正答2"},
+{id:103,b:5,sec:"述語の形態素連続",star:true,
+ text:"【第16回（午後）問題43】日本語の述語の形態素の連続として可能なのはどれか。（食べ‐させ‐られ‐てい‐なかっ‐た‐らしい‐よを例として）",
+ opts:["アスペクト－ヴォイス－テンス","ヴォイス－テンス－アスペクト","アスペクト－テンス－モダリティ","ヴォイス－モダリティ－テンス","テンス－ヴォイス－モダリティ"],
+ ans:[2],multi:false,
+ exp:"「食べ－させ（ヴォイス）－られ（ヴォイス）－てい（アスペクト）－なかっ（極性）－た（テンス）－らしい（モダリティ）－よ（対人モダリティ）」の順。<strong>ヴォイス→ヴォイス→アスペクト→極性→テンス→モダリティ</strong>の順が可能。選択肢3「アスペクト－テンス－モダリティ」が正しい部分列。正答3（★頻出）"},
+{id:104,b:5,sec:"連体修飾節（内の関係・外の関係）",star:true,
+ text:"【第16回（午後）問題45】内の関係の連体修飾節の例として適切でないのはどれか。",
+ opts:["昨日から降り続いている雨","田中氏を特使として派遣する案","毎年正月に厄介になっている旅館","台風で天守閣が壊れてしまった城","日本で一番発着便数の多い羽田空港"],
+ ans:[1],multi:false,
+ exp:"「内の関係」とは連体節の中に修飾される名詞を組み込んで文を作ることができるもの。<strong>「田中氏を特使として派遣する案」の「案」は連体節内部に組み込むことができない「外の関係」</strong>（「案として…派遣する」の「案」は事態の内容を表す同格関係）。正答2（★頻出）"},
+{id:105,b:5,sec:"同音異義語と多義語",star:true,
+ text:"【第17回（午後）問題42】言語学的にみて同音異義語はどれか。",
+ opts:["読む－詠む","剥げる－禿げる","取る－採る","護る－守る","群れる－蒸れる"],
+ ans:[4],multi:false,
+ exp:"同音異義語とは「同じ音形を有しながら意味が異なっており、かつ異なる意味の間に関連性を見出すことが難しい語の対」。1〜4はいずれも「プロトタイプ的意味」と「比喩によって派生した意味」を持つ<strong>多義語</strong>。<strong>「群れる」と「蒸れる」</strong>は意味間の関連性がない同音異義語。正答5（★頻出）"},
+{id:106,b:5,sec:"アスペクト「ている」",star:true,
+ text:"【第18回（午後）問題44】「ている」の用法として他と異なるのはどれか。",
+ opts:["あちこち探したが、彼の電話番号を見つけられないでいる。","泥遊びをして手も足も汚れているので、まず風呂に入りたい。","本を読むのに夢中で、気がついたら降りる駅を過ぎてしまっていた。","頼んだコピーが済んでいたら、受け取ってきてください。","台風が近づいてきているせいか、風が強くなったように思う。"],
+ ans:[4],multi:false,
+ exp:"1〜4の「ている」は到達動詞の非完結相で<strong>「動作が終結した結果としての状態（の不在）」</strong>を表す。5「台風が近づいてきている」の「近づく」は達成動詞で非完結相は<strong>「事態の進行・展開」</strong>を表す。正答5（★頻出）"},
+{id:107,b:5,sec:"アスペクト「ている」",star:true,
+ text:"【第19回（午前）問題43】下線部が動作の継続を示すのはどれか。",
+ opts:["男の人が笑っています。","部屋の照明が消えています。","女の人が赤い服を着ています。","会議はすでに始まっています。","部屋の中がきれいに片付いています。"],
+ ans:[0],multi:false,
+ exp:"「笑う」は行為動詞（活動動詞）で非完結相は<strong>「動作の継続・進行」</strong>を表す（1は正しい）。2「消える」3「着る」4「始まる」5「片付く」はすべて到達動詞で非完結相は「動作が終結した結果としての状態」を表す。正答1（★頻出）"},
+{id:108,b:5,sec:"換喩（メトニミー）",star:false,
+ text:"【第20回（午後）問題45】「今日の晩御飯は鍋だ。」のように換喩が用いられているのはどれか。",
+ opts:["1時間目の授業は数学だ。","うちの犬はブルドックだ。","電話の相手は母だ。","この茶碗は有田だ。","このぶどうは長野産だ。"],
+ ans:[3],multi:false,
+ exp:"換喩（メトニミー）とは「2つの事物の思考内・概念上の関連性に基づく比喩」。「有田（産地）」→「有田焼（製品）」を指示する<strong>産地換喩</strong>。「今日の晩御飯は鍋」も「鍋（容器）→鍋料理（内容）」の換喩。正答4（★頻出）"},
+{id:109,b:5,sec:"上位語・下位語",star:false,
+ text:"【第21回（午前）問題44】上位語と下位語の関係にあるのはどれか。",
+ opts:["花－種","蛸－凧","ゆり－ひまわり","は虫類－蛇","かたつむり－でんでんむし"],
+ ans:[3],multi:false,
+ exp:"「AはBの1種である」と言える場合、AはBの下位語。<strong>「蛇は爬虫類の一種である」→「は虫類」が上位語、「蛇」が下位語</strong>。「ゆりとひまわり」は同じレベルの下位語（並列）。正答4（★頻出）"},
+{id:110,b:5,sec:"機能語",star:true,
+ text:"【第22回（午前）問題44】日本語における機能語はどれか。",
+ opts:["名詞","動詞","形容詞","助詞","副詞"],
+ ans:[3],multi:false,
+ exp:"<strong>機能語・機能形態素</strong>とは「意味役割や事態の成立時点・事態の成立可能性などの文法的機能を表す語・形態素」。<strong>助詞</strong>（格助詞・とりたて詞・接続助詞・終助詞など）が機能語の代表。動詞・名詞・形容詞・副詞は内容語。正答4（★頻出）"},
+{id:111,b:5,sec:"敬語",star:false,
+ text:"【第24回（午前）問題46】下線部が尊敬語でないのはどれか。",
+ opts:["この映画はご覧になりましたか。","いつでもいらっしゃって下さい。","この弁当は電子レンジで温めてからいただいて下さい。","アメリカにはいつ行かれるんですか。","いつお出でになったんですか"],
+ ans:[2],multi:false,
+ exp:"「いただく」は謙譲語（話し手が動作の受け手として自分を低める）。1「ご覧になる」2「いらっしゃる」4「行かれる」5「お出でになる」はいずれも尊敬語。正答3"},
+{id:112,b:5,sec:"直示表現",star:false,
+ text:"【第15回（午後）問題44】直示表現（ダイクシス表現）でないのはどれか。",
+ opts:["行く・来る","こっち・そっち","好き・嫌い","今日・昨日","私・あなた"],
+ ans:[2],multi:false,
+ exp:"直示表現（deixis）とは「話し手・聞き手・発話時点・発話場所に依存して具体的な指示対象が決まる言語表現」。「行く/来る」「こっち/そっち」「今日/昨日」「私/あなた」は直示表現。<strong>「好き・嫌い」は直示表現ではない</strong>。正答3"},
+
+/* ==================== ブロック6：語彙・社会言語学・語用論 ==================== */
+{id:113,b:6,sec:"語彙・語種",star:true,
+ text:"【第1回 問題87】日本語の語彙について正しいのはどれか。",
+ opts:["和語と外来語とに二分するのが一般的である。","外来語は江戸時代末期に初めて輸入された。","「きょろきょろ」などの擬態語は基本的に外来語である。","外来語は文法的にみると名詞と動詞に限られる。","外来語は意味や形の点で原語を改変している場合が多い。"],
+ ans:[4],multi:false,
+ exp:"外来語は意味・形の点で原語を改変している場合が多い（例：ポルトガル語tabaco→「煙草」）。語彙は「和語・漢語・外来語・オノマトペ」に分類されるので1は誤り。外来語は16世紀室町時代から輸入（2は誤り）。擬態語は外来語ではない（3は誤り）。正答5（★頻出）"},
+{id:114,b:6,sec:"語彙・語種",star:false,
+ text:"【第3回 問題89】日本語について誤っているのはどれか。",
+ opts:["実質的意味を表す要素に文法的機能を表す要素が続く。","語彙は和語・漢語・外来語に分けられる。","擬音語・擬態語が豊富である。","漢字から平仮名が、平仮名から片仮名が作られた。","漢字と仮名との併用によって語句の境界が分かりやすい。"],
+ ans:[3],multi:false,
+ exp:"<strong>平仮名は万葉仮名（漢字）の草書体から、片仮名は万葉仮名に用いられていた漢字の字体の一部を取り出して作られた</strong>。「平仮名から片仮名が作られた」は誤り。正答4（★頻出）"},
+{id:115,b:6,sec:"言語変異",star:false,
+ text:"【第5回 問題90】言語の変種の例として適切でないのはどれか。",
+ opts:["現代のことばと江戸時代のことば","若者のことばと老人のことば","男性のことばと女性のことば","場面によることばの違い","地域によることばの違い（方言）"],
+ ans:[0],multi:false,
+ exp:"言語変異（linguistic variation）とは「同一の言語が共時的にさまざまな差異を示すこと」。<strong>「現代のことばと江戸時代のことば」は通時的な言語変化（change）</strong>であり、共時的な変異（variation）ではない。正答1"},
+{id:116,b:6,sec:"敬語",star:false,
+ text:"【第11回（午後）問題43】敬語の種類が他と異なるのはどれか。",
+ opts:["下さる","お休みになる","いらっしゃる","お送りする","召し上がる"],
+ ans:[3],multi:false,
+ exp:"1「下さる」・2「お休みになる」・3「いらっしゃる」・5「召し上がる」は尊敬語（聞き手や第三者の動作・状態に対して用いる）。<strong>「お送りする」だけが謙譲語</strong>（主として話し手について用いる）。正答4"},
+{id:117,b:6,sec:"直示表現とあげる・くれる",star:false,
+ text:"【第14回（午後）問題44】日本語（共通語）の「あげる」と「くれる」の説明について適切でないのはどれか。",
+ opts:["「あげる」も「くれる」も直示表現である。","「あげる」のほうが無標で「くれる」が有標である。","話し手の視点によって使い分けられる。","両方使える場合がある。","話し手が聞き手に物を与える場合、「くれる」が用いられる。"],
+ ans:[4],multi:false,
+ exp:"話し手が聞き手に物を与える場合は「あげる」を用いる（「*私はきみにこれをくれる」は不自然）。<strong>「くれる」が用いられるのは聞き手（または第三者）が話し手に与える場合</strong>。正答5"},
+{id:118,b:6,sec:"敬語（現代日本語）",star:false,
+ text:"【第14回（午後）問題45】現代日本語の敬語の性質として適切なのはどれか。a.話題の人物に対する敬語と聞き手に対する敬語に分けられる　b.相対敬語的というよりは絶対敬語的である　c.尊敬語は従属節内では用いられない　d.「ございます」は尊敬語としても用いられる　e.上下関係だけでなく親疎関係によっても用いる敬語が異なる",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[1],multi:false,
+ exp:"<strong>a（話題の人物と聞き手への敬語に分かれる）</strong>と<strong>e（上下・親疎関係によって異なる）</strong>は正しい。b「絶対敬語」は誤りで現代日本語は相対敬語。c「従属節内でも尊敬語は使える」d「ございます」は丁寧語。正答2（★頻出）"},
+{id:119,b:6,sec:"誤用・共通語",star:false,
+ text:"【第24回（午後）問題144】共通語（東京方言）で誤用とされている用法を含む例はどれか。a.朝ゴミを出しといて　b.昨日青汁を飲んじゃった　c.それでは電報を読まさせていただきます　d.そのキノコは食べれないよ　e.あそこで食べてこうよ",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[2],multi:false,
+ exp:"<strong>c「読まさせていただきます」</strong>（正：読ませていただきます）と<strong>d「食べれない」</strong>（ら抜き言葉）が規範的には誤用とされる。a・b・eは話し言葉の短縮形で誤用ではない。正答3"},
+{id:120,b:6,sec:"補充法・尊敬語",star:false,
+ text:"【第25回（午後）問題42】英語のgoの過去形がwentになるように、屈折・派生に際して語根の異なる形式を用いる現象を補充法という。尊敬語を作るのに補充法を用いていないのはどれか。a.来られる　b.ご覧になる　c.召し上がる　d.おいでになる　e.お食べになる",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[1],multi:false,
+ exp:"補充法＝元の動詞と語根が異なる別語形を使う。b「ご覧になる」（見る→ご覧）、c「召し上がる」（食べる→召し上がる）、d「おいでになる」（来る→おいで）は補充法。<strong>a「来られる」</strong>（来る→来られる・語根同一）と<strong>e「お食べになる」</strong>（食べる→お食べ・語根同一）は補充法ではない。正答2"},
+{id:121,b:6,sec:"社会方言",star:false,
+ text:"【第25回（午後）問題44】地域方言と社会方言のうち、社会方言の例はどれか。a.めんこい（かわいいの意）　b.すいとっと（好きだよの意）　c.しゃり（米の飯の意）　d.オペ（手術の意）　e.おかん（お母さんの意）",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[2],multi:false,
+ exp:"社会方言（social dialect）＝「社会的属性によって決定される社会集団の違いに対応する言語変種」。<strong>c「しゃり」（寿司業界の職業語）とd「オペ」（医療現場の職業語）が社会方言</strong>。a・b・eは地域方言。正答3"},
+{id:122,b:6,sec:"記述主義vs規範主義",star:false,
+ text:"【第23回（午後）問題44】記述主義的な態度でないのはどれか。",
+ opts:["[saŋa]と発音する人の割合と[saya]と発音する人の割合を記録した。","「行く」の尊敬語として「行かれる」を使う人の割合を記録した。","「高く」のアクセントが100人の被検者でどのような型に分かれるか記録した。","「食べれる」と言っていた人に介入することで、一定期間後に「食べられる」と言うようになった人の割合を記録した。","「ボルダリングに挑戦する」と言う人と「ボルダリングを挑戦する」と言う人との割合を記録した。"],
+ ans:[3],multi:false,
+ exp:"記述主義とは「言語がどのように使用されているかをありのままに記録する」態度。<strong>4は介入（教育・矯正）を行っており、規範主義的（特定の形式が正しいと判断して変えようとする）</strong>。正答4"},
+{id:123,b:6,sec:"コロケーション",star:false,
+ text:"【第26回 問題143】連語（コロケーション）はどれか。",
+ opts:["目をかける","油を売る","嘘をつく","動く（≒歩く）","真っ赤な嘘"],
+ ans:[2],multi:false,
+ exp:"連語（collocation）＝「文において習慣的に共起する語と語の組み合わせ」。<strong>「嘘をつく」</strong>は「嘘」と「つく」が習慣的に共起する連語。「目をかける」「油を売る」はイディオム（慣用表現）、「動く（≒歩く）」は上位語・下位語関係、「真っ赤な嘘」は強調関係。正答3"}
+,
+/* ==================== docxレビューで追加された問題 ==================== */
+/* ブロック1 追加 */
+{id:124,b:1,sec:"シニフィアン",star:true,
+ text:"【第20回（午前）問題43】音声言語の能記（シニフィアン）について誤っているのはどれか。",
+ opts:["a, b（空間的構造を持つ・線条性を持っている）","a, e（空間的構造を持つ・言語普遍的である）","b, c（線条性を持っている・記号表現のことである）","c, d（記号表現のことである・所記との関係は基本的に恣意的である）","d, e（所記との関係は基本的に恣意的である・言語普遍的である）"],
+ ans:[1],multi:false,
+ exp:"シニフィアン（能記）は<strong>音声からなるので空間構造ではなく時間軸上の線状構造</strong>を持つ（a：誤り）。また各言語が恣意的に選択するので<strong>言語普遍性は持たない</strong>（e：誤り）。正答2（a, e）（★頻出）"},
+{id:125,b:1,sec:"言語的コミュニケーション",star:false,
+ text:"【第24回（午後）問題51】言語の特徴について誤っているのはどれか。",
+ opts:["認知・記憶などの機能と密接に関連している。","発話は形態素からなり、形態素は音素からなることを二重分節という。","記号表現（能記）と記号内容（所記）との結びつきに必然性がないことを恣意性という。","音素や語などが時間軸上に一列に配列される性質を線条（線状）性という。","具象名詞にあって、抽象名詞にはない性質を有契性・有縁性という。"],
+ ans:[4],multi:false,
+ exp:"有契性・有縁性は名詞の具象・抽象の区別ではなく、<strong>記号表現と記号内容の間に何らかの必然的な結びつきが認められる性質</strong>のこと（オノマトペなど）。正答5"},
+/* ブロック2 追加 */
+{id:126,b:2,sec:"形態素と玉手箱",star:false,
+ text:"【第9回 問題86】「玉手箱（タマテバコ）」に関係ないのはどれか。",
+ opts:["複合語","連濁","従属関係","漢語","異形態"],
+ ans:[3],multi:false,
+ exp:"「玉手箱」は<strong>「玉」＋「手」＋「箱」の複合語</strong>（1関係あり）。「手」→「テ」と「箱」→「バコ」の連濁（2関係あり）。「玉」の主要部「手箱」に対する従属部（3関係あり）。「箱」の[hako]と[bako]は同一形態素の異形態（5関係あり）。<strong>漢語は関係なし</strong>。正答4"},
+{id:127,b:2,sec:"連濁",star:false,
+ text:"【第11回（午後）問題42】下線部が連濁であるのはどれか。",
+ opts:["ざらざら","おおどろぼう（大泥棒）","ざま（様）","おおじしん（大地震）","ほのぼの"],
+ ans:[4],multi:false,
+ exp:"<strong>「ほのぼの」は同じ形態素「ほの」が2回繰り返された畳語法によって2つめの「ほの」が[ぼの]と連濁したもの</strong>。「ざらざら」は初めから濁音、「おおどろぼう」の「泥棒」は単独でも濁音、「様」は単独でも/zama/と濁音。正答5"},
+{id:128,b:2,sec:"派生",star:false,
+ text:"【第12回（午前）問題44】派生の例として正しいのはどれか。a.真空　b.真面目　c.写真　d.真偽　e.真意",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[1],multi:false,
+ exp:"派生とは「接辞の付加による語形成」。a〜eに共通する「真」の中で接頭辞はどれかを考えるとよい。<strong>a「真空」の「真－」（本当の）とe「真意」の「真－」（本当の）が接頭辞による派生語</strong>。b「真面目」の「真」は接頭辞でなく複合。c「写真」「d「真偽」も複合語。正答2（a, e）"},
+{id:129,b:2,sec:"音便",star:false,
+ text:"【第12回（午前）問題46】音便形でないのはどれか。a.書いて　b.詫びて　c.押して　d.読んで　e.買って",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[2],multi:false,
+ exp:"中止形に「て」を加えると：a「書い-て」（イ音便）d「読ん-で」（撥音便）e「買っ-て」（促音便）は音便形。<strong>b「詫びて」と c「押して」は音便が生じていない</strong>（「詫び-て」「押し-て」のまま）。正答3（b, c）"},
+{id:130,b:2,sec:"連濁",star:false,
+ text:"【第21回（午後）問題43】連濁でないのはどれか。",
+ opts:["青空","か細い","それぞれ","ほの暗い","ばかばかしい"],
+ ans:[4],multi:false,
+ exp:"「ばかばかしい」の第2要素「ばかしい」は単独で発音しても「ばか」であり連濁に該当しない。「青空」の「ぞら」、「か細い」の「ぼそい」、「それぞれ」の「ぞれ」、「ほの暗い」の「ぐらい」はいずれも連濁の例。正答5"},
+{id:131,b:2,sec:"形態素分析",star:false,
+ text:"【第21回（午後）問題42】二つの形態素からなる語はどれか。a.お好み焼き　b.物知り顔　c.遠浅　d.高さ　e.山",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[3],multi:false,
+ exp:"<strong>c「遠浅」は「遠」＋「浅」の2形態素、d「高さ」は「高」＋「さ」の2形態素</strong>。a「お好み焼き」は3形態素以上、b「物知り顔」は3形態素以上、e「山」は1形態素。正答4（c, d）"},
+{id:132,b:2,sec:"形態音韻論",star:false,
+ text:"【第19回（午後）問題43】下線部が形態音韻論的交替でないのはどれか。",
+ opts:["ame（雨）－amaasi（雨足）","nomareru（飲まれる）－mirareru（見られる）","niwatori（鶏）－hinadori（雛鳥）","hondana（本棚）－hombako（本箱）","kaihatu（開発）－hampatu（反発）"],
+ ans:[3],multi:false,
+ exp:"<strong>「hondana（本棚）－hombako（本箱）」の「hon」と「hom」の交替は音素/N/の異音レベルでの交替（音韻論的交替）</strong>。形態音韻論的交替は音韻論的に対立する音素の交替。正答4"},
+{id:133,b:2,sec:"子音語幹動詞",star:false,
+ text:"【第24回（午前）問題44】五段活用動詞（子音語幹動詞）はどれか。a.落ちます　b.飛びます　c.羽ばたきます　d.寝ます　e.起きます",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[2],multi:false,
+ exp:"接尾辞「-ます」を削除して各動詞の命令形を見るとよい。<strong>b「飛ぶ→飛べ」とc「羽ばたく→羽ばたけ」がエ段で終わる子音語幹動詞</strong>。a「落ちる→落ちろ」d「寝る→寝ろ」e「起きる→起きろ」は母音語幹動詞。正答3（b, c）"},
+{id:134,b:2,sec:"日本語の表記",star:false,
+ text:"【第15回（午後）問題42】日本語の表記について適切なのはどれか。",
+ opts:["「お」と「を」とは音韻的対立を示すことがある。","「打つ」と「撃つ」とは同音異義語である。","漢字の音と訓とは同一形態素を表さない。","「出鱈目（でたらめ）」のような当て字も単字で形態素を表す。","訓よりも音のほうが自由形態素を表すことが多い。"],
+ ans:[2],multi:false,
+ exp:"<strong>漢字の音読みと訓読みは同一形態素を表さない</strong>（cf. 授業プリントp.17）。「部屋」の「へ（部）」と「部室」の「ぶ（部）」は同一漢字の訓読みと音読みだが同一形態素の異形態の関係にはない。正答3"},
+/* ブロック3 追加 */
+{id:135,b:3,sec:"2項述語",star:false,
+ text:"【第18回（午前）問題45】2項の形容詞述語として用いられないのはどれか。",
+ opts:["遅い","強い","怖い","不便だ","好きだ"],
+ ans:[0],multi:false,
+ exp:"「強い」は「太郎は酒に強い」、「怖い」は「花子は暗闇が怖い」、「不便だ」は「ここは買い物に不便だ」、「好きだ」は「太郎は酒が好きだ」のように2項述語として使用可能。<strong>「遅い」は「太郎の足が遅い」という1項述語文において項をなす「太郎の足」の「太郎」を主題として取り立てた文であり、「遅い」自体は1項述語</strong>。正答1"},
+{id:136,b:3,sec:"連体修飾節",star:true,
+ text:"【第20回（午前）問題45】外の関係の連体修飾節はどれか。",
+ opts:["昨日見た映画","雨でぬれた靴","木にとまっている鳥","海で泳いでいる写真","夏に泊まった旅館"],
+ ans:[3],multi:false,
+ exp:"連体修飾節の「外の関係」とは、修飾される名詞をその連体修飾節の内部に組み込んで文を作ることができないもの。<strong>「海で泳いでいる写真」→「*写真が海で泳いでいる」とならない</strong>ので外の関係。他はすべて「映画を見た」「靴がぬれた」のように内部に組み込める内の関係。正答4（★頻出）"},
+{id:137,b:3,sec:"行為名詞",star:false,
+ text:"【第25回（午前）問題43】共通語（東京方言）でアクセントの低い拍を○、高い拍を●で示す。行為名詞（連用形から名詞に変わったもの）はどれか。a.新宿に飲みに（●○○）行く　b.ゼミの飲みに（○●○）行く　c.弟に泳ぎを（○●●○）教える　d.海にもぐりに（○●○○）行く　e.海に泳ぎに（○●○○）行く",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[2],multi:false,
+ exp:"統語的に名詞として機能しているものを選ぶ。<strong>b「ゼミの飲みに」の「飲み」とc「弟に泳ぎを」の「泳ぎ」</strong>は名詞として機能する行為名詞。正答3（b, c）"},
+/* ブロック5 追加 */
+{id:138,b:5,sec:"意味関係",star:true,
+ text:"【第10回 問題88】「りんご」との意味関係が同じなのはどれか。a.むく（剥く）　b.食べる　c.いちご（苺）　d.果物　e.ナイフ",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[0],multi:false,
+ exp:"a「剥く」とb「食べる」は「りんご」との意味関係として「動作」と「対象」の関係。c「いちご」は果物の非両立的（意味）関係（同じ上位語の直下の異なる下位語）、d「果物」は上位語・下位語関係、e「ナイフ」は道具と対象の関係。<strong>a, bは同じ「動作と対象」の意味関係</strong>。正答1（a, b）"},
+{id:139,b:5,sec:"複合語の修飾関係",star:false,
+ text:"【第14回（午前）問題44】複合語の内部構造が修飾関係にあるのはどれか。",
+ opts:["読み書き","貸し借り","飲み食い","放し飼い","行き返り"],
+ ans:[3],multi:false,
+ exp:"1・2・3・5はいずれも「AとBの形」に置き換え可能な並列関係。<strong>4「放し飼い」は「放しながら（修飾語句）＋飼うこと（被修飾語句）」と同じ意味であり、「放し」が「飼い」を修飾する修飾関係</strong>。正答4"},
+{id:140,b:5,sec:"ヴォイスの現象",star:false,
+ text:"【第17回（午前）問題45】複合動詞はどれか。",
+ opts:["汗ばむ","寒がる","春めく","気づく","大人ぶる"],
+ ans:[3],multi:false,
+ exp:"複合動詞とは語幹が2つ以上の語根の結合からなる動詞。<strong>「気づく」は語幹「気付k-」が「気」と「付k-」の複合</strong>。「汗ばむ」「寒がる」「春めく」「大人ぶる」は派生動詞（接尾辞による）。正答4"},
+/* ブロック6 追加 */
+{id:141,b:6,sec:"同音語の書き分け",star:false,
+ text:"【第23回（午前）問題46】表語性に役立つ同音語の書き分けの組合せでないのはどれか。",
+ opts:["表す－表わす","立つ－断つ","write（書く）－right（正しい）","night（夜）－knight（騎士）","バレエ－バレー"],
+ ans:[0],multi:false,
+ exp:"<strong>「表す」と「表わす」は同じ語の表記の揺れ（送り仮名の違い）</strong>であり、異なる語の同音語の書き分けではない。2〜5はいずれも異なる意味を持つ同音語を表記で区別している。正答1"},
+{id:142,b:6,sec:"共起制限",star:false,
+ text:"【第24回（午前）問題45】創造的な言語使用を除き、通常の言語使用で共起制限に違反していないのはどれか。",
+ opts:["黒い白馬","空飛ぶマグロ","雪の降る猛暑日","真昼の夕焼け","赤い白墨"],
+ ans:[4],multi:false,
+ exp:"「赤い白墨」の「白墨」は「白い墨」という字義通りの意味ではなく固有名（チョーク）なので、「赤い白墨」は共起制限に違反しない。他はいずれも矛盾する属性が組み合わさっている。正答5"},
+{id:143,b:6,sec:"上位語",star:false,
+ text:"【第24回（午後）問題143】動詞「歩く」の上位語はどれか。",
+ opts:["犬","道","走る","動く","ゆっくり"],
+ ans:[3],multi:false,
+ exp:"「歩くことは動くことの一種である」と言えるので<strong>「動く」が「歩く」の上位語</strong>。正答4"},
+{id:144,b:6,sec:"換喩・提喩",star:false,
+ text:"【第25回（午前）問題45】換喩（メトニミー）・提喩（シネクドキ）のような比喩を用いていないのはどれか。a.このご飯はよく炊けている　b.これは鉄製の鍋だ　c.この伊万里は貴重なものですね　d.今日はご飯はパスタよ　e.今日夕飯は鍋だ",
+ opts:["a, b","a, e","b, c","c, d","d, e"],
+ ans:[0],multi:false,
+ exp:"c「伊万里」は産地換喩（伊万里→伊万里焼）、d「ご飯」は提喩（米の飯→食事一般）、e「鍋」は換喩（容器→鍋料理）。<strong>a「ご飯はよく炊けている」とb「鉄製の鍋」は比喩なし、文字通りの意味</strong>。正答1（a, b）"},
+{id:145,b:6,sec:"格交替",star:false,
+ text:"【第26回（午前）問題46】目的語を表す助詞「を」が「が」に変化したのはどれか。a.リンゴが食べたい　b.英語が話せる　c.英語が通じにくい　d.リンゴが熟れすぎる　e.リンゴが食べにくい",
+ opts:["a, b, c","a, b, e","b, c, d","c, d, e","a, d, e"],
+ ans:[1],multi:false,
+ exp:"格交替とは「彼は英語を話せる」↔「彼は英語が話せる」のような格助詞の交替。<strong>a「リンゴを食べたい」→「リンゴが食べたい」（希望態）とb「英語を話せる」→「英語が話せる」（可能態）とe「リンゴを食べにくい」→「リンゴが食べにくい」</strong>が格交替の例。正答2（a, b, e）"},
+{id:146,b:6,sec:"コロケーション",star:false,
+ text:"【第26回（午後）問題143】連語（コロケーション）的な意味を用いているのはどれか。a.社長は鈴木に目をかけている　b.油を3割引きで売っている　c.真っ赤な車が走り抜けた　d.山田は休憩室で油を売っている　e.あれは真っ赤な嘘だった",
+ opts:["a, b, c","a, b, e","a, d, e","b, c, d","c, d, e"],
+ ans:[2],multi:false,
+ exp:"連語（コロケーション）とは「文において習慣的に共起する語と語の組み合わせ」。<strong>a「目をかける」（目上が目下を引き立てる）・d「油を売る」（怠けてむだ話をする）・e「真っ赤な嘘」（大嘘）</strong>が習慣的に共起する連語。bとcは文字通りの意味。正答3（a, d, e）"}
 ];
 
-let questions = [...ALL_Q];
-let current = 0, answered = 0, correct = 0;
-let userAnswers = {};
-let selectedCat = 'all';
-let quizMode = 'order';
+var state={};
+var cf='all'; // filter
+var cb=0;    // block (0=all)
 
-function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
-
-function filterQuestions(){
-  questions = selectedCat === 'all' ? [...ALL_Q] : ALL_Q.filter(q=>q.cat===selectedCat);
-  if(quizMode === 'random') questions = shuffle([...questions]);
-  current = 0; answered = 0; correct = 0; userAnswers = {};
-  updateStats(); renderQ();
+function init(){
+  Q.forEach(function(q){state[q.id]={ans:null,sel:[]};});
+  renderAll();
 }
 
-function updateStats(){
-  const pct = answered > 0 ? Math.round(correct/answered*100) + '%' : '—';
-  document.getElementById('s-done').textContent = answered;
-  document.getElementById('s-correct').textContent = correct;
-  document.getElementById('s-pct').textContent = pct;
-  document.getElementById('s-left').textContent = questions.length - current;
-  const p = questions.length > 0 ? (current/questions.length*100) : 0;
-  document.getElementById('prog').style.width = p + '%';
+function getFiltered(){
+  var qs=Q;
+  if(cb>0) qs=qs.filter(function(q){return q.b===cb;});
+
+  if(cf==='unanswered') qs=qs.filter(function(q){return state[q.id].ans===null;});
+  else if(cf==='wrong') qs=qs.filter(function(q){return state[q.id].ans===false;});
+  else if(cf==='star') qs=qs.filter(function(q){return q.star;});
+  return qs;
 }
 
-function renderQ(){
-  const area = document.getElementById('quiz-area');
-  if(current >= questions.length){
-    showResult(area); return;
+function renderAll(){
+  updateScore();
+  var qs=getFiltered();
+  var c=document.getElementById('qz');
+  if(!qs.length){
+    c.innerHTML='<div class="empty">該当する問題がありません ✅</div>';
+    return;
   }
-  const q = questions[current];
-  const isMulti = q.type === 'multi';
-  const labels = ['A','B','C','D','E','F'];
-  let choiceHtml = q.choices.map((c,i)=>
-    `<button class="choice" data-i="${i}" onclick="selectChoice(${q.id},${i},${isMulti})">
-      <span class="badge">${labels[i]}</span><span>${c}</span>
-    </button>`).join('');
-  area.innerHTML = `
-    <div class="qcard" id="qcard-${q.id}">
-      <div class="q-meta">問 ${current+1} / ${questions.length} ／ ${q.cat} ／ ${isMulti?'複数選択':'1つ選択'}</div>
-      <div class="q-text">${q.q}</div>
-      <div class="choices" id="choices-${q.id}">${choiceHtml}</div>
-      <div class="explanation" id="exp-${q.id}"><strong>解説：</strong>${q.exp}</div>
-      <div class="btn-row" id="btnrow-${q.id}">
-        ${isMulti ? `<button class="action primary" onclick="submitMulti(${q.id})">回答する</button>` : ''}
-      </div>
-    </div>`;
-  userAnswers[q.id] = {selected:[], submitted:false};
-}
-
-let selected = {};
-function selectChoice(qid, idx, isMulti){
-  if(userAnswers[qid] && userAnswers[qid].submitted) return;
-  const q = ALL_Q.find(x=>x.id===qid);
-  if(!selected[qid]) selected[qid] = [];
-  const btn = document.querySelector(`#choices-${qid} [data-i="${idx}"]`);
-  if(!isMulti){
-    document.querySelectorAll(`#choices-${qid} .choice`).forEach(b=>b.classList.remove('selected'));
-    selected[qid] = [idx];
-    btn.classList.add('selected');
-    btn.style.borderColor = 'var(--border-accent)';
-    btn.style.background = 'var(--bg-accent)';
-    submitAnswer(qid);
-  } else {
-    const pos = selected[qid].indexOf(idx);
-    if(pos >= 0){ selected[qid].splice(pos,1); btn.classList.remove('selected'); btn.style.background=''; btn.style.borderColor=''; }
-    else { selected[qid].push(idx); btn.classList.add('selected'); btn.style.borderColor='var(--border-accent)'; btn.style.background='var(--bg-accent)'; }
-  }
-}
-
-function submitMulti(qid){
-  if(!selected[qid] || selected[qid].length === 0) return;
-  submitAnswer(qid);
-}
-
-function submitAnswer(qid){
-  const q = ALL_Q.find(x=>x.id===qid);
-  const sel = selected[qid] || [];
-  userAnswers[qid].submitted = true;
-  const isCorrect = JSON.stringify(sel.slice().sort()) === JSON.stringify(q.ans.slice().sort());
-  if(isCorrect) correct++;
-  answered++;
-  document.querySelectorAll(`#choices-${qid} .choice`).forEach(b=>{ b.disabled = true; b.style.cursor='default'; });
-  q.choices.forEach((c,i)=>{
-    const btn = document.querySelector(`#choices-${qid} [data-i="${i}"]`);
-    btn.style.background=''; btn.style.borderColor='';
-    if(q.ans.includes(i) && sel.includes(i)) btn.className='choice correct';
-    else if(q.ans.includes(i)) btn.className='choice reveal-correct';
-    else if(sel.includes(i)) btn.className='choice wrong';
+  var html='';
+  var lastSec='';
+  qs.forEach(function(q){
+    if(q.sec!==lastSec){
+      html+='<div class="sh">📌 '+q.sec+'</div>';
+      lastSec=q.sec;
+    }
+    html+=buildCard(q);
   });
-  document.getElementById(`exp-${qid}`).classList.add('show');
-  const btnrow = document.getElementById(`btnrow-${qid}`);
-  btnrow.innerHTML = `<button class="action primary" onclick="nextQ()">次の問題 →</button>
-    ${current > 0 ? '' : ''}`;
-  updateStats();
+  c.innerHTML=html;
 }
 
-function nextQ(){ current++; updateStats(); renderQ(); }
-
-function showResult(area){
-  const pct = Math.round(correct/questions.length*100);
-  let msg = pct>=90?'🎉 素晴らしい！ほぼ完璧です！': pct>=70?'👍 よくできました！あと少し！': pct>=50?'💪 半分以上正解！もう一息！':'📚 復習して再挑戦しましょう！';
-  area.innerHTML = `<div class="result-screen">
-    <div class="q-meta">クイズ終了</div>
-    <div class="result-score">${correct} / ${questions.length}</div>
-    <div style="font-size:28px;margin-bottom:8px">${pct}点</div>
-    <div class="result-msg">${msg}</div>
-    <div class="btn-row" style="justify-content:center">
-      <button class="action primary" onclick="filterQuestions()">もう一度</button>
-      <button class="action" onclick="quizMode='random';filterQuestions()">シャッフルで再挑戦</button>
-    </div>
-  </div>`;
+function buildCard(q){
+  var s=state[q.id];
+  var answered=s.ans!==null;
+  var badge=answered?(s.ans?'<span class="ab ok">✓ 正解</span>':'<span class="ab ng">✗ 不正解</span>'):'';
+  var ml=q.multi?'<span class="ml">（複数選択）</span>':'';
+  var opts=q.opts.map(function(opt,i){
+    var cls='';
+    if(answered){
+      if(q.ans.indexOf(i)>=0) cls='ok';
+      else if(s.sel.indexOf(i)>=0) cls='ng';
+    }
+    return '<button class="ob '+cls+'" onclick="pick('+q.id+','+i+')"'+(answered?' disabled':'')+'>'
+      +'<span class="on2">'+(i+1)+'.</span><span>'+opt+'</span></button>';
+  }).join('');
+  var confirmBtn='';
+  if(q.multi&&!answered) confirmBtn='<button class="cbtn" onclick="confirm2('+q.id+')">回答する</button>';
+  return '<div class="qc" id="qcard'+q.id+'">'
+    +'<div class="qm"><span class="qn">Q'+q.id+'</span>'
+    +'<span class="qcat">B'+q.b+'</span>'
+    +(q.star?'<span class="star">★ 頻出</span>':'')+badge+'</div>'
+    +'<div class="qt">'+q.text+ml+'</div>'
+    +'<div class="opts">'+opts+'</div>'
+    +confirmBtn
+    +'<div class="exp'+(answered?' show':'')+'"><div class="eh">💡 解説</div><div class="eb">'+q.exp+'</div></div>'
+    +'</div>';
 }
 
-document.getElementById('mode-sel').onchange = function(){ quizMode = this.value; filterQuestions(); };
-document.getElementById('cat-sel').onchange = function(){ selectedCat = this.value; filterQuestions(); };
+function pick(id,sel){
+  var q=Q.find(function(x){return x.id===id;});
+  if(!q||state[id].ans!==null) return;
+  if(q.multi){
+    var idx=state[id].sel.indexOf(sel);
+    if(idx>=0) state[id].sel.splice(idx,1);
+    else state[id].sel.push(sel);
+    var card=document.getElementById('qcard'+id);
+    if(card) card.outerHTML=buildCard(q);
+  } else {
+    state[id].sel=[sel];
+    state[id].ans=(q.ans[0]===sel);
+    var card=document.getElementById('qcard'+id);
+    if(card) card.outerHTML=buildCard(q);
+    updateScore(); checkComplete();
+  }
+}
 
-filterQuestions();
+function confirm2(id){
+  var q=Q.find(function(x){return x.id===id;});
+  if(!q||state[id].ans!==null) return;
+  var sel=state[id].sel.slice().sort(function(a,b){return a-b;});
+  var ans=q.ans.slice().sort(function(a,b){return a-b;});
+  state[id].ans=(sel.length===ans.length&&sel.every(function(v,i){return v===ans[i];}));
+  var card=document.getElementById('qcard'+id);
+  if(card) card.outerHTML=buildCard(q);
+  updateScore(); checkComplete();
+}
+
+function updateScore(){
+  var total=Q.length;
+  var c=Q.filter(function(q){return state[q.id].ans===true;}).length;
+  var w=Q.filter(function(q){return state[q.id].ans===false;}).length;
+  var r=Q.filter(function(q){return state[q.id].ans===null;}).length;
+  document.getElementById('sC').textContent=c;
+  document.getElementById('sW').textContent=w;
+  document.getElementById('sR').textContent=r;
+  document.getElementById('pb').style.width=((total-r)/total*100)+'%';
+  document.getElementById('pl').textContent=(total-r)+' / '+total+' 問 回答済み';
+}
+
+function checkComplete(){
+  var r=Q.filter(function(q){return state[q.id].ans===null;}).length;
+  var c=Q.filter(function(q){return state[q.id].ans===true;}).length;
+  var f=document.getElementById('fin');
+  if(r===0&&cf==='all'&&cb===0){
+    var pct=Math.round(c/Q.length*100);
+    f.classList.add('show');
+    document.getElementById('ft').textContent='正解率 '+pct+'%（'+c+' / '+Q.length+'問）！'+(pct>=80?'さすがです🎊 国試合格まちがいなし！':'間違えた問題をもう一度確認しよう💪');
+  }else{f.classList.remove('show');}
+}
+
+document.getElementById('resetBtn').addEventListener('click',function(){
+  Q.forEach(function(q){state[q.id]={ans:null,sel:[]};});
+  document.getElementById('fin').classList.remove('show');
+  renderAll();
+});
+
+document.querySelectorAll('.btab').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.btab').forEach(function(b){b.classList.remove('on');});
+    btn.classList.add('on');
+    cb=parseInt(btn.getAttribute('data-b'));
+    renderAll();
+  });
+});
+
+document.querySelectorAll('.tab').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});
+    btn.classList.add('on');
+    cf=btn.getAttribute('data-f');
+    renderAll();
+  });
+});
+
+init();
 </script>
+</body>
+</html>
