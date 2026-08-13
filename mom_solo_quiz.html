@@ -1,0 +1,146 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+.app{padding:1rem 0;font-size:15px;color:var(--text-primary);}
+.hdr{background:#E6F1FB;border-radius:12px;padding:0.875rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:10px;}
+.hdr-icon{font-size:20px;color:#0C447C;}
+.hdr-title{font-size:14px;font-weight:500;color:#0C447C;}
+.hdr-sub{font-size:12px;color:#185FA5;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem;}
+.stat{background:var(--surface-1);border-radius:var(--radius);padding:0.75rem;text-align:center;}
+.stat-label{font-size:11px;color:var(--text-muted);margin-bottom:2px;}
+.stat-val{font-size:20px;font-weight:500;}
+.progress{height:3px;background:var(--surface-1);border-radius:2px;margin-bottom:1rem;overflow:hidden;}
+.progress-bar{height:100%;background:#2a78d6;border-radius:2px;transition:width 0.3s;}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;}
+.q-num{font-size:12px;color:var(--text-muted);}
+.q-badge{font-size:11px;padding:2px 8px;border-radius:var(--radius);background:#E6F1FB;color:#0C447C;}
+.q-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.q-text{font-size:15px;line-height:1.6;margin-bottom:1rem;}
+.choices{display:grid;gap:8px;}
+.choice-btn{width:100%;text-align:left;padding:0.75rem 1rem;background:var(--surface-2);border:0.5px solid var(--border-strong);border-radius:var(--radius);cursor:pointer;font-size:14px;color:var(--text-primary);}
+.choice-btn:hover{background:var(--surface-1);}
+.choice-btn.correct{background:#EAF3DE;border-color:#3B6D11;color:#27500A;}
+.choice-btn.wrong{background:#FCEBEB;border-color:#A32D2D;color:#791F1F;}
+.choice-btn:disabled{cursor:default;}
+.explanation{background:var(--surface-1);border-radius:var(--radius);padding:0.875rem 1rem;font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:1rem;}
+.result-label{font-size:13px;margin-bottom:0.75rem;padding:0.5rem 0.875rem;border-radius:var(--radius);}
+.result-label.ok{background:#EAF3DE;color:#27500A;}
+.result-label.ng{background:#FCEBEB;color:#791F1F;}
+.next-btn{width:100%;padding:0.75rem;border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;background:var(--surface-2);border:0.5px solid var(--border-strong);color:var(--text-primary);}
+.next-btn:hover{background:var(--surface-1);}
+.final{text-align:center;padding:1rem 0;}
+.final h3{font-size:18px;font-weight:500;margin-bottom:0.5rem;}
+.final-score{font-size:48px;font-weight:500;color:#2a78d6;margin:1rem 0;}
+.final-msg{font-size:14px;color:var(--text-secondary);margin-bottom:1.5rem;line-height:1.6;}
+.restart-btn{padding:0.75rem 2rem;border-radius:var(--radius);font-size:14px;cursor:pointer;background:var(--surface-2);border:0.5px solid var(--border-strong);color:var(--text-primary);}
+</style>
+
+<div class="app">
+<h2 class="sr-only">お母さん専用 苦手克服クイズ（15問）</h2>
+<div class="hdr">
+  <i class="ti ti-user" style="font-size:20px;color:#0C447C;" aria-hidden="true"></i>
+  <div>
+    <div class="hdr-title">お母さん専用 — 苦手克服クイズ</div>
+    <div class="hdr-sub">あなただけが間違えた15問に特化</div>
+  </div>
+</div>
+<div id="root"></div>
+</div>
+
+<script>
+const questions = [
+  {q:"業務プロセスを流れ図で可視化するときに使う記述形式はどれか？",choices:["BPMN（業務プロセス図）","ER図","クラス図","状態遷移図"],ans:0,ex:"BPMN（Business Process Model and Notation）は業務の流れをフローチャート形式で可視化するための標準的な記法です（問12）。",cat:"ストラテジ・システム戦略"},
+  {q:"IT基本計画の策定で最初に明確にする事項はどれか？",choices:["予算と工数","ステークホルダとそのニーズ","システムの技術仕様","開発ベンダーの選定"],ans:1,ex:"IT基本計画ではまず「誰（ステークホルダ）がどんな目的・ニーズ（要求）を持っているか」を明確にすることが出発点です（問34）。",cat:"ストラテジ・システム戦略"},
+  {q:"ソフトウェア導入における契約範囲外の作業が発生した場合の正しい対応はどれか？",choices:["無償で対応する","契約変更の手続きを行う","作業を中断して納品する","別の業者に依頼する"],ans:1,ex:"契約範囲外の作業が発生した場合は、追加費用や工期の変更について契約変更（変更管理）の手続きを正式に行う必要があります（問36）。",cat:"マネジメント・開発技術"},
+  {q:"自動割当てツール導入前後の割当て時間の削減率を求めるとき、正しい計算式はどれか？",choices:["(導入前 − 導入後) ÷ 導入前 × 100","(導入後 − 導入前) ÷ 導入後 × 100","(導入前 − 導入後) ÷ 導入後 × 100","導入後 ÷ 導入前 × 100"],ans:0,ex:"削減率（改善率）＝（改善前 − 改善後）÷ 改善前 × 100。分母は「改善前（導入前）」の値を使います（問44）。",cat:"マネジメント・計算"},
+  {q:"要員数の制約と前提作業を考慮したプロジェクトの最短日数を求める際に使うものはどれか？",choices:["WBS","クリティカルパス法","ガントチャート","フィッシュボーン図"],ans:1,ex:"クリティカルパス法（CPM）はプロジェクトの作業依存関係と所要時間から最短完了日数を求める手法です（問50）。",cat:"マネジメント・PM"},
+  {q:"システム監査において「監査意見を検討する段階」は何と呼ばれるか？",choices:["予備調査","本調査","報告","意見形成"],ans:3,ex:"システム監査のプロセスは「予備調査→本調査→意見形成（監査意見の検討）→報告」の順です（問51）。",cat:"マネジメント・監査"},
+  {q:"SLAの計画立案で実施する活動を行うプロセスはどれか？",choices:["インシデント管理","サービスレベル管理","問題管理","変更管理"],ans:1,ex:"SLA（Service Level Agreement）はサービス提供者と顧客の間の合意文書で、サービスレベル管理プロセスで策定・管理されます（問53）。",cat:"マネジメント・サービス管理"},
+  {q:"ネットワークカメラへの不正侵入を防ぐための最初の対策として最も適切なものはどれか？",choices:["カメラの電源を落とす","初期パスワードを変更する","ファイアウォールを購入する","カメラをオフラインにする"],ans:1,ex:"IoT機器の初期パスワードはデフォルト値が多く、変更しないと侵入リスクが高まります。まず初期パスワードの変更が基本的な対策です（問55）。",cat:"テクノロジ・セキュリティ"},
+  {q:"データベースで「外部キー」として設定する列の説明として正しいものはどれか？",choices:["テーブル内で一意の値を持つ列","別のテーブルの主キーを参照する列","NULL値を持てない列","自動的に連番が振られる列"],ans:1,ex:"外部キー（Foreign Key）は別のテーブルの主キーを参照する列です。参照整合性を保つために使われます（問57）。",cat:"テクノロジ・データベース"},
+  {q:"構造化シナリオ法における3つのシナリオの組み合わせとして正しいものはどれか？",choices:["現状・理想・改善シナリオ","バリューシナリオ・アクティビティシナリオ・インタラクションシナリオ","強み・弱み・機会シナリオ","楽観・中立・悲観シナリオ"],ans:1,ex:"構造化シナリオ法の3種：①バリューシナリオ（価値・目標）②アクティビティシナリオ（行動の流れ）③インタラクションシナリオ（具体的な操作）です（問58）。",cat:"テクノロジ・UI/UX"},
+  {q:"レスポンシブWebデザインの説明として正しいものはどれか？",choices:["読み込み速度を最大化する設計","PC・スマホなど画面サイズに応じてレイアウトを自動調整する設計","セキュリティを強化したWeb設計","色覚障害者に配慮した色使いの設計"],ans:1,ex:"レスポンシブWebデザインはデバイスの画面サイズに応じてレイアウトを柔軟に変化させる設計手法です（問60）。",cat:"テクノロジ・ネットワーク"},
+  {q:"ベンチマークテストの説明として正しいものはどれか？",choices:["ソフトウェアのバグを見つけるテスト","標準的な処理を実行してシステムの性能を測定するテスト","セキュリティの脆弱性を検査するテスト","ユーザーが操作しやすいか評価するテスト"],ans:1,ex:"ベンチマークテストは実機で標準的な処理（ベンチマーク）を実行し、処理速度などの性能を客観的に測定するテストです（問62）。",cat:"テクノロジ・ハードウェア"},
+  {q:"キャリアアグリゲーションの説明として正しいものはどれか？",choices:["複数の通信キャリアと契約してコストを下げる技術","複数の周波数帯を束ねて無線通信を高速化する技術","データをまとめて送信する圧縮技術","基地局を複数使って電波の届く範囲を広げる技術"],ans:1,ex:"キャリアアグリゲーションは複数の異なる周波数帯（キャリア）を同時に使用して通信速度を向上させる技術です（問64）。",cat:"テクノロジ・ネットワーク"},
+  {q:"メール送受信プロトコルの正しい組み合わせはどれか？",choices:["送信：POP3、受信：SMTP","送信：SMTP、受信：POP3またはIMAP4","送信：IMAP4、受信：HTTP","送信：FTP、受信：SMTP"],ans:1,ex:"メールの送信にはSMTP、受信にはPOP3またはIMAP4を使用します。IMAP4はサーバ上でメールを管理できる点でPOP3と異なります（問68）。",cat:"テクノロジ・ネットワーク"},
+  {q:"素数判定プログラムで「割り切れるかどうか」を確認する際、比較条件の境界として正しいものはどれか？",choices:["2からnまで割り算を試みる","2からnの平方根まで割り算を試みる","2からn÷2まで割り算を試みる","2から10まで割り算を試みる"],ans:1,ex:"n÷2より大きい数でnが割り切れることはないため、√nまで確認すれば十分です。計算効率を高めるために平方根が境界になります（問85）。",cat:"テクノロジ・アルゴリズム"}
+];
+
+const N = questions.length;
+let order = [], qi = 0, correct = 0, answered = false;
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function init(){order=shuffle([...Array(N).keys()]);qi=0;correct=0;render();}
+
+function render(){
+  const root=document.getElementById('root');
+  if(qi>=N){renderFinal(root);return;}
+  const q=questions[order[qi]];
+  const pct=Math.round(qi/N*100);
+  answered=false;
+  root.innerHTML=`
+    <div class="stats">
+      <div class="stat"><div class="stat-label">問題</div><div class="stat-val">${qi+1}/${N}</div></div>
+      <div class="stat"><div class="stat-label">正解</div><div class="stat-val" style="color:#1baf7a">${correct}</div></div>
+      <div class="stat"><div class="stat-label">正答率</div><div class="stat-val" style="color:#2a78d6">${qi===0?'—':Math.round(correct/qi*100)+'%'}</div></div>
+    </div>
+    <div class="progress"><div class="progress-bar" style="width:${pct}%"></div></div>
+    <div class="q-meta"><span class="q-num">問${qi+1}</span><span class="q-badge">${q.cat}</span></div>
+    <div class="q-card">
+      <div class="q-text">${q.q}</div>
+      <div class="choices" id="ch"></div>
+    </div>`;
+  const ch=document.getElementById('ch');
+  q.choices.forEach((c,i)=>{
+    const b=document.createElement('button');
+    b.className='choice-btn';
+    b.textContent=['ア','イ','ウ','エ'][i]+'　'+c;
+    b.onclick=()=>handleAns(i);
+    ch.appendChild(b);
+  });
+}
+
+function handleAns(i){
+  if(answered)return;
+  answered=true;
+  const q=questions[order[qi]];
+  const btns=document.querySelectorAll('.choice-btn');
+  btns.forEach(b=>b.disabled=true);
+  btns[q.ans].classList.add('correct');
+  if(i!==q.ans)btns[i].classList.add('wrong');
+  if(i===q.ans)correct++;
+  const card=document.querySelector('.q-card');
+  const lbl=document.createElement('div');
+  lbl.className='result-label '+(i===q.ans?'ok':'ng');
+  lbl.innerHTML=(i===q.ans?'<i class="ti ti-check" aria-hidden="true"></i> 正解！':'<i class="ti ti-x" aria-hidden="true"></i> 不正解…　正解は【'+['ア','イ','ウ','エ'][q.ans]+'】');
+  card.appendChild(lbl);
+  const ex=document.createElement('div');
+  ex.className='explanation';
+  ex.textContent=q.ex;
+  card.appendChild(ex);
+  const nb=document.createElement('button');
+  nb.className='next-btn';
+  nb.textContent=qi+1<N?'次の問題へ':'結果を見る';
+  nb.onclick=()=>{qi++;render();};
+  card.appendChild(nb);
+}
+
+function renderFinal(root){
+  const pct=Math.round(correct/N*100);
+  let msg='';
+  if(pct>=80)msg='素晴らしい！この分野はほぼ克服できています。';
+  else if(pct>=60)msg='あと一歩！間違えた問題をもう一度見直しましょう。';
+  else msg='繰り返しが大事です。解説を読みながらもう一周しましょう。';
+  root.innerHTML=`
+    <div class="final">
+      <h3>お疲れさまでした！</h3>
+      <div class="final-score">${correct} <span style="font-size:20px;color:var(--text-muted)">/ ${N}</span></div>
+      <div class="final-msg">正答率 ${pct}%<br>${msg}</div>
+      <button class="restart-btn" onclick="init()">もう一度チャレンジ</button>
+    </div>`;
+}
+
+init();
+</script>

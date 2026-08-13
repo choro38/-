@@ -1,0 +1,146 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+.app{padding:1rem 0;font-size:15px;color:var(--text-primary);}
+.hdr{background:#EAF3DE;border-radius:12px;padding:0.875rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:10px;}
+.hdr-title{font-size:14px;font-weight:500;color:#27500A;}
+.hdr-sub{font-size:12px;color:#3B6D11;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem;}
+.stat{background:var(--surface-1);border-radius:var(--radius);padding:0.75rem;text-align:center;}
+.stat-label{font-size:11px;color:var(--text-muted);margin-bottom:2px;}
+.stat-val{font-size:20px;font-weight:500;}
+.progress{height:3px;background:var(--surface-1);border-radius:2px;margin-bottom:1rem;overflow:hidden;}
+.progress-bar{height:100%;background:#1baf7a;border-radius:2px;transition:width 0.3s;}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;}
+.q-num{font-size:12px;color:var(--text-muted);}
+.q-badge{font-size:11px;padding:2px 8px;border-radius:var(--radius);background:#EAF3DE;color:#27500A;}
+.q-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.q-text{font-size:15px;line-height:1.6;margin-bottom:1rem;}
+.choices{display:grid;gap:8px;}
+.choice-btn{width:100%;text-align:left;padding:0.75rem 1rem;background:var(--surface-2);border:0.5px solid var(--border-strong);border-radius:var(--radius);cursor:pointer;font-size:14px;color:var(--text-primary);}
+.choice-btn:hover{background:var(--surface-1);}
+.choice-btn.correct{background:#EAF3DE;border-color:#3B6D11;color:#27500A;}
+.choice-btn.wrong{background:#FCEBEB;border-color:#A32D2D;color:#791F1F;}
+.choice-btn:disabled{cursor:default;}
+.explanation{background:var(--surface-1);border-radius:var(--radius);padding:0.875rem 1rem;font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:1rem;}
+.result-label{font-size:13px;margin-bottom:0.75rem;padding:0.5rem 0.875rem;border-radius:var(--radius);}
+.result-label.ok{background:#EAF3DE;color:#27500A;}
+.result-label.ng{background:#FCEBEB;color:#791F1F;}
+.next-btn{width:100%;padding:0.75rem;border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;background:var(--surface-2);border:0.5px solid var(--border-strong);color:var(--text-primary);}
+.next-btn:hover{background:var(--surface-1);}
+.final{text-align:center;padding:1rem 0;}
+.final h3{font-size:18px;font-weight:500;margin-bottom:0.5rem;}
+.final-score{font-size:48px;font-weight:500;color:#1baf7a;margin:1rem 0;}
+.final-msg{font-size:14px;color:var(--text-secondary);margin-bottom:1.5rem;line-height:1.6;}
+.restart-btn{padding:0.75rem 2rem;border-radius:var(--radius);font-size:14px;cursor:pointer;background:var(--surface-2);border:0.5px solid var(--border-strong);color:var(--text-primary);}
+</style>
+
+<div class="app">
+<h2 class="sr-only">息子さん専用 苦手克服クイズ（18問）</h2>
+<div class="hdr">
+  <i class="ti ti-user" style="font-size:20px;color:#27500A;" aria-hidden="true"></i>
+  <div>
+    <div class="hdr-title">息子さん専用 — 苦手克服クイズ</div>
+    <div class="hdr-sub">息子さんだけが間違えた18問に特化</div>
+  </div>
+</div>
+<div id="root"></div>
+</div>
+
+<script>
+const questions = [
+  {q:"バリューエンジニアリング（VE）において「価値」を表す式はどれか？",choices:["価値 = 機能 × コスト","価値 = 機能 ÷ コスト","価値 = コスト ÷ 機能","価値 = 機能 + コスト"],ans:1,ex:"VE（Value Engineering）では「価値＝機能÷コスト」で表します。機能を維持しながらコストを下げるか、コストを維持しながら機能を高めることで価値を向上させます（問7）。",cat:"ストラテジ・経営戦略"},
+  {q:"IoT（Internet of Things）の事例として正しいものはどれか？",choices:["スマートフォンでSNSを利用する","センサで収集した気温データをクラウドに送信して管理する","Webブラウザでネット検索する","USBメモリでデータを持ち運ぶ"],ans:1,ex:"IoTはモノにセンサや通信機能を組み込み、インターネットに接続してデータを収集・活用する仕組みです（問8）。",cat:"ストラテジ・経営戦略"},
+  {q:"コーポレートガバナンス（企業統治）の説明として正しいものはどれか？",choices:["企業が環境保護活動を行うこと","企業が株主や社会に対して適切に説明責任を果たす仕組み","企業が利益を最大化するための戦略","企業が従業員の福利厚生を充実させること"],ans:1,ex:"コーポレートガバナンスとは、企業が株主・社会・ステークホルダーに対して適切に説明責任を果たし、健全な経営を行うための仕組みです（問24）。",cat:"ストラテジ・法務"},
+  {q:"ニッチ戦略の事例として正しいものはどれか？",choices:["大手スーパーが全国に大型店舗を展開する","左利き専門の文房具メーカーが特定市場に集中する","テレビCMを大量に出稿してブランドを広める","価格を下げて市場シェアを拡大する"],ans:1,ex:"ニッチ戦略は競合が少ない特定の隙間（ニッチ）市場に経営資源を集中させる戦略です（問32）。",cat:"ストラテジ・経営戦略"},
+  {q:"計画段階で短期間に概算する見積り手法「類推見積り」の説明として正しいものはどれか？",choices:["関数の数と複雑さからコストを算出する","過去の類似プロジェクトの実績をもとに概算する","詳細なWBSを作成してボトムアップで積み上げる","専門家の経験と勘で見積もる"],ans:1,ex:"類推見積りは過去の類似プロジェクトの実績データをもとに概算する手法で、詳細情報が少ない計画段階に適しています（問37）。",cat:"マネジメント・開発技術"},
+  {q:"要求が明確で仕様変更が少ない場合に最も適する開発モデルはどれか？",choices:["アジャイル開発","スパイラルモデル","ウォーターフォールモデル","プロトタイピングモデル"],ans:2,ex:"ウォーターフォールモデルは要件定義→設計→実装→テストを順に進める手法で、要求が明確で変更が少ない場合に適しています（問38）。",cat:"マネジメント・開発技術"},
+  {q:"ITガバナンスにおける取締役会等のリーダーシップ不足が生むリスクはどれか？",choices:["開発コストの増加","ITと経営戦略の方向性がずれるリスク","システムの性能低下","セキュリティ攻撃の増加"],ans:1,ex:"ITガバナンスにおける経営トップのリーダーシップ不足は、IT投資の方向性が経営戦略と乖離するリスクを生みます（問41）。",cat:"マネジメント・サービス管理"},
+  {q:"短い期間で反復し、優先順位に沿って逐次リリースする開発モデルはどれか？",choices:["ウォーターフォールモデル","アジャイル開発","V字モデル","スパイラルモデル"],ans:1,ex:"アジャイル開発は短い反復（イテレーション/スプリント）を繰り返しながら段階的に機能を追加・リリースする開発手法です（問43）。",cat:"マネジメント・開発技術"},
+  {q:"システム要件定義での利用者の関わり方として正しいものはどれか？",choices:["利用者は関与せず開発者が決める","利用者がレビューを通じて妥当性を確認する","利用者がプログラムを書く","利用者がテストだけを担当する"],ans:1,ex:"システム要件定義では、定義された要件が実際の業務ニーズを満たしているか、利用者がレビュー（確認）を通じて妥当性を検証することが重要です（問52）。",cat:"マネジメント・開発技術"},
+  {q:"DBMSのチェックポイントとは何か？",choices:["データベースの容量上限","障害回復時に参照するログの基準時点","不正アクセスを検知した時点","バックアップを完了した時点"],ans:1,ex:"チェックポイントは障害回復時にロールフォワード・ロールバックの開始点となる基準時点で、ここ以前の更新はすでに適用済みとみなされます（問56）。",cat:"テクノロジ・データベース"},
+  {q:"リスクベース認証の例として正しいものはどれか？",choices:["毎回同じパスワードで認証する","普段と異なる端末からのログイン時に追加認証を求める","生体情報で認証する","ワンタイムパスワードを常に使用する"],ans:1,ex:"リスクベース認証はログイン環境（場所・端末・時間帯など）に変化があった場合にのみ追加認証を要求する仕組みです（問71）。",cat:"テクノロジ・セキュリティ"},
+  {q:"OSSライセンスのコピーレフトで求められることはどれか？",choices:["商業利用の禁止","改変後のソフトウェアも同じライセンスで公開すること","ソースコードの非公開","有償での配布の義務"],ans:1,ex:"コピーレフトはOSSを改変・再配布する際に、改変後のソフトウェアも同じオープンソースライセンスで公開することを求める条件です（問73）。",cat:"テクノロジ・ハードウェア"},
+  {q:"電子メールのBcc欄の特徴として正しいものはどれか？",choices:["ToとCcの宛先に表示される","他の受信者にはアドレスが見えない形で送れる","返信先のアドレスを指定できる","添付ファイルを暗号化して送れる"],ans:1,ex:"Bcc（Blind Carbon Copy）はToやCcの受信者にアドレスが見えない形で送ることができます。一斉送信時に個人情報を守るために使います（問75）。",cat:"テクノロジ・ネットワーク"},
+  {q:"Bluetoothに含まれる省電力通信規格はどれか？",choices:["Wi-Fi 6","BLE（Bluetooth Low Energy）","NFC","Zigbee"],ans:1,ex:"BLE（Bluetooth Low Energy）はBluetoothの省電力版規格で、スマートウォッチや各種センサなどIoTデバイスに広く使われています（問81）。",cat:"テクノロジ・ネットワーク"},
+  {q:"マルウェア感染を防ぐ対策として最も適切なものはどれか？",choices:["不審なメールの添付ファイルを開かない","パスワードを定期的に変更する","ファイルを定期的にバックアップする","セキュリティログを定期的に確認する"],ans:0,ex:"マルウェアの主な感染経路はメールの添付ファイルや不審なURLです。不審なファイルを開かないことが最も基本的な予防策です（問83）。",cat:"テクノロジ・セキュリティ"},
+  {q:"NAS（Network Attached Storage）の説明として正しいものはどれか？",choices:["高速な演算処理に特化したプロセッサ","ネットワークに直接接続して共有できるストレージ装置","無線通信の中継機器","サーバとクライアントを接続するソフトウェア"],ans:1,ex:"NAS（Network Attached Storage）はLANに直接接続して複数のユーザーやデバイスでファイルを共有できるストレージ装置です（問87）。",cat:"テクノロジ・ハードウェア"},
+  {q:"PKI（公開鍵基盤）の特徴として正しいものはどれか？",choices:["共通鍵を安全に配布する仕組み","認証局が電子証明書で公開鍵の正当性を保証する仕組み","パスワードを暗号化して保存する仕組み","生体情報で認証する仕組み"],ans:1,ex:"PKI（Public Key Infrastructure）は認証局（CA）が電子証明書を発行して公開鍵の正当性を保証する仕組みです（問90）。",cat:"テクノロジ・セキュリティ"},
+  {q:"イメージスキャナーの解像度を表す単位はどれか？",choices:["bps","dpi","Hz","ppm"],ans:1,ex:"dpi（dots per inch）は1インチあたりのドット数を表す解像度の単位です。値が大きいほど高解像度で細かい画像を読み取れます（問99）。",cat:"テクノロジ・ハードウェア"}
+];
+
+const N=questions.length;
+let order=[],qi=0,correct=0,answered=false;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function init(){order=shuffle([...Array(N).keys()]);qi=0;correct=0;render();}
+
+function render(){
+  const root=document.getElementById('root');
+  if(qi>=N){renderFinal(root);return;}
+  const q=questions[order[qi]];
+  const pct=Math.round(qi/N*100);
+  answered=false;
+  root.innerHTML=`
+    <div class="stats">
+      <div class="stat"><div class="stat-label">問題</div><div class="stat-val">${qi+1}/${N}</div></div>
+      <div class="stat"><div class="stat-label">正解</div><div class="stat-val" style="color:#1baf7a">${correct}</div></div>
+      <div class="stat"><div class="stat-label">正答率</div><div class="stat-val" style="color:#1baf7a">${qi===0?'—':Math.round(correct/qi*100)+'%'}</div></div>
+    </div>
+    <div class="progress"><div class="progress-bar" style="width:${pct}%"></div></div>
+    <div class="q-meta"><span class="q-num">問${qi+1}</span><span class="q-badge">${q.cat}</span></div>
+    <div class="q-card">
+      <div class="q-text">${q.q}</div>
+      <div class="choices" id="ch"></div>
+    </div>`;
+  const ch=document.getElementById('ch');
+  q.choices.forEach((c,i)=>{
+    const b=document.createElement('button');
+    b.className='choice-btn';
+    b.textContent=['ア','イ','ウ','エ'][i]+'　'+c;
+    b.onclick=()=>handleAns(i);
+    ch.appendChild(b);
+  });
+}
+
+function handleAns(i){
+  if(answered)return;
+  answered=true;
+  const q=questions[order[qi]];
+  const btns=document.querySelectorAll('.choice-btn');
+  btns.forEach(b=>b.disabled=true);
+  btns[q.ans].classList.add('correct');
+  if(i!==q.ans)btns[i].classList.add('wrong');
+  if(i===q.ans)correct++;
+  const card=document.querySelector('.q-card');
+  const lbl=document.createElement('div');
+  lbl.className='result-label '+(i===q.ans?'ok':'ng');
+  lbl.innerHTML=(i===q.ans?'<i class="ti ti-check" aria-hidden="true"></i> 正解！':'<i class="ti ti-x" aria-hidden="true"></i> 不正解…　正解は【'+['ア','イ','ウ','エ'][q.ans]+'】');
+  card.appendChild(lbl);
+  const ex=document.createElement('div');
+  ex.className='explanation';
+  ex.textContent=q.ex;
+  card.appendChild(ex);
+  const nb=document.createElement('button');
+  nb.className='next-btn';
+  nb.textContent=qi+1<N?'次の問題へ':'結果を見る';
+  nb.onclick=()=>{qi++;render();};
+  card.appendChild(nb);
+}
+
+function renderFinal(root){
+  const pct=Math.round(correct/N*100);
+  let msg='';
+  if(pct>=80)msg='素晴らしい！この分野はほぼ克服できています。';
+  else if(pct>=60)msg='あと一歩！間違えた問題をもう一度見直しましょう。';
+  else msg='繰り返しが大事です。解説を読みながらもう一周してみよう！';
+  root.innerHTML=`
+    <div class="final">
+      <h3>お疲れさまでした！</h3>
+      <div class="final-score">${correct} <span style="font-size:20px;color:var(--text-muted)">/ ${N}</span></div>
+      <div class="final-msg">正答率 ${pct}%<br>${msg}</div>
+      <button class="restart-btn" onclick="init()">もう一度チャレンジ</button>
+    </div>`;
+}
+
+init();
+</script>
