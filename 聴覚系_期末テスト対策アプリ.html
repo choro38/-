@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>聴覚系 期末テスト対策アプリ</title>
+<style>
+  :root {
+    --bg: #0f1923;
+    --surface: #1a2735;
+    --card: #1e3045;
+    --border: #2a4060;
+    --accent: #00c9a7;
+    --accent2: #4f9cf9;
+    --accent3: #f97316;
+    --warn: #ef4444;
+    --ok: #22c55e;
+    --text: #e8f0f8;
+    --muted: #7a9bb8;
+    --r: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ===== ヘッダー ===== */
+  .header {
+    background: linear-gradient(135deg, #0d1f2d 0%, #1a3a5c 100%);
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header h1 {
+    font-size: 1.2rem; font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .header p { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .progress-bar {
+    height: 4px; background: var(--border);
+    border-radius: 2px; margin-top: 12px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px; transition: width 0.4s ease;
+  }
+  .stats-row {
+    display: flex; gap: 16px; margin-top: 10px;
+  }
+  .stat { font-size: 0.75rem; color: var(--muted); }
+  .stat span { color: var(--text); font-weight: 600; }
+
+  /* ===== メイン ===== */
+  .main { padding: 20px 16px; max-width: 760px; margin: 0 auto; }
+
+  /* ===== スタート画面 ===== */
+  #start-screen {
+    text-align: center; padding: 40px 0;
+  }
+  .start-icon {
+    font-size: 3rem; margin-bottom: 16px;
+  }
+  #start-screen h2 {
+    font-size: 1.6rem; font-weight: 700;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  #start-screen p {
+    color: var(--muted); font-size: 0.9rem; margin-bottom: 32px;
+  }
+  .category-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-bottom: 24px;
+    text-align: left;
+  }
+  .cat-btn {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 14px 16px;
+    cursor: pointer; color: var(--text);
+    font-size: 0.85rem; font-weight: 600;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cat-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .cat-btn.selected {
+    background: rgba(0,201,167,0.12);
+    border-color: var(--accent); color: var(--accent);
+  }
+  .cat-btn .icon { font-size: 1.2rem; }
+  .start-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #00a589);
+    color: #0f1923; font-weight: 700;
+    border: none; border-radius: var(--r);
+    padding: 14px 32px; font-size: 1rem;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-secondary {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-weight: 600;
+    border-radius: var(--r); padding: 14px 24px;
+    font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--accent2); color: var(--accent2); }
+  .mode-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+  .mode-btn {
+    background: var(--card); border: 2px solid var(--border);
+    color: var(--muted); border-radius: 20px;
+    padding: 8px 18px; font-size: 0.82rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .mode-btn.selected { border-color: var(--accent2); color: var(--accent2); background: rgba(79,156,249,0.1); }
+
+  /* ===== 問題カード ===== */
+  #quiz-screen { display: none; }
+  .q-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .q-cat {
+    font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.08em; color: var(--accent2);
+    background: rgba(79,156,249,0.1);
+    padding: 4px 10px; border-radius: 20px;
+  }
+  .q-type {
+    font-size: 0.72rem; color: var(--muted);
+    background: var(--card); padding: 3px 8px; border-radius: 8px;
+  }
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px;
+    margin-bottom: 16px;
+  }
+  .q-text {
+    font-size: 1.05rem; font-weight: 600;
+    line-height: 1.6; margin-bottom: 6px;
+  }
+  .q-sub { font-size: 0.82rem; color: var(--muted); margin-top: 6px; }
+
+  /* 選択肢 */
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 14px 16px;
+    cursor: pointer; font-size: 0.9rem;
+    display: flex; align-items: flex-start; gap: 12px;
+    transition: all 0.2s; line-height: 1.5;
+  }
+  .choice:hover { border-color: var(--accent2); background: rgba(79,156,249,0.06); }
+  .choice.correct { border-color: var(--ok); background: rgba(34,197,94,0.1); }
+  .choice.wrong { border-color: var(--warn); background: rgba(239,68,68,0.1); }
+  .choice.disabled { pointer-events: none; }
+  .choice-label {
+    font-weight: 700; color: var(--muted);
+    min-width: 22px; font-size: 0.85rem;
+  }
+  .choice.correct .choice-label { color: var(--ok); }
+  .choice.wrong .choice-label { color: var(--warn); }
+
+  /* ○×問題 */
+  .ox-row { display: flex; gap: 12px; }
+  .ox-btn {
+    flex: 1; padding: 20px;
+    border: 2px solid var(--border);
+    border-radius: var(--r); font-size: 2rem;
+    cursor: pointer; background: var(--surface);
+    transition: all 0.2s; text-align: center;
+  }
+  .ox-btn:hover { transform: scale(1.04); }
+  .ox-btn.correct { border-color: var(--ok); background: rgba(34,197,94,0.15); }
+  .ox-btn.wrong { border-color: var(--warn); background: rgba(239,68,68,0.15); }
+
+  /* 解説 */
+  .explanation {
+    background: rgba(0,201,167,0.08);
+    border: 1px solid rgba(0,201,167,0.3);
+    border-radius: 10px; padding: 16px;
+    margin-top: 14px; display: none;
+    font-size: 0.88rem; line-height: 1.7;
+  }
+  .explanation.show { display: block; }
+  .explanation .ans-label {
+    font-weight: 700; color: var(--accent);
+    font-size: 0.8rem; margin-bottom: 6px;
+    letter-spacing: 0.05em;
+  }
+  .explanation .key {
+    color: var(--accent); font-weight: 700;
+  }
+
+  /* ナビゲーション */
+  .nav-row {
+    display: flex; justify-content: space-between;
+    align-items: center; gap: 12px; margin-top: 16px;
+  }
+  .btn-nav {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 12px 20px;
+    border-radius: var(--r); font-size: 0.88rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-nav:hover { border-color: var(--accent2); }
+  .btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+  .q-counter {
+    font-size: 0.85rem; color: var(--muted);
+    text-align: center;
+  }
+  .q-counter strong { color: var(--text); font-size: 1.1rem; }
+
+  /* ===== 結果画面 ===== */
+  #result-screen { display: none; text-align: center; }
+  .score-circle {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent) 0deg, var(--border) 0deg);
+    display: flex; align-items: center; justify-content: center;
+    margin: 24px auto;
+    position: relative;
+  }
+  .score-circle::before {
+    content: ''; position: absolute;
+    width: 110px; height: 110px;
+    border-radius: 50%; background: var(--bg);
+  }
+  .score-text {
+    position: relative; z-index: 1;
+    font-size: 1.8rem; font-weight: 700;
+    color: var(--accent);
+  }
+  #result-screen h2 { font-size: 1.4rem; margin-bottom: 8px; }
+  .result-msg { color: var(--muted); font-size: 0.9rem; margin-bottom: 24px; }
+  .result-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px; margin-bottom: 24px;
+  }
+  .result-stat {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 14px;
+  }
+  .result-stat .val {
+    font-size: 1.6rem; font-weight: 700;
+    color: var(--accent2);
+  }
+  .result-stat .lbl { font-size: 0.72rem; color: var(--muted); }
+
+  /* フラグ */
+  .flag-btn {
+    background: none; border: none;
+    color: var(--muted); font-size: 1.1rem;
+    cursor: pointer; padding: 4px 8px;
+    transition: color 0.2s;
+  }
+  .flag-btn.flagged { color: #f97316; }
+
+  /* 難易度バッジ */
+  .diff {
+    font-size: 0.7rem; padding: 2px 8px;
+    border-radius: 10px; font-weight: 700;
+  }
+  .diff-hard { background: rgba(239,68,68,0.15); color: #f87171; }
+  .diff-med { background: rgba(249,115,22,0.15); color: #fb923c; }
+  .diff-easy { background: rgba(34,197,94,0.15); color: #4ade80; }
+
+  /* ===== レスポンシブ ===== */
+  @media (max-width: 480px) {
+    .category-grid { grid-template-columns: 1fr; }
+    .result-grid { grid-template-columns: 1fr 1fr; }
+    .q-text { font-size: 0.95rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎧 聴覚系 期末テスト対策</h1>
+  <p>ST養成課程 | 国試レベル対応 | 全13回分</p>
+  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  <div class="stats-row">
+    <div class="stat">正解 <span id="h-ok">0</span></div>
+    <div class="stat">不正解 <span id="h-ng">0</span></div>
+    <div class="stat">残り <span id="h-rem">-</span></div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- スタート画面 -->
+<div id="start-screen">
+  <div class="start-icon">🏥</div>
+  <h2>期末テスト対策</h2>
+  <p>全範囲・国試準拠・病態重点強化</p>
+
+  <div style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;text-align:left;">▶ 出題モード</div>
+  <div class="mode-row">
+    <button class="mode-btn selected" data-mode="all" onclick="selectMode(this)">🔀 全範囲ランダム</button>
+    <button class="mode-btn" data-mode="wrong" onclick="selectMode(this)">❌ 間違えた問題のみ</button>
+    <button class="mode-btn" data-mode="flag" onclick="selectMode(this)">🚩 フラグ付き</button>
+  </div>
+
+  <div style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;text-align:left;">▶ カテゴリ選択（複数可・未選択で全範囲）</div>
+  <div class="category-grid" id="cat-grid"></div>
+
+  <div class="start-actions">
+    <button class="btn-primary" onclick="startQuiz()">🚀 テスト開始</button>
+    <button class="btn-secondary" onclick="selectAllCats()">全カテゴリ</button>
+    <button class="btn-secondary" onclick="clearCats()">選択解除</button>
+  </div>
+</div>
+
+<!-- 問題画面 -->
+<div id="quiz-screen">
+  <div class="q-meta">
+    <span class="q-cat" id="q-cat">カテゴリ</span>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span class="diff" id="q-diff">難</span>
+      <span class="q-type" id="q-type">5択</span>
+      <button class="flag-btn" id="flag-btn" onclick="toggleFlag()">🚩</button>
+    </div>
+  </div>
+  <div class="q-card">
+    <div class="q-text" id="q-text"></div>
+    <div class="q-sub" id="q-sub"></div>
+    <div id="q-body" style="margin-top:18px;"></div>
+    <div class="explanation" id="explanation">
+      <div class="ans-label">✅ 解答・解説</div>
+      <div id="exp-text"></div>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn-nav" id="btn-prev" onclick="navigate(-1)">← 前の問題</button>
+    <div class="q-counter"><strong id="q-num">1</strong> / <span id="q-total">150</span></div>
+    <button class="btn-nav" id="btn-next" onclick="navigate(1)">次の問題 →</button>
+  </div>
+  <div style="text-align:center;margin-top:12px;">
+    <button class="btn-secondary" onclick="endQuiz()" style="font-size:0.8rem;padding:8px 16px;">終了して結果を見る</button>
+  </div>
+</div>
+
+<!-- 結果画面 -->
+<div id="result-screen">
+  <h2 id="result-title">テスト終了！</h2>
+  <div class="score-circle" id="score-circle">
+    <div class="score-text" id="score-pct">0%</div>
+  </div>
+  <div class="result-msg" id="result-msg"></div>
+  <div class="result-grid">
+    <div class="result-stat"><div class="val" id="r-ok">0</div><div class="lbl">正解数</div></div>
+    <div class="result-stat"><div class="val" id="r-ng">0</div><div class="lbl">不正解</div></div>
+    <div class="result-stat"><div class="val" id="r-tot">0</div><div class="lbl">出題数</div></div>
+  </div>
+  <div class="start-actions">
+    <button class="btn-primary" onclick="restartQuiz()">🔄 もう一度</button>
+    <button class="btn-secondary" onclick="backToStart()">🏠 メニューへ</button>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+// =====================================================================
+// 問題データベース（150問）
+// =====================================================================
+const QUESTIONS = [
+// ─────────────────────────────────────────────
+// カテゴリ1: 音の基礎・外耳
+// ─────────────────────────────────────────────
+{cat:"音の基礎・外耳",type:"5択",diff:"易",
+q:"外耳道と耳介の組み合わせで最も音圧利得が生じる周波数はどれか。",
+choices:["500Hz","1000Hz","2500Hz","4000Hz","8000Hz"],
+ans:2,
+exp:"外耳道（約2.5～3cm）と耳介の共鳴により<span class='key'>2500Hz（2.5kHz）</span>で最大の音圧利得が得られる。Wiener & Rose（1946年）が証明し、利得は15～20dBに達する。4000HzはC5dip（騒音性難聴）と混同しやすいので注意。"},
+
+{cat:"音の基礎・外耳",type:"○×",diff:"易",
+q:"外耳道と耳介の組み合わせによる最大音圧利得は約15～20dBである。",
+ox:true,
+exp:"<span class='key'>○：正しい。</span>外耳道と耳介の共鳴で2500Hz付近に15～20dBの音圧利得が得られる。"},
+
+{cat:"音の基礎・外耳",type:"5択",diff:"易",
+q:"音の高低を表す物理量の単位はどれか。",
+choices:["dB（デシベル）","Pa（パスカル）","Hz（ヘルツ）","mV（ミリボルト）","W（ワット）"],
+ans:2,
+exp:"音の高低（周波数）の単位は<span class='key'>Hz（ヘルツ）</span>。音の大きさ（強さ）の単位はdB（デシベル）またはPa（パスカル）。"},
+
+{cat:"音の基礎・外耳",type:"5択",diff:"普",
+q:"音源定位において、高周波数音が低周波数音より有利な理由はどれか。",
+choices:["伝播速度が速いため","波長が長く回折しやすいため","波長が短く耳介に遮られ左右差が生じやすいため","内耳に伝わりやすいため","外耳道が共鳴しやすいため"],
+ans:2,
+exp:"高音（短波長）は<span class='key'>耳介に遮られ（頭部陰影効果）</span>、両耳間強度差（ILD）が生じやすく音源定位に有利。低音（長波長）は頭部を回折するためILDが生じにくく、代わりに両耳間時間差（ITD）を使う。"},
+
+{cat:"音の基礎・外耳",type:"○×",diff:"普",
+q:"両耳間到達時間差（ITD）は主に低音の音源定位に用いられる。",
+ox:true,
+exp:"<span class='key'>○：正しい。</span>低音（長波長）は頭部を回折し強度差が生じにくいため、時間差（ITD）が主要な手がかりとなる。高音では両耳間強度差（ILD）が主な手がかり。"},
+
+{cat:"音の基礎・外耳",type:"5択",diff:"普",
+q:"成人の外耳道の長さはどれか。",
+choices:["約1.1～1.4cm","約2.5～3.0cm","約4.0～5.0cm","約0.5～1.0cm","約5.0～6.0cm"],
+ans:1,
+exp:"成人の外耳道の長さは<span class='key'>約2.5～3.0cm</span>。新生児は約1.1～1.4cmと短いため共鳴周波数が異なる。"},
+
+{cat:"音の基礎・外耳",type:"5択",diff:"普",
+q:"外耳道の構造について正しいのはどれか。",
+choices:["外側2/3が骨部・内側1/3が軟骨部","外側1/3が軟骨部・内側2/3が骨部","全て骨部からなる","全て軟骨部からなる","外側1/2が軟骨部・内側1/2が骨部"],
+ans:1,
+exp:"外耳道は<span class='key'>外側1/3が軟骨部・内側2/3が骨部</span>。耳かきを入れる外側が柔らかく（軟骨）、奥が硬い（骨）のはこのため。"},
+
+{cat:"音の基礎・外耳",type:"○×",diff:"普",
+q:"先天性耳瘻孔は感染を繰り返しやすく、根まで完全に摘出する手術が必要である。",
+ox:true,
+exp:"<span class='key'>○：正しい。</span>先天性耳瘻孔は穴と袋を根まで完全に摘出しないと感染が繰り返すため、表面だけの処置では不十分。"},
+
+// ─────────────────────────────────────────────
+// カテゴリ2: 中耳・インピーダンス変換
+// ─────────────────────────────────────────────
+{cat:"中耳・インピーダンス変換",type:"5択",diff:"易",
+q:"中耳の最も重要な生理学的役割はどれか。",
+choices:["気圧の調節","音源定位","インピーダンス変換（マッチング）","音の周波数分析","音の増幅のみ"],
+ans:2,
+exp:"中耳の最重要役割は<span class='key'>インピーダンス変換</span>。空気（低インピーダンス）から蝸牛内液体（高インピーダンス）への音エネルギーの損失を最小化する。"},
+
+{cat:"中耳・インピーダンス変換",type:"5択",diff:"普",
+q:"中耳のインピーダンス変換に関わる機構はどれか。3つ選べ。",
+choices:["①鼓膜とアブミ骨の面積比（約17:1）","②耳管による気圧調節","③耳小骨のてこ作用","④鼓膜の円錐形変形","⑤外耳道の共鳴"],
+ans:[0,2,3],
+multi:true,
+exp:"インピーダンス変換の3機構：<span class='key'>①面積比（17:1→約35倍）・③てこ作用（約1.32倍）・④鼓膜変形（約4倍）</span>。3つの積＝約185倍のインピーダンス変換。"},
+
+{cat:"中耳・インピーダンス変換",type:"5択",diff:"普",
+q:"耳管の主な役割はどれか。",
+choices:["音の増幅","気圧の調節（鼓室と鼻咽腔の連絡）","耳小骨の支持","音の周波数分析","免疫機能"],
+ans:1,
+exp:"耳管（Eustachian tube）の主役割は<span class='key'>気圧調節</span>。鼻咽腔と鼓室をつなぎ、中耳内の気圧を外気圧に合わせる。飛行機でツーンとした時にあくびをすると治るのはこのため。"},
+
+{cat:"中耳・インピーダンス変換",type:"○×",diff:"普",
+q:"アブミ骨筋は三叉神経の支配を受ける。",
+ox:false,
+exp:"<span class='key'>×：誤り。</span>アブミ骨筋は<span class='key'>顔面神経（第Ⅶ脳神経）</span>の支配を受ける。鼓膜張筋が三叉神経（第Ⅴ脳神経）の支配。"},
+
+{cat:"中耳・インピーダンス変換",type:"5択",diff:"難",
+q:"耳掃除をして咳嗽反射が生じた場合、関与する神経はどれか。",
+choices:["顔面神経","三叉神経","舌咽神経","迷走神経（Arnold神経）","副神経"],
+ans:3,
+exp:"外耳道の<span class='key'>迷走神経（Arnold神経・耳介枝）</span>が刺激されると咳嗽反射が生じる。外耳道の神経支配は迷走・三叉・顔面・舌咽の4つ。"},
+
+// ─────────────────────────────────────────────
+// カテゴリ3: 内耳
+// ─────────────────────────────────────────────
+{cat:"内耳・蝸牛",type:"5択",diff:"易",
+q:"内リンパ液のイオン組成として正しいのはどれか。",
+choices:["Na⁺高・K⁺低（細胞外液に近い）","K⁺高・Na⁺低（細胞内液に近い）","Na⁺高・K⁺高（両方高い）","K⁺低・Na⁺低（両方低い）","Ca²⁺が最も多い"],
+ans:1,
+exp:"内リンパ液は<span class='key'>K⁺高・Na⁺低</span>で細胞内液に近い。外リンパ液はNa⁺高・K⁺低で細胞外液に近い。語呂：「内の子（K）は高い・外はNa高い」"},
+
+{cat:"内耳・蝸牛",type:"5択",diff:"易",
+q:"内リンパ液はどこで生成されるか。",
+choices:["ラセン神経節","血管条","前庭膜","ライスネル膜","蝸牛神経"],
+ans:1,
+exp:"内リンパ液は<span class='key'>血管条（けっかんじょう）</span>のイオンポンプ（ATP消費）によって生成される。ATPが不足すると1～2分以内に蝸牛内電位がゼロになる。"},
+
+{cat:"内耳・蝸牛",type:"○×",diff:"易",
+q:"外リンパ液は脳脊髄液と交通している。",
+ox:true,
+exp:"<span class='key'>○：正しい。</span>外リンパ液は脳脊髄液と交通する。内リンパ液は交通しない。内外リンパは蝸牛孔で混合しない（重要な×の選択肢）。"},
+
+{cat:"内耳・蝸牛",type:"5択",diff:"易",
+q:"蝸牛は何回転半巻いているか。",
+choices:["1回転半","2回転半","3回転半","4回転半","5回転"],
+ans:1,
+exp:"蝸牛は<span class='key'>2回転半</span>巻いている。全長約35mm、幅約1cm、高さ約5mm。"},
+
+{cat:"内耳・蝸牛",type:"5択",diff:"普",
+q:"基底膜の特性として正しいのはどれか。",
+choices:["基部が広く先端部が狭い","基部が狭く（硬く）先端部が広い（柔らかい）","全体的に均一な幅","基部が柔らかく先端部が硬い","幅と周波数は無関係"],
+ans:1,
+exp:"基底膜は<span class='key'>基部が狭く・硬く・高音に反応</span>し、先端部が広く・柔らかく・低音に反応する。これが蝸牛内での最初の音の分析（トノトピー）を生む。"},
+
+{cat:"内耳・蝸牛",type:"5択",diff:"普",
+q:"外有毛細胞の列数と内有毛細胞の列数はそれぞれいくつか。",
+choices:["外1列・内3列","外2列・内2列","外3列・内1列","外4列・内1列","外3列・内3列"],
+ans:2,
+exp:"<span class='key'>外有毛細胞3列・内有毛細胞1列</span>。OAE（耳音響放射）は外有毛細胞の機能を反映する。"},
+
+{cat:"内耳・蝸牛",type:"5択",diff:"普",
+q:"蝸牛内電位（内リンパの電位）はどのくらいか。",
+choices:["−70mV","0mV","＋5mV","＋80～120mV","＋200mV"],
+ans:3,
+exp:"蝸牛管（内リンパ）の電位は<span class='key'>＋80～120mV</span>。前庭階・鼓室階は＋5mV。この高い電位は血管条のイオンポンプが維持し、酸素欠乏時には1～2分でゼロになる。"},
+
+{cat:"内耳・蝸牛",type:"○×",diff:"普",
+q:"コルチ器の外有毛細胞は蓋膜に入り込んでいるが、内有毛細胞は蓋膜にゆるく付着しているだけである。",
+ox:true,
+exp:"<span class='key'>○：正しい。</span>外有毛細胞の不動毛は蓋膜に埋め込まれているが、内有毛細胞の不動毛は蓋膜にゆるく接しているだけ。"},
+
+{cat:"内耳・蝸牛",type:"5択",diff:"難",
+q:"Auditory neuropathyの診断に最も重要な所見の組み合わせはどれか。",
+choices:["ABR正常＋OAE異常","ABR異常＋OAE正常","ABR異常＋OAE異常","ABR正常＋OAE正常","ABR異常＋ティンパノグラムB型"],
+ans:1,
+exp:"<span class='key'>ABR異常＋OAE正常</span>の乖離がAuditory neuropathyの診断の鍵。外有毛細胞（OAE）は正常だが神経伝導（ABR）が障害されている。原因：核黄疸・低酸素症・OPA1遺伝子・OTOF遺伝子など。"},
+
+// ─────────────────────────────────────────────
+// カテゴリ4: 聴覚伝導路
+// ─────────────────────────────────────────────
+{cat:"聴覚伝導路",type:"5択",diff:"易",
+q:"聴覚伝導路で左右の交叉が最初に始まる場所はどこか。",
+choices:["蝸牛神経核","下丘","上オリーブ核","内側膝状体","ヘシュル回"],
+ans:2,
+exp:"<span class='key'>上オリーブ核（橋）</span>が両耳情報が最初に統合される場所。両耳聴処理の起点でもある。"},
+
+{cat:"聴覚伝導路",type:"5択",diff:"易",
+q:"聴覚伝導路を順番に正しく並べたものはどれか。",
+choices:["蝸牛神経→上オリーブ核→下丘→内側膝状体→聴皮質","ラセン神経節→蝸牛神経→台形体→上オリーブ核→外側毛帯→下丘→内側膝状体→聴放線→聴皮質","蝸牛神経→下丘→上オリーブ核→内側膝状体→聴皮質","ラセン神経節→蝸牛神経→上オリーブ核→下丘→外側膝状体→聴皮質","蝸牛神経→内側膝状体→下丘→聴皮質"],
+ans:1,
+exp:"語呂：<span class='key'>「ラ蝸台・上外下・内聴聴」</span>（ラセン→蝸牛→台形体→上オリーブ→外側毛帯→下丘→内側膝状体→聴放線→聴皮質）"},
+
+{cat:"聴覚伝導路",type:"5択",diff:"易",
+q:"大脳へ向かう前にふわっと束になる構造を何というか。",
+choices:["聴覚野","下丘","外側毛帯","聴放線","内側膝状体"],
+ans:3,
+exp:"<span class='key'>聴放線（聴放射線）</span>が内側膝状体から大脳聴覚野へ向かう神経線維が束になる構造。第5回のミニテストで出題。"},
+
+{cat:"聴覚伝導路",type:"5択",diff:"普",
+q:"ABRのⅤ波の起源はどこか。",
+choices:["蝸牛神経","蝸牛神経核","上オリーブ核","外側毛帯","下丘"],
+ans:4,
+exp:"ABRの波の起源：Ⅰ波＝蝸牛神経、Ⅱ波＝蝸牛神経核、Ⅲ波＝上オリーブ核、Ⅳ波＝外側毛帯、<span class='key'>Ⅴ波＝下丘</span>、Ⅵ波＝内側膝状体。Ⅴ波が最重要で最もよく出現する。"},
+
+{cat:"聴覚伝導路",type:"5択",diff:"普",
+q:"一次聴覚野はどこにあるか。",
+choices:["前頭葉44・45野","頭頂葉","側頭葉41・42野（ヘシュル回）","後頭葉","小脳"],
+ans:2,
+exp:"一次聴覚野は<span class='key'>側頭葉41・42野（ヘシュル回＝横側頭回）</span>。ウェルニッケ野（感覚性言語中枢）は22野。"},
+
+{cat:"聴覚伝導路",type:"○×",diff:"普",
+q:"聴覚路は完全交叉性で、右耳の情報は全て左の聴覚野だけに届く。",
+ox:false,
+exp:"<span class='key'>×：誤り。</span>聴覚路は<span class='key'>対側優位だが両側性</span>。視覚路や運動路のような完全交叉ではない。上オリーブ核以降は両側性に伝達される。"},
+
+{cat:"聴覚伝導路",type:"5択",diff:"難",
+q:"ABRにおいてⅠ波～Ⅴ波間の潜時延長が最も強く示唆する疾患はどれか。",
+choices:["滲出性中耳炎","メニエール病","突発性難聴","聴神経腫瘍","騒音性難聴"],
+ans:3,
+exp:"<span class='key'>聴神経腫瘍（前庭神経鞘腫）</span>では蝸牛神経が圧迫されるため、ABRのⅠ波潜時延長またはⅡ波以降の消失が特徴的所見。第11回ミニテストで出題。"},
+
+{cat:"聴覚伝導路",type:"5択",diff:"普",
+q:"側頭葉を栄養する主な血管はどれか。",
+choices:["前大脳動脈","中大脳動脈（MCA）","後大脳動脈","椎骨動脈","前下小脳動脈"],
+ans:1,
+exp:"<span class='key'>中大脳動脈（MCA：Middle Cerebral Artery）</span>が側頭葉・前頭葉・頭頂葉を栄養する。第11回ミニテストで出題。MCA閉塞→失語症＋片麻痺＋中枢性難聴。"},
+
+// ─────────────────────────────────────────────
+// カテゴリ5: 聴覚検査
+// ─────────────────────────────────────────────
+{cat:"聴覚検査",type:"5択",diff:"易",
+q:"語音聴取閾値検査（SRT）に使用する材料はどれか。",
+choices:["語音表（単語）","数字表","文章表","環境音","純音"],
+ans:1,
+exp:"語音聴取閾値検査（SRT・語音明瞭度閾値検査）は<span class='key'>数字表</span>を使用する。語音表（単語）を使うのは語音弁別能検査（語音明瞭度検査）。"},
+
+{cat:"聴覚検査",type:"○×",diff:"易",
+q:"語音弁別能検査（語音明瞭度検査）はスピーチオージオグラムに正解率を記し、実線で結ぶ。",
+ox:true,
+exp:"<span class='key'>○：正しい。</span>語音弁別能検査は実線で結ぶ。語音了解閾値（SRT）は破線で結ぶ。中間テストで出題されたポイント。"},
+
+{cat:"聴覚検査",type:"5択",diff:"易",
+q:"耳小骨の可動性を測定する検査はどれか。",
+choices:["ABR","OAE","音響反射（AR）","ASSR","純音聴力検査"],
+ans:2,
+exp:"耳小骨の可動性（音響反射）を測定するのは<span class='key'>音響反射（AR：Acoustic Reflex）</span>。第8回ミニテストで出題。ティンパノメトリーは鼓膜の動きやすさを見る。"},
+
+{cat:"聴覚検査",type:"5択",diff:"普",
+q:"OAE（耳音響放射）で調べられる構造はどれか。",
+choices:["内有毛細胞","外有毛細胞","ラセン神経節","蝸牛神経","基底板"],
+ans:1,
+exp:"OAEは<span class='key'>外有毛細胞</span>の機能を反映する。外有毛細胞が障害されるとOAEが消失する（感音性難聴で障害、伝音性・後迷路性・機能性では正常）。"},
+
+{cat:"聴覚検査",type:"5択",diff:"普",
+q:"オージオグラムの記号で正しいのはどれか。",
+choices:["○は左耳の気導を示す","×は右耳の気導を示す","＜は右耳の骨導を示す","＞は右耳の骨導を示す","↓は骨導のスケールアウトを示す"],
+ans:2,
+exp:"<span class='key'>＜（左向き三角）は右耳の骨導</span>。○＝右気導（実線）、×＝左気導（破線）、＞＝左骨導、↓＝スケールアウト。骨導は結ばない。"},
+
+{cat:"聴覚検査",type:"5択",diff:"普",
+q:"難聴の障害者認定に際して必須とされる検査はどれか。",
+choices:["純音聴力検査のみ","OAEのみ","ティンパノグラム","ABR（聴性脳幹反応）","語音弁別能検査"],
+ans:3,
+exp:"難聴の疑いで<span class='key'>障害者認定を行う場合はABRが必須</span>。他覚的検査（患者の反応に頼らない）であるため客観性が保証される。"},
+
+{cat:"聴覚検査",type:"5択",diff:"普",
+q:"Békésy（ベケシー）検査でⅢ型またはⅣ型を示す難聴はどれか。",
+choices:["正常","伝音性難聴","内耳性感音難聴","後迷路性難聴","機能性難聴"],
+ans:3,
+exp:"Békésy検査：<span class='key'>Ⅲ・Ⅳ型＝後迷路性難聴（TTS：一過性閾値上昇）</span>。Ⅰ型＝正常・伝音性、Ⅱ型＝内耳性感音性、Ⅴ型＝機能性難聴。"},
+
+{cat:"聴覚検査",type:"5択",diff:"普",
+q:"TTS（Temporary Threshold Shift）の説明として正しいのはどれか。",
+choices:["永続的な閾値上昇","一過性閾値上昇：時間経過とともに持続音の閾値が上がる現象","気導と骨導の差","補充現象の別名","マスキング効果"],
+ans:1,
+exp:"<span class='key'>TTS（一過性閾値上昇）</span>は蝸牛神経が一定の刺激を受けると機能が低下する現象。Békésy検査のⅢ・Ⅳ型で認められる（第8回ミニテスト出題）。"},
+
+{cat:"聴覚検査",type:"5択",diff:"難",
+q:"ASSRの特徴として正しいのはどれか。",
+choices:["周波数別に測定できない","主に成人に使用する","周波数別に閾値を測定でき乳幼児に有用","ABRと全く同じ検査である","外有毛細胞の機能を調べる"],
+ans:2,
+exp:"ASSR（Auditory Steady-State Response）は<span class='key'>周波数別に閾値を測定でき</span>、反応が曖昧な<span class='key'>乳幼児に特に有用</span>。ボタンが押せない赤ちゃんの閾値測定に用いる。"},
+
+{cat:"聴覚検査",type:"5択",diff:"難",
+q:"後迷路性難聴が疑われる所見として最も特徴的なのはどれか。",
+choices:["気骨導差（ABギャップ）が大きい","補充現象が陽性","OAEが消失する","最高語音明瞭度の低下とロールオーバー現象","ティンパノグラムB型"],
+ans:3,
+exp:"後迷路性難聴の最大の特徴は<span class='key'>語音弁別能が純音聴力検査と比べて極端に低い（乖離）とロールオーバー現象</span>。ABRはⅠ波潜時延長、OAEは正常（外有毛細胞は正常）。"},
+
+// ─────────────────────────────────────────────
+// カテゴリ6: 難聴の分類と検査結果
+// ─────────────────────────────────────────────
+{cat:"難聴の分類・検査結果",type:"5択",diff:"易",
+q:"伝音性難聴のWeber検査の結果はどれか。",
+choices:["健側に響く","患側に響く","両側均等に響く","響かない","検査不能"],
+ans:1,
+exp:"伝音性難聴では<span class='key'>患側（悪い方）に響く</span>。理由：外耳・中耳の障害により遮音効果が生まれ、骨伝導音が閉じ込められて患側に集まるため。"},
+
+{cat:"難聴の分類・検査結果",type:"5択",diff:"易",
+q:"感音性難聴（内耳性）のWeber検査の結果はどれか。",
+choices:["患側に響く","健側に響く","正中に響く","響かない","変動する"],
+ans:1,
+exp:"感音性難聴（内耳性）では<span class='key'>健側に響く</span>。患側の内耳が機能しないため、骨伝導でも健側に伝わって大きく聞こえる。"},
+
+{cat:"難聴の分類・検査結果",type:"5択",diff:"普",
+q:"伝音性難聴のRinne検査の結果はどれか。",
+choices:["陽性（気導＞骨導）","陰性（骨導＞気導）","両方同じ","陽性だが両方閾値上昇","結果が毎回変わる"],
+ans:1,
+exp:"伝音性難聴では<span class='key'>Rinne陰性（骨導＞気導）</span>。感音性難聴ではRinne陽性（気導＞骨導だが両方閾値上昇）。"},
+
+{cat:"難聴の分類・検査結果",type:"5択",diff:"普",
+q:"3難聴の比較として正しいのはどれか。",
+choices:["伝音性でも骨導閾値が上昇する","感音性（内耳性）ではABギャップがある","後迷路性難聴では補充現象が陽性","感音性（内耳性）では補充現象が陽性","後迷路性難聴ではOAEが消失する"],
+ans:3,
+exp:"<span class='key'>感音性（内耳性）では補充現象陽性</span>。伝音性・後迷路性では補充現象なし。後迷路性でOAEが消失するのは誤り（OAEは外有毛細胞を反映するため正常）。"},
+
+{cat:"難聴の分類・検査結果",type:"5択",diff:"普",
+q:"ティンパノグラムのB型が示す状態はどれか。",
+choices:["耳小骨離断","耳硬化症","滲出性中耳炎・鼓膜癒着","耳管狭窄症","正常"],
+ans:2,
+exp:"ティンパノグラム：<span class='key'>B型＝山なし（フラット）＝滲出性中耳炎・鼓膜癒着</span>。As型＝耳硬化症、Ad型＝耳小骨離断、C型＝耳管狭窄症。"},
+
+{cat:"難聴の分類・検査結果",type:"5択",diff:"普",
+q:"機能性難聴（非器質性難聴）のBékésy検査での特徴的な型はどれか。",
+choices:["Ⅰ型","Ⅱ型","Ⅲ型","Ⅳ型","Ⅴ型（大型）"],
+ans:4,
+exp:"機能性難聴では<span class='key'>Ⅴ型（大型）</span>が特徴。断続音の閾値＞持続音の閾値という生理学的に説明できない逆転が起きる。ABR正常＋OAE正常も機能性難聴の根拠。"},
+
+{cat:"難聴の分類・検査結果",type:"5択",diff:"難",
+q:"機能性難聴の特殊検査3つの組み合わせで正しいのはどれか。",
+choices:["ABLBテスト・SISIテスト・Rinne検査","DAFテスト・スタンゲルテスト・ロンバールテスト","Békésy検査・ABR・OAE","ティンパノメトリー・音響反射・語音検査","Weber検査・Rinne検査・ABLBテスト"],
+ans:1,
+exp:"機能性難聴の特殊検査：<span class='key'>①DAFテスト（遅延側音）②スタンゲルテスト③ロンバールテスト</span>。全て「無意識に出る反応」を利用して本当に聞こえているかを証明する。"},
+
+// ─────────────────────────────────────────────
+// カテゴリ7: 伝音性疾患
+// ─────────────────────────────────────────────
+{cat:"伝音性疾患",type:"5択",diff:"普",
+q:"鼓膜所見に異常がない伝音性難聴はどれか。",
+choices:["急性中耳炎","滲出性中耳炎","耳硬化症","真珠腫性中耳炎","慢性化膿性中耳炎"],
+ans:2,
+exp:"<span class='key'>耳硬化症</span>はアブミ骨底板が固着するが鼓膜は正常。耳管狭窄症も鼓膜はほぼ正常（軽度陥凹あり）。急性中耳炎は赤く、滲出性は黄色く見える。"},
+
+{cat:"伝音性疾患",type:"5択",diff:"普",
+q:"鼓膜が黄色く透けて見え、気泡が見えることがある疾患はどれか。",
+choices:["急性中耳炎","真珠腫性中耳炎","耳硬化症","滲出性中耳炎","耳血腫"],
+ans:3,
+exp:"<span class='key'>滲出性中耳炎</span>では中耳の滲出液が鼓膜越しに黄色く透けて見え、気泡が見えることもある。鼓膜の変色や痛みがないのも特徴。"},
+
+{cat:"伝音性疾患",type:"5択",diff:"普",
+q:"コマの裏に脈動する赤～青紫色の腫瘤が見える場合、最も注意すべき処置はどれか。",
+choices:["すぐに穿刺する","抗生物質を投与する","★絶対に穿刺しない（頸静脈球腫瘍の疑い）","耳管通気を行う","補聴器を装用させる"],
+ans:2,
+exp:"鼓膜越しの<span class='key'>拍動する赤～青紫色の腫瘤＝頸静脈球腫瘍（グロムス腫瘍）</span>疑い。<span class='key'>絶対に穿刺禁忌（大出血のリスク）</span>。"},
+
+{cat:"伝音性疾患",type:"5択",diff:"普",
+q:"滲出性中耳炎の鼓膜切開の最大の目的はどれか。",
+choices:["滲出液を取り除くこと","細菌を除去すること","中耳に空気を含んだ空間を作ること","鼓膜の厚みを薄くすること","圧力を均等にすること"],
+ans:2,
+exp:"鼓膜切開の一番の目的は<span class='key'>中耳に空気を含んだ空間を作ること</span>（滲出液除去だけではない）。先生が強調した重要ポイント。"},
+
+{cat:"伝音性疾患",type:"5択",diff:"普",
+q:"耳硬化症の特徴的なオージオグラム所見はどれか。",
+choices:["C5dip（4000Hz選択的閾値上昇）","低音障害型難聴","Carhart's notch（2000Hzの骨導一過性低下）","高音急墜型","ABギャップなし"],
+ans:2,
+exp:"耳硬化症の特徴：<span class='key'>Carhart's notch（カーハート切痕）</span>＝2000Hzに骨導閾値の一過性低下。ティンパノグラムはAs型。アブミ骨底板の固着が原因。女性に多く妊娠で悪化。"},
+
+{cat:"伝音性疾患",type:"5択",diff:"難",
+q:"急性中耳炎で絶対に避けるべきことはどれか。",
+choices:["補聴器の使用","鼻すすり","骨導補聴器の使用","静かな環境での会話","早期の受診"],
+ans:1,
+exp:"急性中耳炎では<span class='key'>鼻すすりが厳禁</span>。上咽頭と耳管がつながっているため、鼻汁を吸い込むと耳管経由で中耳に感染が波及する。"},
+
+{cat:"伝音性疾患",type:"5択",diff:"難",
+q:"真珠腫性中耳炎の説明として正しいのはどれか。",
+choices:["良性で周囲を破壊しない","ティンパノグラムはAs型","扁平上皮が異常増殖した白い塊で周囲構造を破壊しうる","感音性難聴を呈する","抗菌薬のみで治療できる"],
+ans:2,
+exp:"真珠腫＝<span class='key'>扁平上皮の異常増殖による白い塊（良性だが周囲の骨を破壊しうる）</span>。鼓膜所見：白い固まりが見える。治療：手術（真珠腫除去術）。"},
+
+// ─────────────────────────────────────────────
+// カテゴリ8: 感音性疾患（内耳）
+// ─────────────────────────────────────────────
+{cat:"感音性疾患（内耳）",type:"5択",diff:"易",
+q:"突発性難聴のゴールデンタイムはどれか。",
+choices:["24時間以内","3日（72時間）以内","10日～2週間以内","1ヶ月以内","いつでもよい"],
+ans:2,
+exp:"突発性難聴の<span class='key'>ゴールデンタイムは10日～2週間（2週間以内）</span>。ステロイド治療・高気圧酸素療法・鼓膜内投与が主な治療。約60%は何もしなくても自然回復する。"},
+
+{cat:"感音性疾患（内耳）",type:"5択",diff:"易",
+q:"メニエール病の特徴的な症状の組み合わせはどれか。",
+choices:["高音障害型難聴＋耳鳴り","低音部閾値上昇＋めまい（発作性・反復性）＋耳鳴り","両側性難聴＋頭痛","難聴のみ","めまいのみ（難聴なし）"],
+ans:1,
+exp:"メニエール病：<span class='key'>低音障害型難聴＋発作性めまい（10分～数時間）＋耳鳴り＋反復する</span>こと。内リンパ水腫が原因。MRI遅延造影4時間後で水腫を確認可能。"},
+
+{cat:"感音性疾患（内耳）",type:"5択",diff:"普",
+q:"突発性難聴とメニエール病の最重要鑑別ポイントはどれか。",
+choices:["難聴の程度","耳鳴りの有無","めまいの反復性（メニエールは反復する）","ABRの所見","OAEの所見"],
+ans:2,
+exp:"<span class='key'>めまいの反復性</span>が最重要鑑別。突発性難聴＝初回のみ・反復しない。メニエール病＝発作を反復する（繰り返すたびに聴力が悪化）。"},
+
+{cat:"感音性疾患（内耳）",type:"5択",diff:"普",
+q:"騒音性難聴の特徴的なオージオグラム所見はどれか。",
+choices:["低音域から広範に閾値上昇","高音域のみ閾値上昇","C5dip（4000Hz付近に選択的閾値上昇）","全周波数に均等な閾値上昇","ABギャップが生じる"],
+ans:2,
+exp:"騒音性難聴では<span class='key'>C5dip（4000Hz付近に限局した閾値上昇）</span>が特徴。外耳道の共鳴（2500Hz）により4000Hz付近の有毛細胞が最もダメージを受けやすい。確定診断は騒音環境から離れてから。"},
+
+{cat:"感音性疾患（内耳）",type:"5択",diff:"普",
+q:"ムンプス難聴の特徴として正しいのはどれか。",
+choices:["両側性・軽度難聴・予後良好","一側性・高度難聴・予後不良が多い","伝音性難聴","補充現象なし","自然回復が多い"],
+ans:1,
+exp:"ムンプス難聴：<span class='key'>一側性・高度（ほぼ全ろう）・不可逆・予後不良</span>が多い。前庭半規管も障害されめまいを伴う。ワクチンによる予防が最重要。"},
+
+{cat:"感音性疾患（内耳）",type:"5択",diff:"普",
+q:"老人性難聴（加齢性難聴）で正しいのはどれか。",
+choices:["40歳未満から発症する","左右差が大きい","聴覚中枢機能は保持される","語音明瞭度は低下する","高音域は障害されず低音域から障害される"],
+ans:3,
+exp:"老人性難聴：<span class='key'>語音明瞭度が低下する</span>のが正しい。40歳以上から発症、左右差が少ない、聴覚中枢機能は保持されない（×）、高音域から両側性に進行する。"},
+
+{cat:"感音性疾患（内耳）",type:"5択",diff:"普",
+q:"耳毒性（薬剤性難聴）を引き起こす薬剤として正しいのはどれか。",
+choices:["ペニシリン系抗菌薬","アミノグリコシド系抗菌薬（ストレプトマイシンなど）","セフェム系抗菌薬","非ステロイド性抗炎症薬（NSAIDs全般）","H2ブロッカー"],
+ans:1,
+exp:"耳毒性薬：<span class='key'>アミノグリコシド系（ストレプトマイシン・カナマイシン・ゲンタマイシン）、白金製剤（シスプラチン）、フロセミド（ループ利尿薬）、アスピリン</span>。投薬中止しても改善しない（不可逆）。"},
+
+{cat:"感音性疾患（内耳）",type:"5択",diff:"難",
+q:"老人性難聴の三本柱として正しい組み合わせはどれか。",
+choices:["外耳道閉鎖・耳小骨固着・鼓膜変性","シナプスの変性・血管条の変性・支持細胞の脱落","有毛細胞の増殖・神経の再生・血管新生","鼓膜穿孔・耳管閉鎖・耳小骨離断","聴覚野の萎縮のみ"],
+ans:1,
+exp:"老人性難聴の三本柱：<span class='key'>①シナプスの変性（有毛細胞と神経の結合↓）②血管条の変性（内耳環境悪化）③支持細胞の脱落</span>。これらが相互に作用して進行する。"},
+
+{cat:"感音性疾患（内耳）",type:"5択",diff:"難",
+q:"遅発性内リンパ水腫とメニエール病の最大の違いはどれか。",
+choices:["難聴の種類（伝音性vs感音性）","難聴とめまいの時間的関係（遅発性は先に難聴が固定→後からめまい）","聴力の変動","治療法","補充現象の有無"],
+ans:1,
+exp:"<span class='key'>遅発性内リンパ水腫は先に難聴が固定してから数年～数十年後にめまいが反復</span>し、聴力は変動しない。メニエール病は難聴とめまいが同時期に反復し聴力が変動する。"},
+
+// ─────────────────────────────────────────────
+// カテゴリ9: 後迷路性・中枢性難聴
+// ─────────────────────────────────────────────
+{cat:"後迷路性・中枢性難聴",type:"5択",diff:"普",
+q:"聴神経腫瘍の多くはどの神経由来か。",
+choices:["蝸牛神経","前庭神経（前庭神経鞘腫）","顔面神経","三叉神経","舌咽神経"],
+ans:1,
+exp:"聴神経腫瘍の多くは<span class='key'>前庭神経由来（前庭神経鞘腫）</span>。蝸牛神経由来は少ない。小脳橋角部腫瘍と区別する必要あり。"},
+
+{cat:"後迷路性・中枢性難聴",type:"5択",diff:"普",
+q:"中枢性難聴の特徴として最も正しいのはどれか。",
+choices:["純音聴力検査で高度難聴を示す","ABギャップが大きい","一般的な検査（静かな防音室）では見逃されやすい","OAEが消失する","ティンパノグラムB型を示す"],
+ans:2,
+exp:"中枢性難聴は<span class='key'>純音聴力は正常～軽度低下にとどまり</span>、一般的な静かな防音室での検査では見逃されやすい。雑音下・競合条件下での聞き取りが困難（聴覚情報処理障害＝APD）。"},
+
+{cat:"後迷路性・中枢性難聴",type:"5択",diff:"難",
+q:"皮質聾と純粋語聾の最大の違いはどれか。",
+choices:["難聴の程度","皮質聾は音そのものが聞こえない、純粋語聾は音は聞こえるが言葉だけがわからない","ABRの所見","治療法","難聴の種類"],
+ans:1,
+exp:"<span class='key'>皮質聾＝音そのものが聞こえない</span>（両側大脳聴覚野の障害、ABRは正常）。<span class='key'>純粋語聾＝音は聞こえるが言葉だけがわからない</span>（環境音は理解できる）（左側頭葉障害）。"},
+
+{cat:"後迷路性・中枢性難聴",type:"5択",diff:"難",
+q:"環境音失認の説明として正しいのはどれか。",
+choices:["言葉は理解できないが環境音はわかる","言葉も環境音も全くわからない","音そのものが聞こえない","言葉はわかるが環境音の意味がわからない","聴力検査では重度難聴を示す"],
+ans:3,
+exp:"<span class='key'>環境音失認＝言葉の理解はできるが、犬の鳴き声・ドアのノックなど環境音の意味がわからない</span>（右側頭葉障害）。純粋語聾（言葉だけ×）と逆の関係。"},
+
+{cat:"後迷路性・中枢性難聴",type:"5択",diff:"難",
+q:"聴覚情報処理障害（APD）の特徴として正しいのはどれか。",
+choices:["静かな部屋でも会話が全く理解できない","ABRが著しく異常","器質的病変はなく雑音下・競合条件下での聞き取りが困難","ティンパノグラムB型","純音聴力検査で重度難聴"],
+ans:2,
+exp:"APD（聴覚情報処理障害）：<span class='key'>器質的病変なし・静かな場所ではOK・雑音下や競合条件下での聞き取りが困難</span>。診断には基本的聴覚検査・電気生理・聴覚認知・視覚・知能・発達歴など全てクリアが必要。"},
+
+// ─────────────────────────────────────────────
+// カテゴリ10: 遺伝性難聴・症候群
+// ─────────────────────────────────────────────
+{cat:"遺伝性難聴・症候群",type:"5択",diff:"普",
+q:"劣性遺伝性難聴で最も多い原因遺伝子はどれか。",
+choices:["CDH23","SLC26A4","GJB2","KCNQ4","MYO15A"],
+ans:2,
+exp:"劣性遺伝性難聴の最多原因は<span class='key'>GJB2遺伝子変異（50～60%）</span>。SLC26A4＝Pendred症候群、CDH23＝Usher症候群、KCNQ4＝若年発症型両側性感音難聴。"},
+
+{cat:"遺伝性難聴・症候群",type:"5択",diff:"普",
+q:"Usher症候群の遺伝形式はどれか。",
+choices:["常染色体優性遺伝","常染色体劣性遺伝","X連鎖遺伝","ミトコンドリア遺伝","染色体異常"],
+ans:1,
+exp:"Usher症候群は<span class='key'>常染色体劣性遺伝（CDH23）</span>。網膜色素変性症と難聴を合併する疾患で最も多い。Waardenburg症候群は常染色体優性遺伝（混同注意）。"},
+
+{cat:"遺伝性難聴・症候群",type:"5択",diff:"普",
+q:"Waardenburg症候群の特徴として正しいのはどれか。",
+choices:["常染色体劣性遺伝・網膜色素変性症","常染色体優性遺伝・メラノサイト異常・白髪・虹彩異色","X連鎖遺伝・腎障害","常染色体劣性遺伝・甲状腺腫","常染色体優性遺伝・骨脆弱・青色強膜"],
+ans:1,
+exp:"Waardenburg症候群：<span class='key'>常染色体優性遺伝・メラノサイトがつくられない・前額部白髪・虹彩異色</span>。van der Hoeve症候群（青色強膜・骨脆弱）と区別する。"},
+
+{cat:"遺伝性難聴・症候群",type:"5択",diff:"普",
+q:"Pendred症候群の特徴として正しいのはどれか。",
+choices:["腎障害を合併する","心臓のQT延長を伴う","先天性難聴と甲状腺腫を合併・前庭水管拡大","網膜色素変性症を合併する","X連鎖遺伝"],
+ans:2,
+exp:"Pendred症候群（常染色体劣性・SLC26A4）：<span class='key'>先天性難聴＋甲状腺腫＋全例に前庭水管拡大＋蝸牛にMondini型奇形</span>。若年発症型両側性感音難聴・指定難病。"},
+
+{cat:"遺伝性難聴・症候群",type:"5択",diff:"難",
+q:"難聴を伴う疾患と遺伝形式の組み合わせで正しいのはどれか。",
+choices:["Usher症候群＝常染色体優性遺伝","Waardenburg症候群＝常染色体劣性遺伝","Pendred症候群＝常染色体劣性遺伝","Alport症候群＝常染色体劣性遺伝","van der Hoeve症候群＝X連鎖遺伝"],
+ans:2,
+exp:"<span class='key'>Pendred症候群＝常染色体劣性遺伝</span>が正しい。Usher＝劣性、Waardenburg＝優性、Alport＝X連鎖、van der Hoeve＝優性。"},
+
+{cat:"遺伝性難聴・症候群",type:"5択",diff:"難",
+q:"言語習得期の10才頃に「夜、目が見えにくい」と訴えた難聴児に念頭に置くべき疾患はどれか。",
+choices:["Waardenburg症候群","Pendred症候群","Usher症候群","加齢性難聴","騒音性難聴"],
+ans:2,
+exp:"<span class='key'>Usher症候群</span>では網膜色素変性症（夜盲が初期症状）と難聴を合併する。10才頃に「夜見えにくい」と言語化できるようになることが多い。STが気づいて眼科紹介・触手話等の準備が必要。"},
+
+{cat:"遺伝性難聴・症候群",type:"5択",diff:"難",
+q:"先天性サイトメガロウイルス（CMV）感染の確定診断に用いる検査と時期はどれか。",
+choices:["生後1年以内の血液検査","生後21日（3週）以内の尿中CMV-DNA（PCR法）","生後6ヶ月の聴力検査","生後1ヶ月の髄液検査","生後3ヶ月のMRI"],
+ans:1,
+exp:"先天性CMV感染の確定診断：<span class='key'>生後21日（3週）以内の尿中CMV-DNA（PCR法）</span>。AABRでreferとなった場合はすぐに検査を行う。"},
+
+// ─────────────────────────────────────────────
+// カテゴリ11: 補聴器・人工内耳
+// ─────────────────────────────────────────────
+{cat:"補聴器・人工内耳",type:"5択",diff:"易",
+q:"人工内耳の適応基準（成人）として正しいのはどれか。",
+choices:["片側のみ60dB以上の難聴","両側90dB以上、または70dB以上90dB未満で補聴器装用下の最高語音明瞭度が50%以下","純音聴力検査のみで判断","補聴器で効果があれば適応外","伝音性難聴にも適応"],
+ans:1,
+exp:"人工内耳の適応：<span class='key'>両側90dB以上の重度感音難聴、または平均聴力70dB以上90dB未満で補聴器装用下の最高語音明瞭度が50%以下</span>。2026年6月から一側性重度難聴にも保険適応が拡大。"},
+
+{cat:"補聴器・人工内耳",type:"5択",diff:"普",
+q:"補聴器の適合前に行うべき検査の組み合わせで正しいのはどれか。",
+choices:["純音聴力検査のみ","純音聴力検査・語音弁別能検査・MCL・UCL","ティンパノグラムのみ","ABRのみ","OAEのみ"],
+ans:1,
+exp:"補聴器適合前の必要検査：<span class='key'>純音聴力検査・語音弁別能検査・MCL（最も快適な音の大きさ）・UCL（不快域）</span>。MCLとUCLの差（ダイナミックレンジ）に音が収まるよう調整する。"},
+
+{cat:"補聴器・人工内耳",type:"5択",diff:"普",
+q:"世界初・日本生まれの軟骨導補聴器の施行開始年はいつか。",
+choices:["2010年11月","2013年4月","2017年11月","2019年11月","2021年4月"],
+ans:2,
+exp:"軟骨導補聴器は<span class='key'>2017年11月</span>より施行。外耳道の軟骨部の振動を利用し、外耳道がある場合は気道音を生成し、外耳閉鎖でも軟部組織経由で中耳→内耳に伝達できる。"},
+
+{cat:"補聴器・人工内耳",type:"5択",diff:"普",
+q:"骨導補聴器の適応となる難聴の種類と骨導閾値の条件はどれか。",
+choices:["感音性難聴・骨導30dB以内","伝音性・混合性・外耳奇形・骨導45dB以内","感音性難聴・骨導60dB以内","全ての難聴・骨導70dB以内","伝音性難聴のみ・骨導20dB以内"],
+ans:1,
+exp:"骨導補聴器の適応：<span class='key'>外耳道奇形・伝音性・混合性難聴で骨導45dB以内</span>。効果不十分の場合はBAHA（骨固定型）またはBoneBridge（能動型骨導インプラント）へ。"},
+
+{cat:"補聴器・人工内耳",type:"5択",diff:"難",
+q:"EAS（Electric Acoustic Stimulation）の適応となる難聴の種類はどれか。",
+choices:["全ての感音性難聴","伝音性難聴","高音急墜型難聴（低音域に残存聴力がある）","両側重度感音性難聴のみ","機能性難聴"],
+ans:2,
+exp:"EAS（残存聴力活用型人工内耳）は<span class='key'>低音域に聴力が残っている高音急墜型難聴</span>に対する画期的技術。低音域は補聴器（音響刺激）・高音域は人工内耳（電気刺激）のハイブリッド。"},
+
+{cat:"補聴器・人工内耳",type:"5択",diff:"難",
+q:"人工内耳装用後のSTの主な役割として正しいものはどれか。",
+choices:["手術の実施","マッピング（電極調整）・聴取訓練・言語訓練","薬剤の処方","医学的診断","ABRの実施"],
+ans:1,
+exp:"人工内耳後のSTの役割：<span class='key'>マッピング（電極の調整）・聴取訓練・言語訓練</span>。人工内耳は装着しただけでは聞こえず、16～24個のチャンネルを「音」として認識するリハビリが不可欠。"},
+
+// ─────────────────────────────────────────────
+// カテゴリ12: 小児聴覚検査・早期介入
+// ─────────────────────────────────────────────
+{cat:"小児聴覚検査・早期介入",type:"5択",diff:"易",
+q:"難聴早期発見の目標「1-3-6」とはどういう意味か。",
+choices:["1歳で発見・3歳で診断・6歳で治療","1ヶ月で発見・3ヶ月で確定診断・6ヶ月で治療開始","1週間で発見・3週間で診断・6週間で治療","1年で発見・3年で診断・6年で治療","1回で診断・3回で治療・6回でフォロー"],
+ans:1,
+exp:"<span class='key'>1ヶ月以内に難聴を見つける・3ヶ月以内に確定診断・6ヶ月以内に治療開始</span>が目標。早期発見・早期介入が言語発達に直結する。"},
+
+{cat:"小児聴覚検査・早期介入",type:"5択",diff:"普",
+q:"条件詮索反応聴力検査（COR）の対象年齢と方法として正しいのはどれか。",
+choices:["生後すぐ～6ヶ月・モロー反射を観察","6ヶ月～1歳半・音と同時におもちゃが光る条件付けで振り向き反応を観察","2～4歳・ゲーム感覚でスイッチを押す","5歳以上・ヘッドフォンで純音を聞かせる","10歳以上・語音弁別能検査"],
+ans:1,
+exp:"COR（条件詮索反応）：<span class='key'>6ヶ月～1歳半・音刺激と視覚刺激（おもちゃが光る）を条件付け→音の方向に振り向く反応を観察</span>。BOAは生後すぐ～6ヶ月（無条件反射）。"},
+
+{cat:"小児聴覚検査・早期介入",type:"5択",diff:"普",
+q:"他覚的聴覚検査（患者の反応に頼らない検査）を2つ選べ。",
+choices:["①純音聴力検査","②語音弁別能検査","③ABR（聴性脳幹反応）","④OAE（耳音響放射）","⑤自記オージオメトリー"],
+ans:[2,3],
+multi:true,
+exp:"他覚的検査（患者の反応不要）：<span class='key'>③ABR（脳幹の電気反応を記録）と④OAE（外耳道に戻ってくる音を記録）</span>。純音・語音・自記オージオメトリーは患者の反応が必要（自覚的検査）。"},
+
+// ─────────────────────────────────────────────
+// カテゴリ13: 失語症・中枢言語障害
+// ─────────────────────────────────────────────
+{cat:"失語症・中枢言語障害",type:"5択",diff:"普",
+q:"復唱が保たれる失語症の組み合わせはどれか。",
+choices:["ブローカ失語・ウェルニッケ失語","伝導失語・全失語","伝導失語・超皮質性運動失語・超皮質性感覚失語","ウェルニッケ失語・全失語","ブローカ失語・超皮質性運動失語"],
+ans:2,
+exp:"復唱が保たれる失語症：<span class='key'>伝導失語・超皮質性運動失語・超皮質性感覚失語</span>の3つ。ブローカ・ウェルニッケ・全失語では復唱が障害される。授業内国試過去問で出題。"},
+
+{cat:"失語症・中枢言語障害",type:"5択",diff:"普",
+q:"ウェルニッケ野（感覚性言語中枢）のブロードマン野番号はどれか。",
+choices:["41・42野","22野","44・45野","17・18野","7・8野"],
+ans:1,
+exp:"ウェルニッケ野（感覚性言語中枢）は<span class='key'>22野（上側頭回）</span>。41・42野＝一次聴覚野（ヘシュル回）、44・45野＝ブローカ野（運動性言語中枢）。"},
+
+{cat:"失語症・中枢言語障害",type:"5択",diff:"難",
+q:"腹側経路（Ventral stream）の役割として正しいのはどれか。",
+choices:["音源定位","聴覚と運動の統合","音の種類・意味の認識（What経路）","発話制御","平衡感覚"],
+ans:2,
+exp:"腹側経路（Ventral stream）＝<span class='key'>What経路：音の種類・意味の認識・前頭葉との連携・情報認知</span>。背側経路（Dorsal stream）＝Where/How経路：音源定位・聴覚と運動の統合・発話制御。"},
+
+// ─────────────────────────────────────────────
+// カテゴリ14: 症例問題
+// ─────────────────────────────────────────────
+{cat:"症例問題",type:"5択",diff:"難",
+q:"【症例】5歳女児。口蓋裂の既往歴あり。両耳に気骨導差あり。ティンパノグラムB型。鼓膜の変色・痛みなし。最も疑われる疾患はどれか。",
+choices:["急性中耳炎","突発性難聴","滲出性中耳炎","耳硬化症","聴神経腫瘍"],
+ans:2,
+exp:"<span class='key'>滲出性中耳炎</span>。根拠：気骨導差あり（伝音性）＋ティンパノグラムB型（滲出液）＋鼓膜変色・痛みなし。口蓋裂→耳管機能不全→滲出性中耳炎を繰り返しやすい。STアプローチ：構音・言語療育＋聴覚補償。"},
+
+{cat:"症例問題",type:"5択",diff:"難",
+q:"【症例】42歳男性。建設業20年。4000Hz付近のみ気導・骨導ともに閾値上昇。他の周波数は正常。最も考えられる疾患と所見名はどれか。",
+choices:["メニエール病・低音障害型","突発性難聴・急性閾値上昇","騒音性難聴・C5dip","耳硬化症・Carhart's notch","薬剤性難聴・高音急墜型"],
+ans:2,
+exp:"<span class='key'>騒音性難聴・C5dip</span>。4000Hz付近に限局した閾値上昇が騒音性難聴の特徴。確定診断は騒音環境から離れてからでないと不可。STアプローチ：騒音回避指導・補聴器検討。"},
+
+{cat:"症例問題",type:"5択",diff:"難",
+q:"【症例】12歳女児。「学校に行きたくない」と言い始めた頃から「耳が聞こえない」と訴える。ABR正常。OAE正常。最も疑われる疾患はどれか。",
+choices:["突発性難聴","ムンプス難聴","機能性難聴（心因性難聴）","メニエール病","聴神経腫瘍"],
+ans:2,
+exp:"<span class='key'>機能性難聴（心因性難聴）</span>。根拠：ABR正常＋OAE正常（器質的異常なし）＋心理的背景（学校回避）。BékésyはⅤ型（大型）が予測される。STアプローチ：責めない・信頼関係構築・多職種連携。"},
+
+{cat:"症例問題",type:"5択",diff:"難",
+q:"【症例】8歳男児。おたふく風邪罹患後、右耳が全く聞こえない。Weber検査：左側に響く。ABR：右耳著しく異常。最も考えられる診断と予後はどれか。",
+choices:["突発性難聴・予後良好・ステロイドで回復","メニエール病・発作を繰り返す","ムンプス難聴・予後不良（一側性高度難聴・不可逆）","滲出性中耳炎・チューブで改善","耳硬化症・手術で改善"],
+ans:2,
+exp:"<span class='key'>ムンプス難聴・予後不良</span>。一側性・高度（ほぼ全ろう）・不可逆。ワクチンで予防が最重要。STアプローチ：補聴器・人工内耳適応評価・一側性難聴の環境調整・保護者へのワクチン啓発。"},
+
+{cat:"症例問題",type:"5択",diff:"難",
+q:"【症例】35歳女性。突然右耳が聞こえなくなった。めまいあり（今日のみ）。純音検査：右耳気導・骨導ともに全周波数上昇。最重要の対応はどれか。",
+choices:["1ヶ月様子を見る","すぐに耳管通気を行う","72時間以内にステロイド治療を開始する","補聴器を装用させる","鼓膜切開を行う"],
+ans:2,
+exp:"突発性難聴は<span class='key'>72時間（3日）以内のステロイド治療開始が重要</span>。有毛細胞は一度死滅すると再生しない。めまいが反復しないためメニエール病と区別。60%は自然回復するが受診の遅れで不可逆になるリスクあり。"},
+];
+
+// =====================================================================
+// アプリロジック
+// =====================================================================
+const CATS = [...new Set(QUESTIONS.map(q=>q.cat))];
+let selectedCats = [];
+let selectedMode = 'all';
+let quizQuestions = [];
+let currentIdx = 0;
+let answered = [];
+let flagged = new Set();
+let wrongIds = new Set();
+let okCount = 0, ngCount = 0;
+
+// カテゴリグリッド生成
+function buildCatGrid(){
+  const icons = {'音の基礎・外耳':'👂','中耳・インピーダンス変換':'🦴','内耳・蝸牛':'🐚','聴覚伝導路':'🧠','聴覚検査':'📊','難聴の分類・検査結果':'📋','伝音性疾患':'🏥','感音性疾患（内耳）':'🔬','後迷路性・中枢性難聴':'⚡','遺伝性難聴・症候群':'🧬','補聴器・人工内耳':'🎧','小児聴覚検査・早期介入':'👶','失語症・中枢言語障害':'💬','症例問題':'📝'};
+  const g = document.getElementById('cat-grid');
+  g.innerHTML = CATS.map((c,i)=>`
+    <button class="cat-btn" data-cat="${c}" onclick="toggleCat(this)">
+      <span class="icon">${icons[c]||'📌'}</span>${c}
+    </button>`).join('');
+}
+
+function toggleCat(btn){
+  const c = btn.dataset.cat;
+  btn.classList.toggle('selected');
+  if(btn.classList.contains('selected')) selectedCats.push(c);
+  else selectedCats = selectedCats.filter(x=>x!==c);
+}
+
+function selectAllCats(){
+  document.querySelectorAll('.cat-btn').forEach(b=>{
+    b.classList.add('selected');
+    if(!selectedCats.includes(b.dataset.cat)) selectedCats.push(b.dataset.cat);
+  });
+}
+function clearCats(){
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
+  selectedCats = [];
+}
+
+function selectMode(btn){
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedMode = btn.dataset.mode;
+}
+
+function shuffle(arr){ return arr.sort(()=>Math.random()-0.5); }
+
+function startQuiz(){
+  let pool = QUESTIONS;
+  if(selectedCats.length>0) pool = pool.filter(q=>selectedCats.includes(q.cat));
+  if(selectedMode==='wrong') pool = pool.filter((_,i)=>wrongIds.has(i));
+  if(selectedMode==='flag') pool = pool.filter((_,i)=>flagged.has(i));
+  if(pool.length===0){ alert('出題できる問題がありません。カテゴリや条件を確認してください。'); return; }
+  quizQuestions = shuffle([...pool]).slice(0,150);
+  currentIdx = 0;
+  answered = new Array(quizQuestions.length).fill(null);
+  okCount = 0; ngCount = 0;
+  document.getElementById('start-screen').style.display='none';
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('quiz-screen').style.display='block';
+  document.getElementById('q-total').textContent = quizQuestions.length;
+  renderQ();
+}
+
+function renderQ(){
+  const q = quizQuestions[currentIdx];
+  document.getElementById('q-cat').textContent = q.cat;
+  document.getElementById('q-type').textContent = q.type;
+  const diffEl = document.getElementById('q-diff');
+  diffEl.textContent = q.diff;
+  diffEl.className = 'diff ' + (q.diff==='難'?'diff-hard':q.diff==='普'?'diff-med':'diff-easy');
+  document.getElementById('q-text').textContent = `Q${currentIdx+1}. ${q.q}`;
+  document.getElementById('q-sub').textContent = q.multi ? '（複数選択：全て選んでください）' : '';
+  document.getElementById('q-num').textContent = currentIdx+1;
+  // フラグ
+  const fb = document.getElementById('flag-btn');
+  fb.classList.toggle('flagged', flagged.has(currentIdx));
+  // 進捗
+  const pct = Math.round((currentIdx/quizQuestions.length)*100);
+  document.getElementById('prog').style.width = pct+'%';
+  document.getElementById('h-ok').textContent = okCount;
+  document.getElementById('h-ng').textContent = ngCount;
+  document.getElementById('h-rem').textContent = quizQuestions.length - currentIdx;
+  // 問題本体
+  const body = document.getElementById('q-body');
+  const exp = document.getElementById('explanation');
+  exp.classList.remove('show');
+  const ans = answered[currentIdx];
+  if(q.type==='○×'){
+    body.innerHTML = `<div class="ox-row">
+      <button class="ox-btn${ans!==null?(ans===true?(q.ox===true?' correct':' wrong'):''):''}${ans!==null?' disabled':''}" onclick="answerOX(true)">○</button>
+      <button class="ox-btn${ans!==null?(ans===false?(q.ox===false?' correct':' wrong'):''):''}${ans!==null?' disabled':''}" onclick="answerOX(false)">×</button>
+    </div>`;
+  } else {
+    const isMulti = q.multi;
+    if(isMulti){
+      body.innerHTML = `<div class="choices" id="choices">`+
+        q.choices.map((c,i)=>{
+          let cls='choice';
+          if(ans!==null){
+            cls+=' disabled';
+            if(q.ans.includes(i)) cls+=' correct';
+            else if(ans.includes(i)&&!q.ans.includes(i)) cls+=' wrong';
+          }
+          return `<div class="${cls}" onclick="answerMulti(${i})">
+            <span class="choice-label">${String.fromCharCode(65+i)}</span>${c}</div>`;
+        }).join('')+`</div>
+        ${ans===null?`<div style="text-align:center;margin-top:12px"><button class="btn-primary" onclick="submitMulti()" style="padding:10px 24px;font-size:0.9rem;">回答する</button></div>`:''}`;
+    } else {
+      body.innerHTML = `<div class="choices">`+
+        q.choices.map((c,i)=>{
+          let cls='choice';
+          if(ans!==null){
+            cls+=' disabled';
+            if(i===q.ans) cls+=' correct';
+            else if(i===ans) cls+=' wrong';
+          }
+          return `<div class="${cls}" onclick="answerSingle(${i})">
+            <span class="choice-label">${String.fromCharCode(65+i)}</span>${c}</div>`;
+        }).join('')+`</div>`;
+    }
+  }
+  if(ans!==null) showExp();
+  document.getElementById('btn-prev').disabled = currentIdx===0;
+  document.getElementById('btn-next').disabled = currentIdx>=quizQuestions.length-1;
+}
+
+let multiSelected = [];
+function answerMulti(i){
+  if(answered[currentIdx]!==null) return;
+  const btn = document.querySelectorAll('.choice')[i];
+  if(multiSelected.includes(i)){
+    multiSelected = multiSelected.filter(x=>x!==i);
+    btn.style.borderColor=''; btn.style.background='';
+  } else {
+    multiSelected.push(i);
+    btn.style.borderColor='var(--accent2)';
+    btn.style.background='rgba(79,156,249,0.12)';
+  }
+}
+function submitMulti(){
+  const q = quizQuestions[currentIdx];
+  if(multiSelected.length===0) return;
+  answered[currentIdx] = [...multiSelected];
+  const correct = JSON.stringify([...multiSelected].sort()) === JSON.stringify([...q.ans].sort());
+  if(correct){ okCount++; document.getElementById('h-ok').textContent=okCount; }
+  else { ngCount++; document.getElementById('h-ng').textContent=ngCount; wrongIds.add(currentIdx); }
+  multiSelected=[];
+  renderQ();
+}
+
+function answerSingle(i){
+  if(answered[currentIdx]!==null) return;
+  const q = quizQuestions[currentIdx];
+  answered[currentIdx] = i;
+  if(i===q.ans){ okCount++; document.getElementById('h-ok').textContent=okCount; }
+  else { ngCount++; document.getElementById('h-ng').textContent=ngCount; wrongIds.add(currentIdx); }
+  renderQ();
+}
+
+function answerOX(v){
+  if(answered[currentIdx]!==null) return;
+  const q = quizQuestions[currentIdx];
+  answered[currentIdx] = v;
+  if(v===q.ox){ okCount++; document.getElementById('h-ok').textContent=okCount; }
+  else { ngCount++; document.getElementById('h-ng').textContent=ngCount; wrongIds.add(currentIdx); }
+  renderQ();
+}
+
+function showExp(){
+  const q = quizQuestions[currentIdx];
+  document.getElementById('exp-text').innerHTML = q.exp;
+  document.getElementById('explanation').classList.add('show');
+}
+
+function navigate(d){
+  currentIdx = Math.max(0,Math.min(quizQuestions.length-1,currentIdx+d));
+  multiSelected=[];
+  renderQ();
+}
+
+function toggleFlag(){
+  if(flagged.has(currentIdx)) flagged.delete(currentIdx);
+  else flagged.add(currentIdx);
+  document.getElementById('flag-btn').classList.toggle('flagged', flagged.has(currentIdx));
+}
+
+function endQuiz(){
+  const tot = answered.filter(a=>a!==null).length;
+  if(tot===0){ alert('まだ1問も回答していません！'); return; }
+  const pct = Math.round((okCount/tot)*100);
+  document.getElementById('quiz-screen').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+  document.getElementById('score-pct').textContent = pct+'%';
+  const deg = Math.round(pct/100*360);
+  document.getElementById('score-circle').style.background =
+    `conic-gradient(var(--accent) ${deg}deg, var(--border) ${deg}deg)`;
+  document.getElementById('r-ok').textContent = okCount;
+  document.getElementById('r-ng').textContent = ngCount;
+  document.getElementById('r-tot').textContent = tot;
+  const msgs = pct>=90?'🏆 完璧！国試合格レベル！':pct>=75?'💪 よく頑張りました！あと少し！':pct>=60?'📚 もう一息！苦手分野を復習しよう':' 弱点を集中攻略しよう！';
+  document.getElementById('result-msg').textContent = msgs;
+  document.getElementById('result-title').textContent = pct>=80?'素晴らしい！':'テスト終了！';
+}
+
+function restartQuiz(){ currentIdx=0; answered=new Array(quizQuestions.length).fill(null); okCount=0; ngCount=0; multiSelected=[]; document.getElementById('result-screen').style.display='none'; document.getElementById('quiz-screen').style.display='block'; renderQ(); }
+function backToStart(){ document.getElementById('result-screen').style.display='none'; document.getElementById('start-screen').style.display='block'; }
+
+// 初期化
+buildCatGrid();
+</script>
+</body>
+</html>
