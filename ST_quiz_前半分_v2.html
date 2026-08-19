@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ST定期テスト対策｜呼吸・発声・発話系 前半 v2</title>
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --border: #e2ddd6;
+    --text: #2c2825;
+    --sub: #7a7168;
+    --accent: #3a6b8a;
+    --accent-light: #e8f1f7;
+    --correct: #2d7a4f;
+    --correct-bg: #eaf5ef;
+    --wrong: #c0392b;
+    --wrong-bg: #fdf0ee;
+    --star: #c8860a;
+    --tag-bg: #eee9e1;
+    --unit1: #3a6b8a;
+    --unit2: #5a7a3a;
+    --unit3: #7a4a8a;
+    --unit4: #8a5a3a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ヘッダー */
+  header {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  header h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em; }
+  header p { font-size: 0.78rem; opacity: 0.85; margin-top: 2px; }
+
+  /* メイン */
+  main { max-width: 780px; margin: 0 auto; padding: 20px 16px 80px; }
+
+  /* スタートメニュー */
+  #start-menu { }
+  #start-menu h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--sub);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .cat-btn {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 12px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+  }
+  .cat-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+  .cat-btn .cat-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .cat-btn .cat-title { font-size: 0.9rem; font-weight: 700; }
+  .cat-btn .cat-count { font-size: 0.72rem; color: var(--sub); margin-top: 4px; }
+  .cat-btn[data-unit="1"] .cat-label { color: var(--unit1); }
+  .cat-btn[data-unit="2"] .cat-label { color: var(--unit2); }
+  .cat-btn[data-unit="3"] .cat-label { color: var(--unit3); }
+  .cat-btn[data-unit="4"] .cat-label { color: var(--unit4); }
+
+  .special-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .special-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 10px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 0.88rem;
+    font-weight: 700;
+    transition: opacity 0.15s;
+  }
+  .special-btn:hover { opacity: 0.85; }
+  .special-btn.star-btn { background: var(--star); }
+
+  /* 進捗バー */
+  #progress-bar-wrap {
+    display: none;
+    margin-bottom: 16px;
+  }
+  #progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--sub);
+    margin-bottom: 6px;
+  }
+  #progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  #progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.3s;
+  }
+
+  /* 問題カード */
+  #quiz-area { display: none; }
+
+  .q-card {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 22px 20px;
+    margin-bottom: 14px;
+    border: 1.5px solid var(--border);
+  }
+
+  .q-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .q-num {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--sub);
+    letter-spacing: 0.05em;
+  }
+  .q-unit-tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: var(--tag-bg);
+    letter-spacing: 0.04em;
+  }
+  .q-unit-tag.u1 { background: #e8f1f7; color: var(--unit1); }
+  .q-unit-tag.u2 { background: #edf3e8; color: var(--unit2); }
+  .q-unit-tag.u3 { background: #f3eaf7; color: var(--unit3); }
+  .q-unit-tag.u4 { background: #f7f0e8; color: var(--unit4); }
+  .star-mark {
+    font-size: 0.75rem;
+    color: var(--star);
+    font-weight: 700;
+  }
+
+  .q-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    line-height: 1.7;
+  }
+
+  /* 記述欄 */
+  .answer-input {
+    width: 100%;
+    min-height: 90px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    resize: vertical;
+    background: var(--bg);
+    transition: border-color 0.15s;
+    line-height: 1.6;
+  }
+  .answer-input:focus { outline: none; border-color: var(--accent); background: white; }
+
+  /* ボタン群 */
+  .btn-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-secondary { background: var(--tag-bg); color: var(--text); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-correct { background: var(--correct); color: white; }
+  .btn-wrong { background: var(--wrong); color: white; }
+  .btn-skip { background: transparent; color: var(--sub); border: 1.5px solid var(--border); }
+
+  /* 解答表示 */
+  .answer-reveal {
+    display: none;
+    margin-top: 16px;
+    border-top: 1.5px solid var(--border);
+    padding-top: 14px;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--sub);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .answer-text {
+    font-size: 0.9rem;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    color: var(--text);
+  }
+  .answer-text strong { color: var(--accent); }
+
+  .result-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .badge-correct { background: var(--correct-bg); color: var(--correct); }
+  .badge-wrong { background: var(--wrong-bg); color: var(--wrong); }
+
+  /* スコア画面 */
+  #score-screen {
+    display: none;
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 32px 24px;
+    text-align: center;
+    border: 1.5px solid var(--border);
+  }
+  #score-screen h2 { font-size: 1.4rem; margin-bottom: 8px; }
+  #score-num { font-size: 3rem; font-weight: 700; color: var(--accent); }
+  #score-sub { font-size: 0.88rem; color: var(--sub); margin-top: 4px; margin-bottom: 24px; }
+  #wrong-list { text-align: left; margin-top: 20px; }
+  #wrong-list h3 { font-size: 0.85rem; font-weight: 700; color: var(--wrong); margin-bottom: 10px; }
+  .wrong-item {
+    font-size: 0.82rem;
+    padding: 8px 10px;
+    background: var(--wrong-bg);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+
+  /* ナビゲーション */
+  #nav-bar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-top: 1.5px solid var(--border);
+    padding: 10px 16px;
+    display: none;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+  }
+  #nav-bar.show { display: flex; }
+  #nav-bar .btn { flex: 1; max-width: 160px; text-align: center; }
+
+  /* モード切替 */
+  .mode-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: var(--tag-bg);
+    border-radius: 10px;
+    padding: 4px;
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    background: transparent;
+    color: var(--sub);
+    transition: all 0.15s;
+  }
+  .mode-btn.active {
+    background: var(--surface);
+    color: var(--accent);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+
+  /* 選択肢 */
+  .choices-wrap { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .choice-btn {
+    width: 100%;
+    text-align: left;
+    padding: 11px 14px;
+    border-radius: 9px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    font-size: 0.88rem;
+    font-family: inherit;
+    cursor: pointer;
+    line-height: 1.5;
+    transition: all 0.15s;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .choice-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-light); }
+  .choice-btn .choice-label {
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 20px;
+  }
+  .choice-btn.selected { border-color: var(--accent); background: var(--accent-light); }
+  .choice-btn.correct-ans { border-color: var(--correct); background: var(--correct-bg); }
+  .choice-btn.correct-ans .choice-label { color: var(--correct); }
+  .choice-btn.wrong-ans { border-color: var(--wrong); background: var(--wrong-bg); }
+  .choice-btn.wrong-ans .choice-label { color: var(--wrong); }
+  .choice-btn:disabled { cursor: default; }
+
+  /* ローディング */
+  .loading-box {
+    text-align: center;
+    padding: 24px;
+    color: var(--sub);
+    font-size: 0.88rem;
+  }
+  .loading-spinner {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 480px) {
+    .category-grid { grid-template-columns: 1fr; }
+    .special-grid { grid-template-columns: 1fr; }
+    .q-text { font-size: 0.88rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>呼吸・発声・発話系の構造・機能 ｜ 定期テスト対策</h1>
+  <p>前半分（①②〜⑦）全111問｜記述・選択 切替可</p>
+</header>
+
+<main>
+
+  <!-- スタートメニュー -->
+  <div id="start-menu">
+    <div class="mode-toggle" style="margin-bottom:16px;">
+      <button class="mode-btn active" id="mode-btn-write" onclick="setMode('write')">✏️ 記述モード</button>
+      <button class="mode-btn" id="mode-btn-choice" onclick="setMode('choice')">🔘 選択モード</button>
+    </div>
+    <h2>カテゴリーから選ぶ</h2>
+    <div class="category-grid">
+      <button class="cat-btn" data-unit="1" onclick="startQuiz('unit1')">
+        <div class="cat-label">①② SESSION 1-2</div>
+        <div class="cat-title">口腔・咽頭の構造と機能</div>
+        <div class="cat-count">30問｜神経・口腔・唾液腺・咽頭・嚥下</div>
+      </button>
+      <button class="cat-btn" data-unit="2" onclick="startQuiz('unit2')">
+        <div class="cat-label">③④ SESSION 3-4</div>
+        <div class="cat-title">呼吸器系の解剖と機能・検査</div>
+        <div class="cat-count">30問｜肺・気管・横隔膜・換気量・食道</div>
+      </button>
+      <button class="cat-btn" data-unit="3" onclick="startQuiz('unit3')">
+        <div class="cat-label">⑤⑥ SESSION 5-6</div>
+        <div class="cat-title">喉頭の構造と機能</div>
+        <div class="cat-count">30問｜軟骨・内外喉頭筋・声帯・反回神経</div>
+      </button>
+      <button class="cat-btn" data-unit="4" onclick="startQuiz('unit4')">
+        <div class="cat-label">⑦ SESSION 7</div>
+        <div class="cat-title">発声のメカニズム・発声機能検査</div>
+        <div class="cat-count">21問｜発声の仕組み・4大要素・声域・検査</div>
+      </button>
+    </div>
+
+    <h2 style="margin-top:20px;">まとめて解く</h2>
+    <div class="special-grid">
+      <button class="special-btn" onclick="startQuiz('all')">全問（111問）</button>
+      <button class="special-btn" onclick="startQuiz('random')">ランダム30問</button>
+      <button class="special-btn star-btn" onclick="startQuiz('star')">★頻出のみ</button>
+    </div>
+  </div>
+
+  <!-- 進捗バー -->
+  <div id="progress-bar-wrap">
+    <div id="progress-info">
+      <span id="progress-text">1 / 30</span>
+      <span id="progress-score">正解: 0</span>
+    </div>
+    <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <!-- 問題エリア -->
+  <div id="quiz-area"></div>
+
+  <!-- スコア画面 -->
+  <div id="score-screen">
+    <h2>お疲れさまでした！</h2>
+    <div id="score-num">0 / 0</div>
+    <div id="score-sub">正解率</div>
+    <button class="btn btn-primary" onclick="showMenu()" style="margin-top:16px;">メニューに戻る</button>
+    <div id="wrong-list"></div>
+  </div>
+
+</main>
+
+<div id="nav-bar">
+  <button class="btn btn-secondary" onclick="prevQ()">◀ 前へ</button>
+  <button class="btn btn-primary" onclick="nextQ()">次へ ▶</button>
+</div>
+
+<script>
+// =====================
+// 問題データ
+// =====================
+const allQuestions = [
+  // ===== ①② 口腔・咽頭 =====
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'筋肉の名称は「起始→停止」で命名される。起始と停止はそれぞれどのような部位か。',
+   a:'起始＝動かない部位\n停止＝動く部位'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'脳神経は全部で何対あるか。また第1〜第12脳神経の名称をすべて答えよ。',
+   a:'12対\n第1：嗅神経　第2：視神経　第3：動眼神経　第4：滑車神経\n第5：三叉神経　第6：外転神経　第7：顔面神経　第8：聴（内耳）神経\n第9：舌咽神経　第10：迷走神経　第11：副神経　第12：舌下神経\n語呂：「かいでみる、うごくくるまのみつまたの、そとむくかおの、きくぜついん、まようふくぜっか」'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'脊椎の内訳（部位名と数）をすべて答えよ。',
+   a:'頚椎：7個　胸椎：12個　腰椎：5個　合計：24個'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'口腔はどのような構造で囲まれており、何を境として咽頭と連絡しているか。',
+   a:'囲む構造：舌・硬口蓋・頬粘膜\n境：口峡'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'乳歯・永久歯の本数をそれぞれ答えよ。',
+   a:'乳歯：切歯2本×2・犬歯1本×2・臼歯2本×2　計20本\n永久歯：切歯2本×2・犬歯1本×2・小臼歯2本×2・大臼歯3本×2　計32本'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'口蓋は前方と後方でそれぞれ何と呼ばれるか。その割合と組織の特徴も答えよ。',
+   a:'前方2/3：硬口蓋（骨性部分）\n後方1/3：軟口蓋（厚い軟部組織）'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'軟口蓋の機能を2つ答えよ。またその運動と知覚はそれぞれ何神経が支配するか。',
+   a:'機能：①嚥下時に口蓋垂が咽頭後壁にくっつき鼻咽腔を閉鎖する　②構音・嚥下・呼吸に関与\n運動：迷走神経\n知覚：舌咽神経'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'舌乳頭の種類を4つ挙げ、そのうち味蕾を持たないものはどれか。',
+   a:'有郭乳頭（舌根・味蕾あり）\n葉状乳頭（舌根・味蕾あり）\n茸状乳頭（舌背・味蕾あり）\n糸状乳頭（舌背・味蕾なし）\n★糸状乳頭以外はすべて味蕾を持つ'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'味覚の感知部位を答えよ。（塩味・甘味・苦味・酸味）',
+   a:'塩味：舌前方外側\n甘味：舌尖部\n苦味：舌根部\n酸味：舌後方外側'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'舌の味覚・知覚を支配する神経を部位別にすべて答えよ。',
+   a:'舌前方2/3：味覚＝顔面神経の枝（鼓索神経）　知覚＝三叉神経第3枝\n舌後方1/3：味覚・知覚ともに舌咽神経'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'唾液腺の種類を大唾液腺・小唾液腺に分けて答えよ。',
+   a:'大唾液腺：耳下腺・顎下腺・舌下腺\n小唾液腺：口唇・頬粘膜などに多数分布'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'唾液の作用を4つ答えよ。',
+   a:'①消化作用（唾液中アミラーゼ）\n②口腔機能の維持・保護作用\n③口腔および全身の防御作用（唾液リゾチーム、s-IgA）\n④排泄内分泌作用'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'耳下腺について、位置・唾液の性状・管の名称・開口部・支配神経・浅葉と深葉の区別をすべて答えよ。',
+   a:'位置：口腔前下部・最大の大唾液腺\n唾液の性状：漿液性\n管の名称：耳下腺管（ステノン管）\n開口部：上顎第2大臼歯の頬粘膜\n支配神経：舌咽神経の枝（小錐体神経）\n浅葉・深葉：顔面神経が貫通・外側＝浅葉、内側＝深葉'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'顎下腺について、唾液の性状・管の名称・開口部・支配神経をすべて答えよ。',
+   a:'唾液の性状：漿液性・粘液性の混合性\n管の名称：顎下腺管（ワルトン管）\n開口部：口腔底前方の舌下小丘\n支配神経：顔面神経の枝（鼓索神経）'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'舌下腺について、位置・唾液の性状・開口部・支配神経をすべて答えよ。',
+   a:'位置：口腔底の顎下腺管付近\n唾液の性状：粘液性\n開口部：舌下小丘・舌下ヒダなど\n支配神経：顔面神経の枝（鼓索神経）'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'咽頭はどこに位置し何につながる腔か。また上から3つの部位名を答えよ。',
+   a:'位置：鼻腔・口腔の後方から下方\nつながる先：喉頭・食道\n部位名：上咽頭・中咽頭・下咽頭'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'咽頭の機能を4つ答えよ。',
+   a:'呼吸機能・嚥下機能・構音機能・免疫機能'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'上咽頭の範囲と存在する扁桃組織をすべて答えよ。また耳との連絡構造は何か。',
+   a:'範囲：鼻腔底から口蓋の高さまで\n扁桃組織：咽頭扁桃（アデノイド）・耳管扁桃\n耳との連絡：耳管の開口部'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'中咽頭の範囲と存在する扁桃組織をすべて答えよ。',
+   a:'範囲：上咽頭から下方、咽頭蓋谷（舌根部の最下端部）まで\n扁桃組織：口蓋扁桃・舌扁桃'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'下咽頭の範囲と梨状陥凹について説明せよ。非嚥下時の見え方も答えよ。',
+   a:'範囲：咽頭蓋谷から食道入口部まで\n梨状陥凹：咽頭の後側面で食物が通過していく部分\n非嚥下時：咽頭後方で1つだが外側に2つに分かれて見える'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'Waldeyer（ワルダイエル）咽頭輪とは何か説明せよ。構成する扁桃も答えよ。',
+   a:'消化管と気道の入口部である咽頭に輪状に分布する扁桃組織の総称\n【構成】咽頭扁桃（アデノイド）：上咽頭　耳管扁桃：上咽頭　口蓋扁桃：中咽頭　舌扁桃：中咽頭（舌根部）'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'嚥下は現在何期で表現されるか。またかつては何期であったか。各期の名称を順番に答えよ。',
+   a:'現在：5期（先行期→準備期→口腔期→咽頭期→食道期）\nかつて：3期（口腔期→咽頭期→食道期）'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'先行期とはどのような期か説明せよ。また何が関与するか。',
+   a:'食物を摂取する意思がある状態で感覚や記憶などから目の前にある食物が何であるかを認知し、どれだけ口に取り込みどのように処理するかを判断する期間\n関与：視床下部の摂食中枢や大脳皮質の前頭葉など'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'準備期の構成要素を3つ答えよ。また各々を簡潔に説明せよ。',
+   a:'補食：口唇・歯列・顎の開閉運動を利用し食物を口腔内に取り込む\n咀嚼：食物は舌により上の歯列側に送られ下顎の運動により粉砕・圧潰される。唾液と攪拌される\n食塊形成：嚥下に適した状態になった食物を舌中央の凹面部に集める'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'嚥下第1相（口腔期・随意期）で起こることを説明せよ。',
+   a:'食塊を保持し口腔内圧が高まり咽頭に送り込まれる\n咽頭・喉頭の知覚受容体を刺激し嚥下反射が誘発されるまでが随意運動\n舌根は一旦下降し薄い台状となり食塊は咽頭に進入し嚥下反射が起こる\n軟口蓋は挙上されパッサーヴァン隆起と接触し鼻咽腔を閉鎖し咽頭期に移行'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'嚥下第2相（咽頭期・反射期）の所要時間と、この期に起こる喉頭の動きを説明せよ。',
+   a:'所要時間：600〜800 msecで終了・不随意運動\n喉頭の動き：急速に挙上（前上方移動）し喉頭蓋が押し倒される。舌根は軟口蓋・喉頭壁と接触し口峡を閉鎖する'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'嚥下第2相において声帯が閉鎖するタイミングはいつか。また喉頭は成人で何cm上方移動するか。',
+   a:'声帯閉鎖：喉頭挙上が1/2ほど進んだところで閉鎖\n上方移動：成人で2cm'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:false,
+   q:'嚥下第3相（食道期）で起こることを説明せよ。不随意運動かどうかも答えよ。',
+   a:'食塊の食道内通過の時期・不随意運動\n第1次蠕動波と重力により胃へ輸送\n食道の感覚受容体が刺激され第2次蠕動波が起こり輸送が促進\n食塊後端が食道入口部を通過後、喉頭は急速に下降し輪状咽頭筋は再び収縮'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'嚥下時の気道保護は何重構造か。その3つの構造を答えよ。',
+   a:'3重構造\n①喉頭蓋の倒れ込み\n②披裂軟骨の前方傾斜・仮声帯の閉鎖\n③声帯の内転'},
+  {unit:'unit1', unitTag:'①② 口腔・咽頭', star:true,
+   q:'嚥下の期（stage）と相（phase）の違いを説明せよ。口腔相・咽頭相・食道相それぞれの意味も答えよ。',
+   a:'期（stage）：神経・筋の機構（実質の運動）\n相（phase）：実際の食塊が移動しているところ\n口腔相：口腔内から咽頭腔への食塊の移動\n咽頭相：咽頭腔から食道腔への食塊の移動\n食道相：食道から胃への食塊の移動\n★正常では期＝相だが、病態では期≠相（ずれが生じる）'},
+
+  // ===== ③④ 呼吸器系 =====
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'肺はどのような形状で、表面は何に覆われているか。また胸腔内壁に接しているものは何か。',
+   a:'左右1対のスポンジ状の臓器\n表面：臓側胸膜で覆われている\n胸腔内壁に接するもの：壁側胸膜'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'左肺と右肺の葉の数はそれぞれいくつか。また右肺が左肺より大きい理由は何か。',
+   a:'左肺：2葉（上葉・下葉）\n右肺：3葉（上葉・中葉・下葉）\n右肺が大きい理由：左側に心臓があるため（右肺は左肺より約20%大きい）'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'肺の最小単位は何か。その直径と総面積も答えよ。',
+   a:'最小単位：肺胞\n直径：75〜300μm\n総面積：60〜70m²'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'気管の長さ・前後径・左右径を答えよ。また気管の内腔を覆う上皮の名称と線毛運動の方向を答えよ。',
+   a:'長さ：11〜12cm　前後径：11mm　左右径：12.5mm（半円形）\n上皮：多列線毛円柱上皮\n線毛運動の方向：肺胞から口側へ向かう'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'気管は何個の軟骨輪で構成されるか。また後壁の特徴と気管が左右に分かれるレベルも答えよ。',
+   a:'16〜20個の馬蹄形軟骨（気管輪）が輪状靱帯で連結\n後壁：平滑筋の層があり軟骨はない\n左右に分かれるレベル：第5胸椎\n大人で門歯から24〜26cm'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'右主気管支と左主気管支の長さ・角度の違いを答えよ。また気管支の分岐順序（気管→肺胞まで）を答えよ。',
+   a:'右主気管支：長さ約2.5cm・約25°・太くて短い\n左主気管支：長さ約5cm・約45〜60°・細くて長い\n★右主気管支は角度が浅く太いため異物誤嚥は右側に起こりやすい\n分岐順序：気管→主気管支→葉気管支→区域気管支→細気管支→終末細気管支→呼吸細気管支→肺胞管→肺胞\n終末細気管支以降には軟骨が存在しない'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'胸郭の構成要素（前面・後面・側面）を答えよ。また胸椎と肋骨・胸骨と肋骨の結合方法は何か。',
+   a:'前面：胸骨と12対の肋骨\n後面：12個の胸椎\n側面：肋骨\n胸骨と肋骨：軟骨で結合（可動性あり）\n胸椎と肋骨：関節で結合'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'横隔膜の位置・形状・付着部位を答えよ。また収縮・弛緩時の動きと呼吸における移動距離も答えよ。',
+   a:'位置：胸腔と腹腔の隔壁をなす筋板で肺底部に接する\n形状：上に凸のドーム状\n付着部位：前方は胸骨・側方は下方肋骨・後方は腰椎\n収縮時（吸気）：下降\n弛緩時（呼気）：上昇\n移動距離：呼吸により1.5cm上下。安静呼吸時の胸郭容積変化の75%は横隔膜による'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'呼吸筋を吸気・呼気に働く筋に分けてすべて答えよ。また腹式・胸式呼吸はそれぞれ主にどの筋を使うか。',
+   a:'吸気に働く筋：横隔膜・外肋間筋\n呼気に働く筋：内肋間筋・腹直筋\n腹式呼吸：横隔膜\n胸式呼吸：外肋間筋'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'外呼吸と内呼吸の違いを説明せよ。',
+   a:'外呼吸：肺で行われる呼吸。大気中から酸素を体内に取り入れ炭酸ガスを排出する\n内呼吸：組織で行われる呼吸。安静時に約250mlの酸素を消費し約200mlの炭酸ガスを産生する'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'外呼吸の3つの過程を答えよ。',
+   a:'①換気機能（外界と肺との空気の出し入れ）\n②ガス交換機能（肺胞内と血液の炭酸ガスの移動）\n③換気ー血流比（肺の換気量と肺循環血流量との相関）'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'呼吸中枢はどこにあるか。また呼吸調節に関わる2つの中枢を答えよ。',
+   a:'延髄に呼吸・吸気の中枢\n橋に持続的呼気中枢と呼吸調節中枢\nまた高位中枢からのコントロールも可能'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'Hering-Breuer（ヘリング＝ブロイアー）反射の流れを順番に説明せよ。',
+   a:'①肺が膨張する\n②肺の伸展受容器が刺激される\n③迷走神経を介して\n④吸気中枢が抑制される\n⑤呼気に切り替わる\n⑥呼気により肺が収縮する\n⑦呼気中枢の抑制が低下する\n⑧吸気に切り替わる'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'化学的調節において感知されるものは何か。また末梢化学受容器の名称と何に反応するかを答えよ。',
+   a:'体液の炭酸ガス・酸素などの変化を延髄の化学受容器で感知\n末梢化学受容器：頸動脈小体・大動脈体\n反応：血液の酸素濃度低下・炭酸ガス上昇・pH低下'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'生理的呼吸状態の数値をすべて答えよ。（1回換気量・呼吸数・呼気流量・呼気圧・動脈血酸素分圧・炭酸ガス分圧・酸素飽和度・pH）',
+   a:'1回換気量：350〜500ml\n呼吸数：12〜20回/分（約15回）\n呼気流量：100〜200ml/秒\n呼気圧：10cmH₂O\n動脈血酸素分圧：80〜100mmHg\n動脈血炭酸ガス分圧：34〜46mmHg\n動脈血酸素飽和度：98〜100%\n動脈血pH：7.35〜7.45'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'死腔とは何か。また死腔の3種類を名称・内容・数値も含めて答えよ。',
+   a:'ガス交換にあずからない部分を死腔という\n解剖学的死腔：上気道から終末細気管支まで＝約150ml\n肺胞死腔：肺胞内のガス効果に関与しない部分\n生理的死腔：解剖学的死腔＋肺胞死腔＝機能的死腔'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'肺胞換気量の計算式を答えよ。',
+   a:'肺胞換気量＝（1回換気量－死腔）×呼吸数（1分間あたりの量）'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'食道はどこからどこまでの構造物か。また食道入口部の椎骨レベルと全長を答えよ。',
+   a:'下咽頭下端よりつらなり胃につながる食塊の通路\n椎骨レベル：第6頚椎レベル\n全長：成人で約25cm'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'食道の壁構造を内側から順番に答えよ。',
+   a:'粘膜→筋層→外膜の3層構造（腺組織も豊富）'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'食道の3つの生理的狭窄部について名称・位置・門歯からの距離をすべて答えよ。',
+   a:'第1狭窄部：食道入口部・輪状咽頭筋最下部　門歯から約15cm　括約機能あり・明瞭な狭窄部\n第2狭窄部：大動脈弓および左主気管支と交差する部位　門歯から約25cm　括約機能なし・弱い生理的狭窄部\n第3狭窄部：横隔膜食道裂孔・噴門にかけて　門歯から約38cm　横隔膜食道裂孔とも呼ばれる'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'食道の走行上で交差・通過する構造物を上から順に答えよ。',
+   a:'食道入口部から約7cm：大動脈弓\n約10cm：左主気管支\n約20cm：横隔膜食道裂孔\n約23cm：胃（噴門）'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'呼吸機能検査の目的を4つ答えよ。',
+   a:'①呼吸障害のパターンとその程度\n②呼吸器疾患の経過・治療効果や予後判定\n③活動能力や活動範囲の判定\n④手術の適応・危険度判定や術後の活動能力判定'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'換気量分画の名称と略語・フルスペルをすべて答えよ。（TLC・VC・TV・IC・IRV・ERV・RV・FRV）',
+   a:'TLC：Total Lung Capacity（全肺気量）\nVC：Vital Capacity（肺活量）\nTV（=VT）：Tidal Volume（1回換気量）\nIC：Inspiratory Capacity（最大吸気量）\nIRV：Inspiratory Reserve Volume（予備吸気量）\nERV：Expiratory Reserve Volume（予備呼気量）\nRV：Residual Volume（残気量）\nFRV：Functional Residual Volume（機能的残気量）'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'肺活量（VC）について説明せよ。またBaldwinの予測式と%VCの正常値を答えよ。',
+   a:'1回の吸入あるいは呼出により肺に出入りしうる最大の気量\nBaldwin予測式：男性＝（27.63－0.112×年齢）×身長（cm）　女性＝（27.78－0.121×年齢）×身長（cm）\n%VC正常値：80%以上\n肺活量が減少すると音声にも影響が出る'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'1回換気量（TV）の定義と成人の正常値を答えよ。',
+   a:'安静呼吸時（1分間12〜20回）での1呼吸で換気する気量\n成人正常値：350〜500ml'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'各換気量分画の定義を答えよ。（IC・IRV・ERV・RV・FRV）',
+   a:'IC：安静吸気位から最大吸気位までの気量\nIRV：1回換気量での安静吸気位から最大吸気位までの気量。肺活量の60〜70%を占める\nERV：安静呼気位から最大呼気位までさらに呼出できる量。肺活量の約20%\nRV：最大に呼出しても肺になお残存する空気の量。通常は全肺気量の30%以下。高齢者では50%にも達する\nFRV：安静呼気位において肺に残存する気量'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'努力性呼気曲線とは何か。またFVC・FEV1.0・1秒率の定義を答えよ。',
+   a:'最大吸気位から最大努力と最大速度で最大呼気位まで呼出させたときの気量を時間経過で描出した曲線\nFVC（Forced Vital Capacity：努力性呼気肺活量）：最大吸気位から努力するだけ早く呼出させたときの肺活量。気道狭窄があると減少する\nFEV1.0（Forced Expiratory Volume：努力性呼出量）：1秒量がよく用いられる\nFEV1.0%（1秒率）：FVCに対するFEV1.0の比率'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'1秒率の正常値を年齢別に答えよ。また1秒率が低下する意味を説明せよ。',
+   a:'若年者：80%以上\n高齢者：70%以上\n低下する意味：閉塞性障害の指標'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:true,
+   q:'換気障害の3つの型を答えよ。またそれぞれの%肺活量・1秒率の特徴を答えよ。',
+   a:'拘束性障害：%VC低下（80%未満）・1秒率正常（80%以上）\n閉塞性障害：%VC正常（80%以上）・1秒率低下（70%未満）\n混合性障害：%VC低下・1秒率低下'},
+  {unit:'unit2', unitTag:'③④ 呼吸器系', star:false,
+   q:'フローボリューム曲線とは何か。またV25・V50のうち末梢気道抵抗を反映するものはどれか。',
+   a:'最大努力呼出時の気量をX軸に、その時間当たりの流量をY軸に示したもの。呼気を正＋側に吸気を負一側に表示する\n末梢気道抵抗を反映するもの：V25・V50（患者の呼吸努力により変化せず末梢気道抵抗を反映する）'},
+
+  // ===== ⑤⑥ 喉頭 =====
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:false,
+   q:'発声の大原則として喉頭が関与する3つの部位を答えよ。',
+   a:'①呼気流の生成にかかわる呼吸器系\n②呼気流の音声への変換部位である喉頭\n③音声の共鳴腔としての付属管腔'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'喉頭機能の変遷を説明せよ。またヒトが直立二足歩行になったことで喉頭に生じた変化を2つ答えよ。',
+   a:'原始機能は括約作用で下気道の保護を行ってきた。直立二足歩行・言語獲得により括約作用から発声機能へ重点が移った\n変化①：披裂軟骨が小さくなり声帯膜様部は延長し声門は狭小化\n変化②：喉頭の位置が下がり広い共鳴腔が獲得された'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:false,
+   q:'喉頭の機能（運動）について場面別（嚥下・咳、発声、呼吸）に声帯の開閉・喉頭と声帯の動きを答えよ。',
+   a:'嚥下・咳：仮声帯・声帯ともに強く閉鎖、喉頭全体に挙上\n発声：声帯のみ閉鎖、下方から上方への波動の発生\n呼吸：開大'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'喉頭の枠組みを構成する4種類の軟骨名を答えよ。',
+   a:'①喉頭蓋軟骨　②甲状軟骨　③輪状軟骨　④披裂軟骨'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:false,
+   q:'喉頭蓋軟骨・甲状軟骨・輪状軟骨・披裂軟骨それぞれの特徴を答えよ。',
+   a:'喉頭蓋軟骨：喉頭の蓋となる軟骨。多数の小孔をもちシャモジ状。喉頭蓋前間隙には脂肪組織が存在し腫瘍が浸潤しやすい\n甲状軟骨：喉頭隆起（アダムのリンゴ）を形成。男性90°・女性120°で接合\n輪状軟骨：喉頭の土台となる軟骨。下方は気管、上方は甲状軟骨・披裂軟骨と繋がる\n披裂軟骨：左右一対の三角錐状の軟骨。底部に声帯突起と筋突起がある'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'輪状甲状関節の運動の種類と声帯への影響を答えよ。',
+   a:'運動の種類：左右の関節面を結ぶ直線を軸とする回転運動\n影響：甲状軟骨前面が輪状軟骨に接近するように回転し声帯が引き伸ばされ高い声になる'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'輪状披裂関節の2つの運動と声門への影響を答えよ。',
+   a:'回転運動：披裂軟骨が内転（左右が近づく）→声門閉鎖、外転（左右が遠ざかる）→声門開大\n滑走運動：披裂軟骨間が接近または遠ざかる→声門の開閉に関与\n内側への滑走は内側方向への回転を伴い、外側への滑走は外側への回転を伴う'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:false,
+   q:'内喉頭筋群と外喉頭筋群の違いを説明せよ。',
+   a:'内喉頭筋群：喉頭にある軟骨の関節運動を担う\n外喉頭筋群：外部からの喉頭支持運動を担う'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'輪状甲状筋（CT: Cricothyroid muscle）について、別名・起始・停止・作用・支配神経・特記事項を答えよ。',
+   a:'別名：前筋\n起始：輪状軟骨弓部側面から上縁\n停止：甲状軟骨下縁・下角\n作用：声帯を伸ばし薄くする\n支配神経：上喉頭神経外枝\n特記事項：唯一喉頭の枠組みの外にある内喉頭筋'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'甲状披裂筋（TA: Thyroarytenoid muscle）について、内側部・外側部の別名・起始・停止・作用・声帯との関係を答えよ。',
+   a:'内側部の別名：声帯筋　外側部の別名：外甲状披裂筋\n起始：甲状軟骨正中内側面\n停止：披裂軟骨前面\n作用：披裂軟骨を内転させ声帯を閉鎖し緊張させる\n声帯との関係：内側部（声帯筋）が声帯ヒダの実質を形成。起始部は縦配列・停止部は横配列で筋束走行に捻じれがある'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'外側輪状披裂筋（LCA: Lateral Cricoarytenoid muscle）について、別名・起始・停止・作用を答えよ。',
+   a:'別名：側筋\n起始：輪状軟骨側面\n停止：披裂軟骨筋突起\n作用：披裂軟骨を内転させ声帯を閉鎖する'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'披裂筋（IA: Interarytenoid muscle）について、別名・構成・神経支配の特徴・作用を答えよ。',
+   a:'別名：横筋\n構成：両側の披裂軟骨側縁を結ぶ横部と斜め上方に向かう斜部\n神経支配：両側性の神経支配を受ける（内喉頭筋で唯一）\n作用：披裂軟骨を内転させ声帯を閉鎖する'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'後輪状披裂筋（PCA: Posterior Cricoarytenoid muscle）について、別名・起始・停止・作用・特記事項を答えよ。',
+   a:'別名：後筋\n起始：輪状軟骨後面\n停止：披裂軟骨筋突起\n作用：唯一の声門開大筋\n特記事項：反回神経②〜⑤が支配。麻痺すると声帯が動かなくなり呼吸困難のリスクあり'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'内喉頭筋5つのポイントを3つ答えよ。',
+   a:'①5つのうち4つは声門を閉じる筋肉。例外はPCA（唯一の開大筋）\n②内喉頭筋といえども喉頭外にあるものもある（CT）\n③両側性神経支配を受けるものが1つある（IA）'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:false,
+   q:'外喉頭筋群を舌骨上筋群・舌骨下筋群・咽頭収縮筋群に分けて説明せよ。また同時作用時の結果も答えよ。',
+   a:'舌骨上筋群：舌骨と頭蓋あるいは下顎を結ぶ。舌骨を上方へ引き上げ喉頭を上方へ引き上げる\n舌骨下筋群：舌骨と甲状軟骨・胸骨・肩甲骨を結ぶ。舌骨を下方へ引き下げ喉頭を下方へ引き下げる\n咽頭収縮筋群：咽頭壁を取り囲む。嚥下作用が主体。舌骨咽頭筋・甲状咽頭筋は喉頭を後上方に引き上げる\n同時作用：下顎が開く'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:false,
+   q:'外喉頭筋群と舌筋・顔面筋群が関与する5つの機能を答えよ。',
+   a:'①咀嚼・食物保持\n②食塊移送や咽頭管の蠕動様運動\n③喉頭閉鎖\n④喉頭挙上\n⑤食道入口部の弛緩'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'喉頭の入口部を囲む構造を前方・左右・後方に分けて答えよ。また喉頭内を前後に走る左右一対の構造を2つ答えよ。',
+   a:'前方：喉頭蓋\n左右：披裂喉頭蓋ヒダ\n後方：披裂間ヒダ\n左右一対の構造：室ヒダ（仮声帯）・声帯ヒダ（声帯）'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:false,
+   q:'喉頭室・声門・声門下腔についてそれぞれ説明せよ。',
+   a:'喉頭室：室ヒダと声帯ヒダの間にある側方に向かうくぼみ\n声門：左右声帯ヒダの間にあたる部分\n声門下腔：声門より下方の気管に至る空間'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'嚥下・咳の際の喉頭閉鎖と正常発声における閉鎖の違いを答えよ。',
+   a:'嚥下・咳：仮声帯（室ヒダ）・声帯ヒダともに強く閉鎖\n正常発声：声帯ヒダのみ閉鎖'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'声帯の組織学的構造を外側から順番に答えよ。また各層の特徴（厚さ・主な成分）も答えよ。',
+   a:'最外側層：扁平上皮（厚さ0.05〜0.10mm）\n固有層浅層：間質液に囲まれた粗な弾性線維（厚さ中央で0.5mm）\n固有層中間層：主に弾性線維・コラーゲン線維も存在\n固有層深層：主にコラーゲン線維・伸張が制限（中間層・深層あわせて厚さ1〜2mm）\n筋層：甲状披裂筋（厚さ7〜8mm）'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'声帯の振動機構的観点からボディとカバーをそれぞれ答えよ。',
+   a:'ボディ：固有層の深層と筋層\nカバー：上皮・固有層の浅層と中間層（＋粘液層）'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:false,
+   q:'喉頭の動脈・静脈をそれぞれ答えよ。',
+   a:'動脈：外頸動脈→上甲状腺動脈→上喉頭動脈　鎖骨下動脈→甲状頸管→下甲状腺動脈→下喉頭動脈\n静脈（上）：上喉頭静脈→上甲状腺静脈→内頸静脈\n静脈（下）：下喉頭静脈→下甲状腺静脈→腕頭静脈'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'喉頭の神経について運動神経・知覚神経をそれぞれ答えよ。特にCTの支配神経とその他の内喉頭筋の支配神経を区別して答えよ。',
+   a:'運動神経（CT）：上喉頭神経外枝\n運動神経（その他）：反回神経（下喉頭神経）\n知覚神経：上喉頭神経内枝（上行枝：梨状陥凹・舌根・喉頭蓋など　下行枝：一部が反回神経と吻合＝Galen吻合）\n反回神経：下咽頭前壁・声門下腔など'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'反回神経は何神経の枝か。またその主な役割を3つ答えよ。',
+   a:'迷走神経（第X脳神経）の枝\n役割①：喉頭の運動・感覚の中心\n役割②：声帯の開閉運動に関与\n役割③：音声の調節'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'反回神経の走行について左右の違いを答えよ。',
+   a:'右反回神経：右鎖骨下動脈を回り尾側から喉頭に入る\n左反回神経：大動脈弓を回り尾側から喉頭に入る'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:false,
+   q:'反回神経の左右で走行距離が異なることで生じる特徴を2つ答えよ。',
+   a:'①左反回神経単独の長さは約10cm（イヌ：13cm、キリン：30cmほど）で左側が長い\n②左右の伝導時間に差がないように（声門閉鎖が同時に起こるように）左側が太い線維が多い'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'反回神経の伝導速度を答えよ。また四肢と比較せよ。',
+   a:'反回神経：30〜40 m/sec\n四肢：50〜65 m/sec\n直径：6〜10μm　線維数：40〜60本'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:false,
+   q:'迷走神経の核を3つ答えよ。',
+   a:'疑核（運動）\n孤束核（感覚）\n迷走神経背側核（感覚）'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:true,
+   q:'頸静脈孔について説明せよ。また同孔内を通る神経と舌下神経との関係も答えよ。',
+   a:'頭蓋骨にある孔の1つ\n通るもの：頸静脈・舌咽神経・迷走神経・副神経\n舌下神経：舌下神経孔から単独で出て上記3神経と近接して下方に走行する'},
+  {unit:'unit3', unitTag:'⑤⑥ 喉頭', star:false,
+   q:'舌咽神経の唯一の運動枝はどの筋を支配するか。またその機能も答えよ。',
+   a:'支配する筋：茎突咽頭筋のみ\n機能：咽頭挙上に関与'},
+
+  // ===== ⑦ 発声のメカニズム =====
+  {unit:'unit4', unitTag:'⑦ 発声', star:false,
+   q:'発声の歴史的背景について、Ferrein・Garcia・Oertel・Hiranoの年代・業績を答えよ。',
+   a:'1741年：Ferrein（フェラン、仏・解剖学者）＝摘出された喉頭による実験で発声中に声帯は弦として作用していることを示した\n1854年：Garcia（ガルシア、スペイン・声楽家）パリ大学声楽家教授＝喉頭鏡を発明し初めてヒトの生の声帯を観察した\n1878年：Oertel（エルテル、独・医師）＝「Laryngo-Stroboskop」により初めてヒトの声帯振動を観察\n1973年：Hirano（平野、日・医師）＝Double Structure Theory（Body & Cover Theory）を発表'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'発声成立の主要条件を3つ挙げ、それぞれの内容を説明せよ。また声門下圧の発声必要最低圧と呼気流率の正常値も答えよ。',
+   a:'①呼気流：呼気の空気力学的エネルギーが声帯振動という物理現象を惹起する。声門下圧（発声必要最低圧）＝4cmH₂O　呼気流率＝100〜200ml/sec\n②声帯振動：声門が閉鎖されていて隙間がない。左右の声帯の質量・緊張度の均衡が保たれている。声帯粘膜表面が柔らかい\n③共鳴腔：口腔・鼻腔・咽頭・喉頭の形態がよい'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'発声のしくみについて「音源」と「声帯振動」を説明せよ。また喉頭原音とは何か。',
+   a:'音源：喉頭筋の働きによって声帯を適度に閉鎖し呼気を吐くことにより閉じた声帯に振動が生じ気流が断続される。その結果疎密波を生じ音が発せられる。この音を喉頭原音という（「ブー」という音）\n声帯振動：呼気により声帯は下方から上方に吹き上げられるように振動し声帯の下縁（下唇）より左右の声帯が接する'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'声帯の振動数を男女別に答えよ。また声帯振動の本態は何か。',
+   a:'男性：毎秒100〜150回\n女性：毎秒200〜250回\nこの振動数がその人の声の高さになる\n声帯振動の本態：超高速度振動体'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'声帯振動の一周期を順番に説明せよ。',
+   a:'①両側声帯が内喉頭筋の作用で中央に寄せられ声門閉鎖が作られる\n②呼吸筋の作用で呼気流が送られる\n③声門下圧が4cmH₂Oを越えると声帯粘膜は上方に押し上げられ左右に押し開かれる\n④声帯粘膜の上部（上唇）はさらに外方に開大\n⑤下部（下唇）は復元力により内側に寄せられる\n⑥左右の声帯が衝突して再び声門閉鎖が起こる'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'Bernoulli（ベルヌーイ）効果とは何か。発声における役割を説明せよ。',
+   a:'声門がある程度狭くなると狭い部分での呼気流速が増大しその結果ベルヌーイ効果が生じて声帯縁が内方に引き寄せられる\n役割：より引きくっつきやすくし声門閉鎖を助ける'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'発声を構成する4大要素と物理的指標（単位も含めて）を答えよ。',
+   a:'声の高さ：基本周波数（Hz）\n声の強さ：音圧（dB）\n声の持続時間：呼気流量（ml/sec）\n声の性質：音色'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'声の高さはどのように調節されるか。関与する筋肉を2つ挙げて説明せよ。また声の高さを積極的に下降させる喉頭調節についても答えよ。',
+   a:'声帯の振動数により決まる。主として声帯の緊張および質量変化により調節される\n関与する筋：輪状甲状筋（CT）・声帯筋（TA）\nこれらが収縮→声帯が緊張→声の高さが増加\n声の高さを積極的に下降させる喉頭調節：いまだ不明'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:false,
+   q:'声の強さはどのように調節されるか。また喉頭調節の役割も答えよ。',
+   a:'主として呼気圧により調節される\n喉頭調節は呼気圧に見合った声門抵抗を整えるのみ'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'声区について「おもて声・地声・胸声区」と「うら声・頭声区」の違いを説明せよ。',
+   a:'おもて声・地声・胸声区：話し声の高さを含む低音から中音域。声帯は厚く粘膜振動も明らか。声門閉鎖が完全に認められる。輪状甲状筋・声帯筋ともに働く\nうら声・頭声区：高音域では声帯筋はほとんど働かず声帯は引き伸ばされて薄くなり声帯振動は声帯辺縁部に限局し粘膜振動は消失する'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'生理的声域とは何か。成人男性・女性の声域をHz・オクターブで答えよ。また平均話声位も答えよ。',
+   a:'発声しうる最低音から最高音までの音域\n成人男性：60〜500Hz（約3オクターブ）\n成人女性：120〜800Hz（約2.5オクターブ）\n平均話声位：成人男性：120Hz付近　成人女性：240Hz付近'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'新生児の声について、最初の反射的声の高さ・一般的な泣き声の高さ・満1歳までの声域の変化を答えよ。',
+   a:'最初の反射的声：a¹（440Hz）付近\n一般的な泣き声：400〜500Hz\n満1歳まで：声域は次第に上下に広がる'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'変声期について、原因ホルモン・喉頭の変化・期間・程度・声帯長の変化・完了までの期間を答えよ。',
+   a:'原因ホルモン：Androgen（アンドロゲン）\n喉頭の変化：①喉頭の枠組みが前後に拡大・甲状軟骨正中上縁が突出　②喉頭隆起（アダムのリンゴ）を形成　③声帯長も著しく増大し声の高さが低くなる\n期間：男子：13〜14歳　女子：11〜12歳\n程度：男子：約1オクターブ低下　女子：約3度低下\n声帯長：小児期（男女ともに約5mm）→成人男子：12mm　成人女子：9mm\n完了まで：一般に6〜10ヶ月程度'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:false,
+   q:'声の老化について男女それぞれの変化を答えよ。',
+   a:'声帯筋の断面積が男性では年齢と共に縮小し外筋の緊張は男女ともに低下する\n男性では個人差が増大し女性では声の高さが低くなる\n声の周波数は男性では若い頃に比べて高くなり女性では低くなる'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:false,
+   q:'発声に関する検査を6つのカテゴリーに分けてすべて答えよ。',
+   a:'①声帯の形態に関する検査：喉頭ファイバースコピー（軟性・硬性）\n②声帯の可撓性（振動状態）に関する検査：喉頭ストロボスコピー・X線ストロボスコピー\n③空気力学的検査：音声機能検査\n④音響分析検査\n⑤神経生理学的検査：筋電図\n⑥聴覚心理的検査（印象）：GRBAS尺度'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'喉頭ストロボスコピーは声帯の何を評価する検査か。また喉頭ファイバースコピーは声帯の何を評価する検査か。',
+   a:'喉頭ファイバースコピー：声帯の形態\n喉頭ストロボスコピー：声帯の可撓性（振動状態）'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'喉頭ストロボスコピーとは何か。その原理を説明せよ。',
+   a:'高速で周期的である声帯振動を見かけ上ゆっくりとした映像として可視化する装置\n原理：断続して発光する光源を用いて声帯振動の一瞬一瞬の像を取り出し時間軸に並べることにより幻視的な動画を構築する\n声帯振動の周期（T）よりdtだけ長い周期（位相をずらせて）発光させる'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'音声機能検査で測定するものを答えよ。また各発声様式の英語名も答えよ。（楽な発声・大きい声・小さい声・高い声・低い声・最長発声持続時間）',
+   a:'測定するもの：基本周波数・音圧・呼気流量・最長発声持続時間など\n楽な発声：easy phonation\n大きい声：maximum phonation\n小さい声：minimum phonation\n高い声：high pitch phonation\n低い声：low pitch phonation\n最長発声持続時間：Maximum Phonation Time（MPT）'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'MPT（Maximum Phonation Time：最長発声持続時間）が10秒以下になるとどのような訴えが生じるか。',
+   a:'「声を出すと息が足りない。会話中に頻回に息継ぎが必要になる。」\nあるいは「努力して声を出し続けると過呼吸になる。」といった訴えが生じる'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:true,
+   q:'GRBAS尺度について、各項目の略語・英語名・日本語名をすべて答えよ。また評価スコアの意味も答えよ。',
+   a:'G：grade（総合評価）\nR：rough（粗糙性）\nB：breathy（気息性）\nA：asthenic（無力性）\nS：strained（努力性）\nスコア：0＝正常　1＝軽度　2＝中等度　3＝高度'},
+  {unit:'unit4', unitTag:'⑦ 発声', star:false,
+   q:'音響分析検査では何を測定するか。3つ答えよ。',
+   a:'①基本周の揺らぎ（ジッター：周期変動）\n②振幅の揺らぎ（シマー：振幅変動）\n③雑音の程度'},
+];
+
+// =====================
+// アプリロジック
+// =====================
+let currentList = [];
+let currentIndex = 0;
+let correctCount = 0;
+let wrongList = [];
+let revealed = [];
+let currentMode = 'write'; // 'write' or 'choice'
+let choiceCache = {}; // index -> {choices, correctIndex}
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('mode-btn-write').classList.toggle('active', mode === 'write');
+  document.getElementById('mode-btn-choice').classList.toggle('active', mode === 'choice');
+}
+
+function startQuiz(mode) {
+  let list = [];
+  if (mode === 'all') list = [...allQuestions];
+  else if (mode === 'random') {
+    const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+    list = shuffled.slice(0, 30);
+  } else if (mode === 'star') {
+    list = allQuestions.filter(q => q.star);
+  } else {
+    list = allQuestions.filter(q => q.unit === mode);
+  }
+
+  currentList = list;
+  currentIndex = 0;
+  correctCount = 0;
+  wrongList = [];
+  revealed = new Array(list.length).fill(false);
+  choiceCache = {};
+
+  document.getElementById('start-menu').style.display = 'none';
+  document.getElementById('score-screen').style.display = 'none';
+  document.getElementById('progress-bar-wrap').style.display = 'block';
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('nav-bar').classList.add('show');
+
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = currentList[currentIndex];
+  const total = currentList.length;
+  const pct = ((currentIndex) / total * 100).toFixed(0);
+
+  document.getElementById('progress-text').textContent = `${currentIndex + 1} / ${total}`;
+  document.getElementById('progress-score').textContent = `正解: ${correctCount}`;
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  const unitClass = q.unit === 'unit1' ? 'u1' : q.unit === 'unit2' ? 'u2' : q.unit === 'unit3' ? 'u3' : 'u4';
+  const starHtml = q.star ? '<span class="star-mark">★ 頻出</span>' : '';
+
+  const metaHtml = `
+    <div class="q-meta">
+      <span class="q-num">Q${currentIndex + 1}</span>
+      <span class="q-unit-tag ${unitClass}">${q.unitTag}</span>
+      ${starHtml}
+    </div>
+    <div class="q-text">${q.q}</div>`;
+
+  if (currentMode === 'write') {
+    renderWriteMode(q, metaHtml);
+  } else {
+    renderChoiceMode(q, metaHtml);
+  }
+
+  window.scrollTo(0, 0);
+}
+
+function renderWriteMode(q, metaHtml) {
+  const savedAnswer = sessionStorage.getItem(`ans_${currentIndex}`) || '';
+  const isRevealed = revealed[currentIndex];
+  const savedResult = sessionStorage.getItem(`result_${currentIndex}`);
+
+  let revealHtml = '';
+  if (isRevealed) {
+    const badgeClass = savedResult === 'correct' ? 'badge-correct' : 'badge-wrong';
+    const badgeText = savedResult === 'correct' ? '✓ 正解' : '✗ 要復習';
+    revealHtml = `
+      <div class="answer-reveal show">
+        <div class="result-badge ${badgeClass}">${badgeText}</div>
+        <div class="answer-label">ANSWER</div>
+        <div class="answer-text">${q.a.replace(/\n/g, '<br>')}</div>
+      </div>`;
+  }
+
+  const btnHtml = isRevealed ? `
+    <div class="btn-row">
+      <button class="btn btn-correct" onclick="markResult('correct')">✓ 正解だった</button>
+      <button class="btn btn-wrong" onclick="markResult('wrong')">✗ 要復習</button>
+    </div>` : `
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="revealAnswer()">解答を見る</button>
+      <button class="btn btn-skip" onclick="skipQ()">スキップ</button>
+    </div>`;
+
+  document.getElementById('quiz-area').innerHTML = `
+    <div class="q-card">
+      ${metaHtml}
+      <textarea class="answer-input" id="user-answer" placeholder="ここに答えを書いてみましょう…">${savedAnswer}</textarea>
+      ${btnHtml}
+      ${revealHtml}
+    </div>`;
+
+  document.getElementById('user-answer')?.addEventListener('input', e => {
+    sessionStorage.setItem(`ans_${currentIndex}`, e.target.value);
+  });
+}
+
+function renderChoiceMode(q, metaHtml) {
+  const isRevealed = revealed[currentIndex];
+
+  if (isRevealed && choiceCache[currentIndex]) {
+    // 結果表示
+    const { choices, correctIndex, selectedIndex } = choiceCache[currentIndex];
+    const savedResult = sessionStorage.getItem(`result_${currentIndex}`);
+    const isCorrect = savedResult === 'correct';
+    const labels = ['A', 'B', 'C', 'D', 'E'];
+
+    let choicesHtml = choices.map((c, i) => {
+      let cls = '';
+      if (i === correctIndex) cls = 'correct-ans';
+      else if (i === selectedIndex && i !== correctIndex) cls = 'wrong-ans';
+      return `<button class="choice-btn ${cls}" disabled>
+        <span class="choice-label">${labels[i]}</span>
+        <span>${c.replace(/\n/g, '<br>')}</span>
+      </button>`;
+    }).join('');
+
+    const badgeClass = isCorrect ? 'badge-correct' : 'badge-wrong';
+    const badgeText = isCorrect ? '✓ 正解！' : '✗ 不正解';
+
+    document.getElementById('quiz-area').innerHTML = `
+      <div class="q-card">
+        ${metaHtml}
+        <div class="choices-wrap">${choicesHtml}</div>
+        <div class="answer-reveal show">
+          <div class="result-badge ${badgeClass}">${badgeText}</div>
+          <div class="answer-label">ANSWER</div>
+          <div class="answer-text">${q.a.replace(/\n/g, '<br>')}</div>
+        </div>
+        <div class="btn-row" style="margin-top:12px;">
+          <button class="btn btn-primary" onclick="nextQ()">次の問題へ ▶</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  if (choiceCache[currentIndex]) {
+    // 選択肢生成済み・未回答
+    showChoiceButtons(q, metaHtml, choiceCache[currentIndex].choices, choiceCache[currentIndex].correctIndex);
+    return;
+  }
+
+  // 選択肢をAI生成
+  document.getElementById('quiz-area').innerHTML = `
+    <div class="q-card">
+      ${metaHtml}
+      <div class="loading-box">
+        <div class="loading-spinner"></div>
+        <div>選択肢を生成中…</div>
+      </div>
+    </div>`;
+
+  generateChoices(q).then(({ choices, correctIndex }) => {
+    choiceCache[currentIndex] = { choices, correctIndex };
+    showChoiceButtons(q, metaHtml, choices, correctIndex);
+  }).catch(() => {
+    // フォールバック：記述モードで表示
+    document.getElementById('quiz-area').innerHTML = `
+      <div class="q-card">
+        ${metaHtml}
+        <div style="color:var(--wrong);font-size:0.82rem;margin-bottom:8px;">選択肢の生成に失敗しました。記述モードで表示します。</div>
+        <textarea class="answer-input" id="user-answer" placeholder="ここに答えを書いてみましょう…"></textarea>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="revealAnswer()">解答を見る</button>
+        </div>
+      </div>`;
+  });
+}
+
+function showChoiceButtons(q, metaHtml, choices, correctIndex) {
+  const labels = ['A', 'B', 'C', 'D', 'E'];
+  const choicesHtml = choices.map((c, i) => `
+    <button class="choice-btn" onclick="selectChoice(${i}, ${correctIndex})">
+      <span class="choice-label">${labels[i]}</span>
+      <span>${c.replace(/\n/g, '<br>')}</span>
+    </button>`).join('');
+
+  document.getElementById('quiz-area').innerHTML = `
+    <div class="q-card">
+      ${metaHtml}
+      <div class="choices-wrap">${choicesHtml}</div>
+      <div class="btn-row">
+        <button class="btn btn-skip" onclick="skipQ()">スキップ</button>
+      </div>
+    </div>`;
+}
+
+function selectChoice(selectedIndex, correctIndex) {
+  const isCorrect = selectedIndex === correctIndex;
+  if (isCorrect) correctCount++;
+  else {
+    if (!wrongList.includes(currentIndex)) wrongList.push(currentIndex);
+  }
+
+  choiceCache[currentIndex].selectedIndex = selectedIndex;
+  sessionStorage.setItem(`result_${currentIndex}`, isCorrect ? 'correct' : 'wrong');
+  revealed[currentIndex] = true;
+
+  // 更新
+  document.getElementById('progress-score').textContent = `正解: ${correctCount}`;
+  const q = currentList[currentIndex];
+  const unitClass = q.unit === 'unit1' ? 'u1' : q.unit === 'unit2' ? 'u2' : q.unit === 'unit3' ? 'u3' : 'u4';
+  const starHtml = q.star ? '<span class="star-mark">★ 頻出</span>' : '';
+  const metaHtml = `
+    <div class="q-meta">
+      <span class="q-num">Q${currentIndex + 1}</span>
+      <span class="q-unit-tag ${unitClass}">${q.unitTag}</span>
+      ${starHtml}
+    </div>
+    <div class="q-text">${q.q}</div>`;
+  renderChoiceMode(q, metaHtml);
+}
+
+// 静的選択肢データ（全111問）
+const choicesDataAll = [{"choices": ["起始＝動かない部位、停止＝動く部位", "起始＝上方、停止＝下方", "起始＝末梢側、停止＝中枢側", "起始＝動く部位、停止＝動かない部位"], "correctIndex": 0}, {"choices": ["12対", "14対", "13対", "11対", "10対"], "correctIndex": 0}, {"choices": ["頚椎7・胸椎12・腰椎5　計24個", "頚椎7・胸椎12・腰椎4　計23個", "頚椎5・胸椎12・腰椎5　計22個", "頚椎7・胸椎10・腰椎5　計22個"], "correctIndex": 0}, {"choices": ["舌・硬口蓋・頬粘膜で囲まれ口峡を境とする", "舌・硬口蓋・頬粘膜で囲まれ声門を境とする", "歯・硬口蓋・頬粘膜で囲まれ口峡を境とする", "舌・軟口蓋・頬粘膜で囲まれ口峡を境とする"], "correctIndex": 0}, {"choices": ["乳歯20本・永久歯28本", "乳歯18本・永久歯28本", "乳歯24本・永久歯32本", "乳歯20本・永久歯32本"], "correctIndex": 3}, {"choices": ["前方1/3が硬口蓋・後方2/3が軟口蓋", "前方2/3が硬口蓋（骨性）・後方1/3が軟口蓋（軟部組織）", "前方1/2が硬口蓋・後方1/2が軟口蓋", "前方3/4が硬口蓋・後方1/4が軟口蓋"], "correctIndex": 1}, {"choices": ["機能：声帯閉鎖など　運動：迷走神経　知覚：舌咽神経", "機能：鼻咽腔閉鎖など　運動：迷走神経　知覚：舌咽神経", "機能：鼻咽腔閉鎖など　運動：舌咽神経　知覚：迷走神経", "機能：鼻咽腔閉鎖など　運動：顔面神経　知覚：三叉神経"], "correctIndex": 1}, {"choices": ["葉状乳頭のみ味蕾を持たない", "有郭乳頭のみ味蕾を持たない", "糸状乳頭のみ味蕾を持たない", "すべての乳頭が味蕾を持つ", "茸状乳頭のみ味蕾を持たない"], "correctIndex": 2}, {"choices": ["塩味：舌根部　甘味：舌尖部　苦味：舌前方外側　酸味：舌後方外側", "塩味：舌前方外側　甘味：舌尖部　苦味：舌根部　酸味：舌後方外側", "塩味：舌後方外側　甘味：舌尖部　苦味：舌根部　酸味：舌前方外側", "塩味：舌尖部　甘味：舌前方外側　苦味：舌根部　酸味：舌後方外側"], "correctIndex": 1}, {"choices": ["舌前2/3の味覚：鼓索神経　舌後1/3の味覚・知覚：舌咽神経", "舌前2/3の味覚：舌咽神経　舌後1/3の味覚・知覚：鼓索神経", "舌前2/3の味覚：小錐体神経　舌後1/3の味覚：鼓索神経", "舌前2/3の味覚：迷走神経　舌後1/3の味覚・知覚：舌咽神経"], "correctIndex": 0}, {"choices": ["大唾液腺：耳下腺・顎下腺・舌下腺", "大唾液腺：耳下腺・顎下腺・口唇腺", "大唾液腺：耳下腺・舌下腺・口蓋腺", "大唾液腺：顎下腺・舌下腺・口唇腺"], "correctIndex": 0}, {"choices": ["消化・潤滑・防御・ホルモン産生作用", "消化・保護・防御・排泄内分泌作用", "消化・吸収・保護・排泄内分泌作用", "消化・保護・防御・免疫抑制作用"], "correctIndex": 1}, {"choices": ["漿液性・ワルトン管・舌下小丘・小錐体神経", "混合性・ステノン管・上顎第1大臼歯頬粘膜・鼓索神経", "粘液性・ステノン管・上顎第2大臼歯頬粘膜・鼓索神経", "漿液性・ステノン管・上顎第2大臼歯頬粘膜・小錐体神経"], "correctIndex": 3}, {"choices": ["漿液性・ワルトン管・舌下小丘・鼓索神経", "粘液性・ワルトン管・舌下ヒダ・鼓索神経", "混合性・ステノン管・舌下小丘・小錐体神経", "混合性・ワルトン管・舌下小丘・鼓索神経"], "correctIndex": 3}, {"choices": ["混合性・舌下小丘・小錐体神経", "漿液性・舌下小丘や舌下ヒダ・鼓索神経", "粘液性・ワルトン管開口部・迷走神経", "粘液性・舌下小丘や舌下ヒダ・鼓索神経"], "correctIndex": 3}, {"choices": ["鼻腔・口腔の後方から下方　上咽頭・中咽頭・下咽頭", "鼻腔・喉頭の後方から下方　鼻咽頭・口咽頭・喉頭咽頭", "口腔・食道の後方から下方　上咽頭・中咽頭・下咽頭", "鼻腔・口腔の前方から上方　上咽頭・中咽頭・下咽頭"], "correctIndex": 0}, {"choices": ["呼吸・発声・構音・免疫機能", "呼吸・嚥下・発声・免疫機能", "呼吸・嚥下・構音・免疫機能", "呼吸・嚥下・構音・造血機能"], "correctIndex": 2}, {"choices": ["口蓋から咽頭蓋谷　咽頭扁桃・耳管扁桃　耳管開口部", "口蓋から喉頭蓋谷　口蓋扁桃・舌扁桃　耳管開口部", "鼻腔底から口蓋の高さ　咽頭扁桃・耳管扁桃　耳管開口部", "鼻腔底から口蓋の高さ　口蓋扁桃・舌扁桃　耳管開口部"], "correctIndex": 2}, {"choices": ["口蓋から咽頭蓋谷まで　咽頭扁桃・耳管扁桃", "食道入口部まで　口蓋扁桃・舌扁桃", "咽頭蓋谷まで　口蓋扁桃・舌扁桃", "鼻腔底から咽頭蓋谷まで　口蓋扁桃・舌扁桃"], "correctIndex": 2}, {"choices": ["口蓋〜食道入口部　梨状陥凹は後側面　非嚥下時は2つに分かれる", "咽頭蓋谷〜食道入口部　梨状陥凹は前側面　非嚥下時は1つに見える", "咽頭蓋谷〜食道入口部　梨状陥凹は後側面　非嚥下時は2つに分かれる", "食道入口部〜胃　梨状陥凹は前側面　非嚥下時は1つに見える"], "correctIndex": 2}, {"choices": ["消化管の入口部のみに輪状分布する扁桃組織の総称", "消化管と気道の入口部咽頭に輪状分布する扁桃組織の総称", "気道の入口部のみに輪状分布するリンパ組織の総称", "上咽頭にのみ輪状分布する扁桃組織の総称"], "correctIndex": 1}, {"choices": ["現在4期（先行期→口腔期→咽頭期→食道期）、かつて3期", "現在5期（先行期→準備期→口腔期→咽頭期→食道期）、かつて3期", "現在5期（準備期→先行期→口腔期→咽頭期→食道期）、かつて3期", "現在3期（口腔期→咽頭期→食道期）、かつて5期"], "correctIndex": 1}, {"choices": ["食塊が咽頭から食道に移動する期間　延髄が関与", "食物を口腔内に取り込み咀嚼を行う期間　大脳基底核が関与", "口腔内で食塊を形成する期間　小脳が関与", "食物を認知しどれだけ口に取り込みどう処理するかを判断する期間　視床下部・前頭葉が関与"], "correctIndex": 3}, {"choices": ["咀嚼・食塊形成・嚥下反射の3つ", "補食・咀嚼・食塊形成の3つ", "先行・補食・咀嚼の3つ", "補食・咀嚼・嚥下反射の3つ"], "correctIndex": 1}, {"choices": ["声門が閉鎖するまでが随意運動", "食塊が食道に送り込まれるまでが随意運動", "食塊が咽頭に送り込まれ嚥下反射が誘発されるまでが随意運動", "喉頭が挙上するまでが随意運動"], "correctIndex": 2}, {"choices": ["600〜800 msecで終了・随意運動　喉頭が挙上し喉頭蓋が押し倒される", "100〜200 msecで終了・不随意運動　喉頭が下降し喉頭蓋が押し倒される", "600〜800 msecで終了・不随意運動　喉頭が挙上し喉頭蓋が押し倒される", "600〜800 msecで終了・不随意運動　喉頭が下降し声門が開大する"], "correctIndex": 2}, {"choices": ["挙上が完了した後に声帯閉鎖　成人で2cm上方移動", "挙上が1/2ほど進んだところで声帯閉鎖　成人で1cm上方移動", "挙上が1/2ほど進んだところで声帯閉鎖　成人で2cm上方移動", "挙上が1/3ほど進んだところで声帯閉鎖　成人で2cm上方移動"], "correctIndex": 2}, {"choices": ["不随意運動　第1次蠕動波と重力で胃へ輸送　第2次蠕動波も促進", "随意運動　第1次蠕動波と重力で胃へ輸送　第2次蠕動波も促進", "随意運動　重力のみで胃へ輸送　食道が弛緩して食塊が移動する", "不随意運動　重力のみで胃へ輸送　蠕動波は起こらない"], "correctIndex": 0}, {"choices": ["2重構造：①喉頭蓋の倒れ込み②声帯内転", "4重構造：①喉頭蓋②仮声帯③声帯④輪状咽頭筋", "3重構造：①喉頭蓋の倒れ込み②披裂軟骨前方傾斜・仮声帯閉鎖③声帯内転", "3重構造：①仮声帯閉鎖②声帯内転③喉頭蓋の倒れ込み"], "correctIndex": 2}, {"choices": ["期＝神経・筋の機構　相＝実際の食塊が移動している場所", "期＝随意運動の段階　相＝不随意運動の段階", "期＝食塊が移動している場所　相＝神経・筋の機構", "期と相はまったく同じ意味で区別しない"], "correctIndex": 0}, {"choices": ["左右1対のスポンジ状　表面は臓側胸膜　胸腔内壁は壁側胸膜", "左右1対の固形状　表面は壁側胸膜　胸腔内壁は臓側胸膜", "左右1対のスポンジ状　表面は心膜　胸腔内壁は壁側胸膜", "単一のスポンジ状　表面は臓側胸膜　胸腔内壁は心膜"], "correctIndex": 0}, {"choices": ["左肺2葉・右肺3葉　右肺が大きい理由：右側の気管支が太いため", "左肺3葉・右肺2葉　右肺が大きい理由：左側に心臓があるため", "左肺2葉・右肺3葉　右肺が大きい理由：左側に心臓があるため", "左肺2葉・右肺2葉　右肺が大きい理由：左側に心臓があるため"], "correctIndex": 2}, {"choices": ["細気管支　直径75〜300μm　総面積60〜70m²", "肺胞　直径75〜300mm　総面積60〜70m²", "肺胞　直径75〜300μm　総面積6〜7m²", "肺胞　直径75〜300μm　総面積60〜70m²"], "correctIndex": 3}, {"choices": ["長さ11〜12cm　多列線毛円柱上皮　線毛は肺胞から口側へ向かう", "長さ5〜6cm　多列線毛円柱上皮　線毛は肺胞から口側へ向かう", "長さ11〜12cm　扁平上皮　線毛は口側から肺胞へ向かう", "長さ11〜12cm　多列線毛円柱上皮　線毛は口側から肺胞へ向かう"], "correctIndex": 0}, {"choices": ["16〜20個の馬蹄形軟骨　後壁は平滑筋　第5胸椎レベルで分岐", "16〜20個の円形軟骨　後壁は平滑筋　第3胸椎レベルで分岐", "10〜15個の馬蹄形軟骨　後壁は平滑筋　第5胸椎レベルで分岐", "16〜20個の馬蹄形軟骨　後壁も軟骨　第5胸椎レベルで分岐"], "correctIndex": 0}, {"choices": ["右：約2.5cm・45〜60°・太くて短い　左：約5cm・25°・細くて長い", "右：約5cm・45〜60°・細くて長い　左：約2.5cm・25°・太くて短い", "右：約5cm・25°・太くて短い　左：約2.5cm・45〜60°・細くて長い", "右：約2.5cm・25°・太くて短い　左：約5cm・45〜60°・細くて長い"], "correctIndex": 3}, {"choices": ["前面：胸骨と肋骨　後面：胸椎　側面：肋骨　胸椎と肋骨は関節で結合", "前面：胸椎と肋骨　後面：胸骨　側面：肋骨　胸椎と肋骨は関節で結合", "前面：胸骨と肋骨　後面：腰椎　側面：肋骨　胸椎と肋骨は軟骨で結合", "前面：胸骨と肋骨　後面：胸椎　側面：肋骨　胸骨と肋骨は関節で結合"], "correctIndex": 0}, {"choices": ["胸腔と腹腔の隔壁　上に凸のドーム状　吸気時下降・呼気時上昇　1.5cm移動", "腹腔と骨盤腔の隔壁　上に凸のドーム状　吸気時下降・呼気時上昇　1.5cm移動", "胸腔と腹腔の隔壁　下に凸のドーム状　吸気時上昇・呼気時下降　1.5cm移動", "胸腔と腹腔の隔壁　上に凸のドーム状　吸気時上昇・呼気時下降　1.5cm移動"], "correctIndex": 0}, {"choices": ["吸気：横隔膜・外肋間筋　呼気：内肋間筋・腹直筋　腹式：外肋間筋", "吸気：内肋間筋・腹直筋　呼気：横隔膜・外肋間筋　腹式：横隔膜", "吸気：横隔膜・内肋間筋　呼気：外肋間筋・腹直筋　腹式：横隔膜", "吸気：横隔膜・外肋間筋　呼気：内肋間筋・腹直筋　腹式：横隔膜"], "correctIndex": 3}, {"choices": ["外呼吸：気道での換気　内呼吸：血液でのガス運搬", "外呼吸・内呼吸ともに肺で行われる異なる過程", "外呼吸：肺でのガス交換　内呼吸：組織での代謝（酸素消費）", "外呼吸：組織での代謝　内呼吸：肺でのガス交換"], "correctIndex": 2}, {"choices": ["①換気機能②ガス交換機能③換気ー血流比", "①拡散機能②ガス交換機能③換気ー血流比", "①換気機能②血液循環③ガス交換機能", "①換気機能②ガス交換機能③酸素解離曲線"], "correctIndex": 0}, {"choices": ["大脳皮質に呼吸・吸気の中枢　橋に持続的呼気中枢と呼吸調節中枢", "延髄に呼吸・吸気の中枢　小脳に持続的呼気中枢と呼吸調節中枢", "延髄に呼吸・吸気の中枢　橋に持続的呼気中枢と呼吸調節中枢", "橋に呼吸・吸気の中枢　延髄に持続的呼気中枢と呼吸調節中枢"], "correctIndex": 2}, {"choices": ["肺膨張→伸展受容器刺激→交感神経→吸気中枢抑制→呼気→肺収縮→吸気", "肺膨張→伸展受容器刺激→迷走神経→吸気中枢抑制→呼気→肺収縮→吸気", "肺収縮→伸展受容器刺激→迷走神経→吸気中枢抑制→呼気→肺膨張→吸気", "肺膨張→圧受容器刺激→交感神経→呼気中枢促進→呼気→肺収縮→吸気"], "correctIndex": 1}, {"choices": ["炭酸ガス・酸素の変化を感知　末梢受容器：頸動脈小体・大動脈体", "炭酸ガス・酸素の変化を感知　末梢受容器：頸動脈小体・延髄", "pHのみの変化を感知　末梢受容器：大動脈体・心臓", "酸素のみの変化を感知　末梢受容器：頸動脈小体・大動脈体"], "correctIndex": 0}, {"choices": ["1回換気量350〜500ml　呼吸数12〜20回/分　呼気圧10cmH₂O　pH7.35〜7.45", "1回換気量500〜700ml　呼吸数12〜20回/分　呼気圧10cmH₂O　pH7.35〜7.45", "1回換気量350〜500ml　呼吸数20〜30回/分　呼気圧10cmH₂O　pH7.35〜7.45", "1回換気量350〜500ml　呼吸数12〜20回/分　呼気圧20cmH₂O　pH7.35〜7.45"], "correctIndex": 0}, {"choices": ["ガス交換にあずからない部分　解剖学的死腔約150ml・肺胞死腔・生理的死腔", "ガス交換にあずからない部分　解剖学的死腔約300ml・肺胞死腔・生理的死腔", "空気が通らない部分　解剖学的死腔約150ml・肺胞死腔・機能的死腔", "ガス交換が活発に行われる部分　解剖学的死腔約150ml・肺胞死腔・生理的死腔"], "correctIndex": 0}, {"choices": ["肺胞換気量＝（1回換気量－死腔）×呼吸数", "肺胞換気量＝（1回換気量－死腔）÷呼吸数", "肺胞換気量＝（1回換気量＋死腔）×呼吸数", "肺胞換気量＝1回換気量×呼吸数"], "correctIndex": 0}, {"choices": ["上咽頭から胃まで　第6頚椎レベル　成人で約25cm", "下咽頭下端から胃まで　第4頚椎レベル　成人で約25cm", "下咽頭下端から胃まで　第6頚椎レベル　成人で約35cm", "下咽頭下端から胃まで　第6頚椎レベル　成人で約25cm"], "correctIndex": 3}, {"choices": ["粘膜→筋層→外膜の3層構造", "上皮→固有層→筋層の3層構造", "粘膜→粘膜下層→筋層→外膜の4層構造", "粘膜→漿膜→筋層の3層構造"], "correctIndex": 0}, {"choices": ["第1：声門・約10cm　第2：大動脈弓・左主気管支・約25cm　第3：横隔膜・約38cm", "第1：輪状咽頭筋・約25cm　第2：大動脈弓・左主気管支・約35cm　第3：横隔膜・約45cm", "第1：輪状咽頭筋・約15cm　第2：大動脈弓・右主気管支・約25cm　第3：横隔膜・約38cm", "第1：輪状咽頭筋・約15cm　第2：大動脈弓・左主気管支・約25cm　第3：横隔膜・約38cm"], "correctIndex": 3}, {"choices": ["食道入口部から約7cm：大動脈弓　約15cm：左主気管支　約25cm：横隔膜", "食道入口部から約7cm：大動脈弓　約10cm：左主気管支　約20cm：横隔膜", "食道入口部から約10cm：大動脈弓　約7cm：左主気管支　約20cm：横隔膜", "食道入口部から約7cm：左主気管支　約10cm：大動脈弓　約20cm：横隔膜"], "correctIndex": 1}, {"choices": ["換気障害の分類・血液ガス分析・活動能力の判定・手術適応の判定", "肺活量の測定・呼吸数の測定・体温の測定・血圧の測定", "呼吸障害のパターン・心機能の評価・活動能力の判定・手術適応の判定", "呼吸障害のパターン・経過や予後判定・活動能力の判定・手術適応の判定"], "correctIndex": 3}, {"choices": ["TLC：全肺気量　VC：肺活量　TV：予備吸気量　RV：残気量", "TLC：肺活量　VC：全肺気量　TV：1回換気量　RV：残気量", "TLC：全肺気量　VC：肺活量　TV：1回換気量　RV：機能的残気量", "TLC：全肺気量　VC：肺活量　TV：1回換気量　RV：残気量"], "correctIndex": 3}, {"choices": ["最大吸気位から安静呼気位までの気量　%VC80%以上が正常", "1回の吸入または呼出で肺に出入りしうる最大の気量　%VC80%以上が正常", "安静時の1回換気量の最大値　%VC80%以上が正常", "1回の吸入または呼出で肺に出入りしうる最大の気量　%VC70%以上が正常"], "correctIndex": 1}, {"choices": ["安静呼吸時での1呼吸で換気する気量　成人500〜700ml", "安静呼吸時での1呼吸で換気する気量　成人350〜500ml", "最大吸気位から最大呼気位までの気量　成人350〜500ml", "安静呼気位から最大呼気位までの気量　成人350〜500ml"], "correctIndex": 1}, {"choices": ["IRV：肺活量の60〜70%　ERV：肺活量の約20%　RV：全肺気量の30%以下", "IRV：肺活量の60〜70%　ERV：肺活量の約30%　RV：全肺気量の20%以下", "IRV：肺活量の20%　ERV：肺活量の60〜70%　RV：全肺気量の30%以下", "IRV：肺活量の50%　ERV：肺活量の約20%　RV：全肺気量の30%以下"], "correctIndex": 0}, {"choices": ["FVC：肺活量　FEV1.0：1秒量　1秒率：FVC/FEV1.0", "FVC：機能的残気量　FEV1.0：1秒量　1秒率：FEV1.0/FVC", "FVC：努力性呼気肺活量　FEV1.0：1秒量　1秒率：FEV1.0/FVC", "FVC：努力性呼気肺活量　FEV1.0：3秒量　1秒率：FEV1.0/FVC"], "correctIndex": 2}, {"choices": ["若年者80%以上・高齢者70%以上　低下は拘束性障害の指標", "若年者80%以上・高齢者70%以上　低下は閉塞性障害の指標", "若年者90%以上・高齢者80%以上　低下は閉塞性障害の指標", "若年者70%以上・高齢者60%以上　低下は閉塞性障害の指標"], "correctIndex": 1}, {"choices": ["拘束性：%VC低下・1秒率低下　閉塞性：%VC正常・1秒率低下　混合性：%VC低下・1秒率正常", "拘束性：%VC正常・1秒率低下　閉塞性：%VC低下・1秒率正常　混合性：両方低下", "拘束性：%VC低下・1秒率正常　閉塞性：%VC低下・1秒率低下　混合性：両方正常", "拘束性：%VC低下・1秒率正常　閉塞性：%VC正常・1秒率低下　混合性：両方低下"], "correctIndex": 3}, {"choices": ["時間をX軸・流量をY軸に示したもの　V25・V50が末梢気道抵抗を反映", "気量をX軸・流量をY軸に示したもの　V25・V50が末梢気道抵抗を反映", "流量をX軸・気量をY軸に示したもの　V25・V50が末梢気道抵抗を反映", "気量をX軸・流量をY軸に示したもの　PEFRが末梢気道抵抗を反映"], "correctIndex": 1}, {"choices": ["①呼吸器系②気管③付属管腔", "①呼吸器系②喉頭③付属管腔", "①循環器系②喉頭③付属管腔", "①呼吸器系②喉頭③口腔"], "correctIndex": 1}, {"choices": ["括約作用→発声機能へ　声帯膜様部が短縮・声門狭小化　共鳴腔が拡大", "括約作用→発声機能へ　声帯膜様部が延長・声門開大　共鳴腔が拡大", "括約作用→発声機能へ　声帯膜様部が延長・声門狭小化　共鳴腔が拡大", "発声機能→括約作用へ　声帯膜様部が短縮・声門開大　共鳴腔が縮小"], "correctIndex": 2}, {"choices": ["嚥下・咳：声帯のみ閉鎖　発声：仮声帯のみ閉鎖　呼吸：開大", "嚥下・咳：声帯のみ閉鎖　発声：仮声帯・声帯ともに閉鎖　呼吸：開大", "嚥下・咳：開大　発声：声帯のみ閉鎖　呼吸：仮声帯・声帯ともに閉鎖", "嚥下・咳：仮声帯・声帯ともに強く閉鎖　発声：声帯のみ閉鎖　呼吸：開大"], "correctIndex": 3}, {"choices": ["喉頭蓋軟骨・甲状軟骨・輪状軟骨・披裂軟骨", "甲状軟骨・輪状軟骨・披裂軟骨・舌骨", "喉頭蓋軟骨・甲状軟骨・気管軟骨・披裂軟骨", "喉頭蓋軟骨・甲状軟骨・輪状軟骨・小角軟骨"], "correctIndex": 0}, {"choices": ["喉頭蓋：シャモジ状　甲状軟骨：男性90°女性120°　輪状軟骨：土台　披裂：声帯突起と筋突起あり", "喉頭蓋：円形　甲状軟骨：男性90°女性120°　輪状軟骨：土台　披裂：声帯突起と筋突起あり", "喉頭蓋：シャモジ状　甲状軟骨：男性120°女性90°　輪状軟骨：土台　披裂：声帯突起と筋突起あり", "喉頭蓋：シャモジ状　甲状軟骨：男女ともに90°　輪状軟骨：土台　披裂：声帯突起と筋突起あり"], "correctIndex": 0}, {"choices": ["滑走運動　甲状軟骨前面が輪状軟骨に接近するように回転し声帯が伸ばされ高い声になる", "回転運動　甲状軟骨前面が輪状軟骨に接近するように回転し声帯が伸ばされ高い声になる", "回転運動　甲状軟骨後面が輪状軟骨に接近するように回転し声帯が厚くなり低い声になる", "回転運動　披裂軟骨が内転し声帯が伸ばされ高い声になる"], "correctIndex": 1}, {"choices": ["滑走のみ：内側→声門閉鎖・外側→声門開大", "回転：内転→声門閉鎖・外転→声門開大　滑走：披裂軟骨間が接近/遠ざかる", "回転：外転→声門閉鎖・内転→声門開大　滑走：披裂軟骨間が接近/遠ざかる", "回転のみ：内転→声門閉鎖・外転→声門開大"], "correctIndex": 1}, {"choices": ["内喉頭筋群：外部からの喉頭支持運動　外喉頭筋群：軟骨の関節運動", "内喉頭筋群：発声のみ担当　外喉頭筋群：嚥下のみ担当", "内喉頭筋群・外喉頭筋群ともに声帯の開閉を担当", "内喉頭筋群：軟骨の関節運動　外喉頭筋群：外部からの喉頭支持運動"], "correctIndex": 3}, {"choices": ["別名：前筋　支配神経：反回神経　唯一喉頭枠組みの外にある内喉頭筋", "別名：前筋　支配神経：上喉頭神経外枝　唯一喉頭枠組みの外にある内喉頭筋", "別名：後筋　支配神経：上喉頭神経外枝　唯一喉頭枠組みの外にある内喉頭筋", "別名：前筋　支配神経：上喉頭神経内枝　唯一喉頭枠組みの外にある内喉頭筋"], "correctIndex": 1}, {"choices": ["内側部：声帯筋　作用：声帯を開大させる　声帯ヒダの実質を形成", "内側部：外甲状披裂筋　作用：声帯を閉鎖し緊張させる　声帯ヒダの実質を形成", "内側部：声帯筋　作用：声帯を閉鎖し緊張させる　声帯ヒダの実質を形成", "外側部：声帯筋　作用：声帯を閉鎖し緊張させる　声帯ヒダの実質を形成"], "correctIndex": 2}, {"choices": ["別名：後筋　起始：輪状軟骨側面　停止：披裂軟骨声帯突起　作用：声帯を閉鎖", "別名：横筋　起始：輪状軟骨側面　停止：披裂軟骨筋突起　作用：声帯を閉鎖", "別名：側筋　起始：甲状軟骨側面　停止：披裂軟骨筋突起　作用：声帯を閉鎖", "別名：側筋　起始：輪状軟骨側面　停止：披裂軟骨筋突起　作用：声帯を閉鎖"], "correctIndex": 3}, {"choices": ["別名：横筋　横部と斜部で構成　両側性の神経支配（唯一）　声帯閉鎖", "別名：横筋　横部と斜部で構成　両側性の神経支配（唯一）　声帯開大", "別名：側筋　横部と斜部で構成　両側性の神経支配（唯一）　声帯閉鎖", "別名：横筋　横部のみで構成　片側性の神経支配　声帯閉鎖"], "correctIndex": 0}, {"choices": ["別名：後筋　唯一の声門開大筋　上喉頭神経内枝が支配", "別名：後筋　唯一の声門開大筋　反回神経が支配　麻痺すると呼吸困難のリスク", "別名：後筋　唯一の声門閉鎖筋　反回神経が支配　麻痺すると呼吸困難のリスク", "別名：前筋　唯一の声門開大筋　上喉頭神経外枝が支配"], "correctIndex": 1}, {"choices": ["①4つは声門閉鎖筋（例外はPCA）②TAは喉頭外③IAは両側性神経支配", "①5つは声門閉鎖筋②CTは喉頭外③IAは両側性神経支配", "①4つは声門閉鎖筋（例外はPCA）②CTは喉頭外③IAは両側性神経支配", "①4つは声門閉鎖筋（例外はIA）②CTは喉頭外③PCAは両側性神経支配"], "correctIndex": 2}, {"choices": ["舌骨上筋群：喉頭挙上　舌骨下筋群：喉頭下降　同時作用で下顎が開く", "舌骨上筋群：喉頭挙上　舌骨下筋群：喉頭挙上　同時作用で下顎が開く", "舌骨上筋群：喉頭下降　舌骨下筋群：喉頭挙上　同時作用で下顎が閉じる", "舌骨上筋群：喉頭挙上　舌骨下筋群：喉頭下降　同時作用で口が閉じる"], "correctIndex": 0}, {"choices": ["①咀嚼・食物保持②食塊移送③喉頭閉鎖④喉頭挙上⑤食道入口部弛緩", "①発音②食塊移送③喉頭閉鎖④喉頭挙上⑤食道入口部弛緩", "①咀嚼・食物保持②食塊移送③喉頭閉鎖④声帯挙上⑤食道入口部収縮", "①咀嚼・食物保持②食塊移送③声帯閉鎖④喉頭挙上⑤食道入口部弛緩"], "correctIndex": 0}, {"choices": ["前方：喉頭蓋　左右：披裂間ヒダ　後方：披裂喉頭蓋ヒダ　室ヒダ・声帯ヒダ", "前方：喉頭蓋　左右：声帯ヒダ　後方：披裂間ヒダ　室ヒダ・披裂喉頭蓋ヒダ", "前方：声帯ヒダ　左右：披裂喉頭蓋ヒダ　後方：披裂間ヒダ　室ヒダ・喉頭蓋", "前方：喉頭蓋　左右：披裂喉頭蓋ヒダ　後方：披裂間ヒダ　室ヒダ・声帯ヒダ"], "correctIndex": 3}, {"choices": ["喉頭室：室ヒダと声帯ヒダ間のくぼみ　声門：左右声帯ヒダの間　声門下腔：声門以下の気管への空間", "喉頭室：声帯ヒダと気管の間　声門：左右室ヒダの間　声門下腔：声門以下の気管への空間", "喉頭室：喉頭蓋と室ヒダ間のくぼみ　声門：左右声帯ヒダの間　声門下腔：声門以下の気管への空間", "喉頭室：室ヒダと声帯ヒダ間のくぼみ　声門：左右室ヒダの間　声門下腔：声門以下の食道への空間"], "correctIndex": 0}, {"choices": ["嚥下・咳：声帯ヒダのみ閉鎖　正常発声：仮声帯・声帯ともに閉鎖", "嚥下・咳・正常発声すべてで仮声帯・声帯ともに閉鎖", "嚥下・咳：仮声帯のみ閉鎖　正常発声：声帯ヒダのみ閉鎖", "嚥下・咳：仮声帯・声帯ともに閉鎖　正常発声：声帯ヒダのみ閉鎖"], "correctIndex": 3}, {"choices": ["扁平上皮→固有層（浅・中・深層）→甲状披裂筋　浅層：コラーゲン線維　深層：弾性線維", "扁平上皮→固有層（浅・深層）→甲状披裂筋　浅層：弾性線維　深層：コラーゲン線維", "扁平上皮→固有層（浅・中・深層）→甲状披裂筋　浅層：弾性線維　深層：コラーゲン線維", "多列線毛上皮→固有層（浅・中・深層）→甲状披裂筋　浅層：弾性線維　深層：コラーゲン線維"], "correctIndex": 2}, {"choices": ["ボディ：固有層深層と筋層　カバー：固有層浅層のみ", "ボディ：固有層浅層と中間層　カバー：固有層深層と筋層", "ボディ：固有層深層と筋層　カバー：上皮・固有層浅層と中間層（＋粘液層）", "ボディ：上皮と固有層全層　カバー：筋層"], "correctIndex": 2}, {"choices": ["動脈：内頸動脈→上喉頭動脈など　静脈：上喉頭静脈→内頸静脈など", "動脈：外頸動脈→上喉頭動脈など　静脈：上喉頭静脈→内頸静脈など", "動脈：外頸動脈→上喉頭動脈など　静脈：下喉頭静脈→内頸静脈のみ", "動脈：鎖骨下動脈のみ→上喉頭動脈など　静脈：上喉頭静脈→内頸静脈など"], "correctIndex": 1}, {"choices": ["CT：上喉頭神経内枝　その他：反回神経　知覚：上喉頭神経外枝など", "CT：上喉頭神経外枝　その他：反回神経　知覚：上喉頭神経内枝など", "CT：反回神経　その他：上喉頭神経外枝　知覚：上喉頭神経内枝など", "CT・その他すべて：反回神経　知覚：上喉頭神経内枝など"], "correctIndex": 1}, {"choices": ["舌咽神経の枝　役割：喉頭の運動・感覚の中心・声帯の開閉運動・音声の調節", "顔面神経の枝　役割：喉頭の運動・感覚の中心・声帯の開閉運動・音声の調節", "三叉神経の枝　役割：喉頭の運動・感覚の中心・声帯の開閉運動・音声の調節", "迷走神経の枝　役割：喉頭の運動・感覚の中心・声帯の開閉運動・音声の調節"], "correctIndex": 3}, {"choices": ["右：右鎖骨下動脈を回る　左：大動脈弓を回る", "右：総頸動脈を回る　左：大動脈弓を回る", "右：大動脈弓を回る　左：右鎖骨下動脈を回る", "右・左ともに大動脈弓を回る"], "correctIndex": 0}, {"choices": ["左反回神経は単独で約10cm・左側が長い　左側が太い線維が多い", "左反回神経は単独で約10cm・左側が長い　左右の線維の太さは同じ", "左反回神経は単独で約30cm・左側が長い　左側が太い線維が多い", "右反回神経は単独で約10cm・右側が長い　右側が太い線維が多い"], "correctIndex": 0}, {"choices": ["反回神経：30〜40 m/sec　四肢：50〜65 m/sec", "反回神経：50〜65 m/sec　四肢：30〜40 m/sec", "反回神経：10〜20 m/sec　四肢：50〜65 m/sec", "反回神経：30〜40 m/sec　四肢：30〜40 m/sec（同じ）"], "correctIndex": 0}, {"choices": ["疑核（運動）・孤束核（感覚）・迷走神経背側核（感覚）", "疑核（運動）・三叉神経核（感覚）・迷走神経背側核（感覚）", "疑核（運動）・孤束核（感覚）・顔面神経核（感覚）", "疑核（感覚）・孤束核（運動）・迷走神経背側核（運動）"], "correctIndex": 0}, {"choices": ["頭蓋骨の孔　迷走神経・副神経・顔面神経が通る", "脊椎の孔　舌咽神経・迷走神経・副神経が通る", "頭蓋骨の孔　舌咽神経・迷走神経・副神経が通る　舌下神経は別の孔から出る", "頭蓋骨の孔　舌咽神経・迷走神経・舌下神経が通る"], "correctIndex": 2}, {"choices": ["輪状咽頭筋のみ支配　機能：咽頭収縮", "茎突咽頭筋のみ支配　機能：咽頭挙上", "茎突咽頭筋のみ支配　機能：喉頭挙上", "甲状咽頭筋のみ支配　機能：咽頭挙上"], "correctIndex": 1}, {"choices": ["Ferrein：弦説　Garcia：喉頭鏡発明　Oertel：Body&Cover理論　Hirano：声帯振動観察", "Ferrein：弦説　Garcia：喉頭鏡発明・生の声帯観察　Oertel：声帯振動観察　Hirano：Body&Cover理論", "Ferrein：喉頭鏡発明　Garcia：弦説　Oertel：声帯振動観察　Hirano：Body&Cover理論", "Garcia：弦説　Ferrein：喉頭鏡発明・生の声帯観察　Oertel：声帯振動観察　Hirano：Body&Cover理論"], "correctIndex": 1}, {"choices": ["①呼気流（4cmH₂O・200〜300ml/sec）②声帯振動③共鳴腔", "①呼気流（10cmH₂O・100〜200ml/sec）②声帯振動（隙間なし・均衡・柔らかい）③共鳴腔", "①呼気流（4cmH₂O・100〜200ml/sec）②声帯振動（隙間なし・均衡・柔らかい）③共鳴腔", "①呼気流（4cmH₂O・100〜200ml/sec）②声帯振動（隙間なし・均衡・柔らかい）③鼻腔のみ"], "correctIndex": 2}, {"choices": ["喉頭原音：気流が気管を通る音　声帯は下方から上方に振動", "喉頭原音：声帯振動による「ブー」という音　声帯は下方から上方に吹き上げられるように振動", "喉頭原音：声帯振動による「ブー」という音　声帯は左右に水平に振動", "喉頭原音：共鳴腔で増幅された音　声帯は上方から下方に振動"], "correctIndex": 1}, {"choices": ["男性：毎秒100〜150回　女性：毎秒200〜250回　本態：超高速度振動体", "男性：毎秒50〜100回　女性：毎秒150〜200回　本態：超高速度振動体", "男性：毎秒200〜250回　女性：毎秒100〜150回　本態：超高速度振動体", "男性：毎秒100〜150回　女性：毎秒200〜250回　本態：横波振動体"], "correctIndex": 0}, {"choices": ["声門閉鎖→呼気流→10cmH₂O超で粘膜が押し開かれる→上唇外方開大→下唇復元力で閉鎖", "呼気流→声門閉鎖→4cmH₂O超で粘膜が押し開かれる→上唇外方開大→下唇復元力で閉鎖→再び声門閉鎖", "声門閉鎖→呼気流→4cmH₂O超で粘膜が押し開かれる→上唇外方開大→下唇復元力で閉鎖→再び声門閉鎖", "声門閉鎖→吸気流→4cmH₂O超で粘膜が押し開かれる→上唇外方開大→再び声門閉鎖"], "correctIndex": 2}, {"choices": ["声門が広くなると呼気流速が増大しベルヌーイ効果で声帯縁が外方に押し広げられる", "声門が狭くなると呼気流速が増大しベルヌーイ効果で声帯縁が内方に引き寄せられる", "声門が狭くなると呼気流速が低下しベルヌーイ効果で声帯縁が内方に引き寄せられる", "声門が狭くなると気圧が上昇し声帯縁が外方に押し広げられる"], "correctIndex": 1}, {"choices": ["声の高さ：基本周波数（Hz）　強さ：音圧（dB）　持続時間：呼気流量（ml/sec）　性質：音色", "声の高さ：基本周波数（kHz）　強さ：音圧（Pa）　持続時間：呼気流量（ml/sec）　性質：音色", "声の高さ：基本周波数（Hz）　強さ：音圧（dB）　持続時間：音色　性質：呼気流量（ml/sec）", "声の高さ：音圧（dB）　強さ：基本周波数（Hz）　持続時間：呼気流量（ml/sec）　性質：音色"], "correctIndex": 0}, {"choices": ["呼気圧による　CT・TAが関与　増加→声帯緊張→高くなる　下降させる調節は不明", "声帯振動数による　CT・TAが関与　収縮→声帯緊張→高くなる　下降させる調節は不明", "声帯振動数による　CT・TAが関与　収縮→声帯弛緩→高くなる　下降させる調節は不明", "声帯振動数による　PCA・IAが関与　収縮→声帯緊張→高くなる　下降させる調節は不明"], "correctIndex": 1}, {"choices": ["主として呼気流量による　喉頭調節は声門抵抗を整えるのみ", "主として呼気圧による　喉頭調節は声門抵抗を整えるのみ", "主として声帯緊張による　喉頭調節は声門抵抗を整えるのみ", "主として共鳴腔の形状による　喉頭調節は声門抵抗を整えるのみ"], "correctIndex": 1}, {"choices": ["おもて声・うら声ともに声帯の厚さは変わらず振動部位のみ異なる", "おもて声：声帯薄く・粘膜振動消失　うら声：声帯厚く・声門閉鎖完全", "おもて声：声帯厚く・声門閉鎖不完全・CTのみ　うら声：声帯薄く・粘膜振動消失", "おもて声：声帯厚く・声門閉鎖完全・CT+TA　うら声：声帯薄く・粘膜振動消失"], "correctIndex": 3}, {"choices": ["最低音〜最高音の音域　男性120〜800Hz（2.5オクターブ）　女性60〜500Hz（3オクターブ）　男性話声位：240Hz　女性：120Hz", "話し声の音域のみ　男性60〜500Hz（3オクターブ）　女性120〜800Hz（2.5オクターブ）　男性話声位：120Hz　女性：240Hz", "最低音〜最高音の音域　男性60〜500Hz（3オクターブ）　女性120〜800Hz（2.5オクターブ）　男性話声位：240Hz　女性：120Hz", "最低音〜最高音の音域　男性60〜500Hz（3オクターブ）　女性120〜800Hz（2.5オクターブ）　男性話声位：120Hz　女性：240Hz"], "correctIndex": 3}, {"choices": ["最初の反射的声：a¹（440Hz）付近　泣き声：400〜500Hz　満1歳：声域が上下に広がる", "最初の反射的声：c¹（261Hz）付近　泣き声：400〜500Hz　満1歳：声域が上下に広がる", "最初の反射的声：a¹（440Hz）付近　泣き声：400〜500Hz　満1歳：声域が低音域に広がる", "最初の反射的声：a¹（440Hz）付近　泣き声：200〜300Hz　満1歳：声域が上下に広がる"], "correctIndex": 0}, {"choices": ["アンドロゲン　男子13〜14歳・1オクターブ低下　女子11〜12歳・3度低下　声帯長：成人男子12mm・女子9mm", "アンドロゲン　男子13〜14歳・2オクターブ低下　女子11〜12歳・3度低下　声帯長：成人男子12mm・女子9mm", "エストロゲン　男子13〜14歳・1オクターブ低下　女子11〜12歳・3度低下　声帯長：成人男子12mm・女子9mm", "アンドロゲン　男子11〜12歳・1オクターブ低下　女子13〜14歳・3度低下　声帯長：成人男子12mm・女子9mm"], "correctIndex": 0}, {"choices": ["男女ともに声の高さが低くなる　声帯筋の弾性は増加する", "男性：声帯筋断面積縮小・個人差増大　女性：声の高さが低くなる　男性の周波数は高くなる傾向", "男性：声帯筋断面積増大・個人差縮小　女性：声の高さが高くなる", "男性：声の高さが低くなる　女性：個人差が増大する"], "correctIndex": 1}, {"choices": ["①可撓性：ファイバースコピー②形態：ストロボスコピー③空気力学的④音響分析⑤神経生理学的⑥聴覚心理的", "①形態：ファイバースコピー②可撓性：ストロボスコピー③音響分析④空気力学的⑤神経生理学的⑥聴覚心理的", "①形態②可撓性③空気力学的④音響分析⑤聴覚心理的　計5カテゴリー", "①形態：ファイバースコピー②可撓性：ストロボスコピー③空気力学的④音響分析⑤神経生理学的⑥聴覚心理的"], "correctIndex": 3}, {"choices": ["声帯の形態と可撓性の両方：ファイバースコピー", "声帯の形態と可撓性の両方：ストロボスコピー", "声帯の可撓性：ファイバースコピー　声帯の形態：ストロボスコピー", "声帯の形態：ファイバースコピー　声帯の可撓性（振動状態）：ストロボスコピー"], "correctIndex": 3}, {"choices": ["高速声帯振動をゆっくり見える映像として可視化　断続発光で一瞬一瞬の像を時間軸に並べる", "高速声帯振動をリアルタイムで録画する装置　連続発光で声帯全体を撮影する", "声帯振動の音響成分を分析する装置　声帯振動の周波数を直接測定する", "声帯の形態を3D映像で観察する装置　高周波数光を使って声帯の立体構造を可視化する"], "correctIndex": 0}, {"choices": ["基本周波数・音圧・呼気流量・MPTを測定　MPTが30秒以下で息不足の訴えが生じる", "基本周波数のみ測定　MPTが10秒以下で息不足の訴えが生じる", "基本周波数・音圧・呼気流量・MPTを測定　MPTが10秒以下で息不足の訴えが生じる", "音圧・呼気流量のみ測定　MPTが10秒以下で息不足の訴えが生じる"], "correctIndex": 2}, {"choices": ["MPT30秒以下で「息が足りない・過呼吸になる」等の訴えが生じる", "MPT10秒以下で「息が足りない・過呼吸になる」等の訴えが生じる", "MPT10秒以下で「声がかすれる・高音が出ない」等の訴えが生じる", "MPT5秒以下で「息が足りない・過呼吸になる」等の訴えが生じる"], "correctIndex": 1}, {"choices": ["G：総合評価　R：粗糙性　B：気息性　A：無力性　S：努力性　0〜5で評価", "G：総合評価　R：粗糙性　B：気息性　A：努力性　S：無力性　0〜3で評価", "G：粗糙性　R：総合評価　B：気息性　A：無力性　S：努力性　0〜3で評価", "G：総合評価　R：粗糙性　B：気息性　A：無力性　S：努力性　0〜3で評価"], "correctIndex": 3}, {"choices": ["①基本周波数②音圧③呼気流量", "①基本周の揺らぎ（ジッター）②振幅の揺らぎ（シマー）③雑音の程度", "①ジッター②シマー③最長発声持続時間", "①声の高さ②声の強さ③声の持続時間"], "correctIndex": 1}];
+
+function generateChoices(q) {
+  // グローバルインデックスから選択肢を取得
+  const globalIndex = allQuestions.indexOf(q);
+  if (globalIndex >= 0 && choicesDataAll[globalIndex]) {
+    return Promise.resolve(choicesDataAll[globalIndex]);
+  }
+  // currentListのインデックスからも試みる
+  const listIndex = currentList.indexOf(q);
+  if (listIndex >= 0) {
+    // allQuestionsで同じ問題を探す
+    const ai = allQuestions.findIndex(aq => aq.q === q.q);
+    if (ai >= 0 && choicesDataAll[ai]) {
+      return Promise.resolve(choicesDataAll[ai]);
+    }
+  }
+  return Promise.reject(new Error('選択肢データが見つかりません'));
+}
+
+function revealAnswer() {
+  const ans = document.getElementById('user-answer')?.value || '';
+  sessionStorage.setItem(`ans_${currentIndex}`, ans);
+  revealed[currentIndex] = true;
+  renderQuestion();
+}
+
+function markResult(result) {
+  sessionStorage.setItem(`result_${currentIndex}`, result);
+  if (result === 'correct') {
+    correctCount++;
+  } else {
+    if (!wrongList.includes(currentIndex)) wrongList.push(currentIndex);
+  }
+  revealed[currentIndex] = true;
+  document.getElementById('progress-score').textContent = `正解: ${correctCount}`;
+  renderQuestion();
+  setTimeout(() => nextQ(), 500);
+}
+
+
+
+function skipQ() {
+  nextQ();
+}
+
+function nextQ() {
+  const ua = document.getElementById('user-answer');
+  if (ua) sessionStorage.setItem(`ans_${currentIndex}`, ua.value);
+  if (currentIndex < currentList.length - 1) {
+    currentIndex++;
+    renderQuestion();
+  } else {
+    showScore();
+  }
+}
+
+function prevQ() {
+  const ua = document.getElementById('user-answer');
+  if (ua) sessionStorage.setItem(`ans_${currentIndex}`, ua.value);
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderQuestion();
+  }
+}
+
+function showScore() {
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('progress-bar-wrap').style.display = 'none';
+  document.getElementById('nav-bar').classList.remove('show');
+  document.getElementById('score-screen').style.display = 'block';
+
+  const total = currentList.length;
+  const pct = total > 0 ? Math.round(correctCount / total * 100) : 0;
+  document.getElementById('score-num').textContent = `${correctCount} / ${total}`;
+  document.getElementById('score-sub').textContent = `正解率 ${pct}%`;
+
+  let wrongHtml = '';
+  if (wrongList.length > 0) {
+    wrongHtml = '<h3>📝 要復習リスト</h3>';
+    wrongList.forEach(i => {
+      const q = currentList[i];
+      wrongHtml += `<div class="wrong-item"><strong>Q${i+1}：</strong>${q.q}</div>`;
+    });
+  } else {
+    wrongHtml = '<div style="text-align:center;color:var(--correct);font-weight:700;margin-top:16px;">全問正解！素晴らしい🎉</div>';
+  }
+  document.getElementById('wrong-list').innerHTML = wrongHtml;
+}
+
+function showMenu() {
+  sessionStorage.clear();
+  choiceCache = {};
+  document.getElementById('start-menu').style.display = 'block';
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('score-screen').style.display = 'none';
+  document.getElementById('progress-bar-wrap').style.display = 'none';
+  document.getElementById('nav-bar').classList.remove('show');
+}
+</script>
+</body>
+</html>
