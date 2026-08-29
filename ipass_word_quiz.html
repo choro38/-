@@ -752,11 +752,59 @@ function shuffle(arr) {
   return arr;
 }
 
+// 紛らわしいグループ定義（同グループ内の単語をダミー優先に使う）
+const CONFUSE_GROUPS = [
+  ['s001','s002','s003','s004'],           // CRM/SFA/ERP/SCM
+  ['s005','s006'],                          // KGI/KPI
+  ['s013','s014'],                          // TOB/MBO
+  ['s023','s024'],                          // ROI/NPV
+  ['s025','s026','s027','s028'],            // 知財系
+  ['s029','s030','s031','s032','s033'],     // DX/IoT/AI/BD/ML
+  ['s007','s008','s009','s015','s016'],     // 経営分析手法群
+  ['m001','m002','m003','m004'],            // WBS/ガント/CP/アロー
+  ['m005'],                                 // PDCA単独
+  ['m012','m013','m014','m015','m016'],     // 開発モデル群
+  ['m018','m019','m020','m021'],            // テスト工程群
+  ['m025','m026','m027','m028'],            // BCP/BCM/RTO/RPO
+  ['t001','t002','t003','t004'],            // CPU/RAM/ROM/SSD
+  ['t009','t010','t011'],                   // SQL/DBMS/関係DB
+  ['t012','t013','t014','t015','t016'],     // DB操作系（主キー/外部キー/正規化/TX/ACID）
+  ['t017','t018','t019','t020','t021'],     // ネットワーク基礎
+  ['t022','t037','t038','t039','t040'],     // セキュリティ防御系
+  ['t023','t024','t025'],                   // VPN/HTTP/HTTPS
+  ['t026','t027','t028','t029','t030'],     // 暗号・PKI系
+  ['t031','t032','t033','t034','t035','t036'], // 攻撃手法群
+  ['t041','t042','t043'],                   // 認証・アクセス制御
+  ['t046','t047','t048'],                   // バックアップ種別
+  ['t049','t050','t051','t052'],            // RAID/クラスタ/仮想化/コンテナ
+  ['t056','t057','t058','t059'],            // 数値表現・単位
+  ['t060','t061'],                          // 文字コード
+  ['t062','t063'],                          // アルゴリズム/フローチャート
+  ['t064','t065','t066'],                   // データ構造
+  ['t068','t069','t070','t071','t072','t073'], // OOP概念群
+  ['t074','t075','t076'],                   // 設計図法
+];
+
+// 各IDが属するグループを逆引きマップ
+const ID_TO_GROUP = {};
+CONFUSE_GROUPS.forEach(grp => grp.forEach(id => { ID_TO_GROUP[id] = grp; }));
+
 function getWrongChoices(correct) {
-  const same = WORDS.filter(w => w.domain === correct.domain && w.id !== correct.id);
-  const diff = WORDS.filter(w => w.domain !== correct.domain);
-  const candidates = shuffle([...same, ...diff]);
-  return candidates.slice(0, 3);
+  const grp = ID_TO_GROUP[correct.id] || [];
+  // 同グループの他単語（紛らわしい選択肢）
+  const confuse = WORDS.filter(w => grp.includes(w.id) && w.id !== correct.id);
+  // 同分野の残り
+  const sameDomain = WORDS.filter(w => w.domain === correct.domain && w.id !== correct.id && !grp.includes(w.id));
+  // 他分野
+  const other = WORDS.filter(w => w.domain !== correct.domain);
+
+  // 紛らわしい選択肢を優先し、足りなければ同分野→他分野で補完
+  const pool = [
+    ...shuffle(confuse),
+    ...shuffle(sameDomain),
+    ...shuffle(other),
+  ];
+  return pool.slice(0, 3);
 }
 
 function startQuiz() {
