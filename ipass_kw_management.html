@@ -125,7 +125,38 @@ function revealFlash(){document.getElementById('flashCard').classList.toggle('re
 function flashMove(dir){fIdx=Math.max(0,Math.min(fDeck.length-1,fIdx+dir));showFlash();}
 function markFlash(ok){if(ok)fOkSet.add(fDeck[fIdx].term);else fOkSet.delete(fDeck[fIdx].term);if(fIdx<fDeck.length-1){fIdx++;showFlash();}else{const ng=fDeck.length-fOkSet.size;alert('お疲れさまでした！\n✅覚えた:'+fOkSet.size+'語　❌もう一度:'+ng+'語');if(ng>0){fDeck=shuffle(fDeck.filter(d=>!fOkSet.has(d.term)));fIdx=0;showFlash();}}}
 function startQuiz(){document.getElementById('quizBody').style.display='block';document.getElementById('scoreScreen').className='score-sc';qPool=shuffle(getPool());qIdx=0;qScore=0;qMiss=[];if(!qPool.length)return;showQuiz();}
-function showQuiz(){if(qIdx>=qPool.length){showScore();return;}qAnswered=false;const d=qPool[qIdx];document.getElementById('qCat').textContent=d.cat||'';document.getElementById('qKw').textContent=d.keyword;const others=shuffle(DATA.filter(x=>x.term!==d.term)).slice(0,3);const choices=shuffle([d,...others]);const box=document.getElementById('choices');box.innerHTML='';choices.forEach(c=>{const btn=document.createElement('button');btn.className='choice-btn';btn.textContent=c.term;btn.onclick=()=>answerQuiz(c.term,d.term,d.desc,btn);box.appendChild(btn);});document.getElementById('quizFb').className='qfb';document.getElementById('quizNext').className='qnext';setProgress(qIdx,qPool.length);}
+function showQuiz(){if(qIdx>=qPool.length){showScore();return;}qAnswered=false;const d=qPool[qIdx];document.getElementById('qCat').textContent=d.cat||'';document.getElementById('qKw').textContent=d.keyword;
+  // ── 改良版選択肢生成 ──
+  function getSimilar(target, pool, n) {
+    const t0 = target.term.replace(/[（(].*/,'').trim();
+    function sc(o) {
+      let s = 0;
+      const t1 = o.term.replace(/[（(].*/,'').trim();
+      // 同カテゴリ最優先
+      if (o.cat === target.cat) s += 100;
+      // 先頭2文字一致（SLA→SLM等）
+      if (t0.length>=2 && t1.length>=2 && t0.slice(0,2)===t1.slice(0,2)) s += 60;
+      // 先頭1文字一致
+      if (t0[0]===t1[0]) s += 30;
+      // 両方アルファベット略語
+      if (/[A-Z]{2,}/.test(t0) && /[A-Z]{2,}/.test(t1)) s += 25;
+      // キーワードに共通単語
+      const kw0 = target.keyword.split(/[・、\s（）]/);
+      const kw1 = o.keyword.split(/[・、\s（）]/);
+      const com = kw0.filter(w=>w.length>1 && kw1.includes(w));
+      s += com.length * 12;
+      // ランダムノイズで毎回少し変わる
+      s += Math.random() * 8;
+      return s;
+    }
+    return pool
+      .filter(x=>x.term!==target.term)
+      .map(x=>({x,s:sc(x)}))
+      .sort((a,b)=>b.s-a.s)
+      .slice(0,n).map(r=>r.x);
+  }
+  const others = getSimilar(d, DATA, 3);
+  const choices=shuffle([d,...others]);const box=document.getElementById('choices');box.innerHTML='';choices.forEach(c=>{const btn=document.createElement('button');btn.className='choice-btn';btn.textContent=c.term;btn.onclick=()=>answerQuiz(c.term,d.term,d.desc,btn);box.appendChild(btn);});document.getElementById('quizFb').className='qfb';document.getElementById('quizNext').className='qnext';setProgress(qIdx,qPool.length);}
 function answerQuiz(chosen,correct,desc,btn){if(qAnswered)return;qAnswered=true;document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=true;if(b.textContent===correct)b.classList.add('correct');});const fb=document.getElementById('quizFb');if(chosen===correct){btn.classList.add('correct');fb.className='qfb show ok';document.getElementById('fbVerdict').textContent='✅ 正解！';qScore++;}else{btn.classList.add('wrong');fb.className='qfb show ng';document.getElementById('fbVerdict').textContent='❌ 不正解';qMiss.push({term:correct,keyword:qPool[qIdx].keyword});}document.getElementById('fbDesc').textContent=desc;const nxt=document.getElementById('quizNext');nxt.className='qnext show';nxt.textContent=qIdx===qPool.length-1?'結果を見る 🎉':'次の問題 ▶';}
 function nextQuiz(){qIdx++;showQuiz();}
 function showScore(){document.getElementById('quizBody').style.display='none';document.getElementById('scoreScreen').className='score-sc show';const pct=Math.round(qScore/qPool.length*100);document.getElementById('scoreBig').textContent=pct+'%';document.getElementById('scoreLabel').textContent=qScore+' / '+qPool.length+' 問正解';document.getElementById('scoreMsg').textContent=pct===100?'🎉 完璧！':pct>=80?'👏 素晴らしい！':pct>=60?'📚 もう少し！':'💪 一緒に頑張ろう！';const ml=document.getElementById('missList');if(qMiss.length>0){ml.innerHTML='<h3>❌ もう一度確認（'+qMiss.length+'語）</h3>';qMiss.forEach(m=>{ml.innerHTML+='<div class="miss-item"><div class="mt">✏️ '+m.term+'</div><div class="mk">'+m.keyword+'</div></div>';});}else ml.innerHTML='';}
