@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ST用語 英語・略語 暗記アプリ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;600;700&display=swap');
+
+  :root {
+    --bg: #f0f4f8;
+    --surface: #ffffff;
+    --surface2: #e8eef5;
+    --primary: #2a5a8c;
+    --primary-light: #3a7ab8;
+    --primary-pale: #ddeaf7;
+    --accent: #1a8a6e;
+    --accent-light: #22a885;
+    --accent-pale: #d4f0e8;
+    --warn: #c0392b;
+    --text: #1a2634;
+    --text-sub: #4a6080;
+    --text-muted: #8aa0b8;
+    --border: #ccd8e8;
+    --radius: 10px;
+    --shadow: 0 2px 12px rgba(42,90,140,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: var(--primary);
+    color: #fff;
+    padding: 18px 24px 14px;
+    text-align: center;
+  }
+  header h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+  header p {
+    font-size: 0.78rem;
+    opacity: 0.75;
+    margin-top: 3px;
+  }
+
+  /* ===== MAIN LAYOUT ===== */
+  .app {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px 16px;
+  }
+
+  /* ===== SECTION PANEL ===== */
+  .panel {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+  .panel-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  /* ===== CATEGORY BUTTONS ===== */
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .cat-btn {
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 10px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.4;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .cat-btn:hover { background: var(--primary-pale); border-color: var(--primary-light); }
+  .cat-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    font-weight: 700;
+  }
+  .cat-btn.all-btn {
+    grid-column: 1 / -1;
+    background: var(--primary-pale);
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 700;
+    text-align: center;
+    font-size: 0.88rem;
+  }
+  .cat-btn.all-btn.active {
+    background: var(--primary);
+    color: #fff;
+  }
+  .cat-count {
+    font-size: 0.70rem;
+    opacity: 0.7;
+    font-weight: 400;
+  }
+
+  /* ===== MODE & DIRECTION ===== */
+  .toggle-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .toggle-btn {
+    flex: 1;
+    min-width: 120px;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 10px;
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: var(--text-sub);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .toggle-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* ===== START BUTTON ===== */
+  .start-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: background 0.15s;
+  }
+  .start-btn:hover { background: var(--accent-light); }
+
+  /* ===== QUIZ AREA ===== */
+  #quiz-area { display: none; }
+
+  .progress-bar-wrap {
+    background: var(--border);
+    border-radius: 100px;
+    height: 6px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    background: var(--accent);
+    height: 100%;
+    border-radius: 100px;
+    transition: width 0.3s;
+  }
+  .progress-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: right;
+    margin-bottom: 6px;
+  }
+
+  /* direction badge */
+  .dir-badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 100px;
+    margin-bottom: 10px;
+    background: var(--primary-pale);
+    color: var(--primary);
+    letter-spacing: 0.05em;
+  }
+
+  /* FLASH CARD */
+  .flashcard-wrap {
+    perspective: 1000px;
+    margin-bottom: 16px;
+  }
+  .flashcard {
+    position: relative;
+    width: 100%;
+    min-height: 180px;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .card-face {
+    position: absolute;
+    width: 100%;
+    min-height: 180px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 24px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    text-align: center;
+  }
+  .card-back {
+    background: var(--primary-pale);
+    transform: rotateY(180deg);
+  }
+  .card-label {
+    font-size: 0.70rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+  .card-main {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--text);
+    word-break: break-all;
+    line-height: 1.4;
+  }
+  .card-main.ja { font-size: 1.2rem; }
+  .card-sub {
+    font-size: 0.80rem;
+    color: var(--text-sub);
+    margin-top: 8px;
+  }
+  .card-hint {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 14px;
+    opacity: 0.7;
+  }
+
+  .flash-btn-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .flash-result-btn {
+    flex: 1;
+    padding: 11px 0;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .flash-result-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-ok  { background: var(--accent-pale); color: var(--accent); }
+  .btn-ng  { background: #fde8e6; color: var(--warn); }
+  .btn-ok:hover:not(:disabled)  { background: var(--accent); color: #fff; }
+  .btn-ng:hover:not(:disabled)  { background: var(--warn); color: #fff; }
+
+  /* CHOICE */
+  .question-box {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 22px 20px;
+    margin-bottom: 14px;
+  }
+  .question-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.6;
+    text-align: center;
+    color: var(--text);
+    margin-bottom: 6px;
+    word-break: break-all;
+  }
+  .question-sub {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .choices-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .choice-btn {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.5;
+    transition: border-color 0.15s, background 0.15s;
+    word-break: break-all;
+  }
+  .choice-btn:hover:not(:disabled) { border-color: var(--primary-light); background: var(--primary-pale); }
+  .choice-btn.correct  { background: var(--accent-pale); border-color: var(--accent); color: var(--accent); font-weight: 700; }
+  .choice-btn.wrong    { background: #fde8e6; border-color: var(--warn); color: var(--warn); font-weight: 700; }
+  .choice-btn:disabled { cursor: not-allowed; }
+
+  /* feedback */
+  .feedback {
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 0.83rem;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    display: none;
+  }
+  .feedback.ok { background: var(--accent-pale); color: var(--accent); }
+  .feedback.ng { background: #fde8e6; color: var(--warn); }
+
+  /* nav buttons */
+  .nav-row {
+    display: flex;
+    gap: 10px;
+  }
+  .nav-btn {
+    flex: 1;
+    padding: 11px 0;
+    border-radius: 8px;
+    border: 2px solid var(--primary);
+    background: transparent;
+    color: var(--primary);
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { background: var(--primary); color: #fff; }
+  .nav-btn.primary { background: var(--primary); color: #fff; }
+  .nav-btn.primary:hover { background: var(--primary-light); }
+
+  /* RESULT */
+  #result-area {
+    display: none;
+    text-align: center;
+  }
+  .result-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--primary-pale);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+  }
+  .result-score {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+  }
+  .result-total {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .result-msg {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .result-sub {
+    font-size: 0.80rem;
+    color: var(--text-sub);
+    margin-bottom: 22px;
+  }
+  .retry-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 32px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  .back-btn {
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    padding: 12px 32px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 480px) {
+    .category-grid { grid-template-columns: 1fr; }
+    .cat-btn.all-btn { grid-column: 1; }
+    header h1 { font-size: 1rem; }
+    .card-main { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>ST用語 英語・略語 暗記アプリ</h1>
+  <p>言語聴覚士養成課程 ／ 用語暗記トレーニング</p>
+</header>
+
+<div class="app">
+
+  <!-- ===== SETUP ===== -->
+  <div id="setup-area">
+
+    <div class="panel">
+      <div class="panel-title">カテゴリーを選ぶ</div>
+      <div class="category-grid" id="cat-grid">
+        <button class="cat-btn all-btn active" data-cat="all" onclick="toggleCat(this)">
+          全カテゴリー <span class="cat-count" id="cnt-all"></span>
+        </button>
+        <button class="cat-btn" data-cat="0" onclick="toggleCat(this)">
+          ① 脳の部位・機能野 <span class="cat-count" id="cnt-0"></span>
+        </button>
+        <button class="cat-btn" data-cat="1" onclick="toggleCat(this)">
+          ② 高次脳機能障害 <span class="cat-count" id="cnt-1"></span>
+        </button>
+        <button class="cat-btn" data-cat="2" onclick="toggleCat(this)">
+          ③ 検査名 <span class="cat-count" id="cnt-2"></span>
+        </button>
+        <button class="cat-btn" data-cat="3" onclick="toggleCat(this)">
+          ④ 統計・尺度 <span class="cat-count" id="cnt-3"></span>
+        </button>
+        <button class="cat-btn" data-cat="4" onclick="toggleCat(this)">
+          ⑤ 評価・リハビリ <span class="cat-count" id="cnt-4"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">出題方向</div>
+      <div class="toggle-row">
+        <button class="toggle-btn active" data-dir="both" onclick="setDir(this)">両方向ランダム</button>
+        <button class="toggle-btn" data-dir="toJa" onclick="setDir(this)">英語・略語 → 日本語</button>
+        <button class="toggle-btn" data-dir="toEn" onclick="setDir(this)">日本語 → 英語・略語</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">学習モード</div>
+      <div class="toggle-row">
+        <button class="toggle-btn active" data-mode="flash" onclick="setMode(this)">フラッシュカード</button>
+        <button class="toggle-btn" data-mode="choice" onclick="setMode(this)">選択肢（4択）</button>
+      </div>
+    </div>
+
+    <button class="start-btn" onclick="startQuiz()">スタート</button>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quiz-area">
+    <div class="progress-label" id="progress-label"></div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+    <div class="dir-badge" id="dir-badge"></div>
+
+    <!-- FLASH -->
+    <div id="flash-section">
+      <div class="flashcard-wrap">
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <div class="card-face card-front">
+            <div class="card-label" id="front-label"></div>
+            <div class="card-main" id="front-text"></div>
+            <div class="card-hint">タップで答えを見る</div>
+          </div>
+          <div class="card-face card-back">
+            <div class="card-label" id="back-label"></div>
+            <div class="card-main" id="back-main"></div>
+            <div class="card-sub" id="back-sub"></div>
+          </div>
+        </div>
+      </div>
+      <div class="flash-btn-row">
+        <button class="flash-result-btn btn-ng" id="flash-ng" onclick="flashAnswer(false)" disabled>✗ もう一度</button>
+        <button class="flash-result-btn btn-ok" id="flash-ok" onclick="flashAnswer(true)" disabled>✓ 覚えた</button>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" onclick="goSetup()">← 設定に戻る</button>
+      </div>
+    </div>
+
+    <!-- CHOICE -->
+    <div id="choice-section" style="display:none">
+      <div class="question-box">
+        <div class="question-sub" id="q-sub"></div>
+        <div class="question-text" id="q-text"></div>
+      </div>
+      <div class="choices-grid" id="choices-grid"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="nav-row">
+        <button class="nav-btn" onclick="goSetup()">← 設定に戻る</button>
+        <button class="nav-btn primary" id="next-btn" onclick="nextQuestion()" style="display:none">次へ →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RESULT ===== -->
+  <div id="result-area" class="panel" style="display:none; text-align:center; padding:32px 20px;">
+    <div class="result-circle">
+      <div class="result-score" id="res-score"></div>
+      <div class="result-total" id="res-total"></div>
+    </div>
+    <div class="result-msg" id="res-msg"></div>
+    <div class="result-sub" id="res-sub"></div>
+    <button class="retry-btn" onclick="retryQuiz()">もう一度</button>
+    <button class="back-btn" onclick="goSetup()">設定に戻る</button>
+  </div>
+
+</div>
+
+<script>
+// =============================================
+// DATA
+// =============================================
+const DATA = [
+  // cat 0: 脳の部位・機能野
+  { cat:0, abbr:"M1",      en:"Primary Motor Cortex",              ja:"一次運動野" },
+  { cat:0, abbr:"S1",      en:"Primary Somatosensory Cortex",      ja:"一次体性感覚野" },
+  { cat:0, abbr:"V1",      en:"Primary Visual Cortex",             ja:"一次視覚野" },
+  { cat:0, abbr:"MA",      en:"Motor Association area",            ja:"運動連合野" },
+  { cat:0, abbr:"SA",      en:"Somatosensory Association area",    ja:"体性感覚連合野" },
+  { cat:0, abbr:"VA",      en:"Visual Association area",           ja:"視覚連合野" },
+  { cat:0, abbr:"AA",      en:"Auditory Association area",         ja:"聴覚連合野" },
+  { cat:0, abbr:"B",       en:"Broca's area",                      ja:"ブローカ野" },
+  { cat:0, abbr:"W",       en:"Wernicke's area",                   ja:"ウェルニッケ野" },
+  { cat:0, abbr:"FEF",     en:"Frontal Eye Field",                 ja:"前頭眼野" },
+  { cat:0, abbr:"pc",      en:"Prefrontal Cortex",                 ja:"前頭前野" },
+  { cat:0, abbr:"cg",      en:"Cingulate Gyrus",                   ja:"帯状皮質" },
+  { cat:0, abbr:"ag",      en:"Angular Gyrus",                     ja:"角回" },
+  { cat:0, abbr:"ipl",     en:"Inferior Parietal Lobule",          ja:"下頭頂小葉" },
+  { cat:0, abbr:"it",      en:"Inferior Temporal gyrus",           ja:"下側頭回" },
+  { cat:0, abbr:"mt",      en:"Middle Temporal gyrus",             ja:"中側頭回" },
+  { cat:0, abbr:"ph",      en:"Parahippocampal Gyrus",             ja:"海馬傍回" },
+  { cat:0, abbr:"rs",      en:"Retrosplenial Cortex",              ja:"脳梁膨大後皮質" },
+  { cat:0, abbr:"of",      en:"Orbitofrontal Cortex",              ja:"眼窩前頭皮質" },
+  { cat:0, abbr:"to",      en:"Temporal pole",                     ja:"側頭極皮質" },
+  { cat:0, abbr:"mpo",     en:"Medial Parieto-Occipital area",     ja:"頭頂後頭葉内側面" },
+  { cat:0, abbr:"spl",     en:"Superior Parietal Lobule",          ja:"上頭頂小葉" },
+
+  // cat 1: 高次脳機能障害
+  { cat:1, abbr:"USN",     en:"Unilateral Spatial Neglect",        ja:"半側空間無視" },
+  { cat:1, abbr:"MCI",     en:"Mild Cognitive Impairment",         ja:"軽度認知障害" },
+  { cat:1, abbr:"—",       en:"Aphasia",                           ja:"失語" },
+  { cat:1, abbr:"—",       en:"Apraxia",                           ja:"失行" },
+  { cat:1, abbr:"—",       en:"Agnosia",                           ja:"失認" },
+  { cat:1, abbr:"—",       en:"Prosopagnosia",                     ja:"相貌失認" },
+  { cat:1, abbr:"—",       en:"Alexia",                            ja:"失読" },
+  { cat:1, abbr:"—",       en:"Agraphia",                          ja:"失書" },
+  { cat:1, abbr:"—",       en:"Topographical Disorientation",      ja:"地誌的見当識障害" },
+  { cat:1, abbr:"—",       en:"Attention Disorder",                ja:"注意障害" },
+  { cat:1, abbr:"—",       en:"Memory Disorder",                   ja:"記憶障害" },
+  { cat:1, abbr:"—",       en:"Dysexecutive Syndrome",             ja:"遂行機能障害" },
+  { cat:1, abbr:"—",       en:"Social Behavior Disorder",          ja:"社会的行動障害" },
+  { cat:1, abbr:"—",       en:"Dementia",                          ja:"認知症" },
+
+  // cat 2: 検査名
+  { cat:2, abbr:"MMSE",    en:"Mini-Mental State Examination",                          ja:"認知症スクリーニング" },
+  { cat:2, abbr:"HDS-R",   en:"Hasegawa Dementia Scale-Revised",                        ja:"認知症スクリーニング（長谷川式）" },
+  { cat:2, abbr:"ADAS",    en:"Alzheimer's Disease Assessment Scale",                   ja:"アルツハイマー病評価" },
+  { cat:2, abbr:"MoCA",    en:"Montreal Cognitive Assessment",                          ja:"MCI検出" },
+  { cat:2, abbr:"FAB",     en:"Frontal Assessment Battery",                             ja:"前頭葉・遂行機能" },
+  { cat:2, abbr:"COGNISTAT",en:"Neurobehavioral Cognitive Status Examination",          ja:"多面的スクリーニング" },
+  { cat:2, abbr:"ACE-R",   en:"Addenbrooke's Cognitive Examination-Revised",            ja:"多面的スクリーニング" },
+  { cat:2, abbr:"CAT",     en:"Clinical Assessment for Attention",                      ja:"注意機能" },
+  { cat:2, abbr:"TMT-J",   en:"Trail Making Test Japan",                                ja:"注意・遂行機能" },
+  { cat:2, abbr:"WCST",    en:"Wisconsin Card Sorting Test",                            ja:"遂行機能" },
+  { cat:2, abbr:"Stroop",  en:"Stroop Color Word Test",                                 ja:"注意制御・遂行機能" },
+  { cat:2, abbr:"BADS",    en:"Behavioural Assessment of the Dysexecutive Syndrome",    ja:"遂行機能（日常場面）" },
+  { cat:2, abbr:"BIT",     en:"Behavioural Inattention Test",                           ja:"半側空間無視" },
+  { cat:2, abbr:"VPTA",    en:"Visual Perception Test for Agnosia",                     ja:"視覚失認・高次視知覚" },
+  { cat:2, abbr:"VPTA-FFT",en:"Visual Perception Test for Agnosia - Famous Face Test",  ja:"相貌失認（熟知相貌）" },
+  { cat:2, abbr:"SPTA",    en:"Standard Performance Test for Apraxia",                  ja:"失行" },
+  { cat:2, abbr:"SLTA",    en:"Standard Language Test of Aphasia",                      ja:"失語症（標準）" },
+  { cat:2, abbr:"WAB",     en:"Western Aphasia Battery",                                ja:"失語症・タイプ分類" },
+  { cat:2, abbr:"WMS-R",   en:"Wechsler Memory Scale-Revised",                          ja:"記憶機能" },
+  { cat:2, abbr:"RBMT",    en:"Rivermead Behavioural Memory Test",                      ja:"日常記憶" },
+  { cat:2, abbr:"ROCFT",   en:"Rey-Osterrieth Complex Figure Test",                     ja:"視覚性記憶・構成" },
+  { cat:2, abbr:"BVRT",    en:"Benton Visual Retention Test",                           ja:"知能・視覚性記憶" },
+  { cat:2, abbr:"三宅式",  en:"—",                                                      ja:"言語性記憶（対語）" },
+  { cat:2, abbr:"WAIS",    en:"Wechsler Adult Intelligence Scale",                      ja:"知能（成人）" },
+  { cat:2, abbr:"RCPM",    en:"Raven's Coloured Progressive Matrices",                  ja:"非言語性知能" },
+  { cat:2, abbr:"Kohs",    en:"Kohs Block Design Test",                                 ja:"非言語性知能・構成" },
+
+  // cat 3: 統計・尺度
+  { cat:3, abbr:"—",  en:"Nominal scale / Categorical scale",  ja:"名義尺度" },
+  { cat:3, abbr:"—",  en:"Ordinal scale / Ranking scale",      ja:"順序尺度" },
+  { cat:3, abbr:"—",  en:"Interval scale",                     ja:"間隔尺度" },
+  { cat:3, abbr:"—",  en:"Ratio scale",                        ja:"比例尺度" },
+  { cat:3, abbr:"—",  en:"Sensitivity",                        ja:"感度" },
+  { cat:3, abbr:"—",  en:"Specificity",                        ja:"特異度" },
+  { cat:3, abbr:"—",  en:"Cut-off score",                      ja:"カットオフ得点" },
+  { cat:3, abbr:"SD", en:"Standard deviation",                 ja:"標準偏差" },
+  { cat:3, abbr:"—",  en:"Normal distribution",                ja:"正規分布" },
+  { cat:3, abbr:"—",  en:"Percentile",                         ja:"パーセンタイル" },
+  { cat:3, abbr:"—",  en:"Z score",                            ja:"Z得点" },
+  { cat:3, abbr:"—",  en:"T score",                            ja:"T得点" },
+
+  // cat 4: 評価・リハビリ
+  { cat:4, abbr:"ICF",   en:"International Classification of Functioning, Disability and Health", ja:"国際生活機能分類" },
+  { cat:4, abbr:"DSM-5", en:"Diagnostic and Statistical Manual of Mental Disorders 5th ed.",       ja:"精神疾患の診断統計マニュアル第5版" },
+  { cat:4, abbr:"ADL",   en:"Activities of Daily Living",                                          ja:"日常生活動作" },
+  { cat:4, abbr:"ST",    en:"Speech-Language-Hearing Therapist",                                   ja:"言語聴覚士" },
+  { cat:4, abbr:"—",     en:"screening",                                                           ja:"スクリーニング（ふるい分け検査）" },
+  { cat:4, abbr:"—",     en:"assessment",                                                          ja:"アセスメント・評価" },
+];
+
+// =============================================
+// STATE
+// =============================================
+let selectedCat = "all";
+let direction   = "both";
+let mode        = "flash";
+let questions   = [];
+let qIndex      = 0;
+let correct     = 0;
+let flipped     = false;
+let flashAnswered = false;
+
+// =============================================
+// INIT
+// =============================================
+window.onload = () => {
+  const cats = [0,1,2,3,4];
+  document.getElementById('cnt-all').textContent = `（${DATA.length}語）`;
+  cats.forEach(c => {
+    const n = DATA.filter(d => d.cat === c).length;
+    document.getElementById(`cnt-${c}`).textContent = `（${n}語）`;
+  });
+};
+
+// =============================================
+// SETUP CONTROLS
+// =============================================
+function toggleCat(btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedCat = btn.dataset.cat;
+}
+function setDir(btn) {
+  document.querySelectorAll('[data-dir]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  direction = btn.dataset.dir;
+}
+function setMode(btn) {
+  document.querySelectorAll('[data-mode]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  mode = btn.dataset.mode;
+}
+
+// =============================================
+// BUILD QUESTIONS
+// =============================================
+function buildQuestions() {
+  const pool = selectedCat === "all" ? [...DATA] : DATA.filter(d => String(d.cat) === selectedCat);
+  const qs = [];
+  pool.forEach(item => {
+    // toJa: show en/abbr → answer ja
+    // toEn: show ja → answer en/abbr
+    const dirs = direction === "both"
+      ? (item.abbr && item.abbr !== "—" ? ["toJa","toEn"] : ["toJa"])
+      : [direction];
+    dirs.forEach(dir => qs.push({ item, dir }));
+  });
+  // shuffle
+  for (let i = qs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [qs[i], qs[j]] = [qs[j], qs[i]];
+  }
+  return qs;
+}
+
+// 略語（フルスペル）形式で表示するヘルパー
+// abbr が "—" や空なら en だけ、そうでなければ「abbr（en）」形式
+function abbrLabel(item) {
+  if (!item.abbr || item.abbr === "—" || item.en === "—") return item.en;
+  return `${item.abbr}（${item.en}）`;
+}
+
+function getChoices(current, pool) {
+  // 4 choices total: 1 correct + 3 wrong
+  const isToJa = current.dir === "toJa";
+  const getAnswer = (item) => isToJa ? item.ja : abbrLabel(item);
+  const correctAns = getAnswer(current.item);
+  const others = pool
+    .filter(p => getAnswer(p) !== correctAns)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 3)
+    .map(p => getAnswer(p));
+  const choices = [correctAns, ...others].sort(() => Math.random() - 0.5);
+  return { choices, correct: correctAns };
+}
+
+// =============================================
+// START
+// =============================================
+function startQuiz() {
+  questions = buildQuestions();
+  qIndex = 0; correct = 0;
+  document.getElementById('setup-area').style.display = 'none';
+  document.getElementById('result-area').style.display = 'none';
+  document.getElementById('quiz-area').style.display = 'block';
+
+  document.getElementById('flash-section').style.display  = mode === 'flash'  ? 'block' : 'none';
+  document.getElementById('choice-section').style.display = mode === 'choice' ? 'block' : 'none';
+
+  showQuestion();
+}
+
+// =============================================
+// SHOW QUESTION
+// =============================================
+function showQuestion() {
+  if (qIndex >= questions.length) { showResult(); return; }
+  const q = questions[qIndex];
+  const isToJa = q.dir === "toJa";
+
+  updateProgress();
+
+  const dirLabel = isToJa ? "英語・略語 → 日本語" : "日本語 → 英語・略語";
+  document.getElementById('dir-badge').textContent = dirLabel;
+
+  if (mode === 'flash') showFlash(q, isToJa);
+  else                  showChoice(q, isToJa);
+}
+
+function updateProgress() {
+  const pct = Math.round((qIndex / questions.length) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${qIndex + 1} / ${questions.length}`;
+}
+
+// ---- FLASH ----
+function showFlash(q, isToJa) {
+  flipped = false; flashAnswered = false;
+  const card = document.getElementById('flashcard');
+  card.classList.remove('flipped');
+
+  const frontLabel = isToJa ? "英語・略語" : "日本語";
+  const frontText  = isToJa
+    ? abbrLabel(q.item)
+    : q.item.ja;
+
+  document.getElementById('front-label').textContent = frontLabel;
+  document.getElementById('front-text').textContent  = frontText;
+  document.getElementById('front-text').className = 'card-main' + (isToJa ? '' : ' ja');
+
+  const backLabel  = isToJa ? "日本語" : "英語・略語";
+  const backMain   = isToJa ? q.item.ja : abbrLabel(q.item);
+  const backSub    = isToJa
+    ? (q.item.abbr && q.item.abbr !== "—" ? `略語: ${q.item.abbr}（${q.item.en}）` : "")
+    : "";
+
+  document.getElementById('back-label').textContent = backLabel;
+  document.getElementById('back-main').textContent  = backMain;
+  document.getElementById('back-sub').textContent   = backSub;
+
+  document.getElementById('flash-ok').disabled = true;
+  document.getElementById('flash-ng').disabled = true;
+}
+
+function flipCard() {
+  if (flashAnswered) return;
+  flipped = !flipped;
+  document.getElementById('flashcard').classList.toggle('flipped', flipped);
+  if (flipped) {
+    document.getElementById('flash-ok').disabled = false;
+    document.getElementById('flash-ng').disabled = false;
+  }
+}
+
+function flashAnswer(ok) {
+  flashAnswered = true;
+  if (ok) correct++;
+  document.getElementById('flash-ok').disabled = true;
+  document.getElementById('flash-ng').disabled = true;
+  qIndex++;
+  setTimeout(showQuestion, 300);
+}
+
+// ---- CHOICE ----
+function showChoice(q, isToJa) {
+  const pool = selectedCat === "all" ? DATA : DATA.filter(d => String(d.cat) === selectedCat);
+  const { choices, correct: correctAns } = getChoices(q, pool);
+
+  const qSub  = isToJa ? "英語・略語を見て、日本語を選んでください" : "日本語を見て、英語・略語を選んでください";
+  const qText = isToJa
+    ? abbrLabel(q.item)
+    : q.item.ja;
+
+  document.getElementById('q-sub').textContent  = qSub;
+  document.getElementById('q-text').textContent = qText;
+
+  const grid = document.getElementById('choices-grid');
+  grid.innerHTML = '';
+  choices.forEach(ch => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = ch;
+    btn.onclick = () => answerChoice(btn, ch === correctAns, correctAns);
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function answerChoice(btn, isCorrect, correctAns) {
+  document.querySelectorAll('.choice-btn').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === correctAns) b.classList.add('correct');
+  });
+  if (!isCorrect) btn.classList.add('wrong');
+
+  const fb = document.getElementById('feedback');
+  if (isCorrect) {
+    correct++;
+    fb.className = 'feedback ok';
+    fb.textContent = '✓ 正解！';
+  } else {
+    fb.className = 'feedback ng';
+    fb.textContent = `✗ 正解：${correctAns}`;
+  }
+  fb.style.display = 'block';
+  document.getElementById('next-btn').style.display = 'block';
+  qIndex++;
+}
+
+function nextQuestion() { showQuestion(); }
+
+// =============================================
+// RESULT
+// =============================================
+function showResult() {
+  document.getElementById('quiz-area').style.display = 'none';
+  const ra = document.getElementById('result-area');
+  ra.style.display = 'block';
+
+  const total = questions.length;
+  const pct   = Math.round((correct / total) * 100);
+
+  document.getElementById('res-score').textContent = `${pct}%`;
+  document.getElementById('res-total').textContent = `${correct} / ${total}問正解`;
+
+  let msg, sub;
+  if (pct === 100) { msg = '完璧です！'; sub = '全問正解、素晴らしい！'; }
+  else if (pct >= 80) { msg = 'よくできました！'; sub = 'あと少しで完璧です。'; }
+  else if (pct >= 60) { msg = 'もう一息！'; sub = '間違えた問題を重点的に復習しましょう。'; }
+  else { msg = '復習しましょう！'; sub = '繰り返し練習が力になります。'; }
+
+  document.getElementById('res-msg').textContent = msg;
+  document.getElementById('res-sub').textContent = sub;
+}
+
+function retryQuiz() {
+  document.getElementById('result-area').style.display = 'none';
+  startQuiz();
+}
+
+function goSetup() {
+  document.getElementById('quiz-area').style.display   = 'none';
+  document.getElementById('result-area').style.display = 'none';
+  document.getElementById('setup-area').style.display  = 'block';
+}
+</script>
+</body>
+</html>
