@@ -3,904 +3,680 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>嚥下障害 第1回小テスト</title>
+<title>嚥下障害 表の穴埋め</title>
 <style>
-  :root {
-    --bg: #f0f4f8;
-    --surface: #ffffff;
-    --surface2: #e8eef5;
-    --primary: #2563a8;
-    --primary-light: #dbeafe;
-    --primary-dark: #1a4480;
-    --accent: #0e7490;
-    --accent-light: #cffafe;
-    --correct: #15803d;
-    --correct-bg: #dcfce7;
-    --wrong: #b91c1c;
-    --wrong-bg: #fee2e2;
-    --text: #1e293b;
-    --text-sub: #475569;
-    --text-muted: #94a3b8;
-    --border: #cbd5e1;
-    --tag-a: #7c3aed;
-    --tag-a-bg: #ede9fe;
-    --tag-b: #d97706;
-    --tag-b-bg: #fef3c7;
-    --star: #f59e0b;
+  :root{
+    --bg:#f0f4f8; --surface:#fff; --surface2:#e8eef5;
+    --primary:#2563a8; --primary-light:#dbeafe; --primary-dark:#1a4480;
+    --correct:#15803d; --correct-bg:#dcfce7; --wrong:#b91c1c; --wrong-bg:#fee2e2;
+    --text:#1e293b; --text-sub:#475569; --text-muted:#94a3b8; --border:#cbd5e1;
+    --pink:#f9a8c9; --pink-l:#fce7f3; --pink-d:#6b2144; --star:#f59e0b;
+    --blank:#fffbeb; --accent:#0e7490;
   }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:84px}
+  header{background:var(--primary);color:#fff;padding:14px 18px 10px;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  header h1{font-size:1rem;font-weight:700}
+  header p{font-size:.74rem;opacity:.85;margin-top:2px}
+  main{max-width:920px;margin:0 auto;padding:14px 10px}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* メニュー */
+  .sec-title{font-size:.78rem;font-weight:700;color:var(--text-sub);margin:6px 2px 8px}
+  .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .cat{background:var(--surface);border:2px solid var(--primary);border-radius:12px;padding:14px;text-align:left;cursor:pointer;font-family:inherit;transition:background .15s}
+  .cat:hover{background:var(--primary-light)}
+  .cat .n{display:block;font-size:1rem;font-weight:700;color:var(--primary-dark)}
+  .cat .c{display:block;font-size:.74rem;color:var(--text-muted);margin-top:4px}
+  .sub-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .sub{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:10px 6px;font-size:.82rem;font-weight:700;color:var(--text-sub);cursor:pointer;font-family:inherit}
+  .sub:hover{border-color:var(--primary);color:var(--primary)}
+  .howto{margin-top:18px;padding:10px 12px;background:var(--surface);border-radius:8px;border-left:3px solid var(--primary);font-size:.76rem;line-height:1.6;color:var(--text-sub)}
 
-  body {
-    font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+  /* 練習画面 */
+  .bar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .back{background:none;border:1.5px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.78rem;cursor:pointer;color:var(--text-sub);font-family:inherit}
+  .ttl{flex:1;font-weight:700;font-size:.9rem;color:var(--text-sub)}
+  .score{font-size:.9rem;font-weight:700;color:var(--primary);white-space:nowrap}
+  .seg{display:flex;margin-bottom:10px;border:1.5px solid var(--primary);border-radius:8px;overflow:hidden}
+  .seg button{flex:1;border:none;background:var(--surface);color:var(--primary);font-weight:700;font-size:.85rem;padding:9px 6px;cursor:pointer;font-family:inherit}
+  .seg button.on{background:var(--primary);color:#fff}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;align-items:center}
+  .chips .note{font-size:.76rem;color:var(--text-sub);font-weight:700}
+  .chip{border:1.5px solid var(--border);background:var(--surface);border-radius:16px;padding:5px 12px;font-size:.8rem;font-weight:700;color:var(--text-sub);cursor:pointer;font-family:inherit}
+  .chip.on{background:var(--primary);border-color:var(--primary);color:#fff}
+  .hint{font-size:.72rem;color:var(--text-muted);margin-bottom:12px;line-height:1.5}
+  .empty{padding:20px;text-align:center;color:var(--text-muted);font-size:.85rem}
 
-  /* ── ヘッダー ── */
-  header {
-    background: var(--primary);
-    color: #fff;
-    padding: 16px 20px 12px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,.15);
-  }
-  header h1 { font-size: 1rem; font-weight: 700; letter-spacing: .02em; }
-  header p  { font-size: .75rem; opacity: .8; margin-top: 2px; }
+  .tsec{margin-bottom:22px}
+  .tt{font-size:.82rem;font-weight:700;color:var(--text-sub);padding:6px 10px;background:var(--surface2);border-left:3px solid var(--primary);border-radius:6px;margin-bottom:8px}
+  .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+  table.tb{border-collapse:collapse;background:var(--surface);font-size:.8rem;min-width:640px;width:100%}
+  table.tb.narrow{min-width:420px}
+  table.tb td{border:1px solid var(--border);padding:6px 7px;vertical-align:middle;line-height:1.45}
+  td.th{background:var(--pink);color:#5b1a38;font-weight:700;text-align:center;font-size:.76rem}
+  td.k-cat,td.k-stage{background:var(--pink-l);color:var(--pink-d);font-weight:700;text-align:center}
+  td.k-name{background:#fffbf5;font-weight:600}
+  td.k-func,td.k-obs,td.k-bg{text-align:left}
+  td.void{background:var(--bg);border:none}
+  td.src{border:none;font-size:.72rem;color:var(--text-muted);background:transparent}
+  td.vh{writing-mode:vertical-rl;letter-spacing:.15em;text-align:center;background:var(--pink);color:#5b1a38;font-weight:700;padding:6px 4px}
+  .stm{color:var(--star);font-size:.75rem;margin-right:2px}
 
-  /* ── メイン ── */
-  main { max-width: 680px; margin: 0 auto; padding: 16px 12px 40px; }
+  /* 空欄セル（タップ） */
+  td.tc{position:relative;cursor:pointer;min-width:76px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;scroll-margin-top:130px}
+  td.tc.hid{background:var(--blank)}
+  td.tc.hid .av{visibility:hidden}
+  td.tc.hid::after{content:attr(data-ph);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:.66rem;color:var(--primary);background:var(--primary-light);padding:2px 8px;border-radius:10px;font-weight:700;white-space:nowrap;pointer-events:none}
+  td.tc.shown,td.tc.ok{background:var(--correct-bg)}
+  td.tc.shown .av,td.tc.ok .av{color:var(--correct);font-weight:700}
+  td.tc.ng{background:var(--wrong-bg)}
+  td.tc.ng .av{color:var(--wrong);font-weight:700}
+  td.tc .mk{font-size:.8rem;margin-left:4px}
+  td.tc.cur{outline:3px solid var(--primary);outline-offset:-3px}
 
-  /* ── カテゴリ選択画面 ── */
-  #screen-menu { display: block; }
-  #screen-quiz  { display: none; }
-  #screen-result{ display: none; }
+  /* 下部バー */
+  .act{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--border);padding:8px 10px;display:flex;gap:6px;z-index:60}
+  .act button{flex:1;border:none;border-radius:8px;padding:11px 4px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .a1{background:var(--primary);color:#fff}
+  .a2{background:var(--wrong-bg);color:var(--wrong)}
+  .a3{background:var(--surface2);color:var(--text-sub)}
 
-  .menu-section { margin-bottom: 20px; }
-  .menu-section-title {
-    font-size: .7rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    padding-left: 2px;
-  }
+  /* 選択肢シート */
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:80;display:none}
+  .sheet.open{display:block}
+  .sh-box{background:var(--surface);border-radius:16px 16px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,.2);padding:12px 14px 16px;max-height:66vh;overflow-y:auto;max-width:720px;margin:0 auto}
+  .sh-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .sh-prog{font-size:.74rem;color:var(--text-muted);font-weight:700}
+  .sh-x{border:none;background:var(--surface2);border-radius:50%;width:28px;height:28px;font-size:.9rem;cursor:pointer}
+  .sh-ctx{background:var(--bg);border-radius:8px;padding:8px 10px;font-size:.78rem;line-height:1.6;color:var(--text-sub);margin-bottom:8px}
+  .sh-ctx b{color:var(--text)}
+  .sh-q{font-size:.98rem;font-weight:700;margin-bottom:8px}
+  .opt{display:block;width:100%;text-align:left;border:1.5px solid var(--border);background:var(--surface2);border-radius:8px;padding:10px 12px;margin-bottom:6px;font-size:.9rem;font-family:inherit;color:var(--text);cursor:pointer;line-height:1.4}
+  .opt:hover:not(:disabled){border-color:var(--primary);background:var(--primary-light)}
+  .opt.right{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);font-weight:700}
+  .opt.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+  .sh-ex{margin-top:8px;padding:9px 11px;border-radius:8px;background:#e6f6fa;border-left:3px solid var(--accent);font-size:.78rem;line-height:1.65;color:var(--text);display:none}
+  .sh-ex .h{font-weight:700;color:var(--accent);margin-bottom:3px}
+  .sh-ex .nt{margin-top:4px;font-weight:700}
+  .sh-nav{display:none;margin-top:10px}
+  .sh-nav button{width:100%;border:none;border-radius:8px;padding:12px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;background:var(--primary);color:#fff}
+  .toast{position:fixed;left:50%;top:84px;transform:translateX(-50%);background:var(--text);color:#fff;padding:9px 16px;border-radius:20px;font-size:.82rem;font-weight:700;z-index:90;display:none;white-space:nowrap}
 
-  .category-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  .cat-btn {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
-    cursor: pointer;
-    text-align: left;
-    transition: border-color .15s, box-shadow .15s, transform .1s;
-  }
-  .cat-btn:hover {
-    border-color: var(--primary);
-    box-shadow: 0 2px 8px rgba(37,99,168,.12);
-    transform: translateY(-1px);
-  }
-  .cat-btn:active { transform: translateY(0); }
-
-  .cat-btn .pat-badge {
-    display: inline-block;
-    font-size: .65rem;
-    font-weight: 700;
-    padding: 1px 6px;
-    border-radius: 4px;
-    margin-bottom: 6px;
-  }
-  .badge-a { background: var(--tag-a-bg); color: var(--tag-a); }
-  .badge-b { background: var(--tag-b-bg); color: var(--tag-b); }
-
-  .cat-btn .cat-name {
-    font-size: .88rem;
-    font-weight: 700;
-    color: var(--text);
-    display: block;
-    line-height: 1.3;
-  }
-  .cat-btn .cat-count {
-    font-size: .72rem;
-    color: var(--text-muted);
-    margin-top: 3px;
-  }
-
-  .all-btn {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 14px 18px;
-    cursor: pointer;
-    font-size: .95rem;
-    font-weight: 700;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: background .15s, transform .1s;
-  }
-  .all-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
-  .all-btn:active { transform: translateY(0); }
-  .all-btn .all-sub { font-size: .75rem; font-weight: 400; opacity: .85; }
-
-  /* ── クイズ画面 ── */
-  .quiz-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-  .back-btn {
-    background: none;
-    border: 1.5px solid var(--border);
-    border-radius: 6px;
-    padding: 4px 10px;
-    font-size: .78rem;
-    cursor: pointer;
-    color: var(--text-sub);
-    transition: border-color .15s;
-  }
-  .back-btn:hover { border-color: var(--primary); color: var(--primary); }
-
-  .quiz-title {
-    font-size: .85rem;
-    font-weight: 700;
-    color: var(--text-sub);
-    flex: 1;
-  }
-  .quiz-counter {
-    font-size: .8rem;
-    color: var(--text-muted);
-    white-space: nowrap;
-  }
-
-  /* 進捗バー */
-  .progress-bar {
-    height: 5px;
-    background: var(--border);
-    border-radius: 3px;
-    margin-bottom: 18px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: var(--primary);
-    border-radius: 3px;
-    transition: width .3s;
-  }
-
-  /* 問題カード */
-  .q-card {
-    background: var(--surface);
-    border-radius: 14px;
-    padding: 20px 18px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.06);
-    margin-bottom: 14px;
-  }
-
-  .q-meta {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-  .q-pat { font-size: .65rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
-  .q-cat { font-size: .72rem; color: var(--text-muted); }
-
-  .q-text {
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.6;
-    margin-bottom: 4px;
-  }
-
-  /* テキストエリア */
-  .ans-area {
-    width: 100%;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 12px;
-    font-size: .92rem;
-    font-family: inherit;
-    resize: vertical;
-    min-height: 70px;
-    color: var(--text);
-    transition: border-color .15s;
-    margin-top: 14px;
-  }
-  .ans-area:focus { outline: none; border-color: var(--primary); }
-  .ans-area:disabled { background: var(--bg); }
-
-  /* 答え合わせ */
-  .reveal-btn {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 12px;
-    width: 100%;
-    font-size: .92rem;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background .15s;
-  }
-  .reveal-btn:hover { background: var(--primary-dark); }
-
-  .answer-block {
-    display: none;
-    margin-top: 14px;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .answer-block.show { display: block; }
-
-  .answer-row {
-    padding: 12px 14px;
-    background: var(--correct-bg);
-    border-left: 3px solid var(--correct);
-  }
-  .answer-label { font-size: .68rem; font-weight: 700; color: var(--correct); margin-bottom: 3px; }
-  .answer-text  { font-size: .92rem; font-weight: 700; color: var(--text); line-height: 1.5; }
-
-  .explain-row {
-    padding: 10px 14px;
-    background: var(--accent-light);
-    border-left: 3px solid var(--accent);
-  }
-  .explain-label { font-size: .68rem; font-weight: 700; color: var(--accent); margin-bottom: 3px; }
-  .explain-text  { font-size: .85rem; color: var(--text); line-height: 1.5; }
-
-  /* 自己採点ボタン */
-  .judge-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
-  .judge-btn {
-    flex: 1;
-    border: none;
-    border-radius: 8px;
-    padding: 11px;
-    font-size: .88rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: opacity .15s, transform .1s;
-  }
-  .judge-btn:active { transform: scale(.97); }
-  .btn-ok  { background: var(--correct-bg); color: var(--correct); }
-  .btn-ng  { background: var(--wrong-bg);   color: var(--wrong); }
-  .judge-btn.selected { opacity: 1; box-shadow: 0 0 0 2px currentColor; }
-  .judge-btn:not(.selected) { opacity: .7; }
-
-  /* ナビ */
-  .nav-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-  }
-  .nav-btn {
-    flex: 1;
-    background: var(--surface2);
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    padding: 10px;
-    font-size: .88rem;
-    font-weight: 600;
-    cursor: pointer;
-    color: var(--text-sub);
-    transition: border-color .15s, background .15s;
-  }
-  .nav-btn:hover { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
-  .nav-btn.primary-nav {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: #fff;
-  }
-  .nav-btn.primary-nav:hover { background: var(--primary-dark); }
-
-  /* ── 結果画面 ── */
-  .result-card {
-    background: var(--surface);
-    border-radius: 14px;
-    padding: 24px 20px;
-    text-align: center;
-    box-shadow: 0 1px 4px rgba(0,0,0,.07);
-    margin-bottom: 16px;
-  }
-  .result-score {
-    font-size: 3.2rem;
-    font-weight: 800;
-    color: var(--primary);
-    line-height: 1;
-  }
-  .result-total {
-    font-size: .95rem;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
-  .result-pct {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-sub);
-    margin-top: 8px;
-  }
-
-  .result-list { margin-bottom: 16px; }
-  .result-item {
-    background: var(--surface);
-    border-radius: 10px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-    border-left: 4px solid var(--border);
-    box-shadow: 0 1px 3px rgba(0,0,0,.05);
-  }
-  .result-item.ok { border-left-color: var(--correct); }
-  .result-item.ng { border-left-color: var(--wrong); }
-  .result-item .ri-q { font-size: .82rem; color: var(--text-sub); margin-bottom: 4px; }
-  .result-item .ri-a { font-size: .85rem; font-weight: 700; color: var(--text); }
-  .result-item .ri-badge {
-    display: inline-block;
-    font-size: .65rem;
-    padding: 1px 6px;
-    border-radius: 4px;
-    margin-right: 4px;
-    font-weight: 700;
-  }
-  .ri-ok  { background: var(--correct-bg); color: var(--correct); }
-  .ri-ng  { background: var(--wrong-bg);   color: var(--wrong); }
-
-  .result-actions { display: flex; flex-direction: column; gap: 8px; }
-  .ract-btn {
-    border: none;
-    border-radius: 8px;
-    padding: 13px;
-    font-size: .95rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: opacity .15s;
-  }
-  .ract-btn:hover { opacity: .88; }
-  .ract-primary { background: var(--primary); color: #fff; }
-  .ract-secondary { background: var(--surface2); color: var(--text-sub); border: 1.5px solid var(--border); }
-
-  /* ★マーク */
-  .star-mark { color: var(--star); margin-right: 2px; }
-
-  /* スクロール抑制対策 */
-  @media (max-width: 480px) {
-    .category-grid { grid-template-columns: 1fr; }
-    main { padding: 12px 10px 40px; }
-    .q-text { font-size: .95rem; }
-  }
+  @media(max-width:480px){ .cat-grid{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
-
 <header>
-  <h1>嚥下障害 第1回小テスト</h1>
-  <p>表1 嚥下モデル ／ 表2 咀嚼筋　A・Bパターン</p>
+  <h1>嚥下障害　表の穴埋め</h1>
+  <p>ミニテスト範囲：表1 嚥下モデル／表2 咀嚼筋／表3 嚥下に関わる筋／表8 摂食場面の観察</p>
 </header>
-
 <main>
-
-<!-- ============ メニュー画面 ============ -->
-<div id="screen-menu">
-
-  <div class="menu-section" style="margin-top:8px;">
-    <div class="menu-section-title">カテゴリ選択</div>
-    <div class="category-grid">
-
-      <button class="cat-btn" onclick="startQuiz('A-model')">
-        <span class="pat-badge badge-a">A パターン</span>
-        <span class="cat-name">表1 嚥下モデル</span>
-        <div class="cat-count">名称 → 内容　14問</div>
-      </button>
-
-      <button class="cat-btn" onclick="startQuiz('A-muscle')">
-        <span class="pat-badge badge-a">A パターン</span>
-        <span class="cat-name">表2 咀嚼筋</span>
-        <div class="cat-count">筋名 → 機能・支配神経　12問</div>
-      </button>
-
-      <button class="cat-btn" onclick="startQuiz('B-model')">
-        <span class="pat-badge badge-b">B パターン</span>
-        <span class="cat-name">表1 嚥下モデル</span>
-        <div class="cat-count">内容 → モデル名・段階名　10問</div>
-      </button>
-
-      <button class="cat-btn" onclick="startQuiz('B-muscle')">
-        <span class="pat-badge badge-b">B パターン</span>
-        <span class="cat-name">表2 咀嚼筋</span>
-        <div class="cat-count">機能・神経 → 筋名　10問</div>
-      </button>
-
+  <div id="menu"></div>
+  <div id="prac" style="display:none">
+    <div class="bar">
+      <button class="back" onclick="goMenu()">← 戻る</button>
+      <div class="ttl" id="ttl"></div>
+      <div class="score" id="score"></div>
     </div>
-  </div>
-
-  <div class="menu-section">
-    <button class="all-btn" onclick="startQuiz('all')">
-      全問まとめて練習
-      <span class="all-sub">A+B 全 46問</span>
-    </button>
-  </div>
-
-  <div class="menu-section">
-    <button class="all-btn" style="background:var(--accent);" onclick="startQuiz('random')">
-      ランダム 20問
-      <span class="all-sub">全カテゴリからシャッフル</span>
-    </button>
-  </div>
-
-</div>
-
-<!-- ============ クイズ画面 ============ -->
-<div id="screen-quiz">
-  <div class="quiz-header">
-    <button class="back-btn" onclick="goMenu()">← 戻る</button>
-    <div class="quiz-title" id="quiz-title"></div>
-    <div class="quiz-counter" id="quiz-counter"></div>
-  </div>
-
-  <div class="progress-bar">
-    <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-  </div>
-
-  <div class="q-card">
-    <div class="q-meta">
-      <span class="q-pat" id="q-pat-badge"></span>
-      <span class="q-cat" id="q-cat-text"></span>
+    <div class="seg" id="seg">
+      <button id="seg-tap" onclick="setMode('tap')">👆 タップで答えを見る</button>
+      <button id="seg-choice" onclick="setMode('choice')">🔘 選択肢（5択）</button>
     </div>
-    <div class="q-text" id="q-text"></div>
-    <textarea class="ans-area" id="ans-input" placeholder="ここに答えを入力…（スキップも可）" rows="3"></textarea>
-    <button class="reveal-btn" id="reveal-btn" onclick="revealAnswer()">答えを見る</button>
-
-    <div class="answer-block" id="answer-block">
-      <div class="answer-row">
-        <div class="answer-label">正解</div>
-        <div class="answer-text" id="correct-text"></div>
-      </div>
-      <div class="explain-row">
-        <div class="explain-label">解説・ポイント</div>
-        <div class="explain-text" id="explain-text"></div>
-      </div>
-    </div>
-
-    <div class="judge-row" id="judge-row" style="display:none;">
-      <button class="judge-btn btn-ok" id="btn-ok" onclick="judge(true)">⭕ 正解</button>
-      <button class="judge-btn btn-ng" id="btn-ng" onclick="judge(false)">❌ 不正解</button>
-    </div>
+    <div class="chips" id="chips"></div>
+    <div class="hint" id="hint"></div>
+    <div id="tables"></div>
   </div>
-
-  <div class="nav-row">
-    <button class="nav-btn" id="btn-prev" onclick="movePrev()">← 前へ</button>
-    <button class="nav-btn primary-nav" id="btn-next" onclick="moveNext()">次へ →</button>
-  </div>
-</div>
-
-<!-- ============ 結果画面 ============ -->
-<div id="screen-result">
-  <div class="result-card">
-    <div class="result-score" id="res-score">0</div>
-    <div class="result-total" id="res-total">/ 0問</div>
-    <div class="result-pct" id="res-pct"></div>
-  </div>
-
-  <div class="result-list" id="result-list"></div>
-
-  <div class="result-actions">
-    <button class="ract-btn ract-primary" onclick="retryWrong()" id="btn-retry-wrong">❌ 不正解のみ再チャレンジ</button>
-    <button class="ract-btn ract-secondary" onclick="retryAll()">🔄 同じセットをもう一度</button>
-    <button class="ract-btn ract-secondary" onclick="goMenu()">📋 カテゴリ選択へ戻る</button>
-  </div>
-</div>
-
 </main>
+<div class="act" id="act" style="display:none"></div>
+
+<div class="sheet" id="sheet">
+  <div class="sh-box">
+    <div class="sh-head"><span class="sh-prog" id="sh-prog"></span><button class="sh-x" onclick="closeQ()">✕</button></div>
+    <div class="sh-ctx" id="sh-ctx"></div>
+    <div class="sh-q" id="sh-q"></div>
+    <div id="sh-opts"></div>
+    <div class="sh-ex" id="sh-ex"></div>
+    <div class="sh-nav" id="sh-nav"><button onclick="nextQ()">次の問題へ →</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
 
 <script>
 // ===========================
-// データ定義
+// セル定義
+//  S=固定 / N=名称 / C=分類 / V=神経 / F=機能・内容 / ST=期 / OB=観察ポイント / BG=背景要因
+//  オプション: rs,cs=結合 / star=頻出 / s=選択肢用の短縮表記(30字以内) / ex=選択肢に出さない語 / nc=選択肢不可 / note=解説
 // ===========================
-const DATA = [
-  // ─── A パターン ─── 表1 嚥下モデル
-  {pat:'A',cat:'表1 嚥下モデル',key:'A-model',
-   q:'5期モデルの第1段階の名称を答えよ',
-   a:'先行期（認知期）',
-   ex:'食物を認識する段階。認知期・捕食期に細分も可。'},
-  {pat:'A',cat:'表1 嚥下モデル',key:'A-model',
-   q:'先行期をさらに細かく分けた2段階を答えよ',
-   a:'認知期・捕食期',
-   ex:'認知期＝食物を認識、捕食期＝食物を口へ運ぶ。'},
-  {pat:'A',cat:'表1 嚥下モデル',key:'A-model',
-   q:'5期モデルの「準備期」の別名を答えよ',
-   a:'口腔準備期',
-   ex:'口腔に取り込んだものをひとまとまりの食塊にして保持する段階。'},
-  {pat:'A',cat:'表1 嚥下モデル',key:'A-model',
-   q:'5期モデルの口腔期の内容を答えよ',
-   a:'舌運動によって食塊を咽頭へ送る段階',
-   ex:'舌下神経（XII）支配の舌運動が主役。'},
-  {pat:'A',cat:'表1 嚥下モデル',key:'A-model',
-   q:'5期モデルの咽頭期の内容を答えよ',
-   a:'咽喉頭の複数の運動によって食塊を食道へ送る段階',
-   ex:'嚥下反射が起動。複数の防御機構が同時作動。'},
-  {pat:'A',cat:'表1 嚥下モデル',key:'A-model',
-   q:'5期モデルの食道期の内容を答えよ',
-   a:'蠕動運動によって食塊を胃へ送る段階',
-   ex:'食道蠕動運動＋重力・腹腔内圧も関与。'},
-  {pat:'A',cat:'表1 嚥下モデル',key:'A-model',
-   q:'3期モデルの3つの段階を順番に答えよ',
-   a:'口腔期 → 咽頭期 → 食道期',
-   ex:'液体嚥下の生理モデル。先行期・準備期を含まない。'},
-  {pat:'A',cat:'表1 嚥下モデル',key:'A-model',
-   q:'4期モデルの4つの段階を順番に答えよ',
-   a:'準備期（口腔準備期）→ 口腔期 → 咽頭期 → 食道期',
-   ex:'液体嚥下の生理モデル。先行期を含まない。'},
-  {pat:'A',cat:'表1 嚥下モデル',key:'A-model',
-   q:'プロセスモデルの「processing」の内容を答えよ',
-   a:'食物の粉砕と唾液との混和（咀嚼）',
-   ex:'フードプロセッサーのイメージ。'},
-  {pat:'A',cat:'表1 嚥下モデル',key:'A-model',
-   q:'プロセスモデルの「stage I transport（第一期輸送）」の内容を答えよ',
-   a:'口腔に取り込んだ食物を舌で臼歯部へ移動させる段階',
-   ex:'咀嚼前の最初の移動。'},
-  {pat:'A',cat:'表1 嚥下モデル',key:'A-model',
-   q:'プロセスモデルの「stage II transport（第二期輸送）」の内容を答えよ',
-   a:'咀嚼と同時進行で、咀嚼済みの食塊を咽頭口部へ送り込む段階',
-   ex:'5期モデルの準備期と口腔期が同時進行するのがポイント。'},
-  {pat:'A',cat:'表1 嚥下モデル',key:'A-model',
-   q:'プロセスモデルは主にどのような食物の嚥下を説明するか',
-   a:'固形物（咀嚼を伴う食物）の嚥下',
-   ex:'液体・ペーストは3期・4期・5期モデルで説明。'},
-  {pat:'A',cat:'表1 嚥下モデル',key:'A-model',
-   q:'5期モデルとプロセスモデルの最大の違いを答えよ',
-   a:'5期モデルは段階を順序通りに区切る。プロセスモデルは咀嚼（processing）と咽頭への送り込み（stage II transport）が同時進行する',
-   ex:'実際の固形食摂取では準備期と口腔期は完全に分離しない。'},
+const S=(t,o)=>Object.assign({t:t},o||{});
+const mk=k=>(a,o)=>Object.assign({k:k,a:a},o||{});
+const N=mk('name'),C=mk('cat'),V=mk('nerve'),F=mk('func'),ST=mk('stage'),OB=mk('obs'),BG=mk('bg');
 
-  // ─── A パターン ─── 表2 咀嚼筋
-  {pat:'A',cat:'表2 咀嚼筋',key:'A-muscle',
-   q:'咬筋の機能と支配神経を答えよ',
-   a:'機能：下顎の挙上（閉口）　支配：三叉神経（V）',
-   ex:'咀嚼筋の代表。'},
-  {pat:'A',cat:'表2 咀嚼筋',key:'A-muscle',
-   q:'側頭筋の機能と支配神経を答えよ',
-   a:'機能：下顎の挙上（閉口）　支配：三叉神経（V）',
-   ex:'顔の側面にある大きな筋。'},
-  {pat:'A',cat:'表2 咀嚼筋',key:'A-muscle',
-   q:'内側翼突筋の機能と支配神経を答えよ',
-   a:'機能：下顎の挙上（閉口）　支配：三叉神経（V）',
-   ex:'咀嚼筋の1つ。'},
-  {pat:'A',cat:'表2 咀嚼筋',key:'A-muscle',
-   q:'外側翼突筋（上頭）の機能を答えよ',
-   a:'下顎の挙上（閉口筋として関与）',
-   ex:'三叉神経（V）支配。'},
-  {pat:'A',cat:'表2 咀嚼筋',key:'A-muscle',
-   q:'外側翼突筋（下頭）の機能と支配神経を答えよ',
-   a:'機能：下顎の前方運動（唯一の開口筋）・下顎の側方運動　支配：三叉神経（V）',
-   ex:'★唯一の開口筋。国試最頻出。',star:true},
-  {pat:'A',cat:'表2 咀嚼筋',key:'A-muscle',
-   q:'顎舌骨筋の機能と支配神経を答えよ',
-   a:'機能：下顎の下制（舌骨固定時）　支配：三叉神経（V）',
-   ex:'舌骨上筋・開口筋に分類。'},
-  {pat:'A',cat:'表2 咀嚼筋',key:'A-muscle',
-   q:'顎二腹筋（前腹）の機能と支配神経を答えよ',
-   a:'機能：下顎の下制（舌骨固定時）　支配：三叉神経（V）',
-   ex:'後腹は顔面神経（VII）支配。前後で違う。',star:true},
-  {pat:'A',cat:'表2 咀嚼筋',key:'A-muscle',
-   q:'オトガイ舌骨筋の機能と支配神経を答えよ',
-   a:'機能：嚥下時・下顎固定時に舌骨を挙上、特に前方へ移動　支配：舌下神経（XII）',
-   ex:'嚥下との関連が重要。★国試頻出',star:true},
-  {pat:'A',cat:'表2 咀嚼筋',key:'A-muscle',
-   q:'口輪筋の機能と支配神経を答えよ',
-   a:'機能：咀嚼中の食物口腔内保持（口唇閉鎖）　支配：顔面神経（VII）',
-   ex:'口唇閉鎖の主役。'},
-  {pat:'A',cat:'表2 咀嚼筋',key:'A-muscle',
-   q:'頬筋の機能と支配神経を答えよ',
-   a:'機能：咀嚼中の食物口腔内保持　支配：顔面神経（VII）',
-   ex:'食物が頬と歯の間に落ちないよう保持。'},
-  {pat:'A',cat:'表2 咀嚼筋',key:'A-muscle',
-   q:'舌筋（舌の筋）の機能と支配神経を答えよ',
-   a:'機能：咀嚼中の食物口腔内保持　支配：舌下神経（XII）',
-   ex:'舌の筋全般が舌下神経支配（口蓋舌筋除く）。'},
-  {pat:'A',cat:'表2 咀嚼筋',key:'A-muscle',
-   q:'口蓋の筋の機能と支配神経を答えよ',
-   a:'機能：咀嚼中の食物口腔内保持と気道確保　支配：咽頭神経叢（IX・X）',
-   ex:'舌咽神経（IX）と迷走神経（X）が関与。'},
+const HEAD2=[S('分類',{cs:3,cls:'th'}),S('筋の名称',{cls:'th'}),S('機能',{cls:'th',cs:2}),S('神経支配',{cls:'th'})];
+const HEAD3=[S('分類',{cs:3,cls:'th'}),S('筋の名称',{cls:'th'}),S('機能',{cls:'th'}),S('神経支配',{cls:'th'})];
+const NOVAG=['迷走神経（Ⅹ）'];
 
-  // ─── B パターン ─── 表1 嚥下モデル
-  {pat:'B',cat:'表1 嚥下モデル',key:'B-model',
-   q:'「食物を認識する段階」は5期モデルの何期か',
-   a:'先行期（認知期）',
-   ex:'認知期と呼ぶこともある。'},
-  {pat:'B',cat:'表1 嚥下モデル',key:'B-model',
-   q:'「食物を口へ運ぶ段階」は先行期の細分類で何期か',
-   a:'捕食期',
-   ex:'食器具で口まで運ぶ段階。'},
-  {pat:'B',cat:'表1 嚥下モデル',key:'B-model',
-   q:'「口腔に取り込んだものをひとまとまりの食塊にして保持する段階」は何期か',
-   a:'準備期（口腔準備期）',
-   ex:'4期・5期モデル共通。'},
-  {pat:'B',cat:'表1 嚥下モデル',key:'B-model',
-   q:'「舌運動によって食塊を咽頭へ送る段階」は何期か',
-   a:'口腔期',
-   ex:'舌下神経（XII）支配の舌が主役。'},
-  {pat:'B',cat:'表1 嚥下モデル',key:'B-model',
-   q:'「咽喉頭の複数の運動によって食塊を食道へ送る段階」は何期か',
-   a:'咽頭期',
-   ex:'嚥下反射が起動する段階。'},
-  {pat:'B',cat:'表1 嚥下モデル',key:'B-model',
-   q:'「蠕動運動によって食塊を胃へ送る段階」は何期か',
-   a:'食道期',
-   ex:'食道蠕動運動が主体。'},
-  {pat:'B',cat:'表1 嚥下モデル',key:'B-model',
-   q:'口腔期と準備期が同時進行するモデルの名称を答えよ',
-   a:'プロセスモデル',
-   ex:'固形物の咀嚼嚥下を説明。'},
-  {pat:'B',cat:'表1 嚥下モデル',key:'B-model',
-   q:'「嚥下に適した状態になった食塊を部分的に咽頭に送り込む段階」はプロセスモデルの何か',
-   a:'stage II transport（第二期輸送）',
-   ex:'咀嚼と同時に少しずつ咽頭に送り込まれる。'},
-  {pat:'B',cat:'表1 嚥下モデル',key:'B-model',
-   q:'臨床でよく使われる摂食嚥下モデルを答えよ',
-   a:'5期モデル（臨床モデル）',
-   ex:'先行期〜食道期の5段階。'},
-  {pat:'B',cat:'表1 嚥下モデル',key:'B-model',
-   q:'液体やペーストの一口嚥下を説明する生理モデルを2つ答えよ',
-   a:'3期モデル・4期モデル',
-   ex:'どちらも先行期を含まない生理モデル。'},
+const TABLES={
 
-  // ─── B パターン ─── 表2 咀嚼筋
-  {pat:'B',cat:'表2 咀嚼筋',key:'B-muscle',
-   q:'「下顎を挙上する（閉口する）」咀嚼筋を3つ答えよ',
-   a:'咬筋・側頭筋・内側翼突筋',
-   ex:'外側翼突筋下頭だけが開口筋。'},
-  {pat:'B',cat:'表2 咀嚼筋',key:'B-muscle',
-   q:'咀嚼筋群で唯一「開口（前方運動）」に関わる筋を答えよ',
-   a:'外側翼突筋（下頭）',
-   ex:'★最頻出。他の3筋はすべて閉口（挙上）。',star:true},
-  {pat:'B',cat:'表2 咀嚼筋',key:'B-muscle',
-   q:'「口腔内の食物を保持する（口唇閉鎖）」表情筋を2つ答えよ',
-   a:'口輪筋・頬筋',
-   ex:'どちらも顔面神経（VII）支配。'},
-  {pat:'B',cat:'表2 咀嚼筋',key:'B-muscle',
-   q:'「嚥下時に舌骨を前上方へ移動させる」舌骨上筋はどれか',
-   a:'オトガイ舌骨筋',
-   ex:'舌下神経（XII）支配。嚥下時の喉頭挙上に関与。',star:true},
-  {pat:'B',cat:'表2 咀嚼筋',key:'B-muscle',
-   q:'「咀嚼中の食物口腔内保持と気道確保」を担う筋の分類名を答えよ',
-   a:'口蓋の筋',
-   ex:'咽頭神経叢（IX・X）支配。'},
-  {pat:'B',cat:'表2 咀嚼筋',key:'B-muscle',
-   q:'三叉神経（V）支配の咀嚼筋を4種類すべて答えよ',
-   a:'咬筋・側頭筋・内側翼突筋・外側翼突筋（上頭・下頭）',
-   ex:'咀嚼筋群はすべて三叉神経（V）支配。'},
-  {pat:'B',cat:'表2 咀嚼筋',key:'B-muscle',
-   q:'顔面神経（VII）支配で咀嚼を補助する筋を2つ答えよ',
-   a:'口輪筋・頬筋',
-   ex:'表情筋として分類されるが咀嚼の協調運動に関与。'},
-  {pat:'B',cat:'表2 咀嚼筋',key:'B-muscle',
-   q:'舌下神経（XII）支配で咀嚼に関与する筋を2つ答えよ',
-   a:'オトガイ舌骨筋・舌筋',
-   ex:'どちらも口腔内での食物操作に関与。'},
-  {pat:'B',cat:'表2 咀嚼筋',key:'B-muscle',
-   q:'顎舌骨筋・顎二腹筋（前腹）の支配神経はどれか',
-   a:'三叉神経（V）',
-   ex:'顎二腹筋は前腹と後腹で支配神経が違う。★注意',star:true},
-  {pat:'B',cat:'表2 咀嚼筋',key:'B-muscle',
-   q:'顎二腹筋（後腹）の支配神経はどれか',
-   a:'顔面神経（VII）',
-   ex:'前腹は三叉神経（V）。前後で違う！★注意',star:true},
-];
+t1a:{axis:'col',ncol:7,head:null,title:'表1　嚥下モデル（液体やペーストの一口嚥下）',rows:[
+ [S('液体やペーストの一口嚥下',{rs:5,cls:'vh'}), C('5期モデル',{cs:6,nc:1})],
+ [S('',{cs:2,cls:'void'}), C('4期モデル',{cs:4,nc:1})],
+ [N('先行期',{cs:2}), N('準備期（口腔準備期）',{rs:2}), C('3期モデル',{cs:3,nc:1})],
+ [N('認知期'),N('捕食期'),N('口腔期'),N('咽頭期'),N('食道期')],
+ [F('食物を認識する段階'),F('食物を口へ運ぶ段階'),
+  F('口腔に取り込んだものをひとまとまりの食塊にして保持する段階'),
+  F('舌運動によって食塊を咽頭へ送る段階'),
+  F('咽喉頭の複数の運動によって食塊を食道へ送る段階'),
+  F('蠕動運動によって食塊を胃へ送る段階')]
+]},
 
-// ===========================
-// 状態管理
-// ===========================
-let queue = [];
-let idx = 0;
-let results = []; // {q,a,correct,judged:bool}
-let revealed = false;
-let currentKey = '';
+t1b:{axis:'col',ncol:7,head:null,title:'表1　嚥下モデル（固形物の咀嚼を伴う嚥下）',rows:[
+ [S('固形物の咀嚼を伴う嚥下',{rs:3,cls:'vh'}), C('プロセスモデル',{cs:6,nc:1})],
+ [N('stage I transport（第一期輸送）'), N('processing（食物の粉砕と唾液との混和）',{cs:2}),
+  N('stage II transport（第二期輸送）'), N('咽頭期'), N('食道期')],
+ [F('口腔に取り込んだ食物を舌で臼歯部咬合面へ移動させる段階'),
+  F('咀嚼によって食塊を粉砕し，唾液と混ぜて食塊を形成し，嚥下に適した状態になった食塊を部分的に咽頭に送り込む段階',{cs:3,s:'咀嚼して食塊を形成し，部分的に咽頭へ送る段階'}),
+  F('咽喉頭の複数の運動によって食塊を食道へ送る段階'),
+  F('蠕動運動によって食塊を胃へ送る段階')]
+]},
 
-const LABEL = {
-  'A-model':'Aパターン｜表1 嚥下モデル',
-  'A-muscle':'Aパターン｜表2 咀嚼筋',
-  'B-model':'Bパターン｜表1 嚥下モデル',
-  'B-muscle':'Bパターン｜表2 咀嚼筋',
-  'all':'全問（A+B）',
-  'random':'ランダム 20問',
+t2:{axis:'row',ncol:7,head:HEAD2,title:'表2　咀嚼運動に関わる筋の機能と神経支配',rows:[
+ [C('下顎運動',{rs:8}), C('咀嚼筋',{rs:5}), C('閉口筋',{rs:4}), N('咬筋'),
+  F('下顎の挙上',{rs:4,cs:2}), V('三叉神経（Ⅴ）',{rs:7})],
+ [N('側頭筋')],
+ [N('内側翼突筋')],
+ [N('外側翼突筋（上頭）')],
+ [C('開口筋',{rs:4,star:true}), N('外側翼突筋（下頭）',{star:true,note:'外側翼突筋（下頭）は咀嚼筋のうち唯一の開口筋。'}),
+  F('下顎の下制（舌骨固定時）',{rs:4}),
+  F('嚥下時／下顎固定時は舌骨が挙上',{rs:3})],
+ [C('舌骨上筋',{rs:3}), N('顎舌骨筋')],
+ [N('顎二腹筋（前腹）',{star:true,note:'顎二腹筋は前腹が三叉神経（Ⅴ）、後腹が顔面神経（Ⅶ）。'})],
+ [N('オトガイ舌骨筋',{star:true}),
+  F('嚥下時／下顎固定時は舌骨が挙上，特に前方へ移動'),
+  V('舌下神経（Ⅻ）',{star:true})],
+ [C('その他の協調運動',{rs:4}), C('表情筋',{rs:2,cs:2}), N('口輪筋'),
+  F('咀嚼中の食物口腔内保持（口唇閉鎖）',{cs:2}), V('顔面神経（Ⅶ）',{rs:2})],
+ [N('頬筋'), F('咀嚼中の食物口腔内保持',{cs:2})],
+ [C('舌筋',{cs:3}), F('咀嚼中の食物口腔内保持',{cs:2}), V('舌下神経（Ⅻ）')],
+ [C('口蓋の筋',{cs:3}), F('咀嚼中の食物口腔内保持と気道確保',{cs:2}), V('咽頭神経叢（Ⅸ・Ⅹ）',{ex:NOVAG})]
+]},
+
+t3a:{axis:'row',ncol:6,head:HEAD3,title:'表3　嚥下に関わる筋の機能と神経支配（舌の筋）',rows:[
+ [C('舌の筋',{rs:7}), C('内舌筋',{rs:4}), C('形を変える',{rs:4}), N('上縦舌筋'),
+  F('舌尖を上にあげる，舌を短くして舌背にくぼみを作る'), V('舌下神経（Ⅻ）',{rs:7})],
+ [N('下縦舌筋'), F('舌尖を下に向ける，舌を短くして舌背を凸にする')],
+ [N('横舌筋'), F('舌の幅を狭める，舌を伸ばす，舌背を高くする')],
+ [N('垂直舌筋'), F('舌の幅を広げる，舌を平らに薄くする')],
+ [C('外舌筋',{rs:3}), C('位置を変える',{rs:3}), N('オトガイ舌筋'), F('舌の突出，舌の下制')],
+ [N('舌骨舌筋'), F('舌の後退，舌の下制')],
+ [N('茎突舌筋'), F('舌の後退，舌背の挙上')]
+]},
+
+t3b:{axis:'row',ncol:6,head:HEAD3,title:'表3　嚥下に関わる筋の機能と神経支配（軟口蓋の筋）',rows:[
+ [C('軟口蓋の筋',{rs:5}), C('軟口蓋の動き',{rs:5,cs:2}), N('口蓋帆張筋',{star:true}),
+  F('軟口蓋を緊張，嚥下時の耳管拡張と空気圧調整'),
+  V('三叉神経（Ⅴ）',{star:true,note:'軟口蓋の筋のうち口蓋帆張筋だけが三叉神経（Ⅴ）。他は咽頭神経叢（Ⅸ・Ⅹ）。'})],
+ [N('口蓋帆挙筋'), F('軟口蓋を挙上，鼻咽腔閉鎖'),
+  V('咽頭神経叢（Ⅸ・Ⅹ）／迷走',{rs:4,s:'咽頭神経叢（Ⅸ・Ⅹ）',ex:NOVAG})],
+ [N('口蓋垂筋'), F('口蓋垂の緊張と短縮，鼻咽腔閉鎖の補助')],
+ [N('口蓋舌筋'), F('軟口蓋下降，口峡を狭くする，口蓋と舌を近づける')],
+ [N('口蓋咽頭筋'), F('軟口蓋下降，口峡を狭くする，咽頭側壁を前内方へ牽引')]
+]},
+
+t3c:{axis:'row',ncol:6,head:HEAD3,title:'表3　嚥下に関わる筋の機能と神経支配（咽頭の筋）',rows:[
+ [C('咽頭の筋',{rs:6}), C('咽頭の挙上',{rs:2,cs:2}), N('茎突咽頭筋'),
+  F('咽頭を挙上'),
+  V('舌咽神経（Ⅸ）',{note:'茎突咽頭筋は舌咽神経（Ⅸ）。咽頭の他の筋は咽頭神経叢（Ⅸ・Ⅹ）。'})],
+ [N('耳管咽頭筋'), F('咽頭を挙上'), V('咽頭神経叢（Ⅸ・Ⅹ）',{rs:5,ex:NOVAG})],
+ [C('咽頭の収縮',{rs:4,cs:2}), N('上咽頭収縮筋'),
+  F('咽頭壁の連続的収縮，咽頭腔を狭くする（咽頭縮小）',{rs:3})],
+ [N('中咽頭収縮筋')],
+ [N('下咽頭収縮筋（甲状咽頭筋）')],
+ [N('下咽頭収縮筋（輪状咽頭筋／上食道括約筋）',{star:true,s:'下咽頭収縮筋（輪状咽頭筋）'}),
+  F('食道入口部の緊張と弛緩．下咽頭収縮筋に含めない研究者もいる',{s:'食道入口部の緊張と弛緩'})]
+]},
+
+t3d:{axis:'row',ncol:6,head:HEAD3,title:'表3　嚥下に関わる筋の機能と神経支配（喉頭の筋）',rows:[
+ [C('喉頭の筋',{rs:5}), C('内喉頭筋',{rs:5}), C('声門の動き',{rs:5}), N('輪状甲状筋'),
+  F('声帯の伸展'), V('上喉頭神経（Ⅹ）',{ex:NOVAG})],
+ [N('甲状披裂筋'), F('声門閉鎖',{rs:3}), V('反回神経（Ⅹ）',{rs:4,ex:NOVAG})],
+ [N('披裂筋')],
+ [N('外側輪状披裂筋')],
+ [N('後輪状披裂筋'), F('声門開大')]
+]},
+
+t3e:{axis:'row',ncol:6,head:HEAD3,title:'表3　嚥下に関わる筋の機能と神経支配（舌骨の筋）',rows:[
+ [C('舌骨の筋',{rs:9}), C('舌骨上筋',{rs:5}), C('舌骨の動き',{rs:9}), N('顎舌骨筋'),
+  F('下顎固定時の舌骨挙上（前上方）'), V('三叉神経（Ⅴ）')],
+ [N('顎二腹筋（前腹）',{star:true}), F('下顎固定時の舌骨挙上（前上方）'), V('三叉神経（Ⅴ）',{star:true})],
+ [N('顎二腹筋（後腹）',{star:true,note:'顎二腹筋は前腹が三叉神経（Ⅴ）、後腹が顔面神経（Ⅶ）。'}),
+  F('下顎固定時の舌骨挙上（後上方）'), V('顔面神経（Ⅶ）',{star:true})],
+ [N('茎突舌骨筋',{star:true,note:'茎突舌骨筋は顔面神経（Ⅶ）。茎突咽頭筋（舌咽神経）と混同しない。'}),
+  F('下顎固定時の舌骨挙上（後上方）'), V('顔面神経（Ⅶ）',{star:true})],
+ [N('オトガイ舌骨筋',{star:true}), F('下顎固定時の舌骨挙上（特に前方移動）'),
+  V('舌下神経（Ⅻ）／頸髄のC1',{star:true,s:'舌下神経（Ⅻ）'})],
+ [C('舌骨下筋',{rs:4}), N('甲状舌骨筋',{star:true}),
+  F('舌骨と甲状軟骨の距離短縮（嚥下時の喉頭挙上）'), V('頸神経ワナ（C1-C3）')],
+ [N('（肩甲舌骨筋）',{s:'肩甲舌骨筋'}),
+  F('（舌骨の下方移動：嚥下時でなく意図的な低い声での発声時にはたらく。嚥下時の喉頭挙上を妨げないようにするため、手術的治療の際に切断されることがある）',{rs:3,s:'舌骨の下方移動（低い声での発声時に作用）'}),
+  V('頸神経ワナ（C1-C3）')],
+ [N('（胸骨舌骨筋）',{s:'胸骨舌骨筋'}), V('頸神経ワナ（C1-C3）')],
+ [N('（胸骨甲状筋）',{s:'胸骨甲状筋'}), V('頸神経ワナ（C1-C3）')]
+]},
+
+t8:{axis:'row',ncol:3,narrow:true,head:[S('期',{cls:'th'}),S('摂食場面の観察ポイント',{cls:'th'}),S('背景要因',{cls:'th'})],
+ title:'表8　摂食場面の観察',rows:[
+ [ST('先行期',{rs:4}), OB('食べようとしているか'),
+  BG('意識レベル（覚醒）、意欲、認知機能、\n上肢の運動機能（筋力、失調、失行）',{rs:4,s:'意識レベル、意欲、認知機能、上肢運動機能'})],
+ [OB('集中できているか')],
+ [OB('一口量と食べる速さ')],
+ [OB('食具使用')],
+ [ST('準備期',{rs:3}), OB('口唇からの摂取物流出'), BG('口腔器官の運動機能、認知機能',{rs:3})],
+ [OB('咀嚼運動')],
+ [OB('口腔へ摂取物のため込み')],
+ [ST('口腔期',{rs:2}), OB('送り込み動作（所要時間、頭位など）',{s:'送り込み動作（頭位など）'}), BG('舌の送り込み運動')],
+ [OB('口腔内残渣'), BG('準備期（食塊形成と保持）の障害')],
+ [ST('咽頭期',{rs:5}), OB('喉頭挙上のタイミング'), BG('嚥下反射惹起')],
+ [OB('むせ、咳'), BG('誤嚥（声門／喉頭閉鎖不全、\n喉頭挙上のタイミングの問題）',{star:true})],
+ [OB('声質変化'), BG('食塊の喉頭侵入、咽頭残留')],
+ [OB('摂取物の鼻孔流出'), BG('鼻咽腔閉鎖機能不全',{star:true})],
+ [OB('嚥下後の残留感',{note:'「嚥下後の残留感」は咽頭期（咽頭残留）と食道期（食道通過障害）の両方に出てくる。'}), BG('咽頭残留')],
+ [ST('食道期',{rs:2}), OB('嚥下後の残留感',{note:'「嚥下後の残留感」は咽頭期（咽頭残留）と食道期（食道通過障害）の両方に出てくる。'}), BG('食道通過障害')],
+ [OB('呑酸・胸やけ'), BG('胃食道逆流症',{star:true})],
+ [ST('全般',{rs:3}), OB('摂取量'), BG('食欲、意欲、運動障害、背景疾患、\n体力、食事環境',{rs:3})],
+ [OB('疲労')],
+ [OB('所要時間')],
+ [S('出典：言語聴覚士テキスト 第4版（医歯薬出版）p421 表８',{cs:3,cls:'src'})]
+]}
 };
 
-function shuffle(arr){
-  const a = [...arr];
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
+const CATS=[
+ {id:'m1', name:'表1　嚥下モデル', tables:['t1a','t1b']},
+ {id:'m2', name:'表2　咀嚼筋', tables:['t2']},
+ {id:'m3a',name:'表3　舌の筋', tables:['t3a']},
+ {id:'m3b',name:'表3　軟口蓋の筋', tables:['t3b']},
+ {id:'m3c',name:'表3　咽頭の筋', tables:['t3c']},
+ {id:'m3d',name:'表3　喉頭の筋', tables:['t3d']},
+ {id:'m3e',name:'表3　舌骨の筋', tables:['t3e']},
+ {id:'m8', name:'表8　摂食場面の観察', tables:['t8']},
+];
+const ALL=['t1a','t1b','t2','t3a','t3b','t3c','t3d','t3e','t8'];
+const FAMS={T1:['t1a','t1b'],M:['t2','t3a','t3b','t3c','t3d','t3e'],T8:['t8']};
+const FAM={t1a:'T1',t1b:'T1',t2:'M',t3a:'M',t3b:'M',t3c:'M',t3d:'M',t3e:'M',t8:'T8'};
+const EXTRA={nerve:['三叉神経（Ⅴ）','顔面神経（Ⅶ）','舌咽神経（Ⅸ）','迷走神経（Ⅹ）','副神経（Ⅺ）','舌下神経（Ⅻ）']};
+const KIND_ORDER=['name','func','nerve','cat','stage','obs','bg'];
+const KIND_LABEL={name:'名称',func:'機能・内容',nerve:'神経支配',cat:'分類',stage:'期',obs:'観察ポイント',bg:'背景要因'};
+const OPT_NUM=['①','②','③','④','⑤'];
 
-function startQuiz(key){
-  currentKey = key;
-  if(key==='all')      queue = [...DATA];
-  else if(key==='random') queue = shuffle(DATA).slice(0,20);
-  else                 queue = DATA.filter(d=>d.key===key);
-
-  idx = 0;
-  results = queue.map(()=>({judged:null}));
-  showScreen('quiz');
-  renderQuestion();
-}
-
-function renderQuestion(){
-  const q = queue[idx];
-  revealed = false;
-
-  // ヘッダー
-  document.getElementById('quiz-title').textContent = LABEL[currentKey] || '';
-  document.getElementById('quiz-counter').textContent = `${idx+1} / ${queue.length}`;
-
-  // プログレス
-  document.getElementById('progress-fill').style.width = ((idx)/queue.length*100)+'%';
-
-  // バッジ
-  const badge = document.getElementById('q-pat-badge');
-  badge.textContent = q.pat+'パターン';
-  badge.className = 'q-pat '+(q.pat==='A'?'badge-a':'badge-b');
-
-  document.getElementById('q-cat-text').textContent = q.cat;
-
-  // 問題文（★マーク）
-  const star = q.star ? '<span class="star-mark">★</span>' : '';
-  document.getElementById('q-text').innerHTML = star + q.q;
-
-  // テキストエリア
-  const ta = document.getElementById('ans-input');
-  ta.value = '';
-  ta.disabled = false;
-  ta.focus();
-
-  // 答えブロック非表示
-  document.getElementById('answer-block').classList.remove('show');
-  document.getElementById('judge-row').style.display = 'none';
-  document.getElementById('reveal-btn').style.display = 'block';
-
-  // 自己採点ボタンリセット
-  document.getElementById('btn-ok').classList.remove('selected');
-  document.getElementById('btn-ng').classList.remove('selected');
-
-  // ナビ
-  document.getElementById('btn-prev').disabled = idx===0;
-  updateNextBtn();
-}
-
-function revealAnswer(){
-  const q = queue[idx];
-  revealed = true;
-
-  document.getElementById('correct-text').textContent = q.a;
-  document.getElementById('explain-text').textContent = q.ex;
-  document.getElementById('answer-block').classList.add('show');
-  document.getElementById('judge-row').style.display = 'flex';
-  document.getElementById('reveal-btn').style.display = 'none';
-  document.getElementById('ans-input').disabled = true;
-
-  // すでに判定済みなら色を復元
-  if(results[idx].judged===true){
-    document.getElementById('btn-ok').classList.add('selected');
-  } else if(results[idx].judged===false){
-    document.getElementById('btn-ng').classList.add('selected');
-  }
-}
-
-function judge(ok){
-  results[idx].judged = ok;
-  results[idx].q = queue[idx].q;
-  results[idx].a = queue[idx].a;
-  results[idx].cat = queue[idx].cat;
-  results[idx].pat = queue[idx].pat;
-
-  document.getElementById('btn-ok').classList.toggle('selected', ok);
-  document.getElementById('btn-ng').classList.toggle('selected', !ok);
-  updateNextBtn();
-}
-
-function updateNextBtn(){
-  const isLast = idx === queue.length-1;
-  const nb = document.getElementById('btn-next');
-  if(isLast){
-    nb.textContent = '結果を見る →';
-  } else {
-    nb.textContent = '次へ →';
-  }
-}
-
-function movePrev(){
-  if(idx>0){ idx--; renderQuestion(); }
-}
-
-function moveNext(){
-  if(idx===queue.length-1){
-    showResult();
-  } else {
-    idx++;
-    renderQuestion();
-  }
-}
-
-function goMenu(){
-  showScreen('menu');
-}
-
-function showResult(){
-  const judged = results.filter(r=>r.judged!==null);
-  const ok = judged.filter(r=>r.judged===true).length;
-  const total = judged.length;
-  const pct = total>0 ? Math.round(ok/total*100) : 0;
-
-  document.getElementById('res-score').textContent = ok;
-  document.getElementById('res-total').textContent = `/ ${total}問（採点済み）`;
-  document.getElementById('res-pct').textContent = pct + '% 正解';
-
-  const list = document.getElementById('result-list');
-  list.innerHTML = '';
-
-  results.forEach((r,i)=>{
-    if(r.judged===null) return;
-    const item = document.createElement('div');
-    item.className = 'result-item '+(r.judged?'ok':'ng');
-    const badge = `<span class="ri-badge ${r.judged?'ri-ok':'ri-ng'}">${r.judged?'⭕':'❌'}</span>`;
-    const pat = `<span class="ri-badge" style="background:${r.pat==='A'?'var(--tag-a-bg)':'var(--tag-b-bg)'}; color:${r.pat==='A'?'var(--tag-a)':'var(--tag-b)'};">${r.pat}</span>`;
-    item.innerHTML = `<div class="ri-q">${badge}${pat}${r.q||queue[i].q}</div><div class="ri-a">正解：${r.a||queue[i].a}</div>`;
-    list.appendChild(item);
+// ===========================
+// レイアウト（結合セルの位置計算）
+// ===========================
+const BYID={}, TCELLS={};
+(function initLayout(){
+  Object.keys(TABLES).forEach(tid=>{
+    const t=TABLES[tid], rows=(t.head?[t.head]:[]).concat(t.rows), occ=[]; let n=0;
+    TCELLS[tid]=[];
+    rows.forEach((row,r)=>{
+      occ[r]=occ[r]||[]; let c=0;
+      row.forEach(cell=>{
+        while(occ[r][c]) c++;
+        const rs=cell.rs||1, cs=cell.cs||1;
+        for(let dr=0;dr<rs;dr++){ occ[r+dr]=occ[r+dr]||[]; for(let dc=0;dc<cs;dc++) occ[r+dr][c+dc]=1; }
+        cell.tid=tid; cell.r0=r; cell.r1=r+rs-1; cell.c0=c; cell.c1=c+cs-1;
+        if(!(t.head && r===0)){ cell.id=tid+'-'+(n++); BYID[cell.id]=cell; TCELLS[tid].push(cell); }
+        c+=cs;
+      });
+    });
   });
+})();
 
-  const wrongCount = judged.filter(r=>!r.judged).length;
-  document.getElementById('btn-retry-wrong').disabled = wrongCount===0;
-  document.getElementById('btn-retry-wrong').textContent = `❌ 不正解のみ再チャレンジ（${wrongCount}問）`;
+// ===========================
+// 汎用
+// ===========================
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const optText=c=>String(c.s!==undefined?c.s:(c.a||'')).replace(/\n/g,'');
+const fullText=c=>String(c.a||'').replace(/\n/g,'');
+const rngOf=(c,ax)=>ax==='col'?[c.c0,c.c1]:[c.r0,c.r1];
+const ovl=(a,b)=>a[0]<=b[1]&&b[0]<=a[1];
+const within=(a,b)=>b[0]<=a[0]&&a[1]<=b[1];
+const dedupe=a=>Array.from(new Set(a));
+const clip=(a,n)=>a.length>n?a.slice(0,n).join('・')+'ほか'+(a.length-n)+'件':a.join('・');
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
-  showScreen('result');
+// ===========================
+// 状態
+// ===========================
+let mode='tap';                 // 'tap' | 'choice'
+let view=null;                  // {type:'cat'|'all'|'random'|'star', catId}
+let kinds=new Set();
+let blanks={}, ORDER=[], curId=null, BLANKSET=new Set(), QMAP={};
+
+const viewTables=()=>view.type==='cat'?CATS.find(c=>c.id===view.catId).tables:ALL;
+function availKinds(){ return KIND_ORDER.filter(k=>viewTables().some(t=>TCELLS[t].some(c=>c.k===k))); }
+function setDefaults(){
+  const av=availKinds();
+  const pri=mode==='choice'?['nerve','name','bg','func','stage','obs','cat']:['name','nerve','stage','bg'];
+  let sel=pri.filter(k=>av.includes(k)); if(!sel.length) sel=[av[0]];
+  kinds=new Set(mode==='choice'?[sel[0]]:sel);
 }
 
-function retryWrong(){
-  const wrongIdx = results.map((r,i)=>({r,i})).filter(({r})=>r.judged===false).map(({i})=>i);
-  if(wrongIdx.length===0) return;
-  queue = wrongIdx.map(i=>queue[i]);
-  idx=0;
-  results=queue.map(()=>({judged:null}));
-  showScreen('quiz');
-  renderQuestion();
+// ===========================
+// 選択肢の生成（5択）
+// ===========================
+function matches(kind,text,pref){
+  const all=[]; ALL.forEach(t=>TCELLS[t].forEach(c=>{ if(c.k===kind&&optText(c)===text) all.push(c); }));
+  const p=all.filter(c=>c.tid===pref); return p.length?p:all;
+}
+function relList(m,ks){
+  const ax=TABLES[m.tid].axis, R=rngOf(m,ax);
+  return TCELLS[m.tid].filter(x=>x!==m&&ks.indexOf(x.k)>=0&&ovl(rngOf(x,ax),R));
+}
+function describe(kind,text,pref,self){
+  const ms=self?[self]:matches(kind,text,pref);
+  if(!ms.length) return text+'：この表には対応する項目がない';
+  const rel=ks=>dedupe([].concat.apply([],ms.map(m=>relList(m,ks).map(optText))));
+  // 筋名の列がない行（舌筋・口蓋の筋）は、いちばん細かい分類名で代用
+  const subject=()=>{
+    const n=rel(['name']); if(n.length) return clip(n,3);
+    const cs=[].concat.apply([],ms.map(m=>relList(m,['cat']))).sort((x,y)=>(x.r1-x.r0+x.c1-x.c0)-(y.r1-y.r0+y.c1-y.c0));
+    return cs.length?optText(cs[0]):'';
+  };
+  switch(kind){
+    case 'nerve': return text+'：'+subject()+'の神経支配';
+    case 'func':  return text+'：'+subject()+'の機能';
+    case 'cat':   { const n=rel(['name']); return text+'：'+(n.length?clip(n,3)+'を含む':'筋名の記載なし（'+(rel(['func'])[0]||'')+'）'); }
+    case 'name':  return text+'：'+[rel(['func'])[0],rel(['nerve'])[0]].filter(Boolean).join('／');
+    case 'stage': return text+'：'+clip(rel(['obs']),2);
+    case 'obs':   return text+'：'+clip(rel(['stage']),2)+'の観察ポイント';
+    case 'bg':    { const o=rel(['obs'])[0]; return text+'：'+clip(rel(['stage']),2)+(o?'「'+o+'」':'')+'の背景要因'; }
+  }
+  return text;
+}
+const ctxLabel=(tid,k)=>({cat:'分類',stage:'期',name:tid==='t1a'||tid==='t1b'?'段階':'筋',obs:'観察ポイント',func:tid==='t1a'||tid==='t1b'?'内容':'機能',nerve:'神経支配',bg:'背景要因'})[k];
+function qLine(cell){
+  const t1=cell.tid==='t1a'||cell.tid==='t1b';
+  if(cell.k==='name') return t1?'段階の名称は？':'筋の名称は？';
+  return ctxLabel(cell.tid,cell.k)+'は？';
 }
 
-function retryAll(){
-  startQuiz(currentKey);
-}
+function buildQ(cell,blankSet){
+  const t=TABLES[cell.tid], ax=t.axis, R=rngOf(cell,ax), same=TCELLS[cell.tid];
+  const ans=optText(cell); if(!ans||ans.length>30) return null;
+  const ctx=same.filter(x=>x!==cell&&x.k&&x.k!==cell.k&&ovl(rngOf(x,ax),R)&&!blankSet.has(x.id));
+  const ex=cell.ex||[];
+  // この空欄と同じ行/列に重なる同種セルの答え（＝正解にもなり得る語）は選択肢に出さない
+  const banned={}; banned[ans]=1;
+  same.forEach(x=>{ if(x!==cell&&x.k===cell.k&&ovl(rngOf(x,ax),R)) banned[optText(x)]=1; });
+  const okText=x=>{const tx=optText(x);return tx&&tx.length<=30&&!banned[tx]&&ex.indexOf(tx)<0&&!x.nc;};
+  const subj=x=>dedupe(relList(x,['name']).map(optText));
+  const tn=cell.k==='name'?[]:subj(cell);
+  const mid=(R[0]+R[1])/2;
+  const dist=x=>{const r=rngOf(x,ax);return Math.abs((r[0]+r[1])/2-mid);};
+  const uniq=arr=>{const s={},o=[];arr.forEach(x=>{const tx=optText(x);if(!s[tx]){s[tx]=1;o.push(x);}});return o;};
+  const L=ans.length;
+  const byLen=arr=>arr.map(x=>({x:x,k:Math.abs(optText(x).length-L)+Math.random()*3})).sort((a,b)=>a.k-b.k).map(o=>o.x);
 
-function showScreen(name){
-  document.getElementById('screen-menu').style.display  = name==='menu'  ?'block':'none';
-  document.getElementById('screen-quiz').style.display  = name==='quiz'  ?'block':'none';
-  document.getElementById('screen-result').style.display= name==='result'?'block':'none';
-  window.scrollTo(0,0);
-}
+  // 同じ表の候補：同じ行/列に重ならず、手がかり全部に当てはまらないもの
+  let p0=same.filter(x=>x!==cell&&x.k===cell.k&&okText(x)&&!ovl(rngOf(x,ax),R)
+        &&!(ctx.length&&ctx.every(y=>within(rngOf(x,ax),rngOf(y,ax)))));
+  p0=uniq(shuffle(p0).sort((a,b)=>dist(a)-dist(b)));
+  let p1=[];
+  (FAMS[FAM[cell.tid]]||[]).forEach(o=>{ if(o!==cell.tid) TCELLS[o].forEach(x=>{
+    if(x.k!==cell.k||!okText(x)) return;
+    if(tn.length&&subj(x).some(n=>tn.indexOf(n)>=0)) return;   // 同じ筋について述べている別表の項目は除外
+    p1.push(x);
+  }); });
+  p1=uniq(p1);
 
-// Enterキーで答え表示
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter' && e.ctrlKey){
-    if(!revealed && document.getElementById('screen-quiz').style.display!=='none'){
-      revealAnswer();
+  const picked=[], used={}; used[ans]=1;
+  const add=tx=>{ if(used[tx]) return false; used[tx]=1; picked.push(tx); return true; };
+  p0.slice(0,2).forEach(x=>add(optText(x)));                       // 隣接概念
+  byLen(p0.slice(2)).forEach(x=>{ if(picked.length<4) add(optText(x)); });
+  if(picked.length<4) byLen(p1).forEach(x=>{ if(picked.length<4) add(optText(x)); });
+  if(picked.length<4) (EXTRA[cell.k]||[]).forEach(tx=>{ if(picked.length<4&&tx.length<=30&&ex.indexOf(tx)<0&&!banned[tx]) add(tx); });
+  if(picked.length<4) return null;
+
+  // 正解だけ長くならないよう調整
+  const lens=picked.map(s=>s.length);
+  if(L>Math.max.apply(null,lens)*1.15){
+    const reserve=p0.concat(p1).map(optText).filter(tx=>!used[tx]).sort((a,b)=>b.length-a.length);
+    if(reserve.length&&reserve[0].length>Math.min.apply(null,lens)){
+      const si=lens.indexOf(Math.min.apply(null,lens)); picked[si]=reserve[0];
     }
   }
-});
+  const opts=shuffle(picked.concat([ans])); const ai=opts.indexOf(ans);
+
+  // 手がかり表示
+  const ORDERC=['cat','stage','name','obs','func','nerve','bg'];
+  const ctxHTML=ORDERC.map(k=>{
+    const items=dedupe(ctx.filter(x=>x.k===k).map(fullText));
+    return items.length?'<b>'+ctxLabel(cell.tid,k)+'</b>：'+esc(clip(items,4)):'';
+  }).filter(Boolean).join('<br>')||'（手がかりなし）';
+
+  // 解説（各選択肢がどこの答えか）
+  const lines=opts.map((tx,i)=>{
+    const d=(i===ai)?describe(cell.k,tx,cell.tid,cell):describe(cell.k,tx,cell.tid,null);
+    return (i===ai?'<b>':'')+OPT_NUM[i]+' '+esc(d)+(i===ai?'</b>':'');
+  });
+  return {opts:opts,ans:ai,ctx:ctxHTML,qline:qLine(cell),ex:lines.join('<br>'),note:cell.note||''};
+}
+
+// ===========================
+// メニュー
+// ===========================
+const countCands=(tid,pred)=>TCELLS[tid].filter(c=>c.k&&(!pred||pred(c))).length;
+function buildMenu(){
+  let h='<div class="sec-title">単元を選ぶ</div><div class="cat-grid">';
+  CATS.forEach(c=>{
+    const n=c.tables.reduce((s,t)=>s+countCands(t),0);
+    h+='<button class="cat" onclick="startView(\'cat\',\''+c.id+'\')"><span class="n">'+c.name+'</span><span class="c">穴埋め候補 '+n+' 箇所</span></button>';
+  });
+  h+='</div>';
+  const star=ALL.reduce((s,t)=>s+countCands(t,c=>c.star),0);
+  h+='<div class="sec-title" style="margin-top:18px">まとめて練習</div><div class="sub-row">'
+   +'<button class="sub" onclick="startView(\'all\')">全表まとめて</button>'
+   +'<button class="sub" onclick="startView(\'random\')">ランダム穴埋め</button>'
+   +'<button class="sub" onclick="startView(\'star\')">★頻出（'+star+'）</button></div>';
+  h+='<div class="howto">・練習画面で <b>👆タップで答えを見る</b> と <b>🔘選択肢（5択）</b> を切り替えられます<br>・空欄にする項目（名称／機能／神経／分類／期／観察ポイント／背景要因）も切り替え可<br>・結合セル（例：三叉神経が7行ぶん）は空欄1つで答えます<br>・★は国試で狙われやすい箇所の目安です</div>';
+  $('menu').innerHTML=h;
+}
+function startView(type,catId){
+  view={type:type,catId:catId};
+  setDefaults();
+  $('menu').style.display='none'; $('prac').style.display='block'; $('act').style.display='flex';
+  render();
+}
+function goMenu(){
+  closeQ();
+  $('menu').style.display='block'; $('prac').style.display='none'; $('act').style.display='none';
+  window.scrollTo(0,0);
+}
+function setMode(m){
+  mode=m;
+  if(m==='choice'&&kinds.size>1){
+    const pri=['nerve','name','bg','func','stage','obs','cat'];
+    kinds=new Set([pri.find(k=>kinds.has(k))]);
+  }
+  render();
+}
+
+// ===========================
+// 空欄の決定
+// ===========================
+function pickBlankIds(){
+  const cand=[]; viewTables().forEach(t=>TCELLS[t].forEach(c=>{ if(c.k) cand.push(c); }));
+  const base=c=>mode==='tap'||(!c.nc&&optText(c)&&optText(c).length<=30);
+  const greedy=(list,n)=>{
+    const out=new Set(), taken=[];
+    for(const c of list){
+      if(out.size>=n) break;
+      if(mode==='choice'){
+        const ax=TABLES[c.tid].axis, R=rngOf(c,ax);
+        if(taken.some(x=>x.tid===c.tid&&ovl(rngOf(x,ax),R))) continue;   // 同じ行/列に空欄を重ねない
+      }
+      out.add(c.id); taken.push(c);
+    }
+    return out;
+  };
+  if(view.type==='random') return greedy(shuffle(cand.filter(base)),Math.round(cand.length*0.3));
+  if(view.type==='star')   return greedy(cand.filter(c=>c.star&&base(c)),9999);
+  const out=new Set(); cand.filter(c=>kinds.has(c.k)&&base(c)).forEach(c=>out.add(c.id)); return out;
+}
+
+// ===========================
+// 描画
+// ===========================
+function cellHTML(c){
+  const a=(c.rs?' rowspan="'+c.rs+'"':'')+(c.cs?' colspan="'+c.cs+'"':'');
+  const star=c.star?'<span class="stm">★</span>':'';
+  const full=esc(c.a!==undefined?c.a:(c.t||'')).replace(/\n/g,'<br>');
+  const pre=c.k==='obs'?'・':'';
+  if(c.k&&BLANKSET.has(c.id)){
+    blanks[c.id]={c:c,state:'hid',q:QMAP[c.id]};
+    return '<td class="tc hid k-'+c.k+'"'+a+' id="c-'+c.id+'" data-ph="'+(mode==='tap'?'タップ':'選ぶ')+'" onclick="cellTap(\''+c.id+'\')">'+star+'<span class="av">'+pre+full+'</span><span class="mk"></span></td>';
+  }
+  const cls=c.cls||(c.k?'k-'+c.k:'');
+  return '<td class="'+cls+'"'+a+'>'+star+pre+full+'</td>';
+}
+function tableHTML(tid){
+  const t=TABLES[tid], before=Object.keys(blanks).length;
+  let body=''; t.rows.forEach(r=>{ body+='<tr>'+r.map(cellHTML).join('')+'</tr>'; });
+  const added=Object.keys(blanks).length-before;
+  if(added===0&&view.type!=='cat') return '';
+  const head=t.head?'<tr>'+t.head.map(cellHTML).join('')+'</tr>':'';
+  return '<div class="tsec"><div class="tt">'+t.title+'</div><div class="tw"><table class="tb'+(t.narrow?' narrow':'')+'">'+head+body+'</table></div></div>';
+}
+function render(){
+  blanks={}; ORDER=[]; closeQ();
+  BLANKSET=pickBlankIds(); QMAP={};
+  if(mode==='choice'){
+    Array.from(BLANKSET).forEach(id=>{
+      const q=buildQ(BYID[id],BLANKSET);
+      if(q) QMAP[id]=q; else BLANKSET.delete(id);
+    });
+  }
+  let h=''; viewTables().forEach(t=>{ h+=tableHTML(t); });
+  ORDER=Object.keys(blanks);
+  if(!ORDER.length) h='<div class="empty">選んだ項目の空欄がここにはありません。上の項目を切り替えてください。</div>';
+  $('tables').innerHTML=h;
+  $('ttl').textContent=view.type==='cat'?CATS.find(c=>c.id===view.catId).name:{all:'全表まとめて',random:'ランダム穴埋め',star:'★頻出'}[view.type];
+  $('seg-tap').classList.toggle('on',mode==='tap'); $('seg-choice').classList.toggle('on',mode==='choice');
+  $('hint').textContent=mode==='tap'?'空欄をタップすると答えが出ます。もう一度タップで隠せます。':'空欄をタップすると5択の問題が出ます。選ぶとすぐ採点・解説。';
+  updateChips(); renderBar(); updateScore(); window.scrollTo(0,0);
+}
+function updateChips(){
+  const box=$('chips');
+  if(view.type==='random'||view.type==='star'){
+    box.innerHTML='<span class="note">'+(view.type==='random'?'全項目から約30%をランダムに空欄化（リセットで再抽選）':'★頻出の箇所だけを空欄化')+'</span>'; return;
+  }
+  box.innerHTML='<span class="note">'+(mode==='choice'?'空欄にする項目（1つ選ぶ）：':'空欄にする項目：')+'</span>'
+    +availKinds().map(k=>'<button class="chip '+(kinds.has(k)?'on':'')+'" onclick="toggleKind(\''+k+'\')">'+KIND_LABEL[k]+'</button>').join('');
+}
+function toggleKind(k){
+  if(mode==='choice') kinds=new Set([k]);
+  else { if(kinds.has(k)){ if(kinds.size===1) return; kinds.delete(k); } else kinds.add(k); }
+  render();
+}
+function renderBar(){
+  $('act').innerHTML=mode==='tap'
+   ? '<button class="a1" onclick="showAll()">👁 全て表示</button><button class="a3" onclick="hideAll()">🙈 全て隠す</button><button class="a3" onclick="render()">🔄 リセット</button>'
+   : '<button class="a1" onclick="startFirst()">▶ 出題スタート</button><button class="a2" onclick="retryWrong()">❌だけ再挑戦</button><button class="a3" onclick="render()">🔄 リセット</button>';
+}
+
+// ===========================
+// セル操作
+// ===========================
+function paint(id){
+  const b=blanks[id], td=$('c-'+id);
+  td.classList.remove('hid','shown','ok','ng'); td.classList.add(b.state);
+  td.querySelector('.mk').textContent=b.state==='ok'?'⭕':b.state==='ng'?'❌':'';
+}
+function cellTap(id){
+  const b=blanks[id]; if(!b) return;
+  if(mode==='tap'){ b.state=b.state==='shown'?'hid':'shown'; paint(id); updateScore(); }
+  else openQ(id);
+}
+function showAll(){ ORDER.forEach(id=>{ blanks[id].state='shown'; paint(id); }); updateScore(); }
+function hideAll(){ ORDER.forEach(id=>{ blanks[id].state='hid'; paint(id); }); updateScore(); }
+function updateScore(){
+  const total=ORDER.length; if(!total){ $('score').textContent=''; return; }
+  if(mode==='tap'){ $('score').textContent='👁 '+ORDER.filter(i=>blanks[i].state==='shown').length+' / '+total; }
+  else {
+    const ok=ORDER.filter(i=>blanks[i].state==='ok').length, done=ORDER.filter(i=>blanks[i].state==='ok'||blanks[i].state==='ng').length;
+    $('score').textContent='⭕ '+ok+' / '+total+(done?'（回答'+done+'）':'');
+  }
+}
+
+// ===========================
+// 選択肢シート
+// ===========================
+function openQ(id){
+  const b=blanks[id]; if(!b||!b.q) return;
+  curId=id;
+  document.querySelectorAll('td.cur').forEach(e=>e.classList.remove('cur')); $('c-'+id).classList.add('cur');
+  const q=b.q;
+  $('sh-prog').textContent='第 '+(ORDER.indexOf(id)+1)+' 問 / 全 '+ORDER.length+' 問';
+  $('sh-ctx').innerHTML=q.ctx; $('sh-q').textContent=q.qline;
+  const box=$('sh-opts'); box.innerHTML='';
+  q.opts.forEach((t,i)=>{
+    const btn=document.createElement('button'); btn.className='opt'; btn.textContent=OPT_NUM[i]+'  '+t;
+    btn.onclick=function(){ pickOpt(i); }; box.appendChild(btn);
+  });
+  $('sh-ex').style.display='none'; $('sh-nav').style.display='none';
+  if(b.state==='ok'||b.state==='ng') showResult(b);
+  $('sheet').classList.add('open');
+  $('c-'+id).scrollIntoView({block:'start',inline:'center',behavior:'smooth'});
+}
+function pickOpt(i){
+  const b=blanks[curId]; if(!b||b.state==='ok'||b.state==='ng') return;
+  b.picked=i; b.state=(i===b.q.ans)?'ok':'ng'; paint(curId); showResult(b); updateScore();
+}
+function showResult(b){
+  const q=b.q, btns=$('sh-opts').children;
+  for(let i=0;i<btns.length;i++){
+    btns[i].disabled=true;
+    if(i===q.ans) btns[i].classList.add('right'); else if(i===b.picked) btns[i].classList.add('wrong');
+  }
+  const ok=b.state==='ok';
+  $('sh-ex').innerHTML='<div class="h">'+(ok?'⭕ 正解　':'❌ 不正解　')+'正解は '+OPT_NUM[q.ans]+'</div>'+q.ex+(q.note?'<div class="nt">💡 '+esc(q.note)+'</div>':'');
+  $('sh-ex').style.display='block'; $('sh-nav').style.display='block';
+}
+function closeQ(){
+  $('sheet').classList.remove('open'); curId=null;
+  document.querySelectorAll('td.cur').forEach(e=>e.classList.remove('cur'));
+}
+function nextQ(){
+  const i=ORDER.indexOf(curId);
+  const rest=ORDER.slice(i+1).concat(ORDER.slice(0,i+1));
+  const nx=rest.find(id=>blanks[id].state==='hid');
+  if(nx) openQ(nx);
+  else {
+    closeQ();
+    const ok=ORDER.filter(x=>blanks[x].state==='ok').length;
+    toast('全問終了　⭕ '+ok+' / '+ORDER.length);
+  }
+}
+function startFirst(){
+  const nx=ORDER.find(id=>blanks[id].state==='hid');
+  if(nx) openQ(nx); else toast('未回答の空欄はありません');
+}
+function retryWrong(){
+  const ng=ORDER.filter(id=>blanks[id].state==='ng');
+  if(!ng.length){ toast('❌はありません'); return; }
+  const set=new Set(ORDER);
+  ng.forEach(id=>{
+    const q=buildQ(BYID[id],set); if(q) blanks[id].q=q;
+    blanks[id].state='hid'; blanks[id].picked=undefined; paint(id);
+  });
+  closeQ(); updateScore(); startFirst();
+}
+let toastTimer=null;
+function toast(msg){
+  const t=$('toast'); t.textContent=msg; t.style.display='block';
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>{t.style.display='none';},2200);
+}
+
+buildMenu();
 </script>
 </body>
 </html>
