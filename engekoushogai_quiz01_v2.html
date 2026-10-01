@@ -54,9 +54,10 @@
   table.tb.narrow{min-width:420px}
   table.tb td{border:1px solid var(--border);padding:6px 7px;vertical-align:middle;line-height:1.45}
   td.th{background:var(--pink);color:#5b1a38;font-weight:700;text-align:center;font-size:.76rem}
-  td.k-cat,td.k-stage{background:var(--pink-l);color:var(--pink-d);font-weight:700;text-align:center}
-  td.k-name{background:#fffbf5;font-weight:600}
-  td.k-func,td.k-obs,td.k-bg{text-align:left}
+  td.k-cat,td.k-stage,td.k-purpose{background:var(--pink-l);color:var(--pink-d);font-weight:700;text-align:center}
+  td.k-name,td.k-proc{background:#fffbf5;font-weight:600}
+  td.k-func,td.k-obs,td.k-bg,td.k-ind{text-align:left}
+  .foot{font-size:.72rem;color:var(--text-muted);line-height:1.6;margin-top:6px;padding:0 4px}
   td.void{background:var(--bg);border:none}
   td.src{border:none;font-size:.72rem;color:var(--text-muted);background:transparent}
   td.vh{writing-mode:vertical-rl;letter-spacing:.15em;text-align:center;background:var(--pink);color:#5b1a38;font-weight:700;padding:6px 4px}
@@ -108,7 +109,7 @@
 <body>
 <header>
   <h1>嚥下障害　表の穴埋め</h1>
-  <p>ミニテスト範囲：表1 嚥下モデル／表2 咀嚼筋／表3 嚥下に関わる筋／表8 摂食場面の観察</p>
+  <p>ミニテスト範囲：表1 嚥下モデル／表2 咀嚼筋／表3 嚥下に関わる筋／表8 摂食場面の観察／表12 外科的治療</p>
 </header>
 <main>
   <div id="menu"></div>
@@ -150,6 +151,7 @@
 const S=(t,o)=>Object.assign({t:t},o||{});
 const mk=k=>(a,o)=>Object.assign({k:k,a:a},o||{});
 const N=mk('name'),C=mk('cat'),V=mk('nerve'),F=mk('func'),ST=mk('stage'),OB=mk('obs'),BG=mk('bg');
+const PU=mk('purpose'),PR=mk('proc'),IN=mk('ind');   // 表12：目的／術式／適応
 
 const HEAD2=[S('分類',{cs:3,cls:'th'}),S('筋の名称',{cls:'th'}),S('機能',{cls:'th',cs:2}),S('神経支配',{cls:'th'})];
 const HEAD3=[S('分類',{cs:3,cls:'th'}),S('筋の名称',{cls:'th'}),S('機能',{cls:'th'}),S('神経支配',{cls:'th'})];
@@ -287,6 +289,30 @@ t8:{axis:'row',ncol:3,narrow:true,head:[S('期',{cls:'th'}),S('摂食場面の�
  [OB('所要時間')],
  [S('出典：言語聴覚士テキスト 第4版（医歯薬出版）p421 表８',{cs:3,cls:'src'})]
 ]}
+,t12:{axis:'row',ncol:4,narrow:true,head:[S('分類・目的',{cs:2,cls:'th'}),S('術式',{cls:'th'}),S('適応，その他',{cls:'th'})],
+ title:'表12　摂食嚥下障害に対する外科的治療',
+ foot:['*¹ 喉頭下で切断した気管の喉頭側を閉鎖','*² 喉頭下で切断した気管の喉頭側を食道に吻合','*³ ボイスプロテーゼを使用','出典：言語聴覚士テキスト 第4版（医歯薬出版）p426 表１２'],
+ rows:[
+ [C('嚥下機能改善術',{rs:11,nc:1}), PU('咽頭内圧上昇',{rs:2}), PR('咽頭弁形成術',{star:true}), IN('鼻咽腔閉鎖不全')],
+ [PR('咽頭縫縮術'), IN('咽頭収縮不全')],
+ [PU('食道入口部開大'), PR('輪状咽頭筋切断術',{star:true}), IN('食道入口部開大障害')],
+ [PU('喉頭挙上強化',{rs:2}), PR('喉頭挙上術'), IN('喉頭挙上不全',{rs:2})],
+ [PR('舌骨下筋群切断術')],
+ [PU('喉頭閉鎖強化',{rs:6}), PR('声帯内方移動術'), IN('声門閉鎖不全',{rs:6})],
+ [PR('・甲状軟骨形成術Ⅰ型',{s:'甲状軟骨形成術Ⅰ型'})],
+ [PR('・披裂軟骨内転術',{s:'披裂軟骨内転術'})],
+ [PR('声帯充填術')],
+ [PR('・声帯内注入術，筋膜挿入術',{s:'声帯内注入術，筋膜挿入術'})],
+ [PR('喉頭蓋管形成術')],
+ [C('誤嚥防止術',{rs:7,nc:1}), PU('気道と食道の分離\n・喉頭レベルの閉鎖\n・気管レベルの閉鎖\n・喉頭音声を温存',{rs:5,s:'気道と食道の分離'}),
+  PR('・仮声帯縫着術',{s:'仮声帯縫着術'}), IN('制御できない重度の誤嚥',{rs:5})],
+ [PR('・声帯閉鎖術',{s:'声帯閉鎖術'})],
+ [PR('・喉頭気管分離術*¹',{s:'喉頭気管分離術',star:true,note:'喉頭気管分離術：喉頭下で切断した気管の喉頭側を閉鎖する。'})],
+ [PR('・気管食道吻合術*²',{s:'気管食道吻合術',note:'気管食道吻合術：喉頭下で切断した気管の喉頭側を食道に吻合する。'})],
+ [PR('・TED with TEP手術*³',{s:'TED with TEP手術',note:'TED with TEP手術：ボイスプロテーゼを使用する。'})],
+ [PU('喉頭の摘出',{rs:2}), PR('喉頭全摘出術',{rs:2,star:true}), IN('制御できない重度の誤嚥',{rs:2})],
+ []
+]}
 };
 
 const CATS=[
@@ -298,13 +324,15 @@ const CATS=[
  {id:'m3d',name:'表3　喉頭の筋', tables:['t3d']},
  {id:'m3e',name:'表3　舌骨の筋', tables:['t3e']},
  {id:'m8', name:'表8　摂食場面の観察', tables:['t8']},
+ {id:'m12',name:'表12　外科的治療', tables:['t12']},
 ];
-const ALL=['t1a','t1b','t2','t3a','t3b','t3c','t3d','t3e','t8'];
-const FAMS={T1:['t1a','t1b'],M:['t2','t3a','t3b','t3c','t3d','t3e'],T8:['t8']};
-const FAM={t1a:'T1',t1b:'T1',t2:'M',t3a:'M',t3b:'M',t3c:'M',t3d:'M',t3e:'M',t8:'T8'};
+const ALL=['t1a','t1b','t2','t3a','t3b','t3c','t3d','t3e','t8','t12'];
+const FAMS={T1:['t1a','t1b'],M:['t2','t3a','t3b','t3c','t3d','t3e'],T8:['t8'],T12:['t12']};
+const FAM={t1a:'T1',t1b:'T1',t2:'M',t3a:'M',t3b:'M',t3c:'M',t3d:'M',t3e:'M',t8:'T8',t12:'T12'};
 const EXTRA={nerve:['三叉神経（Ⅴ）','顔面神経（Ⅶ）','舌咽神経（Ⅸ）','迷走神経（Ⅹ）','副神経（Ⅺ）','舌下神経（Ⅻ）']};
-const KIND_ORDER=['name','func','nerve','cat','stage','obs','bg'];
-const KIND_LABEL={name:'名称',func:'機能・内容',nerve:'神経支配',cat:'分類',stage:'期',obs:'観察ポイント',bg:'背景要因'};
+const KIND_ORDER=['name','func','nerve','cat','stage','obs','bg','purpose','proc','ind'];
+const CHOICE_PRI=['nerve','name','bg','ind','proc','func','stage','obs','purpose','cat'];
+const KIND_LABEL={name:'名称',func:'機能・内容',nerve:'神経支配',cat:'分類',stage:'期',obs:'観察ポイント',bg:'背景要因',purpose:'目的',proc:'術式',ind:'適応'};
 const OPT_NUM=['①','②','③','④','⑤'];
 
 // ===========================
@@ -336,6 +364,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const optText=c=>String(c.s!==undefined?c.s:(c.a||'')).replace(/\n/g,'');
 const fullText=c=>String(c.a||'').replace(/\n/g,'');
+const ctxText=c=>fullText(c).replace(/^・/,'').replace(/\*[¹²³]/g,'');   // 手がかり表示用（先頭の「・」と脚注記号を除く）
 const rngOf=(c,ax)=>ax==='col'?[c.c0,c.c1]:[c.r0,c.r1];
 const ovl=(a,b)=>a[0]<=b[1]&&b[0]<=a[1];
 const within=(a,b)=>b[0]<=a[0]&&a[1]<=b[1];
@@ -355,7 +384,7 @@ const viewTables=()=>view.type==='cat'?CATS.find(c=>c.id===view.catId).tables:AL
 function availKinds(){ return KIND_ORDER.filter(k=>viewTables().some(t=>TCELLS[t].some(c=>c.k===k))); }
 function setDefaults(){
   const av=availKinds();
-  const pri=mode==='choice'?['nerve','name','bg','func','stage','obs','cat']:['name','nerve','stage','bg'];
+  const pri=mode==='choice'?CHOICE_PRI:['name','nerve','stage','bg','proc','ind'];
   let sel=pri.filter(k=>av.includes(k)); if(!sel.length) sel=[av[0]];
   kinds=new Set(mode==='choice'?[sel[0]]:sel);
 }
@@ -384,15 +413,18 @@ function describe(kind,text,pref,self){
   switch(kind){
     case 'nerve': return text+'：'+subject()+'の神経支配';
     case 'func':  return text+'：'+subject()+'の機能';
-    case 'cat':   { const n=rel(['name']); return text+'：'+(n.length?clip(n,3)+'を含む':'筋名の記載なし（'+(rel(['func'])[0]||'')+'）'); }
+    case 'cat':   { const n=rel(['name','proc']); return text+'：'+(n.length?clip(n,3)+'を含む':'筋名の記載なし（'+(rel(['func'])[0]||'')+'）'); }
     case 'name':  return text+'：'+[rel(['func'])[0],rel(['nerve'])[0]].filter(Boolean).join('／');
     case 'stage': return text+'：'+clip(rel(['obs']),2);
     case 'obs':   return text+'：'+clip(rel(['stage']),2)+'の観察ポイント';
+    case 'purpose': return text+'：'+clip(rel(['proc']),3)+'の目的';
+    case 'proc':    return text+'：'+[rel(['purpose'])[0],rel(['ind'])[0]].filter(Boolean).join('／');
+    case 'ind':     return text+'：'+clip(rel(['proc']),3)+'の適応';
     case 'bg':    { const o=rel(['obs'])[0]; return text+'：'+clip(rel(['stage']),2)+(o?'「'+o+'」':'')+'の背景要因'; }
   }
   return text;
 }
-const ctxLabel=(tid,k)=>({cat:'分類',stage:'期',name:tid==='t1a'||tid==='t1b'?'段階':'筋',obs:'観察ポイント',func:tid==='t1a'||tid==='t1b'?'内容':'機能',nerve:'神経支配',bg:'背景要因'})[k];
+const ctxLabel=(tid,k)=>({cat:'分類',stage:'期',name:tid==='t1a'||tid==='t1b'?'段階':'筋',obs:'観察ポイント',func:tid==='t1a'||tid==='t1b'?'内容':'機能',nerve:'神経支配',bg:'背景要因',purpose:'目的',proc:'術式',ind:'適応'})[k];
 function qLine(cell){
   const t1=cell.tid==='t1a'||cell.tid==='t1b';
   if(cell.k==='name') return t1?'段階の名称は？':'筋の名称は？';
@@ -447,9 +479,9 @@ function buildQ(cell,blankSet){
   const opts=shuffle(picked.concat([ans])); const ai=opts.indexOf(ans);
 
   // 手がかり表示
-  const ORDERC=['cat','stage','name','obs','func','nerve','bg'];
+  const ORDERC=['cat','stage','purpose','name','proc','obs','func','nerve','ind','bg'];
   const ctxHTML=ORDERC.map(k=>{
-    const items=dedupe(ctx.filter(x=>x.k===k).map(fullText));
+    const items=dedupe(ctx.filter(x=>x.k===k).map(ctxText));
     return items.length?'<b>'+ctxLabel(cell.tid,k)+'</b>：'+esc(clip(items,4)):'';
   }).filter(Boolean).join('<br>')||'（手がかりなし）';
 
@@ -477,7 +509,7 @@ function buildMenu(){
    +'<button class="sub" onclick="startView(\'all\')">全表まとめて</button>'
    +'<button class="sub" onclick="startView(\'random\')">ランダム穴埋め</button>'
    +'<button class="sub" onclick="startView(\'star\')">★頻出（'+star+'）</button></div>';
-  h+='<div class="howto">・練習画面で <b>👆タップで答えを見る</b> と <b>🔘選択肢（5択）</b> を切り替えられます<br>・空欄にする項目（名称／機能／神経／分類／期／観察ポイント／背景要因）も切り替え可<br>・結合セル（例：三叉神経が7行ぶん）は空欄1つで答えます<br>・★は国試で狙われやすい箇所の目安です</div>';
+  h+='<div class="howto">・練習画面で <b>👆タップで答えを見る</b> と <b>🔘選択肢（5択）</b> を切り替えられます<br>・空欄にする項目（名称／機能／神経／分類／期／観察ポイント／背景要因／目的／術式／適応）も切り替え可<br>・結合セル（例：三叉神経が7行ぶん）は空欄1つで答えます<br>・★は国試で狙われやすい箇所の目安です</div>';
   $('menu').innerHTML=h;
 }
 function startView(type,catId){
@@ -494,8 +526,7 @@ function goMenu(){
 function setMode(m){
   mode=m;
   if(m==='choice'&&kinds.size>1){
-    const pri=['nerve','name','bg','func','stage','obs','cat'];
-    kinds=new Set([pri.find(k=>kinds.has(k))]);
+    kinds=new Set([CHOICE_PRI.find(k=>kinds.has(k))]);
   }
   render();
 }
@@ -544,7 +575,7 @@ function tableHTML(tid){
   const added=Object.keys(blanks).length-before;
   if(added===0&&view.type!=='cat') return '';
   const head=t.head?'<tr>'+t.head.map(cellHTML).join('')+'</tr>':'';
-  return '<div class="tsec"><div class="tt">'+t.title+'</div><div class="tw"><table class="tb'+(t.narrow?' narrow':'')+'">'+head+body+'</table></div></div>';
+  return '<div class="tsec"><div class="tt">'+t.title+'</div><div class="tw"><table class="tb'+(t.narrow?' narrow':'')+'">'+head+body+'</table></div>'+(t.foot?'<div class="foot">'+t.foot.map(esc).join('<br>')+'</div>':'')+'</div>';
 }
 function render(){
   blanks={}; ORDER=[]; closeQ();
