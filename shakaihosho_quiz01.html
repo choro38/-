@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>社会保障 第1・2回 ミニテスト対策</title>
+<style>
+:root{
+  --bg:#F3F5F4; --surface:#FFFFFF; --ink:#1C2530; --sub:#5B6773; --line:#DDE3E8;
+  --accent:#2E4A7D; --accent-soft:#E6ECF7; --accent-ink:#FFFFFF;
+  --star:#B26A00; --star-soft:#FFF1DA;
+  --ok:#1E7A4F; --ok-soft:#E2F4EA; --ng:#B93A2E; --ng-soft:#FBE7E4;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#12171C; --surface:#1B222A; --ink:#E8EDF2; --sub:#9AA7B4; --line:#2C3641;
+    --accent:#8FB0E8; --accent-soft:#232F45; --accent-ink:#10161D;
+    --star:#F0B35A; --star-soft:#3A2D14;
+    --ok:#6FD0A0; --ok-soft:#173326; --ng:#F0877B; --ng-soft:#3A1E1B;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+  line-height:1.7; font-size:16px;
+  padding:0 0 calc(32px + env(safe-area-inset-bottom));
+}
+button{font:inherit; color:inherit; cursor:pointer}
+button:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+.wrap{max-width:640px; margin:0 auto; padding:0 16px}
+
+/* ---------- ヘッダー ---------- */
+header{padding:calc(20px + env(safe-area-inset-top)) 0 12px}
+header h1{margin:0; font-size:1.55rem; letter-spacing:.04em; line-height:1.3}
+header p{margin:2px 0 0; color:var(--sub); font-size:.85rem}
+.seg{display:flex; margin-top:14px; background:var(--line); border-radius:10px; padding:3px}
+.seg button{flex:1; border:0; background:transparent; padding:9px 6px; border-radius:8px; font-weight:600; color:var(--sub)}
+.seg button.on{background:var(--surface); color:var(--accent); box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg small{font-weight:400; margin-left:4px}
+
+/* ---------- メニュー：単元 ---------- */
+.sec-title{margin:22px 0 4px; font-size:1.15rem; font-weight:700}
+.sec-note{margin:0 0 6px; color:var(--sub); font-size:.8rem}
+.round{
+  margin:18px 0 0; padding:7px 12px; font-size:.95rem; font-weight:700;
+  background:var(--accent); color:var(--accent-ink); border-radius:8px 8px 0 0;
+}
+.cats{list-style:none; margin:0; padding:0; background:var(--surface); border:1px solid var(--line); border-top:0; border-radius:0 0 8px 8px}
+.cats li+li{border-top:1px solid var(--line)}
+.cats button{
+  width:100%; min-height:56px; text-align:left; background:transparent; border:0;
+  padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  font-size:1.02rem; font-weight:600;
+}
+.cats button:active{background:var(--accent-soft)}
+.cat-meta{display:flex; align-items:center; gap:8px; flex-shrink:0; color:var(--sub); font-size:.85rem; font-weight:400}
+.wbadge{background:var(--ng-soft); color:var(--ng); border-radius:999px; padding:1px 9px; font-size:.75rem; font-weight:700}
+
+/* ---------- メニュー：その他 ---------- */
+.others{margin-top:28px}
+.others h2{margin:0 0 8px; font-size:.9rem; color:var(--sub); font-weight:600}
+.chips{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.chips button{
+  border:1px solid var(--line); background:var(--surface); border-radius:10px;
+  padding:9px 10px; text-align:left; min-height:52px; line-height:1.35;
+}
+.chips button b{display:block; font-size:.95rem}
+.chips button span{font-size:.75rem; color:var(--sub)}
+.chips button:disabled{opacity:.45; cursor:default}
+.chips button.star b{color:var(--star)}
+.chips button.rev b{color:var(--ng)}
+.shuffle{display:flex; align-items:center; gap:8px; margin-top:12px; font-size:.9rem; color:var(--sub)}
+.shuffle input{width:20px; height:20px; accent-color:var(--accent)}
+
+/* ---------- クイズ ---------- */
+.screen{display:none}
+.screen.on{display:block}
+.qhead{display:flex; align-items:center; gap:10px; padding:calc(12px + env(safe-area-inset-top)) 0 8px}
+.back{border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:6px 12px; font-size:.9rem}
+.qtitle{flex:1; font-weight:700; font-size:.95rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.qcount{font-size:.9rem; color:var(--sub); font-variant-numeric:tabular-nums}
+.progress{height:6px; background:var(--line); border-radius:3px; overflow:hidden}
+.progress div{height:100%; width:0; background:var(--accent); transition:width .25s}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 16px; margin-top:14px}
+.meta{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px}
+.tag{font-size:.75rem; padding:1px 9px; border-radius:999px; background:var(--accent-soft); color:var(--accent); font-weight:600}
+.tag.src{background:var(--bg); color:var(--sub); font-weight:400}
+.tag.star{background:var(--star-soft); color:var(--star)}
+.tag.chk{background:var(--ng-soft); color:var(--ng)}
+.qtext{font-size:1.08rem; line-height:2; margin:0}
+.blank{
+  display:inline-block; min-width:4.2em; text-align:center; margin:0 .15em;
+  border-bottom:2px solid var(--accent); color:var(--sub); font-size:.9em; padding:0 .2em;
+}
+.blank.filled{color:var(--accent); font-weight:700; background:var(--accent-soft); border-radius:4px 4px 0 0}
+.btn-main{
+  width:100%; min-height:54px; margin-top:16px; border:0; border-radius:10px;
+  background:var(--accent); color:var(--accent-ink); font-weight:700; font-size:1.05rem;
+}
+.judge{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px}
+.judge button{min-height:54px; border-radius:10px; border:2px solid; font-weight:700; font-size:1.02rem; background:var(--surface)}
+.judge .j-ok{border-color:var(--ok); color:var(--ok)}
+.judge .j-ng{border-color:var(--ng); color:var(--ng)}
+.tfbtns{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px}
+.tfbtns button{
+  min-height:84px; font-size:2.4rem; font-weight:700; border-radius:12px;
+  border:2px solid var(--line); background:var(--surface);
+}
+.tfbtns .t-o{color:var(--ok)}
+.tfbtns .t-x{color:var(--ng)}
+.tfbtns button:disabled{cursor:default; opacity:.5}
+.tfbtns button.chosen{opacity:1; border-color:currentColor}
+.explain{margin-top:16px; padding:12px 14px; background:var(--bg); border-left:4px solid var(--accent); border-radius:0 8px 8px 0; font-size:.95rem}
+.explain b{display:block; font-size:.8rem; color:var(--sub); margin-bottom:2px}
+.verdict{margin-top:16px; font-weight:700; font-size:1.1rem}
+.verdict.ok{color:var(--ok)} .verdict.ng{color:var(--ng)}
+.hide{display:none!important}
+
+/* ---------- 結果 ---------- */
+.score{text-align:center; padding:26px 0 6px}
+.score .big{font-size:3.2rem; font-weight:800; color:var(--accent); line-height:1.1; font-variant-numeric:tabular-nums}
+.score .of{color:var(--sub)}
+.score .msg{margin-top:6px; font-weight:700}
+.rlist{margin:16px 0 0; padding:0; list-style:none}
+.rlist li{background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--ng); border-radius:8px; padding:10px 12px; margin-bottom:8px; font-size:.92rem}
+.rlist .ra{margin-top:4px; font-weight:700; color:var(--accent)}
+.rlist .re{margin-top:4px; color:var(--sub); font-size:.85rem}
+.ractions{display:grid; gap:10px; margin-top:18px}
+.ractions button{min-height:52px; border-radius:10px; border:1px solid var(--line); background:var(--surface); font-weight:600}
+.ractions button.primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent)}
+.ractions button:disabled{opacity:.45}
+@media (prefers-reduced-motion: reduce){.progress div{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= メニュー ================= -->
+<section id="s-menu" class="screen on">
+  <header>
+    <h1>社会保障</h1>
+    <p>第1・2回 ミニテスト対策</p>
+    <div class="seg" role="tablist">
+      <button id="seg-fill" class="on" data-mode="fill">穴埋め<small id="n-fill"></small></button>
+      <button id="seg-tf" data-mode="tf">○×<small id="n-tf"></small></button>
+    </div>
+  </header>
+
+  <h2 class="sec-title">単元から選ぶ</h2>
+  <p class="sec-note">タップするとその単元の問題がすぐ始まります</p>
+  <div id="cat-area"></div>
+
+  <div class="others">
+    <h2>ほかの出題方法</h2>
+    <div class="chips">
+      <button id="o-all"><b>全問</b><span id="o-all-n"></span></button>
+      <button id="o-rand"><b>ランダム10問</b><span>全単元から抽出</span></button>
+      <button id="o-star" class="star"><b>★頻出</b><span id="o-star-n"></span></button>
+      <button id="o-wrong" class="rev"><b>間違えた問題</b><span id="o-wrong-n"></span></button>
+    </div>
+    <label class="shuffle"><input type="checkbox" id="shuffle"> 出題順をシャッフルする</label>
+  </div>
+</section>
+
+<!-- ================= クイズ ================= -->
+<section id="s-quiz" class="screen">
+  <div class="qhead">
+    <button class="back" id="btn-back">← 戻る</button>
+    <div class="qtitle" id="q-title"></div>
+    <div class="qcount" id="q-count"></div>
+  </div>
+  <div class="progress"><div id="bar"></div></div>
+
+  <div class="card">
+    <div class="meta" id="q-meta"></div>
+    <p class="qtext" id="q-text"></p>
+
+    <div id="fill-actions">
+      <button class="btn-main" id="btn-reveal">答えを見る</button>
+      <div class="judge hide" id="judge">
+        <button class="j-ng" id="btn-ng">✕ まだ</button>
+        <button class="j-ok" id="btn-ok">○ 覚えた</button>
+      </div>
+    </div>
+
+    <div id="tf-actions" class="hide">
+      <div class="tfbtns">
+        <button class="t-o" id="btn-o" aria-label="正しい">○</button>
+        <button class="t-x" id="btn-x" aria-label="誤り">×</button>
+      </div>
+    </div>
+
+    <div id="verdict" class="verdict hide"></div>
+    <div id="explain" class="explain hide"></div>
+    <button class="btn-main hide" id="btn-next">次へ</button>
+  </div>
+</section>
+
+<!-- ================= 結果 ================= -->
+<section id="s-result" class="screen">
+  <div class="score">
+    <div class="big" id="r-score"></div>
+    <div class="of" id="r-of"></div>
+    <div class="msg" id="r-msg"></div>
+  </div>
+  <ul class="rlist" id="r-list"></ul>
+  <div class="ractions">
+    <button class="primary" id="r-wrong">間違えた問題だけもう一度</button>
+    <button id="r-again">同じ問題をもう一度</button>
+    <button id="r-menu">単元メニューへ戻る</button>
+  </div>
+</section>
+
+</div>
+
+<script>
+const DATA = {"fill": [{"id": "f1", "type": "fill", "round": 1, "src": "レジュメ1P", "q": "1950年の社会保障制度審議会勧告で、社会保障とは、疾病・老齢・失業等の生活上の困窮を引き起こしかねない事態に対して、保険的方法（社会保険）あるいは公的負担による方法（　　　）を用いた経済保障で対応することとされた。", "a": "社会扶助", "exp": "現に生活に困窮する者には国家扶助（生活保護）で最低限の生活を保障する、というのが勧告の柱。", "star": true, "cat": "社会保障の定義", "check": false}, {"id": "f2", "type": "fill", "round": 1, "src": "レジュメ1P", "q": "勧告は、経済保障や国家扶助による最低限の生活保障とあわせて、（　　　）および社会福祉の向上を図ることを内容としている。", "a": "公衆衛生", "exp": "社会保障の4部門（社会保険・公的扶助・社会福祉・公衆衛生）に対応する。", "star": true, "cat": "社会保障の定義", "check": false}, {"id": "f3", "type": "fill", "round": 1, "src": "レジュメ1P", "q": "勧告の定義は、当時の経済社会情勢を反映して最低限度の生活保障に重点があったため、現在の視点から見ると、制度の対象者もその目的もかなり（　　　）されたものといえる。", "a": "限定", "exp": "対象は特定の人→すべての人へ広がった（授業ノートの矢印）。", "star": true, "cat": "社会保障の定義", "check": false}, {"id": "f4", "type": "fill", "round": 1, "src": "レジュメ1P", "q": "現在の社会保障制度は、（　　　）を対象にして、生活の安定を損なう様々な事態に対し、生活の安定を図り安心をもたらす役割を果たしている。", "a": "すべての国民", "exp": "勧告の頃より対象者・給付内容は大幅に拡充した。", "star": true, "cat": "社会保障の定義", "check": false}, {"id": "f5", "type": "fill", "round": 1, "src": "レジュメ1P", "q": "現代の定義では、「広く国民を対象にして、個人の責任や（　　　）では対応し難い事態に対し、公的な仕組みを通じて給付を行う」ことで、健やかで安心できる生活を保障する。", "a": "自助努力", "exp": "定義は暗記しておく。", "star": true, "cat": "社会保障の定義", "check": false}, {"id": "f6", "type": "fill", "round": 1, "src": "レジュメ1P", "q": "社会保障の成立過程で最も重要な制度は、イギリスの（　　　）（Poor Law）である。", "a": "救貧法", "exp": "救貧法→生活保護（公的扶助）、社会保険、という2系統の源流の一つ。", "star": false, "cat": "救貧法（イギリス）", "check": false}, {"id": "f7", "type": "fill", "round": 1, "src": "レジュメ1P", "q": "イギリスでは、（　　　）世紀の前半から、救貧を目的としたいくつかの法律が制定された。", "a": "16", "exp": "授業メモ：日本では江戸初めにあたる。", "star": false, "cat": "救貧法（イギリス）", "check": false}, {"id": "f8", "type": "fill", "round": 1, "src": "レジュメ1P", "q": "歴史上有名なのは、（①）年に、エリザベス1世（イギリスの女王）の時代に施行された（②）救貧法（旧救貧法）である。", "a": "①1601　②エリザベス", "exp": "200年以上存続した。", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "f9", "type": "fill", "round": 1, "src": "レジュメ1P", "q": "イギリスの救貧事業は（　　　）単位で行われた。", "a": "教区", "exp": "中央ではなく教区ごと。このため地域差が大きかった。", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "f10", "type": "fill", "round": 1, "src": "レジュメ1P", "q": "エリザベス救貧法では、教区ごとに地域の（　　　）が判事に任命され、救貧事業を行った。", "a": "貧民監督官", "exp": "貧民監督官が救貧税を徴収した。", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "f11", "type": "fill", "round": 1, "src": "レジュメ1P", "q": "エリザベス救貧法では、貧民監督官が教区から（　　　）を徴収して救貧事業を行った。", "a": "救貧税", "exp": "財源は保険料ではなく税（教区から徴収）。", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "f12", "type": "fill", "round": 1, "src": "レジュメ1P", "q": "ギルバート法による救貧給付要件の緩和などで、（　　　）（院外救済）が増加した。", "a": "居宅保護", "exp": "新救貧法の院内救済（ワークハウス内）と対比。", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "f13", "type": "fill", "round": 1, "src": "レジュメ1P", "q": "居宅保護の増加と賃金補助制度（スピーナムランド制度）の普及により、給付による支出が（　　　）して救貧税が引き上げられた。", "a": "増大", "exp": "授業ノート：お金がかかる→救貧税を増やした。これが新救貧法の契機。", "star": false, "cat": "救貧法（イギリス）", "check": false}, {"id": "f14", "type": "fill", "round": 1, "src": "レジュメ2P", "q": "エリザベス救貧法は、（　　　）年に大改正され、新救貧法と呼ばれた。", "a": "1834", "exp": "「新」と「旧」を区別する。", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "f15", "type": "fill", "round": 1, "src": "レジュメ2P", "q": "新救貧法では、中央に（　　　）が設置され、効率化と権限強化が図られた。", "a": "救貧法委員会", "exp": "中央集権化の原則。", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "f16", "type": "fill", "round": 1, "src": "レジュメ2P", "q": "新救貧法では、貧民処遇が（①）され、救貧行政が（②）化された。", "a": "①一元　②中央集権", "exp": "授業ノート：教区ごとの差を解消した。", "star": false, "cat": "救貧法（イギリス）", "check": false}, {"id": "f17", "type": "fill", "round": 1, "src": "レジュメ2P", "q": "新救貧法では、労働能力がありながら救済を受ける貧民の処遇は、最下層の（　　　）以下でなければならないとされた。", "a": "自立労働者", "exp": "劣等処遇の原則（被保護者処遇の低位性）。", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "f18", "type": "fill", "round": 1, "src": "レジュメ2P", "q": "（　　　）（ドイツの宰相）が行った社会保険制度の導入は、福祉政策が社会保険を中心とする社会保障へ発展する転機の一つとなった。", "a": "ビスマルク", "exp": "1883年疾病保険法・1884年災害補償法・1889年養老及び廃疾保険法。", "star": true, "cat": "ドイツの社会保険", "check": false}, {"id": "f19", "type": "fill", "round": 1, "src": "レジュメ2P", "q": "ビスマルクの社会保険は、（　　　）原理に基づき、権利として給付が行われる点で、それ以前の救貧法の原理と異なる。", "a": "拠出", "exp": "お金を出し合う（強制加入）。", "star": true, "cat": "ドイツの社会保険", "check": false}, {"id": "f20", "type": "fill", "round": 1, "src": "レジュメ2P", "q": "ビスマルクの社会保険は、今日の社会保障の（　　　）としての一面を持つ。", "a": "先駆", "exp": "拠出原理により権利として給付される点が根拠。", "star": false, "cat": "ドイツの社会保険", "check": false}, {"id": "f21", "type": "fill", "round": 1, "src": "レジュメ2P", "q": "ビスマルクは社会主義運動を厳しく弾圧しながら社会保険を導入した。この政策は「（①）と（②）」と呼ばれる。", "a": "①飴　②鞭", "exp": "社会主義者鎮圧法（1878年）。労働者への思想弾圧と引き換えの政策（授業ノート）。", "star": true, "cat": "ドイツの社会保険", "check": false}, {"id": "f22", "type": "fill", "round": 1, "src": "レジュメ2P", "q": "社会保障と最低賃金制等による（　　　）（national minimum：国民最低限の保障）を強く主張したのは、ウェッブ夫妻らの社会民主主義者だった。", "a": "ナショナル・ミニマム", "exp": "ウェッブ夫妻（シドニー及びビアトリス：イギリスの社会改良家）。", "star": true, "cat": "ウェッブ夫妻", "check": false}, {"id": "f23", "type": "fill", "round": 1, "src": "レジュメ2P", "q": "1930年代の世界大恐慌では、失業保険給付だけでなく、（　　　）そのものをなくすための根本的な政策が要請された。", "a": "大量失業", "exp": "1929年にアメリカのウォール街での株価暴落に端を発した。", "star": false, "cat": "世界大恐慌と大戦", "check": false}, {"id": "f24", "type": "fill", "round": 1, "src": "レジュメ3P", "q": "大量失業対策として総需要の拡大を主張する（①）理論が生まれた。アメリカでは、（②）大統領の下で（③）政策が行われた。", "a": "①ケインズ　②F.ルーズベルト　③ニューディール", "exp": "ケインズ（イギリスの経済学者）。ニューディール政策は大規模な公共事業が中心。", "star": false, "cat": "世界大恐慌と大戦", "check": false}, {"id": "f25", "type": "fill", "round": 1, "src": "レジュメ3P", "q": "1935年にアメリカで制定された（　　　）法は、「社会保障（social security）」という言葉が法律に用いられた最初といわれる。", "a": "社会保障", "exp": "世界大恐慌後、ニューディール政策の時期。", "star": true, "cat": "世界大恐慌と大戦", "check": false}, {"id": "f26", "type": "fill", "round": 1, "src": "レジュメ3P", "q": "第二次世界大戦は、社会保障を促す（　　　）になったといわれる。", "a": "契機", "exp": "戦死者の遺族・帰還傷病兵への保障、労働者階級の力の増大、需要拡大による景気促進と失業減少など。", "star": false, "cat": "世界大恐慌と大戦", "check": false}, {"id": "f27", "type": "fill", "round": 1, "src": "レジュメ3P", "q": "1950年代後半には、ナショナル・ミニマムを保障するだけでなく、（　　　）生活を保障すべきだとの主張がなされた。", "a": "よりゆとりのある", "exp": "1960年にはスウェーデンで二階建ての公的年金が実現した。", "star": false, "cat": "ベヴァリッジ報告と福祉国家", "check": false}, {"id": "f28", "type": "fill", "round": 1, "src": "レジュメ3P", "q": "1942年に発表された（　　　）報告は、戦後の労働党内閣の下での社会保障体系の整備につながった。", "a": "ベヴァリッジ", "exp": "ベヴァリッジ（イギリスの経済学者）。同年にILO（国際労働機関）も『社会保障への道』を発表。", "star": false, "cat": "ベヴァリッジ報告と福祉国家", "check": false}, {"id": "f29", "type": "fill", "round": 1, "src": "レジュメ3P", "q": "我が国で社会保障あるいは社会政策が中央政府によって初めて導入されたのは、1874年の（　　　）規則であった。", "a": "恤救", "exp": "恤救規則（じゅっきゅうきそく）。明治7年。", "star": true, "cat": "日本の社会保障の歴史", "check": false}, {"id": "f30", "type": "fill", "round": 1, "src": "レジュメ4P", "q": "シドニー・ウェッブのナショナル・ミニマム論は、主に（　　　）を念頭に置いたものであった。", "a": "賃金労働者", "exp": "ビアトリスはこれを、すべての社会成員に広げた。", "star": true, "cat": "ウェッブ夫妻", "check": false}, {"id": "f31", "type": "fill", "round": 1, "src": "レジュメ4P", "q": "（　　　）は、1901年にナショナル・ミニマム論を提唱した、フェビアン社会主義の理論的指導者である。", "a": "シドニー・ウェッブ", "exp": "イギリスの社会民主主義者。ナショナル・ミニマムは雇用条件・余暇・医療衛生・教育の4分野。", "star": true, "cat": "ウェッブ夫妻", "check": false}, {"id": "f32", "type": "fill", "round": 1, "src": "レジュメ4P", "q": "1905年に設置された救貧法委員会で、少数派報告を提出した（　　　）は、年金等を含む保障を予防的（防貧的）に行うべきと主張した。", "a": "ビアトリス・ウェッブ", "exp": "予防的＝防貧的。救貧（事後的）との対比。", "star": true, "cat": "ウェッブ夫妻", "check": false}, {"id": "f33", "type": "fill", "round": 1, "src": "レジュメ4P", "q": "ビアトリス・ウェッブは、すべての（　　　）が健全な生活を送れるようにすべきだと主張した。", "a": "社会成員", "exp": "シドニーが念頭に置いた賃金労働者より、対象が広い。", "star": false, "cat": "ウェッブ夫妻", "check": false}, {"id": "f34", "type": "fill", "round": 1, "src": "レジュメ5P", "q": "1942年のベヴァリッジ報告は、（　　　）イギリスの福祉国家の基となった。", "a": "戦後", "exp": "報告の発表は戦中、福祉国家の確立は戦後。", "star": true, "cat": "ベヴァリッジ報告と福祉国家", "check": false}, {"id": "f35", "type": "fill", "round": 1, "src": "レジュメ5P", "q": "福祉国家イギリスを象徴する言葉は、「（①）から（②）まで」（From the Cradle to the Grave）である。", "a": "①ゆりかご　②墓場", "exp": "ベヴァリッジ報告に基づく。", "star": true, "cat": "ベヴァリッジ報告と福祉国家", "check": false}, {"id": "f36", "type": "fill", "round": 1, "src": "レジュメ6P", "q": "1874年の（①）規則は約半世紀近く救貧行政の基本法であり続け、1929年に（②）法の制定が決まった。", "a": "①恤救　②救護", "exp": "救護法の実施は3年後（1932年）。", "star": true, "cat": "日本の社会保障の歴史", "check": false}, {"id": "f37", "type": "fill", "round": 1, "src": "スライド（新救貧法）", "q": "新救貧法の（　　　）の原則とは、無能力者以外の身体壮健な者に対し、ワークハウス以外の場所での救済を禁じるものである。", "a": "院内救済", "exp": "授業ノート：施設（ワークハウス）○・居宅保護×。", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "f38", "type": "fill", "round": 1, "src": "スライド（新救貧法）", "q": "新救貧法の（　　　）の原則とは、中央に救貧法委員会を設置して、行政の効率化と権限強化を図るものである。", "a": "中央集権化", "exp": "", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "f39", "type": "fill", "round": 1, "src": "スライド（新救貧法）", "q": "新救貧法の（　　　）の原則とは、救済を受ける者の生活を、自立した生活を送る最下層の者の生活以下にするものである。", "a": "劣等処遇", "exp": "", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "f40", "type": "fill", "round": 1, "src": "スライド（ビスマルク）", "q": "ビスマルクの社会保険は、（　　　）加入による財源確保や給付保障によって、国民の不安を除去し日常生活を安定させる機能も果たした。", "a": "強制", "exp": "拠出原理＝お金を出し合う＋強制加入。", "star": true, "cat": "ドイツの社会保険", "check": false}, {"id": "f41", "type": "fill", "round": 1, "src": "スライド（ベヴァリッジ報告1）", "q": "ベヴァリッジ報告は、人類の社会進歩を阻む五つの（①）な悪のうち、（②）（貧困）が最悪であるとした。", "a": "①巨大　②困窮", "exp": "五つの巨人：困窮・疾病・無知・不潔・怠惰。", "star": true, "cat": "ベヴァリッジ報告と福祉国家", "check": false}, {"id": "f42", "type": "fill", "round": 1, "src": "スライド（ベヴァリッジ報告2）", "q": "ベヴァリッジ報告は、多子貧困発生阻止のため、（　　　）の創設を提言した。", "a": "児童手当", "exp": "他に、均一負担・均一給付、ナショナル・ミニマム以上の保障は行わない、など。", "star": false, "cat": "ベヴァリッジ報告と福祉国家", "check": false}, {"id": "f43", "type": "fill", "round": 1, "src": "スライド（恤救規則）", "q": "恤救規則は、中央政府によって導入された（　　　）制度である。", "a": "公的扶助", "exp": "生活保護の出発点。権利ではなく「あわれむ・めぐむ」米の給付。", "star": true, "cat": "日本の社会保障の歴史", "check": false}, {"id": "f44", "type": "fill", "round": 2, "src": "レジュメ1P", "q": "公的年金の特徴は、①（　　　）加入であること、②年金額の（　　　）価値が維持されること、③生存している限り支給される（　　　）年金であること、などである。", "a": "①強制　②実質　③終身", "exp": "私的年金は任意加入で、価値維持が困難、有期年金が多い。", "star": true, "cat": "公的年金と私的年金", "check": false}, {"id": "f45", "type": "fill", "round": 2, "src": "レジュメ1P", "q": "公的年金の財源は、本人の保険料や積立金の（①）のほか、後世代の保険料や（②）（税金）がある。", "a": "①運用収入　②国庫負担", "exp": "基礎年金の給付費は全額が保険料と国庫負担。", "star": true, "cat": "財政方式", "check": false}, {"id": "f46", "type": "fill", "round": 2, "src": "レジュメ1P", "q": "私的年金には、企業が従業員の福利厚生の一環として実施する（①）年金と、生命保険会社などが個人を対象に行う（②）年金がある。", "a": "①企業　②個人", "exp": "企業年金は事業主負担の比重が高く、個人年金は個人の保険料と運用収入のみ。", "star": false, "cat": "公的年金と私的年金", "check": false}, {"id": "f47", "type": "fill", "round": 2, "src": "レジュメ1P", "q": "私的年金の特徴は、①（　　　）の制度であること、②年金額の価値維持が（　　　）であること、③（　　　）年金が多いこと、などである。", "a": "①任意　②困難　③有期", "exp": "授業メモ：物価変動に合わせられない。", "star": false, "cat": "公的年金と私的年金", "check": false}, {"id": "f48", "type": "fill", "round": 2, "src": "レジュメ1P", "q": "1961年以来、自営業者や無業者を含め国民すべてが公的年金制度に加入する（　　　）体制となっている。", "a": "国民皆年金", "exp": "1961年に実現。職業ごとに制度が分立していた。", "star": true, "cat": "制度体系", "check": false}, {"id": "f49", "type": "fill", "round": 2, "src": "レジュメ1P", "q": "1985年の改正の結果、現役世代は全て（　　　）の被保険者となり、高齢期になれば加入期間に応じて定額の基礎年金の支給を受けることになる。", "a": "国民年金", "exp": "会社員・公務員等はさらに厚生年金に加入し、報酬比例年金を受給できる。", "star": false, "cat": "制度体系", "check": false}, {"id": "f50", "type": "fill", "round": 2, "src": "レジュメ1P", "q": "賦課方式とは、年金給付に必要な費用を、その時々の（①）の保険料により賄う方式で、現役世代が納めた保険料はその時の（②）への支払いに充てられる。", "a": "①加入者　②年金受給者", "exp": "", "star": true, "cat": "財政方式", "check": false}, {"id": "f51", "type": "fill", "round": 2, "src": "レジュメ2P", "q": "賦課方式では、（①）になるほど保険料負担が上昇し、（②）が進む過程では特に大きな問題になる。", "a": "①後世代　②少子高齢化", "exp": "受給者・加入者比率（年金扶養比率）の上昇により、保険料の引き上げが必要になる。", "star": false, "cat": "財政方式", "check": false}, {"id": "f52", "type": "fill", "round": 2, "src": "レジュメ2P", "q": "積立方式は人口構成の変動の影響を受けにくいが、保険料は積立金の運用収入により決まるため、（　　　）の影響を受けやすい。", "a": "金利変動", "exp": "", "star": true, "cat": "財政方式", "check": false}, {"id": "f53", "type": "fill", "round": 2, "src": "レジュメ2P", "q": "積立方式では、想定を超えた賃金や物価の上昇があった場合、加入者への追加負担を求めない限り、年金額の（　　　）が困難になる。", "a": "価値維持", "exp": "", "star": true, "cat": "財政方式", "check": false}, {"id": "f54", "type": "fill", "round": 2, "src": "レジュメ2P", "q": "第2号被保険者とは、（　　　）の被保険者であり、第3号被保険者とは、第2号被保険者の被扶養配偶者である。", "a": "厚生年金", "exp": "第3号は妻だけでなく夫も含む。保険料は自分で納付しない。", "star": true, "cat": "被保険者の区分", "check": false}, {"id": "f55", "type": "fill", "round": 2, "src": "レジュメ2P", "q": "第3号被保険者は、第2号被保険者の被扶養配偶者であって、（①）歳以上（②）歳未満の者である。", "a": "①20　②60", "exp": "※資料2ページでは第2号の文に年齢が続いて見える。私の知る限り、20〜60歳の要件は第1号・第3号のもので、第2号は厚生年金の被保険者（70歳未満）。原本で確認を。", "star": false, "cat": "被保険者の区分", "check": true}, {"id": "f56", "type": "fill", "round": 2, "src": "レジュメ2P", "q": "老齢基礎年金は、原則として（①）年の資格期間を満たした者が（②）歳に達したときに支給される。", "a": "①10　②65", "exp": "繰上げ（60〜64歳・減額）、繰下げ（66歳以降・増額）も選べる。", "star": true, "cat": "老齢年金", "check": false}, {"id": "f57", "type": "fill", "round": 2, "src": "レジュメ2P", "q": "老齢基礎年金の支給率は、65歳支給の年金額を基準として、（①）％〜（②）％である。", "a": "①76　②184", "exp": "授業メモ：繰上げ−0.4％/月、繰下げ＋0.7％/月、75歳まで。1962年4月1日以前生まれは減額率0.5％。", "star": false, "cat": "老齢年金", "check": false}, {"id": "f58", "type": "fill", "round": 2, "src": "レジュメ2P", "q": "老齢厚生年金は、厚生年金に加入していて、（　　　）の資格期間を満たした者に支給される。", "a": "老齢基礎年金", "exp": "厚生年金の加入期間は1か月でもよい。", "star": false, "cat": "老齢年金", "check": false}, {"id": "f59", "type": "fill", "round": 2, "src": "レジュメ2P", "q": "在職老齢年金では、在職者の年金と報酬の合計額が一定額を超える場合、年金額の全部または一部が（　　　）される。", "a": "支給停止", "exp": "老齢基礎年金は在職中でも全額支給。令和7年改正で基準が月50万円から62万円に（2026年4月）。", "star": true, "cat": "老齢年金", "check": false}, {"id": "f60", "type": "fill", "round": 2, "src": "レジュメ3P", "q": "初診日とは、障害の原因となった病気やけがについて、初めて（　　　）の診療を受けた日をいう。", "a": "医師または歯科医師", "exp": "障害認定日の起算点。", "star": true, "cat": "障害年金", "check": false}, {"id": "f61", "type": "fill", "round": 2, "src": "レジュメ3P", "q": "障害基礎年金は、障害認定日に障害等級の（①）級または（②）級に該当する場合に支給される。", "a": "①1　②2", "exp": "65歳前に1級・2級になったとき（事後重症）は、本人の請求により支給。", "star": true, "cat": "障害年金", "check": false}, {"id": "f62", "type": "fill", "round": 2, "src": "レジュメ3P", "q": "障害厚生年金は、障害基礎年金に（①）して支給され、3級の障害厚生年金のほか、（②）として障害手当金が支給される場合もある。", "a": "①上乗せ　②一時金", "exp": "3級と障害手当金は厚生年金のみ。", "star": true, "cat": "障害年金", "check": false}, {"id": "f63", "type": "fill", "round": 2, "src": "レジュメ5P", "q": "1985年までの公的年金制度は、被保険者の（　　　）に応じて分立していた。", "a": "職業", "exp": "授業メモ：1961年に皆年金になったが、職業によりバラバラの制度だった。", "star": false, "cat": "制度体系", "check": false}, {"id": "f64", "type": "fill", "round": 2, "src": "レジュメ5P", "q": "旧制度では、自営業者等は（①）、民間企業の常用労働者は（②）、国家公務員・地方公務員等は各（③）に加入していた。", "a": "①国民年金　②厚生年金保険　③共済組合", "exp": "船員は船員保険。2015年10月に共済年金は厚生年金に統合。", "star": false, "cat": "制度体系", "check": false}, {"id": "f65", "type": "fill", "round": 2, "src": "レジュメ5P", "q": "自営業者の減少や産業構造の変化等により、（旧）（　　　）制度の維持が困難となることが予想された。", "a": "国民年金", "exp": "1985年改正の背景。", "star": false, "cat": "制度体系", "check": false}, {"id": "f66", "type": "fill", "round": 2, "src": "レジュメ5P", "q": "1985年の改正で、国民年金を改組し、全職業に共通の（　　　）年金を創設した。", "a": "基礎", "exp": "※1ページは「1986年の制度改正」、5ページは「1985年の公的年金改革」と記載（改正は1985年、施行は1986年）。", "star": true, "cat": "制度体系", "check": true}, {"id": "f67", "type": "fill", "round": 2, "src": "レジュメ5P", "q": "厚生年金保険と共済年金は、基礎年金に上乗せして支給される報酬比例の年金制度に改められ、いわゆる（　　　）建ての制度体系に再編された。", "a": "二階", "exp": "1階＝基礎、2階＝厚生、3階＝iDeCo・企業年金（授業メモ）。", "star": true, "cat": "制度体系", "check": false}, {"id": "f68", "type": "fill", "round": 2, "src": "レジュメ5P", "q": "旧制度では、専業主婦は任意加入しない限り自分の老齢年金の受給権を持たなかったが、新制度では国民年金の（　　　）被保険者として固有の老齢基礎年金受給権を取得できた。", "a": "第3号", "exp": "", "star": true, "cat": "制度体系", "check": false}, {"id": "f69", "type": "fill", "round": 2, "src": "スライド（国民年金）", "q": "民間企業の従業員や公務員等の被用者は、自動的に（　　　）にも加入している。", "a": "国民年金", "exp": "2階建ての1階部分は全員が加入。", "star": true, "cat": "被保険者の区分", "check": false}, {"id": "f70", "type": "fill", "round": 2, "src": "スライド（初診日・障害認定日）", "q": "障害認定日とは、初診日から起算して（①）経過した日、または（①）以内にその傷病が（②）（症状が固定した）日をいう。", "a": "①1年6か月　②治った", "exp": "「治った」＝治療の効果が期待できなくなった状態。", "star": true, "cat": "障害年金", "check": false}, {"id": "f71", "type": "fill", "round": 2, "src": "スライド（財政方式）", "q": "現在の日本の公的年金は賦課方式を基本としており、授業メモでは（　　　）扶養と表現される。", "a": "世代間", "exp": "発足当初は積立方式だった。", "star": true, "cat": "制度体系", "check": false}, {"id": "f72", "type": "fill", "round": 2, "src": "障害等級表（1級・2級）", "q": "聴覚の障害で、1級は両耳の聴力レベルが（①）デシベル以上、2級は（②）デシベル以上のものである。", "a": "①100　②90", "exp": "STに直結。", "star": true, "cat": "障害年金", "check": false}, {"id": "f73", "type": "fill", "round": 2, "src": "障害等級表（2級）", "q": "2級の障害には、（　　　）の機能を欠くものが含まれる。", "a": "そしゃく", "exp": "そしゃく・嚥下の障害は2級が最上位。", "star": true, "cat": "障害年金", "check": false}, {"id": "f74", "type": "fill", "round": 2, "src": "障害等級表（2級）", "q": "2級の障害には、音声又は言語機能に（　　　）な障害を有するものが含まれる。", "a": "著しい", "exp": "音声又は言語機能の障害は2級が最上位。", "star": true, "cat": "障害年金", "check": false}, {"id": "f75", "type": "fill", "round": 2, "src": "障害等級表（3級）", "q": "3級（厚生年金のみ）の聴覚の障害は、両耳の聴力が、（　　　）センチメートル以上では通常の話声を解することができない程度のものである。", "a": "40", "exp": "", "star": true, "cat": "障害年金", "check": false}, {"id": "f76", "type": "fill", "round": 2, "src": "障害等級表（3級）", "q": "3級の障害には、そしゃく又は（　　　）の機能に相当程度の障害を残すものが含まれる。", "a": "言語", "exp": "2級が「著しい」、3級が「相当程度」、障害手当金が「障害を残す」。", "star": true, "cat": "障害年金", "check": false}, {"id": "f77", "type": "fill", "round": 2, "src": "障害等級表（3級）", "q": "3級の障害には、精神若しくは神経系統に、労働が（　　　）制限を受けるものが含まれる。", "a": "著しい", "exp": "障害手当金は「労働が制限を受けるもの」。", "star": false, "cat": "障害年金", "check": false}], "tf": [{"id": "t1", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "1950年の勧告は、疾病・老齢・失業等の事態に対して、社会保険や社会扶助による経済保障で対応することを内容に含む。", "a": true, "exp": "勧告の定義の前半。", "star": true, "cat": "社会保障の定義", "check": false}, {"id": "t2", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "1950年の勧告は、最低限の生活保障とあわせて、公衆衛生および精神衛生の向上を図ることを内容としている。", "a": false, "exp": "正しくは「公衆衛生および社会福祉」。※精神衛生は、私の知る限り公衆衛生の一分野として整理されることが多く、迷いやすい隣接概念。レジュメの記載は「社会福祉」。", "star": false, "cat": "社会保障の定義", "check": true}, {"id": "t3", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "1950年の勧告が示した定義は、現在の視点から見ると、制度の対象者もその目的もかなり限定されたものといえる。", "a": true, "exp": "最低限度の生活保障に重点があった。", "star": true, "cat": "社会保障の定義", "check": false}, {"id": "t4", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "1950年の勧告が示した社会保障は、当時からすべての国民を対象にしていた。", "a": false, "exp": "すべての国民を対象にするのは現在の捉え方。", "star": false, "cat": "社会保障の定義", "check": false}, {"id": "t5", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "現在の社会保障制度は、すべての国民を対象にして、生活の安定を図る役割を果たしている。", "a": true, "exp": "", "star": true, "cat": "社会保障の定義", "check": false}, {"id": "t6", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "現代の社会保障は、個人の責任や自助努力で対応できる事態に対して、公的な給付を行うものである。", "a": false, "exp": "「対応できる」ではなく、個人の責任や自助努力では「対応し難い」事態。", "star": false, "cat": "社会保障の定義", "check": false}, {"id": "t7", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "社会保障の成立過程で最も重要な制度は、ドイツの社会保険である。", "a": false, "exp": "レジュメでは「イギリスの救貧法」とされている。", "star": false, "cat": "救貧法（イギリス）", "check": false}, {"id": "t8", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "イギリスでは、18世紀の前半から救貧を目的としたいくつかの法律が制定された。", "a": false, "exp": "16世紀の前半（エリザベス救貧法は1601年）。", "star": false, "cat": "救貧法（イギリス）", "check": false}, {"id": "t9", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "エリザベス救貧法は1601年に施行され、200年以上存続した。", "a": true, "exp": "", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "t10", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "エリザベス救貧法では、救貧事業は国が一括して運営した。", "a": false, "exp": "教区単位で運営。", "star": false, "cat": "救貧法（イギリス）", "check": false}, {"id": "t11", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "エリザベス救貧法では、貧民監督官が教区から救貧税を徴収して救貧事業を行った。", "a": true, "exp": "", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "t12", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "エリザベス救貧法の救貧事業の財源は、労使が拠出する保険料であった。", "a": false, "exp": "財源は教区から徴収する救貧税。保険料（拠出）はビスマルク以降。", "star": false, "cat": "救貧法（イギリス）", "check": false}, {"id": "t13", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "居宅保護（院外救済）は、ギルバート法による給付要件の緩和などで増加した。", "a": true, "exp": "", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "t14", "type": "tf", "round": 1, "src": "レジュメ1P", "q": "居宅保護の増加により支出が減少し、救貧税が引き下げられた。", "a": false, "exp": "支出が増大して救貧税が引き上げられ、新救貧法の契機となった。", "star": false, "cat": "救貧法（イギリス）", "check": false}, {"id": "t15", "type": "tf", "round": 1, "src": "レジュメ2P", "q": "エリザベス救貧法は、1834年に大改正され、新救貧法と呼ばれた。", "a": true, "exp": "", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "t16", "type": "tf", "round": 1, "src": "レジュメ2P", "q": "新救貧法では、救貧行政は教区ごとに分散して行われた。", "a": false, "exp": "中央に救貧法委員会を置き、貧民処遇の一元化・中央集権化が図られた。", "star": false, "cat": "救貧法（イギリス）", "check": false}, {"id": "t17", "type": "tf", "round": 1, "src": "レジュメ2P", "q": "新救貧法では、中央に救貧法委員会が設置された。", "a": true, "exp": "", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "t18", "type": "tf", "round": 1, "src": "レジュメ2P", "q": "新救貧法では、貧民を「自立労働者」と「労働能力がありながら救済を受ける貧民」に明確に区分した。", "a": true, "exp": "前者より後者の処遇を低くするのが劣等処遇。", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "t19", "type": "tf", "round": 1, "src": "レジュメ2P", "q": "社会保険制度を導入したのは、イギリスのウェッブ夫妻である。", "a": false, "exp": "導入したのはドイツのビスマルク。", "star": false, "cat": "ドイツの社会保険", "check": false}, {"id": "t20", "type": "tf", "round": 1, "src": "レジュメ2P", "q": "ビスマルクの社会保険は、今日の社会保障の先駆としての一面を持つ。", "a": true, "exp": "拠出原理に基づき権利として給付される。", "star": true, "cat": "ドイツの社会保険", "check": false}, {"id": "t21", "type": "tf", "round": 1, "src": "レジュメ2P", "q": "ビスマルクの社会保険は、救貧法と同じ原理に基づいて給付が行われた。", "a": false, "exp": "救貧法とは異なり、拠出原理に基づく権利としての給付。", "star": false, "cat": "ドイツの社会保険", "check": false}, {"id": "t22", "type": "tf", "round": 1, "src": "レジュメ2P", "q": "ビスマルクは、社会主義運動を弾圧する一方で、社会保険を導入した。", "a": true, "exp": "飴と鞭。", "star": true, "cat": "ドイツの社会保険", "check": false}, {"id": "t23", "type": "tf", "round": 1, "src": "レジュメ2P", "q": "ナショナル・ミニマムを強く主張したのは、ビスマルクである。", "a": false, "exp": "ウェッブ夫妻らの社会民主主義者。", "star": false, "cat": "ウェッブ夫妻", "check": false}, {"id": "t24", "type": "tf", "round": 1, "src": "レジュメ2P", "q": "ウェッブ夫妻は、社会保障と最低賃金制等によるナショナル・ミニマムを強く主張した。", "a": true, "exp": "", "star": true, "cat": "ウェッブ夫妻", "check": false}, {"id": "t25", "type": "tf", "round": 1, "src": "レジュメ2P", "q": "世界大恐慌では、失業保険給付だけでなく、大量失業そのものをなくすための根本的な政策が要請された。", "a": true, "exp": "", "star": false, "cat": "世界大恐慌と大戦", "check": false}, {"id": "t26", "type": "tf", "round": 1, "src": "レジュメ3P", "q": "ケインズ理論は、公共事業の拡大などによる総需要の拡大を主張した。", "a": true, "exp": "", "star": false, "cat": "世界大恐慌と大戦", "check": false}, {"id": "t27", "type": "tf", "round": 1, "src": "レジュメ3P", "q": "ニューディール政策は、F.ルーズベルト大統領の下でイギリスで行われた。", "a": false, "exp": "アメリカ。", "star": false, "cat": "世界大恐慌と大戦", "check": false}, {"id": "t28", "type": "tf", "round": 1, "src": "レジュメ3P", "q": "1935年のアメリカの社会保障法は、「社会保障」という言葉が法律に用いられた最初といわれる。", "a": true, "exp": "", "star": true, "cat": "世界大恐慌と大戦", "check": false}, {"id": "t29", "type": "tf", "round": 1, "src": "レジュメ3P", "q": "第二次世界大戦は、社会保障を促す契機の一つになったといわれる。", "a": true, "exp": "", "star": false, "cat": "世界大恐慌と大戦", "check": false}, {"id": "t30", "type": "tf", "round": 1, "src": "レジュメ3P", "q": "1950年代後半には、ナショナル・ミニマムの保障にとどまらず、よりゆとりのある生活を保障すべきだとの主張がなされた。", "a": true, "exp": "", "star": false, "cat": "ベヴァリッジ報告と福祉国家", "check": false}, {"id": "t31", "type": "tf", "round": 1, "src": "レジュメ3P", "q": "日本で社会保障あるいは社会政策が中央政府によって初めて導入されたのは、1922年の健康保険法である。", "a": false, "exp": "最初は1874年の恤救規則。健康保険法は1922年に制定（1927年施行）。", "star": false, "cat": "日本の社会保障の歴史", "check": false}, {"id": "t32", "type": "tf", "round": 1, "src": "レジュメ4P", "q": "シドニー・ウェッブのナショナル・ミニマム論は、主にすべての社会成員を念頭に置いていた。", "a": false, "exp": "主に賃金労働者を念頭。すべての社会成員に広げたのはビアトリス。", "star": false, "cat": "ウェッブ夫妻", "check": false}, {"id": "t33", "type": "tf", "round": 1, "src": "レジュメ4P", "q": "シドニー・ウェッブがナショナル・ミニマム論を提唱したのは、1905年である。", "a": false, "exp": "1901年。1905年は救貧法委員会の設置とビアトリスの少数派報告。", "star": false, "cat": "ウェッブ夫妻", "check": false}, {"id": "t34", "type": "tf", "round": 1, "src": "レジュメ4P", "q": "ビアトリス・ウェッブは、年金等を含む保障を予防的（防貧的）に行うべきだと主張した。", "a": true, "exp": "", "star": true, "cat": "ウェッブ夫妻", "check": false}, {"id": "t35", "type": "tf", "round": 1, "src": "レジュメ4P", "q": "ビアトリス・ウェッブは、すべての社会成員が健全な生活を送れるようにすべきだと主張した。", "a": true, "exp": "", "star": false, "cat": "ウェッブ夫妻", "check": false}, {"id": "t36", "type": "tf", "round": 1, "src": "レジュメ5P", "q": "ベヴァリッジ報告は、イギリスの福祉国家の基となった。", "a": true, "exp": "", "star": true, "cat": "ベヴァリッジ報告と福祉国家", "check": false}, {"id": "t37", "type": "tf", "round": 1, "src": "レジュメ5P", "q": "「ゆりかごから墓場まで」は、ビスマルクの社会保険を象徴する言葉である。", "a": false, "exp": "福祉国家イギリス（ベヴァリッジ報告）を象徴する言葉。", "star": false, "cat": "ベヴァリッジ報告と福祉国家", "check": false}, {"id": "t38", "type": "tf", "round": 1, "src": "レジュメ5P", "q": "ベヴァリッジ報告は、戦中の1942年に発表された。", "a": true, "exp": "", "star": true, "cat": "ベヴァリッジ報告と福祉国家", "check": false}, {"id": "t39", "type": "tf", "round": 1, "src": "レジュメ6P", "q": "恤救規則は、貧困は個人の責任によるものではないという考えに立っていた。", "a": false, "exp": "貧困は個人の責任とされ、惰民養成を招くという理由で、改正案も不成立に終わった。", "star": false, "cat": "日本の社会保障の歴史", "check": false}, {"id": "t40", "type": "tf", "round": 1, "src": "スライド（新救貧法）", "q": "新救貧法の院内救済の原則では、労働能力のある者に対するワークハウス以外での救済が禁じられた。", "a": true, "exp": "", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "t41", "type": "tf", "round": 1, "src": "スライド（新救貧法）", "q": "新救貧法は、居宅保護を原則とした。", "a": false, "exp": "院内救済（ワークハウス内）が原則。", "star": false, "cat": "救貧法（イギリス）", "check": false}, {"id": "t42", "type": "tf", "round": 1, "src": "スライド（新救貧法）", "q": "新救貧法の劣等処遇の原則では、救済を受ける者の生活は、最下層の自立労働者以下とされた。", "a": true, "exp": "", "star": true, "cat": "救貧法（イギリス）", "check": false}, {"id": "t43", "type": "tf", "round": 1, "src": "スライド（ビスマルク）", "q": "ビスマルクの社会保険は、強制加入による財源確保や給付保障によって、国民の不安を除去する機能も果たした。", "a": true, "exp": "", "star": false, "cat": "ドイツの社会保険", "check": false}, {"id": "t44", "type": "tf", "round": 1, "src": "スライド（ベヴァリッジ報告1）", "q": "ベヴァリッジ報告は、五つの巨人のうち無知が最悪であるとした。", "a": false, "exp": "最悪は困窮（貧困）。", "star": true, "cat": "ベヴァリッジ報告と福祉国家", "check": false}, {"id": "t45", "type": "tf", "round": 1, "src": "スライド（ベヴァリッジ報告2）", "q": "ベヴァリッジ報告は、多子貧困発生阻止のため、児童手当の創設を提言した。", "a": true, "exp": "", "star": false, "cat": "ベヴァリッジ報告と福祉国家", "check": false}, {"id": "t46", "type": "tf", "round": 1, "src": "スライド（恤救規則）", "q": "恤救規則は、中央政府によって導入された公的扶助制度である。", "a": true, "exp": "", "star": true, "cat": "日本の社会保障の歴史", "check": false}, {"id": "t47", "type": "tf", "round": 2, "src": "レジュメ1P", "q": "公的年金は強制加入で、年金額の実質価値が維持される終身年金である。", "a": true, "exp": "", "star": true, "cat": "公的年金と私的年金", "check": false}, {"id": "t48", "type": "tf", "round": 2, "src": "レジュメ1P", "q": "公的年金の財源は、本人の保険料のみで、国庫負担はない。", "a": false, "exp": "保険料のほか、運用収入、後世代の保険料、国庫負担（税金）。", "star": true, "cat": "公的年金と私的年金", "check": false}, {"id": "t49", "type": "tf", "round": 2, "src": "レジュメ1P", "q": "企業年金は、企業が従業員の福利厚生の一環として実施するもので、事業主負担の比重が高い。", "a": true, "exp": "", "star": false, "cat": "公的年金と私的年金", "check": false}, {"id": "t50", "type": "tf", "round": 2, "src": "レジュメ1P", "q": "私的年金は、年金額の価値維持が容易である。", "a": false, "exp": "価値維持が困難（物価変動に合わせられない）。", "star": false, "cat": "公的年金と私的年金", "check": false}, {"id": "t51", "type": "tf", "round": 2, "src": "レジュメ1P", "q": "私的年金には、支給期間を一定期間に限った有期年金が多い。", "a": true, "exp": "", "star": false, "cat": "公的年金と私的年金", "check": false}, {"id": "t52", "type": "tf", "round": 2, "src": "レジュメ1P", "q": "1961年に国民皆年金体制が成立した。", "a": true, "exp": "", "star": true, "cat": "制度体系", "check": false}, {"id": "t53", "type": "tf", "round": 2, "src": "レジュメ1P", "q": "1985年の改正の結果、現役世代は全て厚生年金の被保険者となる。", "a": false, "exp": "現役世代は全て国民年金の被保険者。会社員・公務員等はさらに厚生年金に加入。", "star": false, "cat": "制度体系", "check": false}, {"id": "t54", "type": "tf", "round": 2, "src": "レジュメ1P", "q": "賦課方式は、その時々の加入者の保険料により年金給付を賄う方式である。", "a": true, "exp": "", "star": true, "cat": "財政方式", "check": false}, {"id": "t55", "type": "tf", "round": 2, "src": "レジュメ1P", "q": "賦課方式では、現役世代が納めた保険料は、将来の自分の年金のために積み立てられる。", "a": false, "exp": "その時の年金受給者への支払いに充てられる（世代間扶養）。", "star": false, "cat": "財政方式", "check": false}, {"id": "t56", "type": "tf", "round": 2, "src": "レジュメ2P", "q": "賦課方式では、少子高齢化が進んでも、保険料負担はほとんど影響を受けない。", "a": false, "exp": "後世代になるほど保険料負担が上昇し、少子高齢化が進む過程では特に大きな問題。", "star": false, "cat": "財政方式", "check": false}, {"id": "t57", "type": "tf", "round": 2, "src": "レジュメ2P", "q": "積立方式は、金利変動の影響を受けやすい。", "a": true, "exp": "", "star": true, "cat": "財政方式", "check": false}, {"id": "t58", "type": "tf", "round": 2, "src": "レジュメ2P", "q": "積立方式は、人口構成の変動の影響を受けやすい。", "a": false, "exp": "人口構成の変動の影響は受けにくい。受けやすいのは金利変動。", "star": false, "cat": "財政方式", "check": false}, {"id": "t59", "type": "tf", "round": 2, "src": "レジュメ2P", "q": "積立方式では、想定を超えた賃金・物価の上昇があると、年金額の価値維持が困難になる。", "a": true, "exp": "", "star": false, "cat": "財政方式", "check": false}, {"id": "t60", "type": "tf", "round": 2, "src": "レジュメ2P", "q": "第2号被保険者とは、国民年金のみに加入する自営業者等である。", "a": false, "exp": "第2号は厚生年金の被保険者。自営業者等は第1号。", "star": false, "cat": "被保険者の区分", "check": false}, {"id": "t61", "type": "tf", "round": 2, "src": "レジュメ2P", "q": "第3号被保険者は、第2号被保険者の被扶養配偶者で、20歳以上60歳未満の者である。", "a": true, "exp": "", "star": true, "cat": "被保険者の区分", "check": false}, {"id": "t62", "type": "tf", "round": 2, "src": "レジュメ2P", "q": "老齢基礎年金は、原則として10年の資格期間を満たした者が65歳に達したときに支給される。", "a": true, "exp": "", "star": true, "cat": "老齢年金", "check": false}, {"id": "t63", "type": "tf", "round": 2, "src": "レジュメ2P", "q": "老齢基礎年金は、原則として25年の資格期間が必要である。", "a": false, "exp": "資料では10年。", "star": false, "cat": "老齢年金", "check": false}, {"id": "t64", "type": "tf", "round": 2, "src": "レジュメ2P", "q": "老齢基礎年金の支給率は、65歳支給を基準として76〜184％である。", "a": true, "exp": "", "star": false, "cat": "老齢年金", "check": false}, {"id": "t65", "type": "tf", "round": 2, "src": "レジュメ2P", "q": "老齢厚生年金は、老齢基礎年金の資格期間を満たしていなくても支給される。", "a": false, "exp": "老齢基礎年金の資格期間を満たした者に支給。", "star": false, "cat": "老齢年金", "check": false}, {"id": "t66", "type": "tf", "round": 2, "src": "レジュメ2P", "q": "在職老齢年金では、老齢基礎年金の全部または一部が支給停止される。", "a": false, "exp": "支給停止の対象は老齢厚生年金。老齢基礎年金は在職中でも全額支給。", "star": true, "cat": "老齢年金", "check": false}, {"id": "t67", "type": "tf", "round": 2, "src": "レジュメ2P", "q": "在職者の年金と報酬の合計額が一定額を超える場合、老齢厚生年金の全部または一部が支給停止される。", "a": true, "exp": "", "star": true, "cat": "老齢年金", "check": false}, {"id": "t68", "type": "tf", "round": 2, "src": "レジュメ3P", "q": "初診日とは、障害の原因となった病気やけがについて、初めて医師または歯科医師の診療を受けた日をいう。", "a": true, "exp": "", "star": true, "cat": "障害年金", "check": false}, {"id": "t69", "type": "tf", "round": 2, "src": "レジュメ3P", "q": "初診日とは、障害の程度を定める日をいう。", "a": false, "exp": "障害の程度を定める日は障害認定日。", "star": false, "cat": "障害年金", "check": false}, {"id": "t70", "type": "tf", "round": 2, "src": "レジュメ3P", "q": "障害基礎年金は、障害認定日に障害等級の1級または2級に該当する場合に支給される。", "a": true, "exp": "", "star": true, "cat": "障害年金", "check": false}, {"id": "t71", "type": "tf", "round": 2, "src": "レジュメ3P", "q": "障害基礎年金には、3級の年金がある。", "a": false, "exp": "3級は厚生年金のみ。", "star": false, "cat": "障害年金", "check": false}, {"id": "t72", "type": "tf", "round": 2, "src": "レジュメ3P", "q": "障害厚生年金は、障害基礎年金に上乗せして支給される。", "a": true, "exp": "", "star": true, "cat": "障害年金", "check": false}, {"id": "t73", "type": "tf", "round": 2, "src": "レジュメ3P", "q": "障害手当金は、厚生年金のみにある一時金である。", "a": true, "exp": "", "star": false, "cat": "障害年金", "check": false}, {"id": "t74", "type": "tf", "round": 2, "src": "レジュメ5P", "q": "1985年までの公的年金制度は、被保険者の職業に応じて分立していた。", "a": true, "exp": "", "star": false, "cat": "制度体系", "check": false}, {"id": "t75", "type": "tf", "round": 2, "src": "レジュメ5P", "q": "旧制度では、民間企業の常用労働者は国民年金に加入していた。", "a": false, "exp": "民間企業の常用労働者は厚生年金保険。国民年金は自営業者等。", "star": false, "cat": "制度体系", "check": false}, {"id": "t76", "type": "tf", "round": 2, "src": "レジュメ5P", "q": "旧制度では、国家公務員・地方公務員等は、各共済組合に加入していた。", "a": true, "exp": "", "star": false, "cat": "制度体系", "check": false}, {"id": "t77", "type": "tf", "round": 2, "src": "レジュメ5P", "q": "自営業者の減少や産業構造の変化等により、（旧）国民年金制度の維持が困難となることが予想された。", "a": true, "exp": "", "star": false, "cat": "制度体系", "check": false}, {"id": "t78", "type": "tf", "round": 2, "src": "レジュメ5P", "q": "全職業に共通の基礎年金は、厚生年金を改組して創設された。", "a": false, "exp": "国民年金を改組して創設。", "star": false, "cat": "制度体系", "check": false}, {"id": "t79", "type": "tf", "round": 2, "src": "レジュメ5P", "q": "厚生年金保険と共済年金は、基礎年金に上乗せされる、いわゆる二階建ての制度に再編された。", "a": true, "exp": "", "star": true, "cat": "制度体系", "check": false}, {"id": "t80", "type": "tf", "round": 2, "src": "レジュメ5P", "q": "旧制度では、専業主婦は自動的に自分の老齢年金の受給権を持っていた。", "a": false, "exp": "任意加入しない限り受給権を持たなかった。新制度の第3号被保険者で固有の受給権を取得。", "star": false, "cat": "制度体系", "check": false}, {"id": "t81", "type": "tf", "round": 2, "src": "スライド（国民年金）", "q": "被用者は、自動的に国民年金にも加入している。", "a": true, "exp": "", "star": true, "cat": "被保険者の区分", "check": false}, {"id": "t82", "type": "tf", "round": 2, "src": "スライド（初診日・障害認定日）", "q": "障害認定日は、初診日から起算して2年経過した日である。", "a": false, "exp": "1年6か月経過した日、またはそれ以内にその傷病が治った日。", "star": false, "cat": "障害年金", "check": false}, {"id": "t83", "type": "tf", "round": 2, "src": "スライド（財政方式）", "q": "現在の日本の公的年金は、賦課方式を基本としており、世代間扶養にあたる。", "a": true, "exp": "", "star": true, "cat": "財政方式", "check": false}, {"id": "t84", "type": "tf", "round": 2, "src": "障害等級表（1級・2級）", "q": "聴覚の障害で、1級は両耳の聴力レベルが100デシベル以上のものである。", "a": true, "exp": "", "star": true, "cat": "障害年金", "check": false}, {"id": "t85", "type": "tf", "round": 2, "src": "障害等級表（1級・2級）", "q": "聴覚の障害で、2級は両耳の聴力レベルが100デシベル以上のものである。", "a": false, "exp": "2級は90デシベル以上。100デシベル以上は1級。", "star": false, "cat": "障害年金", "check": false}, {"id": "t86", "type": "tf", "round": 2, "src": "障害等級表（2級）", "q": "2級の障害には、そしゃくの機能を欠くものが含まれる。", "a": true, "exp": "", "star": true, "cat": "障害年金", "check": false}, {"id": "t87", "type": "tf", "round": 2, "src": "障害等級表（2級）", "q": "2級の障害には、音声又は言語機能に相当程度の障害を有するものが含まれる。", "a": false, "exp": "2級は「著しい障害」。「相当程度」は3級。", "star": false, "cat": "障害年金", "check": false}, {"id": "t88", "type": "tf", "round": 2, "src": "障害等級表（3級）", "q": "3級の聴覚の障害は、両耳の聴力が、40センチメートル以上では通常の話声を解することができない程度のものである。", "a": true, "exp": "", "star": true, "cat": "障害年金", "check": false}, {"id": "t89", "type": "tf", "round": 2, "src": "障害等級表（3級）", "q": "3級の障害は、労働が制限を受ける程度のものである。", "a": false, "exp": "3級は「労働が著しい制限を受ける」程度。「労働が制限を受ける」は障害手当金。", "star": false, "cat": "障害年金", "check": false}, {"id": "t90", "type": "tf", "round": 2, "src": "障害等級表（3級）", "q": "3級の障害には、精神若しくは神経系統に、労働が著しい制限を受けるものが含まれる。", "a": true, "exp": "", "star": false, "cat": "障害年金", "check": false}]};
+const LS_KEY = 'shakaihosho_quiz01_wrong_v2';
+
+let mode = 'fill';
+let queue = [], idx = 0, results = [];
+let lastItems = [], lastTitle = '';
+let answered = false;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---- 間違えた問題の保存（localStorage。使えない環境でも動くよう try/catch） ---- */
+function loadWrong(){ try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e){ return {}; } }
+function saveWrong(){ try { localStorage.setItem(LS_KEY, JSON.stringify(wrong)); } catch(e){} }
+let wrong = loadWrong();
+
+function shuffle(a){
+  a = a.slice();
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function show(name){
+  ['menu','quiz','result'].forEach(n => $('s-' + n).classList.toggle('on', n === name));
+  window.scrollTo(0, 0);
+}
+
+/* ---- 穴埋め表示 ---- */
+function parseAns(a){
+  if (!/[①-⑤]/.test(a)) return [a.trim()];
+  return a.split(/[\s　]*(?=[①-⑤])/).map(s => s.replace(/^[①-⑤]\s*/, '').trim()).filter(Boolean);
+}
+function fillHtml(q, reveal){
+  const ans = parseAns(q.a);
+  const CIRC = '①②③④⑤';
+  let seq = 0;
+  return esc(q.q).replace(/（[\s　]*([①-⑤]?)[\s　]*）/g, (m, n) => {
+    let k;
+    if (n) k = CIRC.indexOf(n); else k = seq++;
+    const a = ans[Math.min(k, ans.length - 1)];
+    return reveal
+      ? '<span class="blank filled">' + (n ? n + ' ' : '') + esc(a) + '</span>'
+      : '<span class="blank">' + (n || '　') + '</span>';
+  });
+}
+
+/* ---- メニュー ---- */
+function renderMenu(){
+  const list = DATA[mode];
+  $('seg-fill').classList.toggle('on', mode === 'fill');
+  $('seg-tf').classList.toggle('on', mode === 'tf');
+  $('n-fill').textContent = DATA.fill.length + '問';
+  $('n-tf').textContent = DATA.tf.length + '問';
+
+  const rounds = [...new Set(list.map(q => q.round))].sort((a, b) => a - b);
+  let html = '';
+  rounds.forEach(r => {
+    const cats = [];
+    list.filter(q => q.round === r).forEach(q => { if (!cats.includes(q.cat)) cats.push(q.cat); });
+    html += '<h3 class="round">第' + r + '回</h3><ul class="cats">';
+    cats.forEach(c => {
+      const items = list.filter(q => q.round === r && q.cat === c);
+      const w = items.filter(q => wrong[q.id]).length;
+      html += '<li><button data-round="' + r + '" data-cat="' + esc(c) + '">'
+            + '<span>' + esc(c) + '</span>'
+            + '<span class="cat-meta">' + (w ? '<span class="wbadge">要復習 ' + w + '</span>' : '')
+            + items.length + '問</span></button></li>';
+    });
+    html += '</ul>';
+  });
+  $('cat-area').innerHTML = html;
+
+  const stars = list.filter(q => q.star), ws = list.filter(q => wrong[q.id]);
+  $('o-all-n').textContent = list.length + '問';
+  $('o-star-n').textContent = stars.length + '問';
+  $('o-wrong-n').textContent = ws.length ? ws.length + '問' : 'まだありません';
+  $('o-star').disabled = !stars.length;
+  $('o-wrong').disabled = !ws.length;
+}
+
+/* ---- 開始 ---- */
+function start(items, title, forceShuffle){
+  if (!items.length) return;
+  lastItems = items; lastTitle = title;
+  queue = (forceShuffle || $('shuffle').checked) ? shuffle(items) : items.slice();
+  idx = 0; results = [];
+  show('quiz'); renderQ();
+}
+
+function renderQ(){
+  const q = queue[idx];
+  answered = false;
+  $('q-title').textContent = lastTitle;
+  $('q-count').textContent = (idx + 1) + ' / ' + queue.length;
+  $('bar').style.width = (idx / queue.length * 100) + '%';
+  $('q-meta').innerHTML = '<span class="tag">第' + q.round + '回・' + esc(q.cat) + '</span>'
+    + (q.src ? '<span class="tag src">' + esc(q.src) + '</span>' : '')
+    + (q.star ? '<span class="tag star">★頻出</span>' : '')
+    + (q.check ? '<span class="tag chk">要確認</span>' : '');
+
+  $('verdict').classList.add('hide');
+  $('explain').classList.add('hide');
+  $('btn-next').classList.add('hide');
+
+  if (q.type === 'fill'){
+    $('q-text').innerHTML = fillHtml(q, false);
+    $('fill-actions').classList.remove('hide');
+    $('tf-actions').classList.add('hide');
+    $('btn-reveal').classList.remove('hide');
+    $('judge').classList.add('hide');
+  } else {
+    $('q-text').textContent = q.q;
+    $('fill-actions').classList.add('hide');
+    $('tf-actions').classList.remove('hide');
+    ['btn-o','btn-x'].forEach(id => { $(id).disabled = false; $(id).classList.remove('chosen'); });
+  }
+}
+
+function showExplain(q){
+  const e = $('explain');
+  if (!q.exp){ e.classList.add('hide'); return; }
+  e.innerHTML = '<b>解説</b>' + esc(q.exp);
+  e.classList.remove('hide');
+}
+
+function record(q, ok){
+  results[idx] = { q, ok };
+  if (ok) delete wrong[q.id]; else wrong[q.id] = 1;
+  saveWrong();
+}
+
+function advance(){
+  idx++;
+  if (idx >= queue.length) renderResult(); else { renderQ(); window.scrollTo(0, 0); }
+}
+
+/* 穴埋め */
+$('btn-reveal').onclick = () => {
+  const q = queue[idx];
+  $('q-text').innerHTML = fillHtml(q, true);
+  showExplain(q);
+  $('btn-reveal').classList.add('hide');
+  $('judge').classList.remove('hide');
+};
+$('btn-ok').onclick = () => { record(queue[idx], true); advance(); };
+$('btn-ng').onclick = () => { record(queue[idx], false); advance(); };
+
+/* ○× */
+function answerTF(v){
+  if (answered) return;
+  answered = true;
+  const q = queue[idx], ok = (v === q.a);
+  record(q, ok);
+  $('btn-o').disabled = true; $('btn-x').disabled = true;
+  $(v ? 'btn-o' : 'btn-x').classList.add('chosen');
+  const vd = $('verdict');
+  vd.className = 'verdict ' + (ok ? 'ok' : 'ng');
+  vd.textContent = (ok ? '正解' : '不正解') + '　答え：' + (q.a ? '○' : '×');
+  showExplain(q);
+  $('btn-next').textContent = (idx + 1 >= queue.length) ? '結果を見る' : '次へ';
+  $('btn-next').classList.remove('hide');
+}
+$('btn-o').onclick = () => answerTF(true);
+$('btn-x').onclick = () => answerTF(false);
+$('btn-next').onclick = advance;
+
+/* ---- 結果 ---- */
+function renderResult(){
+  show('result');
+  const total = results.length, ok = results.filter(r => r.ok).length;
+  const pct = Math.round(ok / total * 100);
+  $('r-score').textContent = pct + '%';
+  $('r-of').textContent = ok + ' / ' + total + '問';
+  $('r-msg').textContent = pct === 100 ? '全問クリア！' : pct >= 80 ? 'あと少しです' : pct >= 60 ? '間違えた問題を重点的に' : 'もう一周して定着させましょう';
+
+  const ng = results.filter(r => !r.ok);
+  $('r-list').innerHTML = ng.map(r => {
+    const q = r.q;
+    const body = q.type === 'fill' ? fillHtml(q, true) : esc(q.q);
+    const ans = q.type === 'fill' ? '' : '<div class="ra">答え：' + (q.a ? '○' : '×') + '</div>';
+    return '<li>' + body + ans + (q.exp ? '<div class="re">' + esc(q.exp) + '</div>' : '') + '</li>';
+  }).join('');
+  $('r-wrong').disabled = !ng.length;
+  $('r-wrong').textContent = ng.length ? '間違えた問題だけもう一度（' + ng.length + '問）' : '間違いなし！';
+}
+$('r-wrong').onclick = () => start(results.filter(r => !r.ok).map(r => r.q), '間違えた問題');
+$('r-again').onclick = () => start(lastItems, lastTitle);
+$('r-menu').onclick = goMenu;
+
+function goMenu(){ renderMenu(); show('menu'); }
+$('btn-back').onclick = goMenu;
+
+/* ---- メニュー操作 ---- */
+$('cat-area').addEventListener('click', e => {
+  const b = e.target.closest('button[data-cat]');
+  if (!b) return;
+  const r = Number(b.dataset.round), c = b.dataset.cat;
+  start(DATA[mode].filter(q => q.round === r && q.cat === c), c);
+});
+$('o-all').onclick  = () => start(DATA[mode], '全問');
+$('o-rand').onclick = () => start(shuffle(DATA[mode]).slice(0, 10), 'ランダム10問', true);
+$('o-star').onclick = () => start(DATA[mode].filter(q => q.star), '★頻出');
+$('o-wrong').onclick = () => start(DATA[mode].filter(q => wrong[q.id]), '間違えた問題');
+['fill','tf'].forEach(m => $('seg-' + m).onclick = () => { mode = m; renderMenu(); });
+
+renderMenu();
+</script>
+</body>
+</html>
