@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>心理測定法 クイズ（前半：第1〜6回）</title>
+<style>
+:root{
+  --bg:#eef2f6; --grid:rgba(27,36,64,.06); --paper:#ffffff; --ink:#1b2440; --sub:#5a6585;
+  --line:#cfd7e4; --brand:#2b4acb; --brand-ink:#ffffff; --ok:#0f8a6d; --ok-bg:#e3f5ef;
+  --ng:#c23a5a; --ng-bg:#fbe8ed; --warn:#9a6208; --warn-bg:#fdf1d8; --tick:#aab4c9;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f1626; --grid:rgba(232,236,248,.06); --paper:#18213a; --ink:#e8ecf8; --sub:#9aa6c6;
+    --line:#2c3858; --brand:#7f9bff; --brand-ink:#0f1626; --ok:#4fd1ad; --ok-bg:#12332c;
+    --ng:#ff8fa8; --ng-bg:#3a1a26; --warn:#f2c26b; --warn-bg:#3a2d12; --tick:#4a5778;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; color:var(--ink); background-color:var(--bg);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic","Noto Sans JP","Meiryo",sans-serif;
+  line-height:1.75; font-size:16px;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+#app{max-width:720px;margin:0 auto;padding:20px 16px 64px}
+h1{font-size:1.45rem;line-height:1.4;margin:8px 0 4px;letter-spacing:.02em}
+h2{font-size:1rem;margin:28px 0 10px;color:var(--sub);font-weight:700}
+.lead{margin:0;color:var(--sub);font-size:.92rem}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+
+/* 出題範囲 */
+.seg{display:flex;gap:0;border:1.5px solid var(--ink);border-radius:10px;overflow:hidden;background:var(--paper);margin-top:14px}
+.seg button{flex:1;border:0;background:transparent;padding:10px 6px;font-size:.92rem;font-weight:600}
+.seg button+button{border-left:1.5px solid var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+/* 授業回カード（主役） */
+.rounds{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.round{
+  position:relative;align-self:stretch;text-align:left;border:1.5px solid var(--ink);border-radius:12px;background:var(--paper);
+  padding:16px 16px 16px 44px;min-height:96px;display:block;width:100%;
+}
+.round::before{ /* 定規の目盛り */
+  content:"";position:absolute;left:0;top:0;bottom:0;width:26px;border-right:1.5px solid var(--ink);
+  background:repeating-linear-gradient(to bottom,var(--ink) 0 1.5px,transparent 1.5px 8px) right/10px 100% no-repeat,
+             repeating-linear-gradient(to bottom,var(--ink) 0 1.5px,transparent 1.5px 40px) right/20px 100% no-repeat;
+  border-radius:11px 0 0 11px;opacity:.85;
+}
+.round:hover{background:var(--ok-bg)}
+.round .r-title{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.round .r-name{font-size:1.3rem;font-weight:800}
+.round .r-count{font-size:.9rem;color:var(--sub);font-weight:600;white-space:nowrap}
+.round .r-units{margin:4px 0 0;font-size:.88rem;color:var(--sub);line-height:1.6}
+.round .r-wrong{display:inline-block;margin-top:6px;font-size:.8rem;color:var(--ng);font-weight:700}
+
+/* サブメニュー（控えめ） */
+.mini{display:flex;flex-wrap:wrap;gap:8px}
+.mini button{border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 14px;font-size:.88rem;font-weight:600}
+.mini button:hover{border-color:var(--ink)}
+.mini button:disabled{opacity:.45;cursor:not-allowed}
+.note{margin-top:28px;padding:12px 14px;border-left:4px solid var(--warn);background:var(--warn-bg);font-size:.85rem;color:var(--ink);border-radius:0 8px 8px 0}
+.toast{margin-top:12px;padding:10px 14px;background:var(--ng-bg);border-radius:8px;color:var(--ng);font-size:.9rem;font-weight:600}
+
+/* クイズ画面 */
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.back{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:6px 12px;font-size:.88rem;font-weight:600}
+.pos{font-size:.9rem;color:var(--sub);font-weight:700}
+.ruler{display:flex;gap:2px;align-items:flex-end;height:22px;margin:12px 0 4px}
+.tick{flex:1;height:10px;background:var(--tick);border-radius:1px}
+.tick.cur{height:22px;background:var(--ink)}
+.tick.ok{background:var(--ok);height:16px}
+.tick.ng{background:var(--ng);height:16px}
+.card{background:var(--paper);border:1.5px solid var(--ink);border-radius:12px;padding:18px 16px;margin-top:14px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.tag{font-size:.78rem;font-weight:700;border:1.5px solid var(--line);border-radius:6px;padding:1px 8px;color:var(--sub)}
+.tag.real{border-color:var(--ink);color:var(--ink)}
+.tag.star{border-color:var(--warn);color:var(--warn);background:var(--warn-bg)}
+.tag.check{border-color:var(--warn);color:var(--warn);background:var(--warn-bg)}
+.stem{font-size:1.05rem;font-weight:600;margin:0 0 14px;line-height:1.8}
+.opts{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.opt{
+  width:100%;text-align:left;display:flex;gap:10px;align-items:flex-start;
+  border:1.5px solid var(--line);background:var(--paper);border-radius:10px;padding:12px 12px;min-height:48px;
+}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt .n{flex:none;width:1.6em;height:1.6em;border:1.5px solid var(--sub);border-radius:50%;display:grid;place-items:center;font-size:.85rem;font-weight:700;color:var(--sub);margin-top:1px}
+.opt .t{flex:1;word-break:break-word}
+.opt .m{flex:none;font-size:.78rem;font-weight:800;align-self:center}
+.opt.sel{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 10%,var(--paper))}
+.opt.sel .n{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)} .opt.ok .n{background:var(--ok);border-color:var(--ok);color:#fff} .opt.ok .m{color:var(--ok)}
+.opt.ng{border-color:var(--ng);background:var(--ng-bg)} .opt.ng .n{background:var(--ng);border-color:var(--ng);color:#fff} .opt.ng .m{color:var(--ng)}
+.opt.miss{border:1.5px dashed var(--ok);background:var(--ok-bg)} .opt.miss .m{color:var(--ok)}
+.opt:disabled{cursor:default}
+.act{margin-top:14px;display:flex;gap:10px}
+.btn{flex:1;border:0;border-radius:10px;padding:13px 16px;font-weight:800;background:var(--brand);color:var(--brand-ink);min-height:48px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:var(--paper);color:var(--ink);border:1.5px solid var(--ink)}
+.verdict{margin-top:16px;padding:12px 14px;border-radius:10px;font-weight:800}
+.verdict.ok{background:var(--ok-bg);color:var(--ok)} .verdict.ng{background:var(--ng-bg);color:var(--ng)}
+.verdict small{display:block;font-weight:600;color:var(--ink);margin-top:2px}
+.explain{margin-top:12px;padding:14px;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);font-size:.95rem}
+.explain b{display:block;margin-bottom:4px}
+.warn{margin-top:10px;padding:10px 12px;background:var(--warn-bg);border-left:4px solid var(--warn);border-radius:0 8px 8px 0;font-size:.88rem}
+
+/* 結果 */
+.score{font-size:2.4rem;font-weight:800;margin:8px 0 0;line-height:1.2}
+.score span{font-size:1rem;color:var(--sub);font-weight:600;margin-left:6px}
+details{border:1.5px solid var(--line);border-radius:10px;background:var(--paper);margin-top:10px;padding:0}
+summary{cursor:pointer;padding:12px 14px;font-weight:700;font-size:.92rem}
+details .in{padding:0 14px 14px;font-size:.92rem}
+footer{margin-top:36px;font-size:.78rem;color:var(--sub)}
+@media (prefers-reduced-motion:no-preference){ .opt,.btn,.round{transition:background .12s,border-color .12s} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const QUESTIONS = [{"id": "r1-1", "round": 1, "label": "第1回 Q1", "src": "real", "stem": "物体の「密度」はどのように求められるか。最も適切なものを選択してください。なお「/」は割り算、「*」は掛け算、「^」はべき乗の記号とします", "options": ["質量 * 体積", "質量^2 * 体積", "質量 / 体積", "体積^2 / 質量^2", "体積 * 質量"], "answer": [3], "multi": false, "explain": "密度＝質量÷体積。測定の基礎として「何を何で割るか」＝変数の定義を確認する問題。第1回は実施方法の練習が主眼で、全員全問正解扱いだった。", "unit": "測定の基礎", "star": false, "unconfirmed": false, "note": ""}, {"id": "r1-2", "round": 1, "label": "第1回 Q2", "src": "real", "stem": "試験の得点に基づいて，ある集団に所属する個人の「学力偏差値」を求めるために必要な情報を全て選択してください", "options": ["ある個人の試験得点", "集団における試験の最高得点", "集団における試験の最低得点", "集団における試験の標準偏差の値", "集団における試験の平均点"], "answer": [1, 4, 5], "multi": true, "explain": "学力偏差値＝（個人の得点 − 平均点）÷ 標準偏差 × 10 + 50。必要なのは個人の得点・平均点・標準偏差の3つで、最高点と最低点は不要。第6回の z得点（z＝(x−平均)÷SD）と偏差値＝10z+50 の関係につながる。", "unit": "偏差値・標準得点", "star": true, "unconfirmed": false, "note": ""}, {"id": "r1-3", "round": 1, "label": "第1回 Q3", "src": "real", "stem": "「ランダム化比較試験」の省略語として最も適切なものを選択してください", "options": ["CRT", "RCT", "SCT", "SRC", "TBS"], "answer": [2], "multi": false, "explain": "RCT＝Randomized Controlled Trial（無作為化比較試験）。無作為に割り付けた群間で独立変数の効果を比較する計画で、エビデンスレベルが最も高い研究デザインの一つ。第5回で少数事例計画との対比として再登場する。", "unit": "RCT・研究デザイン", "star": true, "unconfirmed": false, "note": ""}, {"id": "r1-4", "round": 1, "label": "第1回 Q4", "src": "real", "stem": "薬理効果が全くない物体を摂取しただけで，ある病気の症状が改善されてしまうような現象を何と呼ぶか。最も適切なものを選択してください", "options": ["ノーシーボ効果", "ノセボ効果", "フリン効果", "プライミング効果", "プラシーボ効果"], "answer": [5], "multi": false, "explain": "プラシーボ効果（プラセボ効果）。逆に症状が悪化するのがノセボ（ノーシーボ）効果。フリン効果は知能指数の世代間上昇、プライミング効果は先行刺激が後の反応に影響する現象。第3・4回の二重盲検法につながる。", "unit": "プラシーボ効果", "star": true, "unconfirmed": false, "note": ""}, {"id": "r2-1", "round": 2, "label": "第2回 Q1", "src": "real", "stem": "現象（の性質）に関して，規則に従って数値を割り当てる，という形で測定を定義したのは誰か", "options": ["Cattell", "Fechner", "Fisher", "Pearson", "Stevens"], "answer": [5], "multi": false, "explain": "Stevens（米国の心理物理学者）は「規則に従って対象もしくは事象に数字を割り当てること」と定義した。Campbell（英国の物理学者・科学哲学者）は「測定対象システムの特性を支配する法則により数字を割り当てること」と定義。Fechnerはドイツの物理学者・哲学者で心理物理学の創始者、Fisherは実験計画の3原則で登場する英国の統計学者。", "unit": "測定の定義", "star": false, "unconfirmed": false, "note": ""}, {"id": "r2-2", "round": 2, "label": "第2回 Q2", "src": "real", "stem": "測定＝数量化を行う意義として最も不適切な記述を選択してください", "options": ["言語の曖昧さを排除しうる", "数学的な手法に基づいた説明が可能になる", "数学的な手法に基づいた予測が可能になる", "適切なデータを得るための十分条件になる", "データ測定手続きの客観化に貢献する"], "answer": [4], "multi": false, "explain": "数量化はデータ収集の客観化・精密化に貢献するが、それだけでは「適切なデータ」が保証されない（GIGO原則）。必要条件にはなり得るが十分条件ではない。他の選択肢はいずれも数量化の正当な意義。", "unit": "数量化の意義", "star": false, "unconfirmed": false, "note": ""}, {"id": "r2-3", "round": 2, "label": "第2回 Q3", "src": "real", "stem": "（心理学的）構成概念の説明として最も不適切なものを選択してください", "options": ["安易に使用することは望ましくない", "概念により指示される事象の実体性を保証するものである", "データによる裏付けを必要とする", "現象の説明が行いやすくなる", "理論的要請により導入される"], "answer": [2], "multi": false, "explain": "構成概念（仮説的構成体）は直接観察できない概念であり、観察可能な事象から理論的に構成されるもの。「実体性を保証する」ものではなく、あくまで理論的・仮説的な概念。データによる裏付けが必要で、安易な使用は避けるべきというのは正しい説明。", "unit": "構成概念", "star": false, "unconfirmed": false, "note": ""}, {"id": "r2-4", "round": 2, "label": "第2回 Q4", "src": "real", "stem": "「現在幸福であるか」の測定に関して，独立変数となりうるものを全て選択してください", "options": ["家屋の広さ", "健康状態", "一人暮らしであるか", "年収", "預貯金額"], "answer": [1, 2, 3, 4, 5], "multi": true, "explain": "独立変数は研究者が「幸福度に影響する原因」として設定できる変数。5つはいずれも設定可能。どれを独立変数にするかは研究の設計次第であり、設定しなかったものは剰余変数になる（Q5と対比）。", "unit": "変数の分類", "star": false, "unconfirmed": false, "note": ""}, {"id": "r2-5", "round": 2, "label": "第2回 Q5", "src": "real", "stem": "「現在幸福であるか」の測定に関して，剰余変数となりうるものを全て選択してください", "options": ["家屋の広さ", "健康状態", "一人暮らしであるか", "年収", "預貯金額"], "answer": [1, 2, 3, 4, 5], "multi": true, "explain": "剰余変数は「設定した独立変数以外で従属変数に影響する要因」。Q4と同じ5つの変数がいずれも剰余変数にもなりうる。独立変数と剰余変数は排他的ではなく、研究の設計によって決まる。この対比がQ4・Q5のセットの狙い。", "unit": "変数の分類", "star": true, "unconfirmed": false, "note": ""}, {"id": "r2-6", "round": 2, "label": "第2回 Q6", "src": "real", "stem": "性別に関して男性=1, 女性=2として入力されたデータがある。「性別の平均」「合計性別」を求めることができない理由として最も適切なものを選択してください", "options": ["男と女は違うものだから", "測定された数値には「対象の大きさ」の情報が反映されていないから", "データが理論的に取りうる範囲に原点が含まれていないから", "データとして入力される数値に意味がないから", "入力データの尺度水準が順序尺度以上の水準だから"], "answer": [2], "multi": false, "explain": "性別は名義尺度であり、数値（1・2）は「同じか違うか」を示すラベルにすぎない。「大きさ」の情報を含まないため、足し算・平均は意味をなさない。選択肢3の「原点がない」は間隔尺度との区別の話、選択肢5は逆（名義尺度は順序尺度より下位）。", "unit": "尺度水準・名義尺度", "star": false, "unconfirmed": false, "note": ""}, {"id": "r2-7", "round": 2, "label": "第2回 Q7", "src": "real", "stem": "間隔尺度データにおける「0」と比例尺度データにおける「0」は何が異なるか。最も適切な記述を選択してください", "options": ["間隔尺度の「0」は原点を表すが比例尺度の場合は「単位」を表す", "間隔尺度の「0」は「単位」を表すが比例尺度の場合は原点を表す", "間隔尺度と比例尺度ともに「0」は「通過点」を表し，両者に相違点はない", "間隔尺度の場合とは異なり比例尺度データにおける「0」は，対象（現象）が存在しないことを表す", "比例尺度の場合とは異なり間隔尺度データにおける「0」は対象（現象）が存在しないことを表す"], "answer": [4], "multi": false, "explain": "間隔尺度の「0」は人間が決めた基準点にすぎず「何もない状態」を意味しない（0℃は熱エネルギーがゼロではない）。比例尺度の「0」は真の原点＝対象が存在しない状態（身長0cm・体重0kg）。この違いが「2倍」などの比率計算の可否を決める。", "unit": "尺度水準・間隔尺度・比例尺度", "star": true, "unconfirmed": false, "note": ""}, {"id": "r3-1", "round": 3, "label": "第3回 Q1", "src": "real", "stem": "実験（的な測定）を行う目的として最も不適切なものを選択してください", "options": ["仮説どおりの現象が生起・持続しているかを確認するため", "現象の生起・持続するための環境・条件を整備するため", "合格するための十分な能力があるかを確かめるため", "独立変数の値の変化に伴う従属変数の値の変化がどのようであるか，値の変動範囲に関する知見を得るため", "より重要な独立変数として振る舞う要因が何であるのかを検討するため"], "answer": [3], "multi": false, "explain": "※先生の正答表未確認。レジュメの「③厳密・精密な測定としての実験」に「測定可能な環境・状況・条件を（人為的に）整備する」とほぼ同じ文言があるため、選択肢2は適切側と判断。選択肢3の「合格するための能力の確認」は実験ではなく学力試験・能力評価の話なので、これが最も不適切と考えられる。", "unit": "実験の目的", "star": false, "unconfirmed": true, "note": ""}, {"id": "r3-2", "round": 3, "label": "第3回 Q2", "src": "real", "stem": "実験を実施／評価する際に重要なポイントとして適切なものを全て選択してください", "options": ["従属変数の選択・設定が適切であるか", "測定値の尺度水準が間隔尺度以上であるか", "剰余変数を統制できているか", "独立変数の効果がデータから確認できるか", "理論的な枠組みに照らして適切な刺激・課題の選択・設定であるか"], "answer": [1, 3, 4, 5], "multi": true, "explain": "選択肢2「尺度水準が間隔尺度以上であるか」が不適切。名義尺度（正答／誤答）を従属変数にする実験は普通にあり、名義尺度にはカイ2乗検定が使える。「間隔尺度以上でないといけない」というルールはレジュメにない。尺度水準によって使える統計手法が変わる、という第2回の話との混同を狙った引っかけ。", "unit": "実験の設定", "star": true, "unconfirmed": true, "note": ""}, {"id": "r3-3", "round": 3, "label": "第3回 Q3", "src": "real", "stem": "実験（的な測定）における「統制条件」あるいは「対照条件」とは何か。最も不適切なものを選択してください", "options": ["除去されるべき条件", "測定値（のあり方）を左右する要素の一部", "特別な措置（治療など）を施されない条件", "独立変数の効果を検討するために必要な要素", "要因の一部"], "answer": [1], "multi": false, "explain": "※先生の正答表未確認。統制条件（対照条件）は比較対照のために意図的に設定するもので、薬効判定の「薬なし」「生理食塩水」が例。除去するものではないため、選択肢1が最も不適切と考えられる。剰余変数（除去したい邪魔者）と統制条件（意図的に用意する比較相手）の混同を狙った問題。", "unit": "統制条件・対照条件", "star": false, "unconfirmed": true, "note": ""}, {"id": "r3-4", "round": 3, "label": "第3回 Q4", "src": "real", "stem": "新しい方式の英語の学力試験が適切であるかを検討するのにあたり，最も不適切（不要）な要素を選択してください。ただし受験者（高校生）は全て，全国の高等学校普通科2年生から無作為に選別されているものとします", "options": ["試験時間が従来の試験と比べて同等であるか", "従来の英語試験の得点分布", "受験時における参考資料の披見条件が従来の試験と比べて同等であるか", "受験者の海外在住経験の有無が，設問（または回答項目の一部）として用意されているか", "出題範囲が高等学校の学習指導要領に照らして合致しているか"], "answer": [4], "multi": false, "explain": "受験者は全国から無作為抽出されているため、海外在住経験の偏りは無作為化によって均等になる。したがって特別に設問として用意する必要がない。他の選択肢（試験時間・得点分布・参考資料・出題範囲）はいずれも比較・統制すべき要素。", "unit": "剰余変数の統制・無作為化", "star": false, "unconfirmed": false, "note": ""}, {"id": "r3-5", "round": 3, "label": "第3回 Q5", "src": "real", "stem": "新薬の効果を検討するための治験において，剤形を従来薬と合致させることは，どのような剰余変数の統制方法であるか。最も適切なものを選択してください", "options": ["除去", "恒常化", "無作為化", "均衡化", "独立変数化"], "answer": [2], "multi": false, "explain": "剤形（錠剤かカプセルかなど外見）を従来薬と同じにする＝全条件で剰余変数の状態を一定に保つ＝恒常化。統制方法5種類（除去・恒常化・均衡化・無作為化・独立変数化）はセットで覚える。", "unit": "剰余変数の統制・恒常化", "star": true, "unconfirmed": false, "note": ""}, {"id": "r4-1", "round": 4, "label": "第4回 Q1", "src": "real", "stem": "Fisherの3原則に該当しないものを全て選択してください", "options": ["局所管理", "独立変数の明確化", "繰り返し", "反復測定", "無作為化"], "answer": [2, 4], "multi": true, "explain": "Fisher（英国の統計学者・遺伝学者）の3原則は①繰り返し（replication）②無作為化（randomization）③局所管理（local control）。「独立変数の明確化」と「反復測定」は該当しない。反復測定（repeated measure）は参加者内要因の別名であり、3原則の「繰り返し（replication）」とは別物。ここが最大の引っかけ。", "unit": "Fisherの3原則", "star": true, "unconfirmed": false, "note": ""}, {"id": "r4-2", "round": 4, "label": "第4回 Q2", "src": "real", "stem": "薬理効果の判定等を行う際に，無意図的期待効果を排除するための実験手続きは何か。最も適切なものを選択してください", "options": ["完全無作為化法", "第2相臨床試験", "二重盲検法", "盲導実験", "ランダム化比較試験"], "answer": [3], "multi": false, "explain": "二重盲検法（Double Blind Test）。患者と医療スタッフの双方に、どちらが実薬か分からないようにする手続き。RCTも紛らわしいが、RCTは無作為割付の話であり、期待効果の排除が目的ではない。", "unit": "二重盲検法", "star": true, "unconfirmed": false, "note": ""}, {"id": "r4-3", "round": 4, "label": "第4回 Q3", "src": "real", "stem": "二重盲検法のような手続きはなぜ必要か。最も適切な記述を選択してください", "options": ["被験者（医療スタッフ）の要因で発生するプラシーボ効果だけではなく，実験者（患者）側の要因で発生する無意図的期待効果を排除するため", "被験者（医療スタッフ）の要因で発生するプラシーボ効果だけではなく，実験者（患者）側の要因で発生するプラシーボ効果を排除するため", "被験者（患者）の要因で発生するプラシーボ効果だけではなく，実験者（医療スタッフ）側の要因で発生する無意図的期待効果を排除するため", "被験者（患者）の要因で発生する無意図的期待効果だけではなく，実験者（医療スタッフ）側の要因で発生するプラシーボ効果を排除するため"], "answer": [3], "multi": false, "explain": "プラシーボ効果は被験者（患者）側、無意図的期待効果は実験者（医療スタッフ）側。この対応が逆になっている選択肢が引っかけ。被験者＝患者、実験者＝医療スタッフという対応も入れ替えられている。無意図的期待効果の典型例がクレバーハンス効果。", "unit": "二重盲検法・期待効果", "star": true, "unconfirmed": false, "note": ""}, {"id": "r4-4", "round": 4, "label": "第4回 Q4", "src": "real", "stem": "次のうち「参加者内要因」として設定することが最も困難だと思われる計画を選択してください", "options": ["100インチのプロジェクタと65インチ4k解像度液晶パネルで，どちらの方が映像鑑賞時の没入感が高いかを検討する", "慢性的な不安感・焦燥感の改善策として投薬療法と心理療法（認知行動療法）のどちらがより効果的であるかを検討する", "食後の満足感を高めるためのデザートとして菓子と果物のどちらが相応しいかを検討する", "騒音環境下での個人間の音声通信を行う機器として，ヘッドフォンとカナル型のイヤホンのどちらがより適切であるかを検討する", "羽枕と蕎麦殻枕のどちらを使用する方が寝つきが良くなるかを決定する"], "answer": [2], "multi": false, "explain": "参加者内要因は1人が全条件を経験する。しかし投薬療法や認知行動療法は一度受けると元に戻せない（非可逆的変化）ため、次の条件を公平に測れない。レジュメの「非可逆的な変化が生じる計画では採用しづらい」がこれ。第5回の反転法（ABA・ABAB）が使えないケースと同じ論理。", "unit": "参加者内要因・参加者間要因", "star": true, "unconfirmed": false, "note": ""}, {"id": "r4-5", "round": 4, "label": "第4回 Q5", "src": "real", "stem": "一方の要因の水準のあり方によって，別の要因が従属変数に対して及ぼす効果に相違がある状態を何と呼ぶか。最も適切なものを選択してください", "options": ["交互作用効果", "天井効果", "プラシーボ効果", "無意図的期待効果", "床効果"], "answer": [1], "multi": false, "explain": "交互作用効果（interaction effect）。要因の組み合わせによって効果が変わる状態。2つ以上の要因を同時に扱う要因計画でのみ検討できる。天井効果＝簡単すぎて差が出ない、床効果＝難しすぎて差が出ない、で別物。", "unit": "交互作用効果", "star": true, "unconfirmed": false, "note": ""}, {"id": "r5-1", "round": 5, "label": "第5回 Q1", "src": "real", "stem": "表1の[Q1]に入るデザイン名を記してください（AB・ABA・ABAB・BABと並ぶ5つ目のデザイン）", "options": ["ABCデザイン", "ABCBデザイン", "多層ベースライン計画（MBD）", "基準変更デザイン", "操作交代デザイン（ATD）"], "answer": [3], "multi": false, "explain": "[Q1]行だけが「非可逆操作に対する効果判定」の列で△〜○評価。反転法（AB・ABA・ABAB・BAB）はすべて×なので、反転させずに効果を示せるMBD（Multiple Baseline Design；多層ベースライン計画）が入る。複数のABデザインの介入開始時期をずらすことで、非可逆的な介入でも効果を示せる。", "unit": "少数事例計画・MBD", "star": true, "unconfirmed": false, "note": "問題文にある「表1」（AB・ABA・ABAB・BAB・MBDの5デザイン×5評価項目）は未収録です。問題文のヒントと解説で確認してください。"}, {"id": "r5-2", "round": 5, "label": "第5回 Q2", "src": "real", "stem": "表1の[Q2]に該当する列見出しを選択してください（BABのみ△、他は○）", "options": ["効果判定の確かさ", "非可逆操作に対する効果判定", "負担度／コストの少なさ", "ベースライン測定の確かさ", "必要な被験者数の多さ"], "answer": [4], "multi": false, "explain": "BABデザインのみ△になるのは「ベースライン測定の確かさ」。BABは最初にA期（ベースライン）を測定しないため、自然状態での生起頻度が不明となり、改善の量を評価することが困難になる。被験者負担が少なく臨床向きという利点とのトレードオフ。", "unit": "少数事例計画・デザイン比較", "star": false, "unconfirmed": false, "note": "問題文にある「表1」（AB・ABA・ABAB・BAB・MBDの5デザイン×5評価項目）は未収録です。問題文のヒントと解説で確認してください。"}, {"id": "r5-3", "round": 5, "label": "第5回 Q3", "src": "real", "stem": "表1の[Q3]に該当する列見出しを選択してください（ABが×、ABA・ABABが○、MBDが△）", "options": ["効果判定の確かさ", "非可逆操作に対する効果判定", "負担度／コストの少なさ", "ベースライン測定の確かさ", "必要な被験者数の多さ"], "answer": [1], "multi": false, "explain": "「効果判定の確かさ」。ABデザインは準実験（擬似実験）デザインで、B期の変化と変数投入が偶然同期した可能性を否定できないため×。反転法（ABA・ABAB）は元に戻して再現を確認できるので○。MBDは反転法より因果の評価が弱いため△。", "unit": "少数事例計画・デザイン比較", "star": true, "unconfirmed": false, "note": "問題文にある「表1」（AB・ABA・ABAB・BAB・MBDの5デザイン×5評価項目）は未収録です。問題文のヒントと解説で確認してください。"}, {"id": "r5-4", "round": 5, "label": "第5回 Q4", "src": "real", "stem": "表1の[Q4]に該当する列見出しを選択してください（ABABのみ×）", "options": ["効果判定の確かさ", "非可逆操作に対する効果判定", "負担度／コストの少なさ", "ベースライン測定の確かさ", "必要な被験者数の多さ"], "answer": [3], "multi": false, "explain": "「負担度／コストの少なさ」。ABABは4期にわたるため測定期間が最も長く、被験者・実施者双方の負担が大きい。効果判定の確かさは最も高いが、負担とのトレードオフになる。", "unit": "少数事例計画・デザイン比較", "star": false, "unconfirmed": false, "note": "問題文にある「表1」（AB・ABA・ABAB・BAB・MBDの5デザイン×5評価項目）は未収録です。問題文のヒントと解説で確認してください。"}, {"id": "r5-5", "round": 5, "label": "第5回 Q5", "src": "real", "stem": "表1の[Q5]に該当する列見出しを選択してください（MBDのみ△〜○、他はすべて×）", "options": ["効果判定の確かさ", "非可逆操作に対する効果判定", "負担度／コストの少なさ", "ベースライン測定の確かさ", "必要な被験者数の多さ"], "answer": [2], "multi": false, "explain": "「非可逆操作に対する効果判定」。学習効果のように元に戻せない介入では反転法が使えないため、AB・ABA・ABAB・BABはすべて×。介入開始時期をずらすMBDだけが対応できる。Q1とセットで押さえる。", "unit": "少数事例計画・デザイン比較", "star": true, "unconfirmed": false, "note": "問題文にある「表1」（AB・ABA・ABAB・BAB・MBDの5デザイン×5評価項目）は未収録です。問題文のヒントと解説で確認してください。"}, {"id": "r5-6", "round": 5, "label": "第5回 Q6", "src": "real", "stem": "単一（もしくは少数事例）実験計画での測定結果に関して，目視以外での分析によって変数投与の効果を主張するための方法や指標として最も不適切なものを選択してください", "options": ["中央値の差の検定", "t検定", "ITSA", "PND", "RCT"], "answer": [5], "multi": false, "explain": "RCT（Randomized Controlled Trial；無作為化比較試験）は多数の被験者を群に無作為割付して群間比較を行うデザインであり、単一事例の測定結果を分析する指標ではない。PND（Percentage of Non-overlapping Data；非重複データの割合）とITSA（Interrupted Time Series Analysis；中断時系列分析）が少数事例向けの代表的分析法。", "unit": "少数事例計画・分析指標", "star": true, "unconfirmed": false, "note": ""}, {"id": "r6-1", "round": 6, "label": "第6回 Q1", "src": "real", "stem": "所得金額に関するデータにおいて，中央値よりも算術平均値の方がかなり小さな値になる場合の説明として適切なものを全て選択してください", "options": ["極めて高い所得者がデータに含まれる可能性が高い", "極めて低い所得者がデータに含まれる可能性が高い", "所得金額の（度数）分布は必ず左右対称となる", "最大多数の所得者階層は，算術平均値よりも高所得である可能性が高い", "最大多数の所得者階層は，算術平均値よりも低所得である可能性が高い"], "answer": [2, 4], "multi": true, "explain": "平均＜中央値＝左に裾が長い（歪度が負）分布。極端に低い所得者が少数いると平均だけが引き下げられ、中央値は順位で決まるので動きにくい。並び順は 平均＜中央値＜最頻値 となるため、最大多数の階層（最頻値）は平均より高所得。実際の所得データは右に裾が長いのが普通なので、あえて逆のパターンを出した問題。「必ず」が付く選択肢はすべて誤り。", "unit": "歪度・代表値", "star": true, "unconfirmed": false, "note": ""}, {"id": "r6-2", "round": 6, "label": "第6回 Q2", "src": "real", "stem": "あるデータセット（変数）において分散＝0である場合，どのようなことが考えられるか。最も適切な記述を選択してください", "options": ["中央値の値と平均値の値は必ず一致する", "平均値の値は必ず0になる", "平均値よりも大きな値しか存在しない", "平均値よりも小さな値が存在する割合が多い", "標準偏差の値は必ず1になる"], "answer": [1], "multi": false, "explain": "分散＝0は偏差がすべて0、つまり全データが同一値（ばらつきゼロ）。全員が同じ値なら平均＝中央値＝最頻値がすべて一致する。「偏差の合計は必ず0」という別の知識との混同が引っかけ。0になるのは偏差であってデータの値ではない。SD＝√分散＝√0＝0であり1ではない。", "unit": "分散・ばらつき", "star": true, "unconfirmed": false, "note": ""}, {"id": "r6-3", "round": 6, "label": "第6回 Q3", "src": "real", "stem": "積率相関係数の値の解釈として最も適切なものを選択してください", "options": ["数値の大きさが+1を上回った場合は正の相関，下回った場合は負の相関である", "数値の大きさが+0.4を下回った場合は，弱い正の相関となる", "数値の大きさが0の場合は，2変数は独立である", "数値の大きさが−1の場合は，2変数の関係は無関係である", "数値の大きさが−1を下回った場合は，2変数には一次関数としての関係が確立している"], "answer": [3], "multi": false, "explain": "r＝0は「1次関数としての関係がない」＝線形独立を意味する。先生の用語では「独立」は線形独立のことで、「無関係」とは別の意味。「+1を上回る」「−1を下回る」は、rが−1〜1に収まるため原理的にありえない。r＝−1は完全な負の直線関係で、無関係ではない。「+0.4を下回れば弱い正の相関」は、0や負の値も含んでしまうので不適切。", "unit": "相関係数", "star": false, "unconfirmed": false, "note": ""}, {"id": "r6-4", "round": 6, "label": "第6回 Q4", "src": "real", "stem": "受験者数が十分に多い学力テストの（学力）偏差値に関して，偏差値の値が20以下であるのは受験者の何％であると考えるのが適当か。最も適切な数値を選択してください", "options": ["0.14%", "5.02%", "15.9%", "84.1%", "97.5%"], "answer": [1], "multi": false, "explain": "偏差値＝10z＋50なので、偏差値20はz＝−3。標準正規分布で−3SD以下の面積は約0.13%で、選択肢①の0.14%が最も近い。他の選択肢：15.9%は−1SD以下、84.1%は＋1SD以下、97.5%は＋1.96SD以下の値。偏差値30以下（−2SD以下）なら約2.3%になる。", "unit": "偏差値・正規分布", "star": true, "unconfirmed": false, "note": ""}, {"id": "r6-5", "round": 6, "label": "第6回 Q5", "src": "real", "stem": "「標準正規分布」とはどのような分布であるか。最も適切な記述を選択してください", "options": ["μ = 0, σ = 1 である正規分布", "σ = 0 である正規分布", "σ = 0 かつ μ = 1 である正規分布", "平均 = 標準偏差 = 1（共に同じ）である正規分布", "標準偏差の値 ＞ 平均の値 である正規分布"], "answer": [1], "multi": false, "explain": "標準正規分布は平均0・標準偏差1に標準化した正規分布で、z得点に変換した分布にあたる。密度と確率が計算済みで標準正規分布表が使える点が利点。σ＝0 を含む選択肢はばらつきがないことを意味し、分布として成立しない（Q2の分散0とつながる）。", "unit": "標準正規分布", "star": true, "unconfirmed": false, "note": ""}, {"id": "r6-6", "round": 6, "label": "第6回 Q6", "src": "real", "stem": "標準誤差の説明として最も適切なものを選択してください", "options": ["あるデータ数の下での標本平均が母平均に対してどの程度のばらつきであるかを推定する量", "あるデータ数の下での標本標準偏差が母標準偏差に対してどの程度のばらつきかを示す記述統計量", "得られたデータの平均的なばらつき具合を示すための記述統計量", "母集団のサイズ（N）を推定する量", "母集団の平均的なばらつき具合を示すための記述統計量"], "answer": [1], "multi": false, "explain": "SE（Standard Error；標準誤差）＝σ÷√n。標本統計量の分布の標準偏差であり、平均値のブレ幅を示す。選択肢3はSD、選択肢5はσ（母標準偏差）の説明で、SDとSEの混同が最頻出の引っかけ。nを大きくしてもSDは変わらないがSEは小さくなる。選択肢2は「平均」ではなく「標準偏差」のブレになっている点が違う。", "unit": "標準誤差", "star": true, "unconfirmed": false, "note": ""}, {"id": "l1-1", "round": 1, "label": "第1回 類Q1", "src": "like", "stem": "物体の「速さ」はどのように求められるか。最も適切なものを選択してください。なお「/」は割り算、「*」は掛け算、「^」はべき乗の記号とします", "options": ["距離 / 時間", "時間^2 * 距離", "時間 / 距離", "距離^2 / 時間", "距離 * 時間"], "answer": [1], "multi": false, "explain": "速さ＝距離÷時間。本物のQ1（密度＝質量÷体積）と同じく「何を何で割るか」を問う形式。分子と分母を入れ替えた「時間 / 距離」が最も紛らわしい。測定とは規則に従って数値を割り当てることであり、その規則が式にあたる。", "unit": "測定の基礎", "star": false, "unconfirmed": false, "note": ""}, {"id": "l1-2", "round": 1, "label": "第1回 類Q2", "src": "like", "stem": "ある個人の「z得点（標準得点）」を求めるために必要な情報を全て選択してください", "options": ["ある個人の試験得点", "集団における試験の中央値", "集団における試験の平均点", "集団における試験の最頻値", "集団における試験の標準偏差の値"], "answer": [1, 3, 5], "multi": true, "explain": "z＝(個人の得点 − 平均点) ÷ 標準偏差。必要なのは個人の得点・平均点・標準偏差の3つ。中央値と最頻値は不要。本物のQ2（偏差値）と同じ構造で、偏差値＝10z+50 なので必要な情報も同一になる。代表値を並べて迷わせる作りが先生の型。", "unit": "z得点・標準得点", "star": true, "unconfirmed": false, "note": ""}, {"id": "l1-3", "round": 1, "label": "第1回 類Q3", "src": "like", "stem": "「根拠に基づく実践」の省略語として最も適切なものを選択してください", "options": ["BPE", "PBE", "EPB", "EBP", "EBM"], "answer": [4], "multi": false, "explain": "EBP＝Evidence-Based Practice（根拠に基づく実践）。EBM＝Evidence-Based Medicine（根拠に基づく医療）は実在する隣接概念で、医療分野に限定した言い方。PBE・EPB・BPEは実在しない並べ替え。本物のQ3（RCT）と同じ、略語の文字順を入れ替えた選択肢の作り。", "unit": "EBP・研究デザイン", "star": true, "unconfirmed": false, "note": ""}, {"id": "l1-4", "round": 1, "label": "第1回 類Q4", "src": "like", "stem": "薬理効果が全くない物質を摂取しただけで，かえって副作用のような症状が生じてしまう現象を何と呼ぶか。最も適切なものを選択してください", "options": ["ホーソン効果", "ピグマリオン効果", "ノセボ効果", "フリン効果", "プラシーボ効果"], "answer": [3], "multi": false, "explain": "ノセボ効果（ノーシーボ効果）。症状が改善するプラシーボ効果の逆。ホーソン効果は注目されることで行動が変わる現象、ピグマリオン効果は期待されることで成績が上がる現象、フリン効果は知能指数の世代間上昇。いずれも実在する隣接概念で「明らかに違う」選択肢がない点が先生の型。", "unit": "ノセボ効果・プラシーボ効果", "star": true, "unconfirmed": false, "note": ""}, {"id": "l2-1", "round": 2, "label": "第2回 類Q1", "src": "like", "stem": "「測定対象システムの特性を支配する法則により数字を割り当てること」という形で測定を定義したのは誰か", "options": ["Wundt", "Weber", "Fechner", "Stevens", "Campbell"], "answer": [5], "multi": false, "explain": "Campbell（英国の物理学者・科学哲学者）の定義。Stevens（米国の心理学者）は「規則に従って対象もしくは事象に数字を割り当てること」と定義しており、両者の対比が第2回の論点。Fechner（ドイツの物理学者・哲学者）は心理物理学の創始者、Weber（ドイツの生理学者）は弁別閾の法則、Wundt（ドイツの心理学者）は実験心理学の創始者。本物のQ1の裏返しにあたる問題。", "unit": "測定の定義", "star": false, "unconfirmed": false, "note": ""}, {"id": "l2-2", "round": 2, "label": "第2回 類Q2", "src": "like", "stem": "有意義な測定が成立するための条件として最も不適切な記述を選択してください", "options": ["得られた数値が正確であること", "データの解釈や用いられ方が適切であること", "測定者の主観的な印象と結果が一致すること", "適正な方法で数値が得られていること", "構成概念と操作的定義が明確であること"], "answer": [3], "multi": false, "explain": "有意義な測定の4条件は①構成概念・操作的定義が明確②適正な方法で数値が得られる③得られた数値が正確④解釈・用いられ方が適切。測定はむしろ主観的な印象を排するために行うものなので、「測定者の主観的な印象と結果が一致すること」は目的に反する。本物のQ2（数量化の意義）と同じ、1つだけ趣旨が逆の肢を混ぜる作り。", "unit": "測定の条件", "star": false, "unconfirmed": false, "note": ""}, {"id": "l2-3", "round": 2, "label": "第2回 類Q3", "src": "like", "stem": "操作的定義の説明として最も不適切なものを選択してください", "options": ["構成概念の真の姿を完全に捉えることができる", "研究者によって異なる定義がありうる", "測定の再現性を高めることに貢献する", "構成概念を具体的な測定手続きによって規定する", "定義が異なると研究間の比較が難しくなる"], "answer": [1], "multi": false, "explain": "操作的定義は「不安を質問紙の得点で表す」のように、構成概念を測定手続きに置き換えたもの。あくまで便宜的な規定であり、構成概念そのものを完全に捉えるわけではない。本物のQ3（構成概念の「実体性を保証する」）と同じく、「完全に」「保証する」という言い切りが誤りの印。", "unit": "操作的定義・構成概念", "star": true, "unconfirmed": false, "note": ""}, {"id": "l2-4", "round": 2, "label": "第2回 類Q4", "src": "like", "stem": "「学業成績が良いか」の測定に関して，独立変数となりうるものを全て選択してください", "options": ["睡眠時間", "通学時間", "家庭の蔵書数", "朝食の摂取頻度", "一日の学習時間"], "answer": [1, 2, 3, 4, 5], "multi": true, "explain": "独立変数は研究者が「学業成績に影響する原因」として設定できる変数。5つはいずれも設定可能。どれを独立変数にするかは研究の設計次第であり、設定しなかったものは剰余変数になる（類Q5と対比）。正答番号6＝選択肢1〜5すべて。本物のQ4・Q5と同じペア構成。", "unit": "変数の分類", "star": false, "unconfirmed": false, "note": ""}, {"id": "l2-5", "round": 2, "label": "第2回 類Q5", "src": "like", "stem": "「学業成績が良いか」の測定に関して，剰余変数となりうるものを全て選択してください", "options": ["睡眠時間", "通学時間", "家庭の蔵書数", "朝食の摂取頻度", "一日の学習時間"], "answer": [1, 2, 3, 4, 5], "multi": true, "explain": "剰余変数は「設定した独立変数以外で従属変数に影響する要因」。類Q4と同じ5つがいずれも剰余変数にもなりうる。独立変数と剰余変数は排他的ではなく、研究の設計によって決まる。この対比を確認させるのが出題の狙い。", "unit": "変数の分類", "star": true, "unconfirmed": false, "note": ""}, {"id": "l2-6", "round": 2, "label": "第2回 類Q6", "src": "like", "stem": "震度階級のデータについて「平均震度」を求めることが適切でない理由として最も適切なものを選択してください", "options": ["入力データの尺度水準が間隔尺度以上の水準だから", "階級の間隔が等しいとは限らないから", "データの取りうる範囲に原点が含まれていないから", "階級の数が有限であるから", "測定された数値に意味がないから"], "answer": [2], "multi": false, "explain": "震度階級は順序尺度。大小の順序はあるが、震度5と6の差と、6と7の差が等しいとは限らない。等間隔が保証されていないため加法・平均が意味をなさない。「原点が含まれていない」は間隔尺度と比例尺度の区別の話。「間隔尺度以上の水準だから」は逆（順序尺度は間隔尺度より下位）。本物のQ6（性別の平均）と同じ構造で、名義尺度を順序尺度に差し替えた問題。", "unit": "尺度水準・順序尺度", "star": true, "unconfirmed": false, "note": ""}, {"id": "l2-7", "round": 2, "label": "第2回 類Q7", "src": "like", "stem": "比例尺度データにおいてのみ可能となる演算はどれか。最も適切なものを選択してください", "options": ["等しいかどうかの判定", "度数の集計", "加法と減法", "大小の比較", "乗法と除法"], "answer": [5], "multi": false, "explain": "尺度水準ごとに可能な演算は積み上がる。名義尺度＝等しいかの判定、順序尺度＝大小の比較、間隔尺度＝加法と減法、比例尺度＝乗法と除法。「何倍」が言えるのは真の原点を持つ比例尺度だけ。度数の集計はどの水準でも可能。本物のQ7（間隔尺度と比例尺度の「0」）と同じ論点を、演算の側から問う形。", "unit": "尺度水準・比例尺度", "star": true, "unconfirmed": false, "note": ""}, {"id": "l3-1", "round": 3, "label": "第3回 類Q1", "src": "like", "stem": "剰余変数を統制する目的として最も不適切なものを選択してください", "options": ["従属変数の測定値を大きくするため", "測定値のばらつきを偶然誤差とみなせるようにするため", "独立変数の効果を主張できるようにするため", "系統誤差の発生を抑えるため", "条件間の比較を公平に行えるようにするため"], "answer": [1], "multi": false, "explain": "統制の目的は、ばらつきの原因を系統誤差ではなく偶然誤差とみなせるようにすること。測定値そのものを大きくすることは目的ではない。本物のQ1（実験の目的）と同じく、実験の「手段」や無関係な記述を目的として紛れ込ませる作り。", "unit": "剰余変数の統制・目的", "star": true, "unconfirmed": false, "note": ""}, {"id": "l3-2", "round": 3, "label": "第3回 類Q2", "src": "like", "stem": "実験において統制条件（対照条件）を設定する意義として適切なものを全て選択してください", "options": ["独立変数の効果を比較によって確認できる", "剰余変数の影響の大きさを評価できる", "測定値の尺度水準を間隔尺度以上に引き上げられる", "特別な措置を施さない場合の値を把握できる", "天井効果・床効果の有無を確認できる"], "answer": [1, 2, 4, 5], "multi": true, "explain": "「測定値の尺度水準を間隔尺度以上に引き上げられる」が不適切。統制条件を設けても尺度水準は変わらない。尺度水準は測定の仕方で決まるものであり、条件設定で引き上げられるものではない。本物の第3回Q2と同じく、「尺度水準」を持ち出す肢が引っかけになっている。先生が好む型。", "unit": "統制条件・実験の設定", "star": true, "unconfirmed": false, "note": ""}, {"id": "l3-3", "round": 3, "label": "第3回 類Q3", "src": "like", "stem": "実験（的な測定）における「独立変数」とは何か。最も不適切なものを選択してください", "options": ["従属変数の変化をもたらすと想定される要素", "要因と呼ばれる要素", "実験者が意図的に操作・設定する要素", "複数の水準を持つ要素", "測定によって値が定まる要素"], "answer": [5], "multi": false, "explain": "「測定によって値が定まる要素」は従属変数の説明。独立変数は実験者が操作・設定する側で、要因（factor）とも呼ばれ、必ず2つ以上の水準を持つ。本物のQ3（統制条件）と同じく、隣接概念（独立変数と従属変数）の定義を入れ替える作り。", "unit": "独立変数・従属変数", "star": true, "unconfirmed": false, "note": ""}, {"id": "l3-4", "round": 3, "label": "第3回 類Q4", "src": "like", "stem": "二つの学習法の効果を比較する実験において，参加者を乱数表によって2群に割り付けた。これはどの剰余変数の統制方法にあたるか。最も適切なものを選択してください", "options": ["無作為化", "独立変数化", "均衡化", "除去", "恒常化"], "answer": [1], "multi": false, "explain": "無作為化。参加者の個人差（年齢・意欲・既習度など）を乱数によって両群に平均的に散らばらせる方法。ただし人数が少ないと効果が保証されない点に注意。均衡化は全パタンを均等に配置する方法で別物。本物のQ5（剤形＝恒常化）と同じく、具体例から統制方法を当てさせる形式。", "unit": "剰余変数の統制・無作為化", "star": true, "unconfirmed": false, "note": ""}, {"id": "l3-5", "round": 3, "label": "第3回 類Q5", "src": "like", "stem": "3つの条件を実施する実験において，6通りの実施順序すべてを同数の参加者に割り当てた。これはどの剰余変数の統制方法にあたるか。最も適切なものを選択してください", "options": ["独立変数化", "均衡化", "除去", "無作為化", "恒常化"], "answer": [2], "multi": false, "explain": "均衡化（カウンターバランス）。3条件なら順序は6通りなので、6人単位で参加者を集めれば全順序が均等になる。順序効果（練習効果・疲労効果）への代表的な対処法。無作為化も順序効果に使えるが、人数が少ないと偏りが残る点が異なる。", "unit": "剰余変数の統制・均衡化", "star": true, "unconfirmed": false, "note": ""}, {"id": "l4-1", "round": 4, "label": "第4回 類Q1", "src": "like", "stem": "Fisherの3原則に該当するものを全て選択してください", "options": ["無作為化", "局所管理", "二重盲検", "繰り返し", "均衡化"], "answer": [1, 2, 4], "multi": true, "explain": "Fisher（英国の統計学者・遺伝学者）の3原則は①繰り返し（replication）②無作為化（randomization）③局所管理（local control）。二重盲検と均衡化は実験の工夫ではあるが3原則には含まれない。本物のQ1（該当しないものを選択）の裏返し。「繰り返し」と「反復測定」の混同にも引き続き注意。", "unit": "Fisherの3原則", "star": true, "unconfirmed": false, "note": ""}, {"id": "l4-2", "round": 4, "label": "第4回 類Q2", "src": "like", "stem": "実験者が結果への期待から，無意識のうちに被験者の反応に影響を与えてしまう現象の典型例として最も適切なものを選択してください", "options": ["交互作用効果", "プラシーボ効果", "ホーソン効果", "クレバーハンス効果", "天井効果"], "answer": [4], "multi": false, "explain": "クレバーハンス効果。計算ができるとされた馬ハンスが、実は質問者の無意識の仕草を読んで正解を出していたという事例に由来する。無意図的期待効果の典型例。プラシーボ効果は被験者側の現象で、主体が逆になる点が引っかけ。本物のQ2・Q3と同じ、被験者側と実験者側を入れ替える型。", "unit": "無意図的期待効果", "star": true, "unconfirmed": false, "note": ""}, {"id": "l4-3", "round": 4, "label": "第4回 類Q3", "src": "like", "stem": "治験において単盲検法では不十分とされる理由として最も適切なものを選択してください", "options": ["剰余変数を恒常化できないため", "参加者の無作為割付が行えないため", "統制条件そのものを設定できないため", "実験者側の無意図的期待効果を排除できないため", "被験者側のプラシーボ効果を排除できないため"], "answer": [4], "multi": false, "explain": "単盲検法は被験者だけが実薬か否かを知らない状態。被験者側のプラシーボ効果は防げるが、実験者（医療スタッフ）側の無意図的期待効果が残る。そこで双方に伏せる二重盲検法が必要になる。本物のQ3と同じく、プラシーボ効果＝被験者側／無意図的期待効果＝実験者側の対応が問われる。", "unit": "二重盲検法・期待効果", "star": true, "unconfirmed": false, "note": ""}, {"id": "l4-4", "round": 4, "label": "第4回 類Q4", "src": "like", "stem": "参加者内要因（反復測定計画）において生じやすく，参加者間要因では問題になりにくいものはどれか。最も適切なものを選択してください", "options": ["参加者の個人差の影響", "標本の偏り", "床効果", "天井効果", "順序効果"], "answer": [5], "multi": false, "explain": "参加者内要因は同じ人が全条件を経験するため、練習効果・疲労効果といった順序効果が生じる。対処は均衡化または無作為化。個人差の影響は逆に参加者間要因で問題になり、参加者内要因ではむしろ統制できる。天井効果・床効果は課題の難易度の問題でどちらの計画でも生じる。本物のQ4と同じ論点を裏から問う形。", "unit": "参加者内要因・順序効果", "star": true, "unconfirmed": false, "note": ""}, {"id": "l4-5", "round": 4, "label": "第4回 類Q5", "src": "like", "stem": "要因計画における「主効果」の説明として最も適切なものを選択してください", "options": ["従属変数が独立変数に及ぼす効果", "一方の要因が単独で従属変数に及ぼす効果", "統制条件においてのみ観察される効果", "要因の組み合わせによって生じる効果", "剰余変数が従属変数に及ぼす効果"], "answer": [2], "multi": false, "explain": "主効果は、他の要因を無視して一方の要因だけを見たときの効果。「要因の組み合わせによって生じる効果」は交互作用効果の説明で、この2つの対比が要因計画の中心論点。「従属変数が独立変数に及ぼす効果」は向きが逆。本物のQ5（交互作用効果）の裏返しにあたる問題。", "unit": "要因計画・主効果", "star": true, "unconfirmed": false, "note": ""}, {"id": "l5-1", "round": 5, "label": "第5回 類Q1", "src": "like", "stem": "ベースライン期の後に介入期を設け，再びベースライン期に戻す3期構成のデザイン名として最も適切なものを選択してください", "options": ["多層ベースライン計画", "BABデザイン", "ABデザイン", "ABAデザイン", "ABABデザイン"], "answer": [4], "multi": false, "explain": "A＝ベースライン期、B＝介入期。ABAは反転法の基本形で、介入をやめて元に戻ることを確認することで効果を示す。ただし介入期で終わらないため臨床的配慮に欠ける。ABABはさらに介入期を加えて4期にした形。本物のQ1（表の空欄にデザイン名）と同じく、デザイン名と構成の対応を問う。", "unit": "少数事例計画・デザイン名", "star": true, "unconfirmed": false, "note": ""}, {"id": "l5-2", "round": 5, "label": "第5回 類Q2", "src": "like", "stem": "反転法のうち，介入期で終わらないため臨床的配慮に欠けるとされるデザインはどれか。最も適切なものを選択してください", "options": ["ABCBデザイン", "ABAデザイン", "ABABデザイン", "BABデザイン", "ABデザイン"], "answer": [2], "multi": false, "explain": "ABAはベースライン期（A）で終わるため、効果のある介入を最後に取り下げた状態になる。臨床では望ましくない。ABAB・BAB・ABCBはいずれも介入期で終わる。ABは介入期で終わるが、効果判定の確かさに問題がある点が別の弱点。", "unit": "少数事例計画・デザイン比較", "star": true, "unconfirmed": false, "note": ""}, {"id": "l5-3", "round": 5, "label": "第5回 類Q3", "src": "like", "stem": "単一事例実験計画においてベースライン期を設ける目的として最も適切なものを選択してください", "options": ["被験者の負担を軽減するため", "剰余変数を完全に除去するため", "介入前の自然な生起頻度を把握するため", "統計的検定の前提条件を満たすため", "参加者の無作為割付を行うため"], "answer": [3], "multi": false, "explain": "ベースライン期（A）は、介入を加えない自然な状態での標的行動の水準を把握するための期間。これがあって初めて介入期の変化を「改善」と評価できる。BABデザインの弱点が「真のベースラインが不明で改善量の評価が困難」であったのは、この期間を持たないため。", "unit": "少数事例計画・ベースライン", "star": true, "unconfirmed": false, "note": ""}, {"id": "l5-4", "round": 5, "label": "第5回 類Q4", "src": "like", "stem": "行動間多層ベースライン計画において，効果の評価が困難になる条件として最も適切なものを選択してください", "options": ["標的とする行動が3つを超える場合", "ベースライン期が長期にわたる場合", "介入が可逆的である場合", "標的とする行動の間に独立性がない場合", "被験者が1名である場合"], "answer": [4], "multi": false, "explain": "行動間MBDは、同じ人の複数の行動に対して介入開始時期をずらす方法。しかし一方を訓練すると他方も自然に改善してしまう（独立性がない）場合、ずらした意味がなくなり効果を評価できない。介入が可逆的なら反転法も使えるというだけで、MBDが使えなくなるわけではない。", "unit": "少数事例計画・MBD", "star": true, "unconfirmed": false, "note": ""}, {"id": "l5-5", "round": 5, "label": "第5回 類Q5", "src": "like", "stem": "PND（非重複データの割合）の説明として最も適切なものを選択してください", "options": ["中央値の差を検定して得られた有意確率", "時系列データの傾きが変化した量", "ベースライン期の最高値を超える介入期データの割合", "介入期とベースライン期の平均値の差", "介入期データの標準偏差の大きさ"], "answer": [3], "multi": false, "explain": "PND＝Percentage of Non-overlapping Data。ベースライン期のデータ範囲と重ならない介入期データの割合を示す指標で、目視以外の分析法として用いる。値が高いほど効果が明確。「平均値の差」は効果量、「傾きが変化した量」はITSAの考え方に近く、いずれも実在する隣接概念。", "unit": "少数事例計画・PND", "star": true, "unconfirmed": false, "note": ""}, {"id": "l5-6", "round": 5, "label": "第5回 類Q6", "src": "like", "stem": "単一事例実験計画の結果を目視によって分析する際の観点として最も不適切なものを選択してください", "options": ["水準（レベル）の変化", "母集団平均の推定精度", "変化が生じた即時性", "傾き（トレンド）の変化", "データの重なりの程度"], "answer": [2], "multi": false, "explain": "目視による分析の観点は、水準・傾き・即時性・重なりなど、グラフから読み取れるもの。母集団平均の推定は多数の標本を前提とする推測統計の話であり、単一事例の時系列グラフを目視する観点ではない。本物のQ6（RCTが最も不適切）と同じく、群間比較・推測統計の用語を1つ紛れ込ませる型。", "unit": "少数事例計画・目視分析", "star": true, "unconfirmed": false, "note": ""}, {"id": "l6-1", "round": 6, "label": "第6回 類Q1", "src": "like", "stem": "ある変数のデータにおいて，算術平均値よりも中央値の方がかなり小さな値になる場合の説明として適切なものを全て選択してください", "options": ["極めて大きな値がデータに含まれる可能性が高い", "極めて小さな値がデータに含まれる可能性が高い", "度数分布は必ず左右対称となる", "最頻値は算術平均値よりも小さい可能性が高い", "最頻値は算術平均値よりも大きい可能性が高い"], "answer": [1, 4], "multi": true, "explain": "中央値＜平均＝右に裾が長い（歪度が正）分布。極端に大きい値が少数あると平均だけが引き上げられる。並び順は 最頻値＜中央値＜平均 となるため、最頻値は平均より小さい。本物のQ1は逆向き（歪度が負）だったので、両方向を押さえておく。「必ず」が付く肢は誤り。", "unit": "歪度・代表値", "star": true, "unconfirmed": false, "note": ""}, {"id": "l6-2", "round": 6, "label": "第6回 類Q2", "src": "like", "stem": "あるデータセットの全ての値に同じ定数を加えた場合，分散の値はどうなるか。最も適切な記述を選択してください", "options": ["加えた定数の2乗だけ大きくなる", "必ず0になる", "加えた定数の分だけ小さくなる", "加えた定数の分だけ大きくなる", "値は変化しない"], "answer": [5], "multi": false, "explain": "全ての値に同じ定数を加えると平均も同じだけ動くため、偏差（値−平均）は一つも変わらない。したがって分散もSDも変化しない。線形変換 y＝ax+b のうち、b はばらつきに影響せず、a だけが影響する（分散は a の2乗倍になる）。第7回の「間隔が保たれる」とも直結する論点。", "unit": "分散・線形変換", "star": true, "unconfirmed": false, "note": ""}, {"id": "l6-3", "round": 6, "label": "第6回 類Q3", "src": "like", "stem": "相関係数が0に近い値であっても，2変数の間に明確な関係が存在しうる理由として最も適切なものを選択してください", "options": ["相関係数は因果関係の強さを表すから", "相関係数は外れ値の影響を受けないから", "相関係数は線形関係の強さのみを表すから", "相関係数は測定単位の影響を受けるから", "相関係数は必ず0から1の値をとるから"], "answer": [3], "multi": false, "explain": "相関係数が表すのは線形（1次関数）関係の強さのみ。2次関数（放物線）のような関係では、明確な関数関係があってもr≒0になる。だから必ず散布図で確認する。本物の第6回Q3の正答は「r＝0なら2変数は独立」で、レジュメの「線形独立」という語を指していた。つまり先生の用語では、ここでいう独立＝線形独立＝1次関数としての独立であり、「無関係」とは違う意味。「測定単位の影響を受ける」のは共分散の性質（相関係数はSDで割るため影響を受けない）。「0から1の値をとる」は範囲が−1〜1なので誤り。「外れ値の影響を受けない」は逆で、強く受ける。", "unit": "相関係数・線形関係", "star": true, "unconfirmed": false, "note": ""}, {"id": "l6-4", "round": 6, "label": "第6回 類Q4", "src": "like", "stem": "受験者数が十分に多い学力テストの（学力）偏差値に関して，偏差値が40以上60以下であるのは受験者の何％であると考えるのが適当か。最も適切な数値を選択してください", "options": ["68.3%", "34.1%", "95.4%", "99.7%", "50.0%"], "answer": [1], "multi": false, "explain": "偏差値は10z+50なので、偏差値40はz＝−1、偏差値60はz＝+1。標準正規分布で±1SDに含まれるのは約68.3%。手順は①値をz得点に直す②目安に当てはめる、の2段階を固定する。34.1%は0〜+1SDの片側、95.4%は±2SD、99.7%は±3SDの値で、いずれも標準正規分布表に実在する数値を並べた作り。本物の第6回Q4は「偏差値20以下」＝z＝−3＝約0.13%だったので、こちらは範囲を±1SDに変えた別パターンとして解く。", "unit": "偏差値・正規分布", "star": true, "unconfirmed": false, "note": ""}, {"id": "l6-5", "round": 6, "label": "第6回 類Q5", "src": "like", "stem": "標準正規分布において，−1.96から1.96の範囲に含まれる確率はおよそいくらか。最も適切な数値を選択してください", "options": ["0.997", "0.950", "0.900", "0.800", "0.683"], "answer": [2], "multi": false, "explain": "暗記必須。−1.96〜1.96で約0.95（95%）。外側の5%は両裾に2.5%ずつ分かれ、これが有意水準5%・両側検定の棄却域に対応する。0.683は±1SD、0.997は±3SDの値。本物のQ5（標準正規分布の定義）と同じ単元を、面積の側から問う形。", "unit": "標準正規分布", "star": true, "unconfirmed": false, "note": ""}, {"id": "l6-6", "round": 6, "label": "第6回 類Q6", "src": "like", "stem": "標準誤差（SE）の説明として最も不適切なものを選択してください", "options": ["得られたデータそのもののばらつきを表す記述統計量である", "母標準偏差をデータ数の平方根で割って求める", "データ数が多いほど値が小さくなる", "標本平均のばらつきの大きさを表す", "標本統計量が母数をどの程度推定できているかの精度を示す"], "answer": [1], "multi": false, "explain": "「データそのもののばらつきを表す記述統計量」はSD（標準偏差）の説明。SEは平均値のブレ幅で、SE＝σ÷√n。データ数を増やしてもSDは変わらないがSEは小さくなる。この混同が最頻出の引っかけ。本物のQ6と同じ論点を、否定形で問う形に変えた問題。", "unit": "標準誤差", "star": true, "unconfirmed": false, "note": ""}];
+const TITLE = "心理測定法 前半（第1〜6回）";
+const STORE_KEY = "shinri-sokutei-1:wrong";
+const CIRC = ["①","②","③","④","⑤"];
+const SRC_LABEL = {real:"先生の本物", like:"類似問題"};
+
+let scope = "both";         // both | real | like
+let session = null;
+let toastMsg = "";
+
+/* ---------- ストレージ（失敗しても動く） ---------- */
+function loadWrong(){ try{ return new Set(JSON.parse(localStorage.getItem(STORE_KEY)||"[]")); }catch(e){ return new Set(); } }
+function saveWrong(set){ try{ localStorage.setItem(STORE_KEY, JSON.stringify([...set])); }catch(e){} }
+
+/* ---------- DOM ヘルパー ---------- */
+function h(tag, attrs, ...kids){
+  const el = document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs||{})){
+    if(k==="class") el.className=v;
+    else if(k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if(v===true) el.setAttribute(k,"");
+    else if(v!==false && v!=null) el.setAttribute(k,v);
+  }
+  for(const kid of kids.flat()){ if(kid==null||kid===false) continue; el.append(kid.nodeType?kid:document.createTextNode(kid)); }
+  return el;
+}
+const app = document.getElementById("app");
+function mount(...nodes){ app.replaceChildren(...nodes.flat().filter(n=>n!=null&&n!==false)); window.scrollTo(0,0); }
+const inScope = q => scope==="both" || q.src===scope;
+const pool = () => QUESTIONS.filter(inScope);
+function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+function unitsOf(list){
+  const seen=[]; for(const q of list){ const u=q.unit.split("・")[0]; if(!seen.includes(u)) seen.push(u); } return seen;
+}
+
+/* ---------- メニュー ---------- */
+function renderMenu(){
+  const wrong = loadWrong();
+  const rounds = [...new Set(QUESTIONS.map(q=>q.round))].sort();
+  const cards = rounds.map(r=>{
+    const list = pool().filter(q=>q.round===r);
+    const w = list.filter(q=>wrong.has(q.id)).length;
+    const nReal = list.filter(q=>q.src==="real").length, nLike = list.length-nReal;
+    const count = scope==="both" ? `${list.length}問（本物${nReal}＋類似${nLike}）` : `${list.length}問`;
+    return h("button",{class:"round",onclick:()=>start(list,`第${r}回`)},
+      h("span",{class:"r-title"}, h("span",{class:"r-name"},`第${r}回`), h("span",{class:"r-count"},count)),
+      h("p",{class:"r-units"}, unitsOf(list).join("／")),
+      w? h("span",{class:"r-wrong"},`前回までに間違えた問題 ${w}問`) : null
+    );
+  });
+  const star = pool().filter(q=>q.star), wl = pool().filter(q=>wrong.has(q.id));
+  const seg = h("div",{class:"seg",role:"group","aria-label":"出題範囲"},
+    [["both","両方"],["real","先生の本物"],["like","類似問題"]].map(([v,t])=>
+      h("button",{"aria-pressed":String(scope===v),onclick:()=>{scope=v;toastMsg="";renderMenu();}},t)));
+  mount(
+    h("h1",{},TITLE),
+    h("p",{class:"lead"},"本物を解いてから同じ回の類似問題を解くと、理解と暗記を切り分けられます。"),
+    seg,
+    h("h2",{},"授業回ごとに解く"),
+    h("div",{class:"rounds"},cards),
+    h("h2",{},"まとめて解く"),
+    h("div",{class:"mini"},
+      h("button",{onclick:()=>start(pool(),"全問")},`全問（${pool().length}）`),
+      h("button",{onclick:()=>start(shuffle(pool()).slice(0,10),"ランダム10問")},"ランダム10問"),
+      h("button",{disabled:!star.length,onclick:()=>start(star,"★頻出")},`★頻出（${star.length}）`),
+      h("button",{disabled:!wl.length,onclick:()=>start(wl,"間違えた問題")},`間違えた問題（${wl.length}）`)
+    ),
+    toastMsg? h("div",{class:"toast",role:"status"},toastMsg):null,
+    h("div",{class:"note"},"「要確認」の付いた問題（第3回Q1〜Q3）は先生の正答表と未照合です。正解は暫定なので、配布資料が手元にあればそちらを優先してください。"),
+    h("footer",{},"解説はレジュメと授業内容をもとに作成したもので、先生の配布資料とは独立しています。★は国家試験や先生の出題で頻出の論点です。")
+  );
+}
+
+/* ---------- セッション ---------- */
+function start(list, name){
+  if(!list.length){ toastMsg="該当する問題がありません。"; renderMenu(); return; }
+  toastMsg="";
+  session = {list:[...list], name, idx:0, results:{}, answered:false, selected:new Set()};
+  renderQuestion();
+}
+function renderQuestion(){
+  const s = session, q = s.list[s.idx];
+  const ruler = h("div",{class:"ruler","aria-hidden":"true"}, s.list.map((x,i)=>{
+    const r = s.results[x.id];
+    return h("span",{class:"tick"+(i===s.idx?" cur":r===true?" ok":r===false?" ng":"")});
+  }));
+  const tags = h("div",{class:"tags"},
+    h("span",{class:"tag"+(q.src==="real"?" real":"")},SRC_LABEL[q.src]),
+    h("span",{class:"tag"},q.unit),
+    q.multi? h("span",{class:"tag"},"複数選択"):null,
+    q.star? h("span",{class:"tag star"},"★頻出"):null,
+    q.unconfirmed? h("span",{class:"tag check"},"要確認"):null
+  );
+  const optEls = q.options.map((t,i)=>{
+    const n=i+1, el = h("button",{class:"opt",type:"button","data-n":n,
+      "aria-pressed": q.multi? "false": null, onclick:()=>choose(n)},
+      h("span",{class:"n"},CIRC[i]), h("span",{class:"t"},t), h("span",{class:"m"}));
+    return h("li",{},el);
+  });
+  const act = h("div",{class:"act",id:"act"});
+  mount(
+    h("div",{class:"top"},
+      h("button",{class:"back",onclick:()=>{session=null;renderMenu();}},"← メニュー"),
+      h("span",{class:"pos"},`${s.name}　${s.idx+1} / ${s.list.length}`)),
+    ruler,
+    h("div",{class:"card"}, tags,
+      h("p",{class:"stem"},`${q.label}　${q.stem}`),
+      q.note? h("div",{class:"warn",style:"margin:0 0 14px"},q.note):null,
+      h("ul",{class:"opts",id:"opts"},optEls)),
+    act, h("div",{id:"fb"})
+  );
+  if(q.multi) act.append(h("button",{class:"btn",id:"submit",disabled:true,onclick:grade},"解答する"));
+  s.answered=false; s.selected=new Set();
+}
+function choose(n){
+  const s=session, q=s.list[s.idx]; if(s.answered) return;
+  if(!q.multi){ s.selected=new Set([n]); grade(); return; }
+  s.selected.has(n)? s.selected.delete(n) : s.selected.add(n);
+  document.querySelectorAll(".opt").forEach(el=>{
+    const on=s.selected.has(+el.dataset.n); el.classList.toggle("sel",on); el.setAttribute("aria-pressed",String(on));
+  });
+  document.getElementById("submit").disabled = s.selected.size===0;
+}
+function grade(){
+  const s=session, q=s.list[s.idx]; if(s.answered||!s.selected.size) return;
+  s.answered=true;
+  const ans=new Set(q.answer);
+  const correct = ans.size===s.selected.size && [...ans].every(a=>s.selected.has(a));
+  s.results[q.id]=correct;
+  const wrong=loadWrong(); correct? wrong.delete(q.id) : wrong.add(q.id); saveWrong(wrong);
+  document.querySelectorAll(".opt").forEach(el=>{
+    const n=+el.dataset.n, sel=s.selected.has(n), isAns=ans.has(n), m=el.querySelector(".m");
+    el.disabled=true; el.classList.remove("sel");
+    if(sel&&isAns){el.classList.add("ok"); m.textContent="正解";}
+    else if(sel&&!isAns){el.classList.add("ng"); m.textContent="不正解";}
+    else if(!sel&&isAns){ if(q.multi){el.classList.add("miss"); m.textContent="選び忘れ";} else {el.classList.add("ok"); m.textContent="正解";} }
+  });
+  const ansText = q.answer.length===5 && q.multi ? "選択肢①〜⑤のすべて" : q.answer.map(n=>CIRC[n-1]).join("・");
+  const last = s.idx===s.list.length-1;
+  document.getElementById("act").replaceChildren(
+    h("button",{class:"btn",id:"next",onclick:next}, last?"結果を見る":"次の問題へ"));
+  document.getElementById("fb").replaceChildren(
+    h("div",{class:"verdict "+(correct?"ok":"ng"),role:"status"}, correct?"正解":"不正解", h("small",{},`正解：${ansText}`)),
+    h("div",{class:"explain"}, h("b",{},"解説"), q.explain),
+    q.unconfirmed? h("div",{class:"warn"},"この問題は先生の正答表と未照合です。正解は暫定の判断なので、配布資料で確認してください。"):null
+  );
+  document.getElementById("next").focus({preventScroll:true});
+  document.getElementById("fb").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function next(){ const s=session; if(s.idx<s.list.length-1){ s.idx++; renderQuestion(); } else renderResult(); }
+
+/* ---------- 結果 ---------- */
+function renderResult(){
+  const s=session, total=s.list.length, ok=s.list.filter(q=>s.results[q.id]).length;
+  const ng=s.list.filter(q=>s.results[q.id]===false);
+  const detail = ng.map(q=>h("details",{},
+    h("summary",{},`${q.label}（${SRC_LABEL[q.src]}）${q.stem.length>34?q.stem.slice(0,34)+"…":q.stem}`),
+    h("div",{class:"in"},
+      h("p",{},"正解：", q.answer.length===5&&q.multi?"選択肢①〜⑤のすべて":q.answer.map(n=>`${CIRC[n-1]} ${q.options[n-1]}`).join(" ／ ")),
+      h("p",{},q.explain))));
+  mount(
+    h("h1",{},`${s.name}　結果`),
+    h("p",{class:"score"},`${ok} / ${total}`, h("span",{},`正答率 ${Math.round(ok/total*100)}%`)),
+    h("div",{class:"act"},
+      ng.length? h("button",{class:"btn",onclick:()=>start(ng,"間違えた問題")},`間違えた${ng.length}問をやり直す`):null,
+      h("button",{class:"btn ghost",onclick:()=>{session=null;renderMenu();}},"メニューへ")),
+    ng.length? h("h2",{},"間違えた問題") : h("p",{class:"lead",style:"margin-top:16px"},"全問正解です。"),
+    detail
+  );
+}
+
+/* ---------- キーボード操作（PC用） ---------- */
+document.addEventListener("keydown",e=>{
+  if(!session||e.ctrlKey||e.metaKey||e.altKey) return;
+  const s=session, q=s.list[s.idx]; if(!q) return;
+  if(!s.answered && /^[1-5]$/.test(e.key)){ if(+e.key<=q.options.length) choose(+e.key); }
+  else if(e.key==="Enter"){
+    if(s.answered){ if(document.activeElement.id!=="next") next(); }
+    else if(q.multi&&s.selected.size){ grade(); }
+  }
+});
+
+renderMenu();
+</script>
+</body>
+</html>
