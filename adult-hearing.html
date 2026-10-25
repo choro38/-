@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>成人聴覚障害 問題集（小テスト＋予想問題）</title>
+<title>成人聴覚障害 問題集（問題演習＋キーワード穴埋め）</title>
 <style>
 :root{
   --bg:#f5f7fb;--card:#fff;--ink:#1f2937;--sub:#6b7280;--line:#e5e7eb;
@@ -82,6 +82,34 @@ h1{font-size:1.25rem;margin:6px 0 2px}
 .wl li{padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;background:var(--card);font-size:.9rem}
 .btns{display:grid;gap:8px;margin-top:12px}
 .btn2{background:var(--card);border:1px solid var(--main);color:var(--main);border-radius:12px;padding:12px;font-size:1rem;font-weight:700;cursor:pointer}
+
+/* tabs / keyword fill-in */
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0 12px}
+.tabs button{padding:11px 6px;border:1.5px solid var(--line);background:var(--card);border-radius:10px;font-weight:700;font-size:.95rem;cursor:pointer;color:var(--ink)}
+.tabs button.on{background:var(--main);color:#fff;border-color:var(--main)}
+.kwtext{font-size:1.08rem;line-height:2.4;margin:10px 0 14px}
+.blank{display:inline-block;vertical-align:baseline;border:none;border-bottom:2px dashed var(--main);background:#eff6ff;color:var(--main);border-radius:6px;padding:0 8px;margin:0 2px;font-size:1rem;cursor:pointer;min-width:4em;text-align:center;line-height:1.7;font-family:inherit}
+.blank.shown{background:var(--ok-bg);color:var(--ok);border-bottom:2px solid var(--ok);font-weight:700}
+.kwhint{font-size:.8rem;color:var(--sub);margin-bottom:6px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.g-ok{background:var(--ok);color:#fff;border:none;border-radius:12px;padding:14px;font-size:1rem;font-weight:700;cursor:pointer}
+.g-ng{background:var(--card);color:var(--ng);border:1.5px solid var(--ng);border-radius:12px;padding:14px;font-size:1rem;font-weight:700;cursor:pointer}
+.unit-btn.kw{background:#f0fdf4;border-color:#bbf7d0;color:#14532d}
+.unit-btn.kw.all-ok{background:var(--ok-bg);border-color:#6ee7b7}
+.wl b{color:var(--ok)}
+
+/* 消去法 */
+.sts li{display:flex;gap:8px;align-items:flex-start;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sts li .no{white-space:nowrap}
+.sts li .mk{flex:none;margin-left:auto;min-width:2.1em;text-align:center;border:1.5px dashed #cbd5e1;border-radius:8px;color:#9ca3af;font-weight:800;line-height:1.7}
+.sts li.mk-o{border-left-color:var(--ok);background:var(--ok-bg)}
+.sts li.mk-o .mk{border:1.5px solid var(--ok);color:var(--ok);background:#fff}
+.sts li.mk-x{border-left-color:var(--ng);background:var(--ng-bg)}
+.sts li.mk-x .mk{border:1.5px solid var(--ng);color:var(--ng);background:#fff}
+.mkhint{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.78rem;color:var(--sub);margin:-4px 0 6px}
+.mkhint button{background:none;border:1px solid var(--line);border-radius:8px;padding:2px 8px;font-size:.78rem;color:var(--sub);cursor:pointer}
+.ch.out{opacity:.38;text-decoration:line-through}
+.ch.right,.ch.miss{opacity:1;text-decoration:none}
 </style>
 </head>
 <body>
@@ -133,7 +161,7 @@ const DATA = [
  st:["外リンパ瘻が疑われた場合は試験解放術が優先される","アブミ骨外傷は外リンパ瘻をきたしにくい","保存的療法は頭を30°挙上した状態で安静を保つ","聴平衡機能の悪化・変動の場合は内耳窓閉鎖術が適応となる","中耳圧の急激な変化によって発症する"],
  t:[0,0,1,1,1],ch:["(1)(2)(3)","(1)(2)(4)","(1)(2)(5)","(2)(3)(4)","(3)(4)(5)"],a:4,
  ex:["瘻孔は自然閉鎖する可能性があるため、まず保存的治療が優先★。手術が最初ではない。","耳掻きや綿棒による直達外傷でアブミ骨底板が骨折すると外リンパ瘻をきたす（稀）。","脳脊髄圧を下げる目的で頭を30度挙上し、安静＋ステロイド治療★。1〜2週間で自然治癒することがある。","聴平衡機能の悪化・変動がある場合は内耳窓閉鎖術の適応となる。","中耳圧の急激な変化（風船を膨らます、鼻かみ、重い物を持つ等）で発症する★。"],
- key:["まず保存療法（頭30度挙上・安静・ステロイド）→ 改善なければ手術","予防4か条：うつむかない・気張らない・息を止めない・ダメ息にご注意","2023年国試：風船を膨らませて「パチン」→回転性めまい → 変動性または高度の感音難聴★"]},
+ key:["まず保存療法（頭30度挙上・安静・ステロイド）→ 改善なければ手術","予防4か条：うつむかない・気張らない・息を止めない・鼻かみに注意","2023年国試：風船を膨らませて「パチン」→回転性めまい → 変動性または高度の感音難聴★"]},
 
 {id:"s04",set:"s",unit:4,dir:"c",stem:"突発性難聴について、正しいのはどれか。",
  st:["原因不明で両側性が多い","低音障害型は予後良好だが、聾型は不良である","難聴は繰り返し起こる","脳神経症状を伴わない","補充現象は陽性である"],
@@ -380,10 +408,386 @@ const DATA = [
  chg:["設問を反転し、小テストの誤り3つをすべて正文化","全選択肢が正しいため正答は「すべて」"]}
 ];
 /*DATA_END*/
+/*KW_START*/
+/* キーワード穴埋めデータ：{{ }} の中が空欄（キーワードのみ）。出典＝全40題レジュメのKEY WORDS・関連知識 */
+const KW = {
+1:[
+"耳管開放症の原因は{{体重減少}}や{{妊娠}}で、主訴は{{自声強聴}}・自己呼吸音聴取である",
+"初期の耳管狭窄症のティンパノグラムは{{C型}}（陰圧）を示す",
+"ティンパノグラム：耳硬化症は{{As型}}、耳小骨離断は{{Ad型}}、滲出性中耳炎は{{B型}}",
+"耳管機能障害は{{伝音性}}難聴で、低音障害型感音難聴は{{メニエール病}}にみられる",
+"耳管を開く{{口蓋帆張筋}}は{{三叉神経}}支配である",
+"{{口蓋帆挙筋}}は{{迷走神経}}支配で、嚥下時に軟口蓋を上げ食物の鼻咽頭流入を防ぐ",
+"耳管開口部に発生する{{上咽頭癌}}が耳管を塞ぐと{{滲出性中耳炎}}を起こす",
+"加齢で耳管軟骨組織の{{変性・消失}}と腺細胞の{{萎縮}}が起こり、機能が低下する"
+],
+2:[
+"耳硬化症では{{2000Hz}}の{{骨導}}閾値が落ち込む{{Carhart notch}}がみられる",
+"耳硬化症のティンパノグラムは{{As型}}で、{{アブミ骨}}底板が卵円窓に固着するため",
+"耳硬化症は{{中年女性}}に多く、徐々に進行する両側性の伝音難聴で{{アブミ骨手術}}を行う",
+"{{縦骨折}}は錐体稜に沿って外耳道〜鼓室を損傷し、{{伝音難聴}}・顔面神経麻痺をきたす",
+"{{横骨折}}は錐体稜を横断して内耳を損傷し、{{感音難聴}}・高度顔面神経麻痺・末梢前庭性めまいをきたす",
+"慢性中耳炎は長期化で{{混合性難聴}}となり、{{語音聴力検査}}（最高明瞭度）が必要になる",
+"{{真珠腫性}}中耳炎は上皮組織が球状に増殖して{{骨}}を溶かす",
+"騒音性難聴の{{C5dip}}は{{気導}}の{{4000Hz}}の谷で、耳硬化症のCarhart notchとは異なる"
+],
+3:[
+"外リンパ瘻は{{内耳窓}}（卵円窓・正円窓）から{{外リンパ}}が漏出する",
+"外リンパ瘻の発症3原因は{{脆弱部＋外力}}・{{骨折などの外傷}}・{{奇形に伴うもの}}",
+"保存療法は頭を{{30°}}挙上して{{安静}}にし、{{ステロイド}}を使って瘻孔の自然閉鎖を待つ",
+"聴平衡機能の悪化・変動があれば{{内耳窓閉鎖術}}が適応となる",
+"外リンパ瘻の予防4か条：{{うつむかない・気張らない・息を止めない・鼻かみに注意}}",
+"外リンパ瘻のめまいは{{回転性}}で、浮動性ではない",
+"2023年国試：風船を膨らませて「パチン」→回転性めまい→予想される聴力は{{変動性または高度の感音難聴}}",
+"内耳への圧変化は{{蝸牛小管・前庭小管}}がクモ膜下腔に開口しているため脳脊髄液圧が伝わる",
+"耳掻きや綿棒による直達外傷でのアブミ骨底板骨折は{{稀}}である"
+],
+4:[
+"突発性難聴は原因不明・{{片側性}}・{{初回のみ}}である",
+"突発性難聴の症状は難聴・耳鳴・耳閉塞感・{{回転性めまい}}である",
+"突発性難聴の予後は{{低音障害型}}が良好で、{{高音障害型・聾型}}は不良である",
+"突発性難聴は{{内耳性}}難聴なので補充現象は{{陽性}}である",
+"補充現象は{{SISI}}検査や{{ABLB}}検査で確認する",
+"突発性難聴もメニエール病も原因不明の内耳性難聴だが、{{メニエール病}}は繰り返す",
+"突発性難聴は第{{8}}脳神経症状（難聴・耳鳴・めまい）以外の神経症状を伴わない",
+"蝸電図の-SP/AP増大はメニエール病にみられ、{{突発性難聴}}ではみられない"
+],
+5:[
+"メニエール病の病態は{{内リンパ水腫}}で、症状は{{繰り返す}}",
+"メニエール病の三主徴は{{回転性めまい}}・{{低音障害型感音難聴}}・耳鳴/耳閉感である",
+"低音障害型感音難聴では{{125・250・500Hz}}が落ちる",
+"蝸電図（ECochG）で{{-SP/AP}}が{{0.37}}を超える（-SPの増大）と陽性である",
+"グリセロールテストはグリセロールを{{経口}}投与（約{{1.3g/kg}}）し、{{1〜3時間後}}に純音聴力検査を行う",
+"グリセロールテストは低音域で{{10dB}}以上の改善、または語音明瞭度{{10%}}以上の改善で陽性である",
+"グリセロールは{{浸透圧}}（脱水力）で水を引き出し、内リンパ水腫を軽減して聴力を改善する",
+"フロセミドテストは{{静脈注射}}し、温度眼振の最大眼振{{緩徐相}}速度が増加すれば陽性である",
+"フロセミドは{{ループ利尿薬}}で、血管条の{{Na-K-2Cl共輸送体}}を阻害して内リンパ産生を抑制する",
+"グリセロールテストは{{聴覚}}の改善、フロセミドテストは{{前庭機能}}の改善をみる",
+"発作時の眼振は{{患側}}向き（刺激性）から{{健側}}向き（麻痺性）へ変化する",
+"発作の病態：内リンパ水腫→{{ライスネル膜}}破裂→内外リンパ液が乱流→めまい発作",
+"蝸電図の成分：CM＝{{蝸牛マイクロフォン電位}}（外有毛細胞）、SP＝{{加重電位}}、AP＝{{複合活動電位}}"
+],
+6:[
+"頭部外傷の耳鼻咽喉科領域の主訴：難聴・耳鳴{{38%}}、耳出血{{36%}}、めまい{{15%}}、顔面神経麻痺{{5%}}",
+"前頭蓋底骨折：{{嗅覚障害}}・眼鏡状の皮下出血（{{raccoon eye}}）・視神経障害",
+"中頭蓋底骨折：{{Battle徴候}}（耳介後部の皮下出血）・髄液耳漏・顔面神経麻痺・感音難聴",
+"後頭蓋底骨折：{{下位脳神経（Ⅸ〜Ⅻ）}}麻痺・嚥下障害・味覚障害",
+"側頭骨骨折：縦骨折＝{{鼓室}}損傷／横骨折＝{{内耳}}損傷",
+"{{錐体稜}}は中頭蓋窩と後頭蓋窩の境界を作る鋭い縁である",
+"頭蓋底骨折（重症）では{{耳・鼻出血}}、味覚・嗅覚障害がみられる"
+],
+7:[
+"騒音性難聴の聴力図は{{C5dip}}型で、{{4000Hz}}に限局した谷を示す",
+"{{NITTS}}は一過性の閾値変動で、{{蝸牛内循環障害}}（コルチ器や血管条の変化）による",
+"{{NIPTS}}は閾値上昇が改善せず、{{有毛細胞}}の高度障害による",
+"障害の程度は{{音圧レベル}}・{{持続時間}}・{{音響受傷性}}で決まる",
+"騒音による難聴は{{85dBSPL}}以上の暴露で生じる",
+"{{NRF2}}は酸化ストレスから内耳を防御するタンパクである",
+"{{騒音性難聴}}は1日8時間、5〜15年以上の暴露で生じ、ほとんどが職業性である",
+"{{音響外傷}}は爆発音など{{130dB}}〜の瞬間的な音で、急性音響性難聴はコンサートなど100〜120dBで生じる",
+"dipが3〜6kHzに生じるのは、蝸牛{{基底回転}}部の{{血管吻合}}で血流障害が起こりやすいためである",
+"2022年国試：音響性難聴は{{内耳性}}難聴で、音圧・時間・{{易受傷性}}による"
+],
+8:[
+"薬剤性難聴で不可逆なのは{{アミノ配糖体系抗菌薬}}と{{白金製剤（シスプラチン）}}である",
+"薬剤性難聴で可逆なのは{{サリチル酸剤（アスピリン）}}・{{ループ利尿薬（フロセミド）}}・{{キニーネ}}である",
+"ミトコンドリア遺伝子{{m.1555A>G}}・{{m.1494C>T}}変異は{{母系遺伝}}で、アミノ配糖体に高感受性である",
+"{{SLC26A4}}（PDS）遺伝子変異は{{ペンドレッド症候群}}で、前庭水管拡大を伴う",
+"シスプラチン感受性に関連する遺伝子は{{ACYP2}}である",
+"薬剤性難聴の聴力像は{{両側性}}・{{対称性}}・{{高音急墜型}}である",
+"シスプラチンは{{基底回転}}の{{外有毛細胞}}を障害しやすい",
+"蝸牛の入口＝{{基底回転}}＝高い音／奥＝{{頂回転}}＝低い音",
+"アスピリンは外有毛細胞の{{prestin}}を一時阻害し、フロセミドは血管条の{{Na-K-2Cl共輸送体}}を阻害する",
+"ループ利尿薬の難聴は投与後10〜20分で発症し、約{{4〜5時間}}で正常に回復する",
+"問診：結核→{{アミノ配糖体系}}、高血圧→{{ループ利尿薬}}、関節痛・頭痛→{{サリチル酸系}}、悪性腫瘍→{{白金製剤}}、慢性肝炎→{{インターフェロン}}、貧血で輸血→{{鉄キレート薬}}",
+"不可逆は有毛細胞が{{アポトーシス}}で死ぬため再生せず、可逆は機能が一時的に落ちるだけである"
+],
+9:[
+"細菌性髄膜炎の起炎菌は{{肺炎球菌}}・{{髄膜炎菌}}である",
+"細菌性髄膜炎の難聴は{{両側性}}の感音難聴で、後遺症発生率{{31.7%}}、感音難聴{{20.9%}}、致死率約{{20%}}",
+"ムンプス難聴は{{一側性}}が{{95%}}、両側性が5%である",
+"ムンプス難聴には{{特異的な治療法}}がない",
+"{{内耳骨化症}}（labyrinthitis ossificans）は髄膜炎後に蝸牛が骨化し、{{人工内耳}}電極挿入が不可能になる",
+"ヘルペスウイルス（{{帯状疱疹}}・{{単純ヘルペス}}）による難聴は{{内耳性}}で、めまいを伴う突発性難聴として現れる",
+"ムンプス難聴の発症年齢は{{二峰性}}（幼児学童期と子育て世代）である",
+"髄膜炎後の内耳骨化率は成人/小児で{{10〜35%}}、小児では最大{{80%}}の報告がある",
+"メニエール病のヘルペス関与説では{{前庭神経節}}にウイルスが潜在する可能性が指摘されている"
+],
+10:[
+"加齢性難聴は蝸牛の{{基底回転}}（高音域）から障害される",
+"{{Nox3}}は活性酸素産生酵素で、加齢・騒音・聴毒性薬剤で増加する",
+"加齢性難聴の8要因：{{遺伝・中耳炎・薬の副作用・騒音・喫煙・糖尿病・高血圧・アルコール過飲}}",
+"難聴は{{認知症}}の発症要因の一つで、{{補聴器}}の使用で改善傾向がみられる",
+"MMSE研究（フランス）：認知能力は難聴なし＞{{補聴器あり}}＞{{補聴器なし}}の順に高い",
+"認知症の発症要因：加齢・遺伝子・{{高血圧}}・{{糖尿病}}・{{喫煙}}・{{難聴}}",
+"高齢者が補聴器を嫌がる理由：{{難聴へのコンプレックス}}・{{装着感や違和感}}・{{効果への疑問}}",
+"補聴器を使ってもらう工夫として{{訪問リハ}}（聴覚リハビリ）が重要である",
+"肥満→動脈硬化→{{血流悪化}}→内耳の代謝や回復の悪化につながる"
+],
+11:[
+"感音難聴を合併する全身疾患：{{糖尿病}}・{{白血病}}・{{梅毒}}・{{妊娠/産褥に伴う難聴}}",
+"感音難聴をきたす全身疾患に含まれないのは{{狭心症}}と{{関節リウマチ}}である",
+"内耳は{{終動脈}}で栄養され側副血行路がないため、血流障害に極めて弱い",
+"糖尿病は{{代謝異常}}をきたす代表的疾患で、{{細小血管障害}}により内耳の血流が低下する",
+"白血病は白血球生成組織の系統的{{腫瘍性増殖}}をきたし、内耳出血・白血球浸潤を起こす",
+"梅毒は{{先天梅毒}}・{{後天梅毒}}ともに感音難聴をきたし、内耳炎・側頭骨の骨病変を伴う"
+],
+12:[
+"聴神経腫瘍の正式名は{{前庭神経鞘腫}}で、{{シュワン細胞}}由来の良性腫瘍である",
+"聴神経腫瘍は上または下{{前庭神経}}から多く発生する",
+"聴神経腫瘍は後迷路性難聴で、補充現象は{{陰性(−)}}、Jerger{{Ⅲ型}}（TTS）を示す",
+"聴神経腫瘍の温度眼振検査は{{一側性}}の高度低下あるいは廃絶（{{CP}}＝半規管麻痺）を示す",
+"聴神経腫瘍の聴力像は{{さまざま}}で、一定の型を示さない",
+"聴神経腫瘍ではアブミ骨筋反射閾値が{{上昇}}し、{{tone decay}}（減衰）が(+)になる",
+"聴神経腫瘍のABRは各波間潜時の{{延長・欠損}}、Ⅰ〜Ⅴ波間潜時の延長を示す",
+"注視眼振：内耳道に局在→(−)、小脳橋角部→{{健側注視時}}(+)、脳幹圧迫→{{両側注視時}}(+)＝{{Bruns眼振}}",
+"腫瘍が増大すると内耳道を通る{{顔面神経}}を圧迫して麻痺が起こる",
+"聴神経腫瘍の語音明瞭度は{{低下}}する"
+],
+13:[
+"Auditory Neuropathyは{{感覚細胞と聴神経間のシナプス伝達}}の問題、または聴神経の{{神経伝導}}の異常である",
+"Auditory Neuropathyの原因は{{先天性（遺伝子異常）}}・{{周産期性（高ビリルビン血症）}}・後天性（原因不明）である",
+"Auditory Neuropathyの聴力は{{低音障害型}}感音難聴（軽〜中等度）である",
+"Auditory Neuropathyの最高明瞭度は{{50%}}以下で、単語・短文も50%以下である",
+"Auditory Neuropathyでは{{OAE}}（DPOAE・TEOAE）は正常である",
+"Auditory Neuropathyでは蝸電図の{{CM}}（蝸牛マイクロフォン電位）は正常である",
+"Auditory Neuropathyでは{{ABR}}が無反応で、神経の{{同期性}}が失われている",
+"診断の鍵は{{OAE正常}}＋{{ABR無反応}}の組み合わせである",
+"Auditory Neuropathyでは{{人工内耳}}（蝸牛神経を直接刺激）の効果に期待できる",
+"聴神経腫瘍で蝸牛神経自体が機能しない場合は人工内耳が無効で、{{ABI}}（聴性脳幹インプラント）を用いる"
+],
+14:[
+"中枢性難聴は{{脳幹性}}難聴と{{皮質性}}難聴に分けられ、脳血管障害によることが多い",
+"聴覚の脳幹上行経路：蝸牛神経核→{{上オリーブ核}}→{{外側毛帯}}→{{下丘}}→{{内側膝状体}}→聴皮質",
+"大脳皮質障害の原因は{{出血}}・{{梗塞}}・{{ヘルペス脳炎}}である",
+"大脳皮質障害では純音聴力は{{正常}}で、{{語音明瞭度}}と{{両耳分離能}}が反対側耳で低下する",
+"{{聴覚失認}}は両側の聴皮質・聴放線の障害でみられる",
+"優位半球のみの障害で{{聴覚的理解}}（単語・文）と{{音楽知覚}}（メロディー）が低下する",
+"脳幹部の障害では{{複視}}・眼振・顔面の感覚運動麻痺・{{嚥下障害}}・構音障害をきたす",
+"{{多発性硬化症}}は中枢神経系に時間的・空間的に多発する{{脱髄}}疾患である",
+"多発性硬化症の難聴は中等度以上が{{81%}}で、ABRで{{Ⅴ波}}の潜時延長を示す",
+"聴皮質障害に有用な検査は{{歪語音検査}}と{{両耳分離能検査}}である",
+"歪語音明瞭度は伸縮率が±{{40%}}程度までは保たれる",
+"両耳分離能は{{カクテルパーティー}}効果で重要な役割を果たす"
+],
+15:[
+"「聞く」は音が自然と耳に入ること、「{{聴く}}」は意識して耳を澄ますことである",
+"「聴」の字は{{耳＋目＋心}}から成る",
+"「聴く」に必要な能力：{{集中力・忍耐力・読解力・共感力・コミュニケーション能力・論理的思考力・想像力}}",
+"{{S/N比}}は聞きたい声÷周りの騒音で、正常耳は{{S/N比1}}でも聴き取れるが感音難聴の高齢者は難しい",
+"高齢者は{{時間分解能}}と語音明瞭度が低下するため、{{早口・大声}}では伝わらない",
+"高齢者の傾聴態度が低下するのは、人と会う機会が減り{{脳への刺激}}が少なくなるためである",
+"聴き慣れた人の声は{{長期記憶}}が働き聴き取りやすい（短期記憶→{{海馬}}→大脳皮質）",
+"高齢者支援として音声の{{リアルタイム文字化}}や窓口の{{字幕モニター}}で音情報を視覚化する",
+"補聴器の購入補助制度は全国{{123}}自治体で実施されている"
+],
+16:[
+"純音聴力検査のマスキングは{{狭帯域雑音}}（バンドノイズ）、語音明瞭度検査は{{広帯域雑音}}（ホワイトノイズ）を用いる",
+"標準純音検査のマスキング：500Hz以下→{{100Hz}} band noise／500Hz以上→{{1/3 oct}} band noise",
+"補充現象は{{陽性}}なら内耳性難聴、{{陰性}}なら後迷路性難聴である",
+"補充現象を利用した内耳機能検査は{{SISI}}検査と{{ABLB}}検査である",
+"Jerger分類：Ⅰ＝{{伝音性}}／Ⅱ＝{{内耳性}}／Ⅲ・Ⅳ＝{{後迷路性}}／Ⅴ＝{{機能性}}",
+"JergerⅢ型は自記オージオメトリで{{TTS}}（一過性閾値上昇）がみられる",
+"JergerⅡ型は{{C-Iの乖離}}・振幅縮小、Ⅴ型は{{C-Iの逆転}}（非器質的）である",
+"最高明瞭度は{{語音聴取能力}}を知る重要な指標で、純音聴力から予測される値より低ければ{{後迷路性}}を疑う",
+"慢性化膿性中耳炎では{{骨導閾値}}の上昇（特に高周波数）により語音明瞭度が低下する",
+"メニエール病は蝸電図で{{-SP/AP増大}}（0.37超）を示す"
+],
+17:[
+"末梢性めまいの代表疾患：{{メニエール病}}・{{前庭神経炎}}・{{BPPV}}・{{突発性難聴}}",
+"中枢性めまいの代表疾患：{{脳梗塞}}・{{脳出血}}・{{てんかん}}",
+"末梢性めまいは{{回転性}}が多く、{{突発性/周期性}}で、耳鳴・難聴は{{あり}}、神経症状は{{なし}}",
+"中枢性めまいは{{非回転性}}が多く、程度は弱く、{{持続性}}で、神経症状が{{あり}}",
+"末梢性めまいの眼振は{{水平・回旋性}}・一方向で、{{頭位や体位}}で誘発される",
+"中枢性めまいの眼振は{{垂直性}}で、頭位や体位の影響を受けない",
+"BPPVは{{耳石}}が半規管に迷入して起こる",
+"前庭神経炎は{{ウイルス}}感染後に前庭神経が障害され、難聴を伴わない",
+"2023年国試「難聴を生じないのはどれか」の答えは{{BPPV}}と{{前庭神経炎}}である",
+"蝸牛症状ありで眼振が持続：{{単回}}なら突発性難聴、{{繰り返す}}ならメニエール病"
+],
+18:[
+"めまいの3分類：{{回転性}}＝周囲がぐるぐる／{{浮動性}}＝体が浮いたような感覚／{{立ちくらみ}}＝立ち上がるとクラクラ",
+"浮動性めまいの原因：{{頸性めまい}}・{{薬物副作用}}・{{小脳病変}}・{{パーキンソン症候群}}・脳卒中・{{貧血}}・心因性",
+"前失神（気絶しそう）の原因：{{脱水}}・{{心疾患}}・{{血管迷走神経反射}}・薬物副作用・心因性",
+"平衡障害（ふらつき）の原因：{{薬物副作用}}・心因性",
+"外リンパ瘻のめまいは{{回転性}}で、浮動性ではない",
+"低血糖の症状：頭が{{くらくら}}・体が{{ふらふら}}・脱力感・{{ろれつ不良}}・眼のかすみ・けいれん・昏睡",
+"回転性めまいの原因：{{前庭神経炎}}・脳卒中・外傷性・感染性・{{BPPV}}・片頭痛性・突発難聴・脳腫瘍・{{メニエール病}}・心因性",
+"{{急性中耳炎}}は浮動性めまいの原因として挙げられていない"
+],
+19:[
+"眼振は{{緩徐相}}と{{急速相}}で構成され、眼球の偏倚は{{緩徐相}}に現れる",
+"眼振の向きは{{急速相}}の方向で表す",
+"{{ENG}}（電気眼振記録法）は水平成分と垂直成分を測定し、{{10°}}校正を行う",
+"注視眼振検査は眼前{{30cm}}、左右上下{{30°}}の指標を注視させる",
+"注視方向性眼振は{{脳幹・小脳}}障害で出現する",
+"眼振の表記：振幅は{{⇒系}}、頻度は{{〉→系}}で表す",
+"{{自発眼振}}は身体内部の病的状態で出現し、{{赤外線フレンツェル眼鏡}}で観察する",
+"{{誘発眼振}}は外的刺激（回転・温度・視刺激）で出現し、{{温度刺激検査}}・{{視運動性眼振検査}}で調べる",
+"重心動揺検査のパラメータ：{{速度}}・{{広がり}}・{{方向性}}・{{周波数}}",
+"遮眼書字検査では末梢前庭障害は{{患側}}に偏倚する",
+"ETT：{{saccadic型}}（階段状）＝{{脳幹}}障害、{{ataxic型}}（失調性）＝{{小脳}}障害（overshoot/undershoot）",
+"足踏検査では{{回転角}}・{{移行角}}・{{移行距離}}を調べる",
+"回転検査は{{外側（水平）半規管}}の左右差を検出し、回転とは{{反対向き}}の内リンパの流れが生じる"
+]
+};
+/* 問題連動の穴埋め：小テスト各問の選択肢(1)〜(5)を「正しい形」にして、狙われるキーワードを空欄化（予想問題はこの知識の入れ替えなので共通） */
+const KWQ = {
+s01:[
+"加齢により耳管軟骨組織の{{変性・消失}}と腺細胞の{{萎縮}}が起こり、機能が低下する",
+"耳管開放症は体重{{減少}}（急激なダイエット・{{妊娠}}）により起こる",
+"耳管開口部に発生する{{上咽頭癌}}は耳管を塞ぎ、滲出性中耳炎を起こす",
+"初期の耳管狭窄症はティンパノメトリー{{C型}}を示し、{{As型}}は耳硬化症である",
+"耳管狭窄症・耳管開放症は{{伝音性}}難聴をきたし、低音障害型{{感音性}}難聴は{{メニエール病}}である"
+],
+s02:[
+"耳硬化症ではオーディオグラムに{{Carhart notch}}（{{2000Hz}}の骨導の落ち込み）がみられる",
+"側頭骨の{{縦骨折}}は鼓室を損傷して耳小骨離断をきたし、{{横骨折}}は内耳を損傷する",
+"慢性中耳炎は炎症が内耳に波及して{{混合性難聴}}となり、{{語音聴力検査}}が必要である",
+"耳硬化症のティンパノグラムは{{As型}}である（C1型ではない）",
+"{{後天性}}の真珠腫性中耳炎は{{骨}}を破壊することがある"
+],
+s03:[
+"外リンパ瘻は瘻孔が自然閉鎖する可能性があるため、まず{{保存的治療}}を優先し、試験解放術は優先しない",
+"耳掻きなどの直達外傷によるアブミ骨底板骨折で外リンパ瘻をきたすのは{{稀}}（きたしにくい）である",
+"外リンパ瘻の保存的療法は頭を{{30°}}挙上した状態で{{安静}}を保つ",
+"聴平衡機能の悪化・変動がある外リンパ瘻は{{内耳窓閉鎖術}}の適応となる",
+"外リンパ瘻は{{中耳圧}}の急激な変化（風船・鼻かみ・重い物）によって発症する"
+],
+s04:[
+"突発性難聴は原因不明で{{片側性}}が多い",
+"突発性難聴は{{低音障害型}}は予後良好、{{聾型}}は不良である",
+"突発性難聴は{{初回のみ}}で、繰り返すのは{{メニエール病}}である",
+"突発性難聴は第{{8}}脳神経症状以外の神経症状を伴わない",
+"突発性難聴は内耳性難聴で、補充現象は{{陽性}}である"
+],
+s05:[
+"メニエール病は{{低音障害型}}感音難聴を示す場合が多い",
+"メニエール病は蝸電図で-SPの{{増大}}（-SP/AP＞{{0.37}}）がみられる",
+"メニエール病で{{グリセロール}}テストは陽性である",
+"メニエール病で{{フロセミド}}テストも陽性である",
+"メニエール病の発作時の自発眼振は{{患側}}に向かい、のちに{{健側}}向きとなる"
+],
+s06:[
+"頭部外傷では側頭骨骨折により伝音・感音の{{難聴}}が起こる（主訴の38%）",
+"頭部外傷では中頭蓋底骨折により{{顔面神経麻痺}}が起こる（主訴の5%）",
+"頭部外傷では{{耳鳴}}が起こる（難聴と合わせて38%）",
+"頭部外傷では横骨折で内耳が損傷され、末梢前庭性{{めまい}}が起こる（15%）",
+"頭蓋底骨折（重症）では{{耳出血}}（36%）・鼻出血が起こる"
+],
+s07:[
+"騒音性難聴の聴力図は{{C5dip}}型（{{4000Hz}}の谷）で、高音急墜型ではない",
+"音響性難聴には{{酸化ストレス}}（活性酸素の過剰産生）が影響し、{{NRF2}}が内耳を防御する",
+"音響性難聴の障害の程度は{{音圧レベル}}・{{持続時間}}・{{音響受傷性}}で決まる",
+"難聴が重度であれば{{NIPTS}}の可能性が高く、自然回復しにくい",
+"{{蝸牛内循環障害}}は{{NITTS}}（一過性）の病態で、急性音響性感音難聴の一因である"
+],
+s08:[
+"{{アミノ配糖体}}抗菌剤や{{白金製剤}}による難聴は不可逆性である",
+"薬剤性難聴では薬剤使用の有無を確認する{{問診}}が不可欠である",
+"薬剤性難聴は{{ミトコンドリア}}遺伝子1555変異で、{{SLC26A4}}変異は{{ペンドレッド症候群}}である",
+"シスプラチンによる難聴では{{基底回転}}の外有毛細胞が障害されやすい",
+"薬剤性難聴は{{両側性}}・{{対称性}}の感音難聴を示す"
+],
+s09:[
+"細菌性髄膜炎の重篤な後遺症は{{両側}}高度感音難聴である",
+"ヘルペスウイルスによる難聴は{{内耳性}}である（後迷路性ではない）",
+"ムンプス難聴には{{特異的な治療法}}がない",
+"流行性耳下腺炎による難聴はほとんどが{{一側性}}（{{95%}}）である",
+"細菌性髄膜炎罹患後に蝸牛が{{骨化}}（内耳骨化症）することがある"
+],
+s10:[
+"中年初老期の加齢性難聴は蝸牛の{{基底回転}}から障害される",
+"{{Nox3}}発現細胞数は加齢に伴い増加し、活性酸素の増加が加齢性難聴に影響する",
+"加齢性難聴は{{認知機能}}に影響する",
+"加齢性難聴は{{8要因}}（遺伝・中耳炎・薬・騒音・喫煙・糖尿病・高血圧・アルコール）が複合して発生する",
+"加齢性難聴で補聴器は{{適応内}}である"
+],
+s11:[
+"{{狭心症}}は感音難聴をきたす全身疾患に含まれない",
+"{{糖尿病}}は代謝異常をきたす代表的疾患で、感音難聴をきたす",
+"{{関節リウマチ}}は感音難聴をきたす全身疾患に含まれない",
+"{{白血病}}は内耳出血などにより感音難聴をきたす",
+"{{梅毒}}は先天・後天ともに感音難聴をきたす"
+],
+s12:[
+"聴神経腫瘍（後迷路性難聴）はJerger{{Ⅲ型}}を示す（Ⅱ型は内耳性）",
+"聴神経腫瘍の温度眼振検査は{{一側性}}の高度低下あるいは廃絶（{{CP}}）を示す",
+"聴神経腫瘍は上・下{{前庭神経}}の{{シュワン細胞}}から多く発生する良性腫瘍である",
+"聴神経腫瘍の聴力像は{{さまざま}}で、一定の型を示さない",
+"聴神経腫瘍が増大すると{{顔面神経}}を圧迫して麻痺が起こる"
+],
+s13:[
+"Auditory Neuropathyは感覚細胞と聴神経間の{{シナプス伝達}}の問題である",
+"Auditory Neuropathyの最高明瞭度は{{50%}}以下である",
+"Auditory Neuropathyの耳音響放射（{{OAE}}）は正常である",
+"Auditory Neuropathyは{{人工内耳}}の効果に期待できる",
+"Auditory Neuropathyの聴性脳幹反応（{{ABR}}）は無反応である"
+],
+s14:[
+"脳腫瘍の増大で{{下丘}}を圧迫すると難聴を生じ得る",
+"脳幹部の障害では{{複視}}や運動麻痺・嚥下障害をきたす",
+"聴皮質の障害では{{歪語音}}検査や{{両耳分離能}}検査が有用である",
+"大脳皮質障害では純音聴力閾値は{{正常}}である",
+"{{多発性硬化症}}では中等度以上の難聴が多く（{{81%}}）、ABRでⅤ波の潜時延長を示す"
+],
+s15:[
+"高齢者の傾聴態度は{{低下}}する（脳への刺激の減少）",
+"感音性難聴の高齢者は{{騒音下}}での会話聴取が困難である",
+"高齢者との会話では{{視覚情報}}が必要な場面が多い（「聴」＝耳＋目＋心）",
+"高齢者は話者の話し方で聴き取りが異なり、{{早口・大声}}では伝わらない",
+"視覚活用したインフラ整備として{{字幕モニター}}（音声のリアルタイム文字化）の充実が求められる"
+],
+s16:[
+"純音聴力検査のマスキングは{{狭帯域雑音}}、語音明瞭度検査は{{広帯域雑音}}を用いる",
+"補充現象{{陽性}}の場合は{{内耳性}}難聴を疑う",
+"{{最高明瞭度}}は語音聴取能力を知る重要な指標である",
+"Jerger{{Ⅲ型}}では一過性閾値上昇（{{TTS}}）がみられる",
+"メニエール病は蝸電図で-SPの{{増大}}がみられる"
+],
+s17:[
+"{{過換気症候群}}は回転性めまいの原因として挙げられていない",
+"{{メニエール病}}は末梢性で、回転性めまいを繰り返す",
+"{{甲状腺疾患}}は回転性めまいの原因として挙げられていない",
+"{{良性発作性頭位めまい症}}は耳石が半規管に迷入して回転性めまいを起こす",
+"{{前庭神経炎}}はウイルス感染後に前庭神経が障害され、回転性めまいを起こす（難聴なし）"
+],
+s18:[
+"{{外リンパ瘻}}は回転性めまいで、浮動性めまいの原因ではない",
+"{{薬剤の作用}}は浮動性めまいの原因である",
+"{{貧血}}は浮動性めまいの原因である",
+"{{急性中耳炎}}は浮動性めまいの原因として挙げられていない",
+"{{低血糖}}は浮動性めまいの原因である"
+],
+s19:[
+"眼振の眼球の偏倚は{{緩徐相}}に現れる",
+"電気眼振図（ENG）は{{水平}}成分と{{垂直}}成分を測定する",
+"注視眼振検査は眼前{{30cm}}、左右上下{{30°}}の指標を注視させる",
+"眼振の表記で振幅は{{⇒}}、頻度は{{〉→}}で表す",
+"{{自発眼振}}は身体内部の病的状態で現れ、正常者には出現しない"
+],
+s20:[
+"重心動揺検査は被検者を検査台に立たせ、前後左右の{{重心移動}}を記録する",
+"末梢前庭障害は遮眼書字検査で{{患側}}に偏倚する",
+"指標追跡検査（ETT）で{{脳幹}}障害の場合は{{階段状}}（saccadic型）の眼球運動がみられる",
+"足踏検査では{{回転角度}}・{{移行角度}}・移行距離を調べる",
+"回転検査は{{外側（水平）半規管}}の左右差を検出する"
+]
+};
+const KWDATA = [];
+for(let u=1; u<=19; u++){
+  DATA.filter(q=>q.set==='s' && q.unit===u).forEach(q=>{
+    const n = +q.id.slice(1);
+    (KWQ[q.id]||[]).forEach((t,i)=>KWDATA.push({id:`q-${q.id}-${i+1}`, unit:u, text:t, src:`問${n}の選択肢(${i+1})`, qlink:true}));
+  });
+  (KW[u]||[]).forEach((t,i)=>KWDATA.push({id:`k${u}-${i+1}`, unit:u, text:t, qlink:false}));
+}
+/*KW_END*/
+
 
 /* ---------- 保存（端末のlocalStorage） ---------- */
 const KEY = "st_adult_hearing_v1";
-let store = {res:{}, stars:{}};
+let store = {res:{}, stars:{}, kw:{}};
 try { const s = JSON.parse(localStorage.getItem(KEY) || "{}"); store = Object.assign(store, s); } catch(e){}
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){} }
 const isStar = q => (q.id in store.stars) ? !!store.stars[q.id] : !!q.star;
@@ -396,11 +800,16 @@ function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.
 const unitName = n => UNITS.find(u=>u.n===n).name;
 
 /* ---------- メニュー ---------- */
-function menu(){
-  S = null;
+let TAB = "q";
+function tabsHtml(){
+  return `<div class="tabs"><button class="${TAB==='q'?'on':''}" onclick="menu('q')">📝 問題演習</button><button class="${TAB==='k'?'on':''}" onclick="menu('k')">🔤 キーワード穴埋め</button></div>`;
+}
+function menu(t){ if(t) TAB = t; S = null; if(TAB==='k') return menuKw(); menuQ(); }
+function menuQ(){
   const wrongs = DATA.filter(q => store.res[q.id] === false);
   let h = `<h1>🎧 成人聴覚障害 問題集</h1>
   <p class="lead">小テスト1ST（20問）＋定期テスト予想問題（20問）｜組合せ形式・5択1答</p>
+  ${tabsHtml()}
   <div class="sec-title">📚 カテゴリー別（単元名）</div>`;
   GROUPS.forEach((g,gi)=>{
     h += `<div class="group"><h3>${g}</h3><div class="unit-grid">`;
@@ -440,7 +849,7 @@ function startRandom(){ begin(shuffle(DATA).slice(0,10), "ランダム10問"); }
 function startStar(){ begin(DATA.filter(isStar), "★頻出"); }
 function startSet(s){ begin(DATA.filter(q=>q.set===s), s==="s"?"小テスト版":"予想問題版"); }
 function startWrong(){ begin(DATA.filter(q=>store.res[q.id]===false), "間違い復習"); }
-function resetAll(){ if(confirm("成績と★の変更をすべてリセットしますか？")){ store={res:{},stars:{}}; save(); menu(); } }
+function resetAll(){ if(confirm("成績と★の変更をすべてリセットしますか？")){ store={res:{},stars:{},kw:{}}; save(); menu(); } }
 
 /* ---------- 問題表示 ---------- */
 function stemHtml(q){
@@ -449,7 +858,9 @@ function stemHtml(q){
 function show(){
   const q = S.q[S.i];
   S.done = false;
+  S.marks = [null,null,null,null,null];
   const pct = (S.i/S.q.length*100).toFixed(0);
+  const hintTxt = q.dir==='n' ? "○＝当てはまる／×＝当てはまらない" : "○＝正しい文／×＝誤り文";
   $app.innerHTML = `
   <div class="topbar"><button class="back" onclick="confirmBack()">← メニュー</button><div class="prog">${S.label}｜${S.i+1} / ${S.q.length}</div><div style="width:84px"></div></div>
   <div class="bar"><i style="width:${pct}%"></i></div>
@@ -460,13 +871,46 @@ function show(){
       <button class="starbtn ${isStar(q)?'on':''}" id="starbtn" onclick="toggleStar()" aria-label="★頻出に追加/解除">★</button>
     </div>
     <div class="stem">${stemHtml(q)}</div>
-    <ul class="sts">${q.st.map((s,i)=>`<li>(${i+1}) ${s}</li>`).join("")}</ul>
-    <div class="chs">${q.ch.map((c,i)=>`<button class="ch" onclick="pick(${i})">${NUM[i]} ${c}</button>`).join("")}</div>
+    <div class="mkhint"><span>文をタップで ${hintTxt} を記録 → 矛盾する選択肢は自動で消えます</span><button onclick="clearMarks()">クリア</button></div>
+    <ul class="sts">${q.st.map((s,i)=>`<li id="st${i}" onclick="markCycle(${i})"><span class="no">(${i+1})</span><span>${s}</span><span class="mk">・</span></li>`).join("")}</ul>
+    <div class="chs">${q.ch.map((c,i)=>`<button class="ch" id="ch${i}" onclick="pick(${i})">${NUM[i]} ${c}</button>`).join("")}</div>
     <div class="fb" id="fb"></div>
   </div>`;
   window.scrollTo(0,0);
 }
 function confirmBack(){ if(S && S.i>0 && !confirm("途中ですがメニューに戻りますか？")) return; menu(); }
+/* ---------- 消去法（○×メモ→矛盾する選択肢を自動で薄く） ---------- */
+function selSet(c){
+  if(c==="すべて") return [1,2,3,4,5];
+  if(c==="なし") return [];
+  return (c.match(/\((\d)\)/g)||[]).map(x=>+x[1]);
+}
+function isExcluded(q,ci){
+  const target = (q.dir !== 'w');          // 「間違っている」問題では×の文が答え側
+  const set = selSet(q.ch[ci]);
+  for(let j=0;j<5;j++){
+    const m = S.marks[j];
+    if(m===null) continue;
+    if((m===target) !== set.includes(j+1)) return true;
+  }
+  return false;
+}
+function refreshMarks(){
+  const q = S.q[S.i];
+  q.st.forEach((_,i)=>{
+    const li = document.getElementById("st"+i), m = S.marks[i];
+    li.className = m===null ? "" : (m ? "mk-o" : "mk-x");
+    li.querySelector(".mk").textContent = m===null ? "・" : (m ? "○" : "×");
+  });
+  q.ch.forEach((_,i)=> document.getElementById("ch"+i).classList.toggle("out", isExcluded(q,i)));
+}
+function markCycle(i){
+  if(S.done) return;
+  const m = S.marks[i];
+  S.marks[i] = (m===null) ? true : (m===true ? false : null);
+  refreshMarks();
+}
+function clearMarks(){ if(S.done) return; S.marks=[null,null,null,null,null]; refreshMarks(); }
 function toggleStar(){
   const q = S.q[S.i];
   store.stars[q.id] = !isStar(q); save();
@@ -491,6 +935,10 @@ function pick(k){
   const rows = q.st.map((s,i)=>`<tr><td>(${i+1})</td><td class="m ${q.t[i]?'o':'x'}">${q.t[i]?'○':'×'}</td><td><div>${s}</div><div class="ex">${q.ex[i]}</div></td></tr>`).join("");
   const last = S.i === S.q.length-1;
   let h = `<div class="verdict ${ok?'ok':'ng'}">${ok?'⭕ 正解！':'❌ 不正解'}　正答：${NUM[q.a]} ${q.ch[q.a]}</div>`;
+  if(S.marks.some(m=>m!==null)){
+    const bad = []; q.st.forEach((_,i)=>{ if(S.marks[i]!==null && S.marks[i]!==(q.t[i]===1)) bad.push("("+(i+1)+")"); });
+    h += `<div class="box ${bad.length?'warn':'key'}">${bad.length?`✋ 自分の○×メモが違っていた文：${bad.join(" ")}（下の表で確認）`:'👍 ○×メモはすべて合っていました'}</div>`;
+  }
   if(q.warn) h += `<div class="box warn">${q.warn}</div>`;
   h += `<table class="jt">${rows}</table>
   <div class="center" style="font-size:.78rem;margin:-4px 0 10px">○＝その文は事実として正しい／×＝誤り（設問が「間違っている」場合は×が正答側）</div>`;
@@ -521,6 +969,99 @@ function result(){
   window.scrollTo(0,0);
 }
 function retryWrong(){ begin(S.wrong.slice(), "間違い復習"); }
+
+/* ---------- キーワード穴埋め ---------- */
+const kwOf = u => KWDATA.filter(k=>k.unit===u);
+function menuKw(){
+  const miss = KWDATA.filter(k=>store.kw[k.id]===false).length;
+  const done = KWDATA.filter(k=>store.kw[k.id]===true).length;
+  let h = `<h1>🎧 成人聴覚障害 問題集</h1>
+  <p class="lead">各単元の重要キーワードだけを空欄にして暗記｜小テスト各問の選択肢(1)〜(5)ごとに1問以上を用意｜空欄をタップで答え表示</p>
+  ${tabsHtml()}
+  <div class="sec-title">📚 カテゴリー別（単元名）</div>`;
+  GROUPS.forEach((g,gi)=>{
+    h += `<div class="group"><h3>${g}</h3><div class="unit-grid">`;
+    UNITS.filter(u=>u.g===gi).forEach(u=>{
+      const ks = kwOf(u.n);
+      const ok = ks.filter(k=>store.kw[k.id]===true).length;
+      h += `<button class="unit-btn kw${ok===ks.length?' all-ok':''}" onclick="kwStartUnit(${u.n})"><span>${u.n}. ${u.name}</span><small>${ok}/${ks.length}</small></button>`;
+    });
+    h += `</div></div>`;
+  });
+  h += `<div class="sec-title">🎯 まとめて覚える</div>
+  <div class="row3">
+    <button class="sub-btn" onclick="kwBegin(KWDATA.slice(),'穴埋め 全部')"><b>全部</b><small>${KWDATA.length}問</small></button>
+    <button class="sub-btn" onclick="kwBegin(shuffle(KWDATA).slice(0,15),'穴埋め ランダム15問')"><b>ランダム</b><small>15問</small></button>
+    <button class="sub-btn" onclick="kwBegin(KWDATA.filter(k=>store.kw[k.id]===false),'穴埋め まだ復習')"><b>まだ復習</b><small>${miss}問</small></button>
+  </div>
+  <div class="row2" style="grid-template-columns:1fr 1fr">
+    <button class="sub-btn" onclick="kwBegin(KWDATA.filter(k=>k.qlink),'穴埋め 選択肢連動')"><b>選択肢連動</b><small>各問(1)〜(5) ${KWDATA.filter(k=>k.qlink).length}問</small></button>
+    <button class="sub-btn" onclick="kwBegin(KWDATA.filter(k=>!k.qlink),'穴埋め まとめ')"><b>まとめ</b><small>周辺知識 ${KWDATA.filter(k=>!k.qlink).length}問</small></button>
+  </div>
+  <div class="foot">覚えた ${done}/${KWDATA.length}　｜　成績はこの端末に保存されます<br><button class="link" onclick="resetAll()">成績をリセット</button></div>`;
+  $app.innerHTML = h;
+  window.scrollTo(0,0);
+}
+function kwStartUnit(n){ kwBegin(kwOf(n), `穴埋め ${n}. ${unitName(n)}`); }
+function kwBegin(list,label){
+  if(!list.length){ alert("該当する問題がありません"); return; }
+  S = {kw:true, q:list, i:0, ok:0, ng:[], label, opened:0, total:0};
+  kwShow();
+}
+function kwShow(){
+  const k = S.q[S.i];
+  S.opened = 0; S.answers = [];
+  let n = 0;
+  const body = k.text.replace(/\{\{(.+?)\}\}/g, (m,a)=>{
+    S.answers.push(a);
+    const w = Math.min(Math.max(a.length,3),9);
+    return `<button class="blank" id="bl${n}" style="min-width:${w}em" onclick="kwOpen(${n++})">？</button>`;
+  });
+  S.total = n;
+  const pct = (S.i/S.q.length*100).toFixed(0);
+  $app.innerHTML = `
+  <div class="topbar"><button class="back" onclick="confirmBack()">← メニュー</button><div class="prog">${S.label}｜${S.i+1} / ${S.q.length}</div><div style="width:84px"></div></div>
+  <div class="bar"><i style="width:${pct}%"></i></div>
+  <div class="card">
+    <div class="tags"><span class="tag">${k.unit}. ${unitName(k.unit)}</span><span class="tag t-s">キーワード穴埋め</span>${k.src?`<span class="tag">${k.src}</span>`:''}</div>
+    <div class="kwhint">頭の中で答えてから、空欄をタップして確認（${n}か所）</div>
+    <div class="kwtext">${body}</div>
+    <div id="kwact"><button class="btn2" style="width:100%" onclick="kwAll()">答えを全部表示</button></div>
+  </div>`;
+  window.scrollTo(0,0);
+}
+function kwOpen(n){
+  const b = document.getElementById("bl"+n);
+  if(!b || b.classList.contains("shown")) return;
+  b.classList.add("shown"); b.textContent = S.answers[n]; b.style.minWidth = "0";
+  S.opened++;
+  if(S.opened >= S.total) kwGrade();
+}
+function kwAll(){ for(let i=0;i<S.total;i++) kwOpen(i); }
+function kwGrade(){
+  const el = document.getElementById("kwact");
+  el.innerHTML = `<div class="center" style="margin-bottom:6px">全部言えましたか？</div>
+  <div class="g2"><button class="g-ng" onclick="kwMark(false)">✗ まだ</button><button class="g-ok" onclick="kwMark(true)">✓ 覚えた</button></div>`;
+}
+function kwMark(ok){
+  const k = S.q[S.i];
+  store.kw[k.id] = ok; save();
+  if(ok) S.ok++; else S.ng.push(k);
+  if(S.i < S.q.length-1){ S.i++; kwShow(); } else kwResult();
+}
+function kwResult(){
+  const n = S.q.length;
+  let h = `<div class="topbar"><button class="back" onclick="menu()">← メニュー</button><div class="prog">${S.label}｜結果</div><div style="width:84px"></div></div>
+  <div class="card"><div class="score">${S.ok} / ${n}</div><div class="center">覚えた</div>`;
+  if(S.ng.length){
+    h += `<div class="sec-title">✗ まだの問題</div><ul class="wl">${S.ng.map(k=>`<li>${k.unit}. ${unitName(k.unit)}<br>${k.text.replace(/\{\{(.+?)\}\}/g,'<b>$1</b>')}</li>`).join("")}</ul>
+    <div class="btns"><button class="btn2" onclick="kwBegin(S.ng.slice(),'穴埋め まだ復習')">まだの問題をもう一度</button><button class="btn2" onclick="menu()">メニューへ</button></div>`;
+  } else {
+    h += `<p class="center">全部覚えました 🎉</p><div class="btns"><button class="btn2" onclick="menu()">メニューへ</button></div>`;
+  }
+  h += `</div>`;
+  $app.innerHTML = h; window.scrollTo(0,0);
+}
 
 menu();
 </script>
