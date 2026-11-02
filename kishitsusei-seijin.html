@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>器質性構音障害（成人）試験対策</title>
+<style>
+:root{
+  --bg:#f2f5f4; --card:#ffffff; --ink:#1b2a29; --sub:#5b6b69; --line:#d9e1df;
+  --pri:#1f6f6b; --pri-ink:#ffffff; --star:#b9770e; --ok:#23703f; --ok-bg:#e4f3e9;
+  --ng:#a8342d; --ng-bg:#fbe9e7; --note:#8a5a00; --note-bg:#fff3d6; --blank:#d7ece9;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#121a19; --card:#1a2524; --ink:#e6efed; --sub:#9bb0ac; --line:#2e3e3c;
+    --pri:#4fb3ac; --pri-ink:#0b1514; --star:#e0a443; --ok:#6fd199; --ok-bg:#183326;
+    --ng:#ff8f86; --ng-bg:#3a1f1c; --note:#f0c36b; --note-bg:#33280f; --blank:#244744;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic","Noto Sans JP",sans-serif;
+  line-height:1.7;font-size:16px;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#app{max-width:720px;margin:0 auto;padding:16px 14px 56px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+ruby rt{font-size:.55em;color:var(--sub)}
+h1{font-size:1.45rem;margin:0;line-height:1.35}
+.lead{margin:.2rem 0 0;color:var(--sub);font-size:.9rem}
+.sec{font-size:1.05rem;margin:26px 0 10px}
+.top{padding:6px 2px 4px}
+
+/* カテゴリーカード（最上部・最も目立たせる） */
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.cats{grid-template-columns:1fr}}
+.cat{position:relative;text-align:left;background:var(--card);border:1px solid var(--line);
+  border-left:8px solid var(--c);border-radius:12px;padding:14px 14px 12px;min-height:128px;display:flex;flex-direction:column}
+.cat:hover{border-color:var(--c)}
+.cat .nm{font-size:1.15rem;font-weight:700;line-height:1.35}
+.cat .sb{font-size:.8rem;color:var(--sub);margin-top:4px;flex:1}
+.cat .ct{font-size:.85rem;margin-top:8px;display:flex;justify-content:space-between}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:6px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--c,var(--pri))}
+
+/* 出題モード（カテゴリーより控えめ） */
+.modes{display:flex;flex-wrap:wrap;gap:8px}
+.mode{flex:1 1 auto;min-width:110px;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.92rem}
+.mode b{color:var(--star)}
+.mode[disabled]{opacity:.4;cursor:default}
+.more{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.more{grid-template-columns:1fr}}
+.more .cat{min-height:0;border-left-width:4px;border-left-color:var(--sub)}
+.more .cat .nm{font-size:1rem}
+.foot{margin-top:30px;text-align:center}
+.link{background:none;border:none;color:var(--sub);text-decoration:underline;font-size:.85rem}
+
+/* 画面共通 */
+.nav{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.back{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 12px}
+.ttl{font-weight:700;flex:1;font-size:.95rem}
+.prog{font-size:.85rem;color:var(--sub);white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chip{font-size:.75rem;border:1px solid var(--line);border-radius:999px;padding:1px 10px;color:var(--sub)}
+.chip.multi{border-color:var(--pri);color:var(--pri);font-weight:700}
+.chip.star{border-color:var(--star);color:var(--star);font-weight:700}
+.qtext{font-size:1.08rem;font-weight:600;margin:4px 0 14px}
+
+/* 選択肢 */
+.opts{display:flex;flex-direction:column;gap:8px}
+.orow{display:flex;gap:6px;align-items:stretch}
+.opt{flex:1;text-align:left;display:flex;gap:10px;align-items:flex-start;padding:11px 12px;background:var(--card);
+  border:1.5px solid var(--line);border-radius:10px}
+.opt .n{flex:none;font-weight:700;color:var(--pri)}
+.opt:hover:not([disabled]){border-color:var(--pri)}
+.opt.sel{border-color:var(--pri);background:var(--blank)}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.ng{border-color:var(--ng);background:var(--ng-bg)}
+.orow.struck .opt .t{text-decoration:line-through;opacity:.45}
+.elim{flex:none;width:44px;border:1px solid var(--line);background:var(--card);border-radius:10px;color:var(--sub);font-size:1.1rem}
+.orow.struck .elim{background:var(--ng-bg);color:var(--ng);border-color:var(--ng)}
+.act{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+.btn{padding:11px 20px;border-radius:10px;border:1.5px solid var(--pri);background:var(--pri);color:var(--pri-ink);font-weight:700}
+.btn.ghost{background:transparent;color:var(--pri)}
+.btn[disabled]{opacity:.4;cursor:default}
+.res{margin-top:14px;padding:10px 14px;border-radius:10px;font-weight:700}
+.res.ok{background:var(--ok-bg);color:var(--ok)}
+.res.ng{background:var(--ng-bg);color:var(--ng)}
+.exp{margin-top:10px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:.95rem}
+.flag{display:inline-block;margin-top:8px;padding:2px 10px;border-radius:6px;background:var(--note-bg);color:var(--note);font-size:.8rem}
+.hint{font-size:.8rem;color:var(--sub);margin:8px 0 0}
+
+/* 結果 */
+.score{font-size:2.2rem;font-weight:800;color:var(--pri);margin:4px 0}
+.wlist{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.wlist li{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.92rem}
+.wlist .a{color:var(--ok);font-weight:700;margin-top:4px}
+
+/* 記述 */
+.dq{margin-bottom:12px}
+.dq .qtext{font-size:1rem}
+.ans{margin-top:10px;padding:10px 12px;background:var(--blank);border-radius:10px;font-size:.95rem}
+.ans .pt{margin-top:6px;color:var(--sub);font-size:.85rem}
+.self{display:flex;gap:8px;margin-top:10px}
+.self button{flex:1;padding:8px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);font-weight:700}
+.self button.on.o{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.self button.on.t{background:var(--note-bg);border-color:var(--star);color:var(--note)}
+.self button.on.x{background:var(--ng-bg);border-color:var(--ng);color:var(--ng)}
+
+/* 穴埋め */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tab{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.88rem}
+.tab.on{background:var(--pri);color:var(--pri-ink);border-color:var(--pri);font-weight:700}
+.crow{margin-bottom:10px}
+.crow .lb{font-size:.8rem;color:var(--sub);margin-bottom:2px}
+.crow .lb .cl{color:var(--sub)}
+.crow .tx{font-size:1rem}
+.blank{display:inline-block;min-width:3.2em;margin:0 2px;padding:0 8px;border:none;border-bottom:2px solid var(--pri);
+  background:var(--blank);color:transparent;border-radius:4px 4px 0 0;user-select:none}
+.blank.open{color:var(--ink);background:transparent;font-weight:700}
+.tools{display:flex;gap:8px;margin-bottom:12px}
+.small{padding:7px 14px;font-size:.88rem}
+.note{font-size:.8rem;color:var(--note);margin:2px 0 0}
+@media (prefers-reduced-motion:no-preference){.bar>i{transition:width .3s}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const D = {"groups": [{"id": "g1", "name": "舌と神経", "sub": "解剖：外舌筋・内舌筋・軟口蓋の筋と神経支配", "color": "#1f6f6b"}, {"id": "g2", "name": "舌がん・治療", "sub": "疫学・術式・皮弁・気管切開", "color": "#2f6fa3"}, {"id": "g3", "name": "評価と誤り", "sub": "異聴・切除型・明瞭度・検査機器・例題", "color": "#9a5a1a"}, {"id": "g4", "name": "訓練と補綴", "sub": "訓練の順序・PAP・SB・PLP・上顎切除", "color": "#7a4a8c"}], "questions": [{"id": "q01", "g": "g1", "cat": "解剖", "q": "<ruby>舌下神経<rt>ぜっかしんけい</rt></ruby>が片側<ruby>麻痺<rt>まひ</rt></ruby>したとき、舌を<ruby>突出<rt>とっしゅつ</rt></ruby>すると舌はどうなるか。", "opts": ["健側へ偏位する", "舌尖のみ健側へ曲がる", "正中のまま突出する", "麻痺側へ偏位する", "舌尖のみ麻痺側へ曲がる"], "ans": [3], "multi": false, "exp": "オトガイ舌筋は反対側へ舌を押す。麻痺側の筋が働かず、健側の筋が麻痺側へ押し出すため麻痺側へ偏位する（健側が押して、麻痺側へ倒れる）。ただし内舌筋は健側へ舌尖を動かせる（授業）。", "star": true, "flag": "※授業ノート確認"}, {"id": "q02", "g": "g1", "cat": "解剖", "q": "舌を前下方へ引いて<ruby>突出<rt>とっしゅつ</rt></ruby>させる筋はどれか。", "opts": ["オトガイ舌筋", "舌骨舌筋", "茎突舌筋", "垂直舌筋", "顎舌骨筋"], "ans": [0], "multi": false, "exp": "オトガイ舌筋は突出させる外舌筋（舌下神経）。舌骨舌筋は後下方、茎突舌筋は後上方へ引く。垂直舌筋は内舌筋で舌を平たくする。顎舌骨筋は口腔底の筋。", "star": true, "flag": "※筋の働きは一般知識"}, {"id": "q03", "g": "g1", "cat": "解剖", "q": "<ruby>舌尖<rt>ぜっせん</rt></ruby>を上方へ反らせる筋はどれか。", "opts": ["横舌筋", "垂直舌筋", "下縦舌筋", "茎突舌筋", "上縦舌筋"], "ans": [4], "multi": false, "exp": "上縦舌筋は舌尖を上へ反らせて短縮する内舌筋。下縦舌筋は下方へ、横舌筋は幅を狭めて細長く、垂直舌筋は平たくする。茎突舌筋は外舌筋で後上方へ引く。", "star": false, "flag": "※筋の働きは一般知識"}, {"id": "q04", "g": "g1", "cat": "解剖", "q": "<ruby>軟口蓋<rt>なんこうがい</rt></ruby>の筋のうち、<ruby>下顎神経<rt>かがくしんけい</rt></ruby>（<ruby>三叉神経<rt>さんさしんけい</rt></ruby>）支配はどれか。", "opts": ["口蓋帆挙筋", "口蓋垂筋", "口蓋帆張筋", "口蓋咽頭筋", "口蓋舌筋"], "ans": [2], "multi": false, "exp": "軟口蓋の筋は迷走神経（咽頭神経叢経由）支配だが、口蓋帆張筋のみ三叉神経（下顎神経）。", "star": true, "flag": ""}, {"id": "q05", "g": "g2", "cat": "舌がん", "q": "<ruby>舌がん<rt>ぜつがん</rt></ruby>の<ruby>組織型<rt>そしきがた</rt></ruby>で最も多いのはどれか。", "opts": ["扁平上皮がん", "腺がん", "腺様嚢胞がん", "粘表皮がん", "悪性リンパ腫"], "ans": [0], "multi": false, "exp": "舌がんは扁平上皮がんが最も多い。被覆粘膜上皮から連続して深部へ浸潤・増殖する。", "star": true, "flag": ""}, {"id": "q06", "g": "g2", "cat": "舌がん", "q": "<ruby>白板症<rt>はくばんしょう</rt></ruby>について正しいのはどれか。", "opts": ["粘膜下層の肥厚である", "毛細血管の増生である", "唾液腺の腫瘍である", "前がん病変である", "ウイルス感染症である"], "ans": [3], "multi": false, "exp": "白板症は粘膜上皮が肥厚し、下の毛細血管が透けず白く見える前がん病変。粘膜下層ではなく上皮の肥厚、毛細血管は増生でなく透けなくなる状態。", "star": true, "flag": ""}, {"id": "q07", "g": "g2", "cat": "術式", "q": "<ruby>舌根<rt>ぜっこん</rt></ruby>を含めて舌の半側を<ruby>切除<rt>せつじょ</rt></ruby>する<ruby>術式<rt>じゅっしき</rt></ruby>はどれか。", "opts": ["舌部分切除術", "舌可動部半側切除術", "舌可動部（亜）全摘出術", "舌（亜）全摘出術", "舌半側切除術"], "ans": [4], "multi": false, "exp": "「舌可動部のみ」か「舌根を含むか」が区別のポイント。舌半側切除術は舌根を含めて半側を切除、舌可動部半側切除術は可動部のみ。", "star": true, "flag": ""}, {"id": "q08", "g": "g2", "cat": "再建", "q": "<ruby>遊離皮弁<rt>ゆうりひべん</rt></ruby>の説明はどれか。", "opts": ["離れた部位から血管ごと切り離して移植する", "近い部位の組織を血行を保って移植する", "移植後に茎の部分を切り離す", "切除した舌の組織を縫い戻して再建する", "人工材料で欠損部を置き換える"], "ans": [0], "multi": false, "exp": "遊離皮弁は適切な部位から必要な組織（皮膚・筋・血管）を切り離して移植する。血行を保って移植し定着後に茎を切り離すのは有茎皮弁。", "star": true, "flag": ""}, {"id": "q09", "g": "g2", "cat": "再建", "q": "舌・口底（亜）全摘後の<ruby>再建<rt>さいけん</rt></ruby>に用いる<ruby>皮弁<rt>ひべん</rt></ruby>として、授業資料の<ruby>対応表<rt>たいおうひょう</rt></ruby>にあるのはどれか。", "opts": ["前腕皮弁", "腹直筋皮弁", "腓骨皮弁", "大胸筋皮弁", "前外側大腿皮弁"], "ans": [1], "multi": false, "exp": "授業資料の対応表では、舌可動部半側切除＝前腕皮弁、舌・口底（亜）全摘＝腹直筋皮弁。腓骨皮弁は下顎再建。前外側大腿皮弁は舌再建・中咽頭再建にも用いられるため、本問は対応表に基づく。", "star": true, "flag": "※前外側大腿皮弁も舌再建に使用（対応表基準の問題）"}, {"id": "q10", "g": "g2", "cat": "気管切開", "q": "術直後にカフ付きカニューレを選ぶ主な目的はどれか。", "opts": ["発声を可能にするため", "呼気を声門へ逃がすため", "内筒の洗浄を容易にするため", "血液の気道への流入を防ぐため", "痰の吸引回数を減らすため"], "ans": [3], "multi": false, "exp": "術直後は切開部から出血するため、血液が気道に流れ込むことを予防する目的でカフ付きを選択する。発声はスピーチカニューレ、洗浄は複管の特徴。", "star": true, "flag": ""}, {"id": "q11", "g": "g2", "cat": "気管切開", "q": "<ruby>複管<rt>ふくかん</rt></ruby>カニューレの特徴はどれか。", "opts": ["単管より安価である", "発声用バルブが付いている", "カフ内の圧を調整できない", "カフ上部に吸引孔がない", "内筒を外して洗浄できる"], "ans": [4], "multi": false, "exp": "複管は高価だが、内筒のみ洗浄すればよく負担が少ない。頻回に痰が溜まりやすい人に適応。", "star": true, "flag": ""}, {"id": "q12", "g": "g3", "cat": "誤り方", "q": "舌<ruby>切除<rt>せつじょ</rt></ruby>後に<ruby>明瞭度<rt>めいりょうど</rt></ruby>が低下しやすい<ruby>構音<rt>こうおん</rt></ruby>方法はどれか。", "opts": ["破裂音と破擦音", "摩擦音と鼻音", "鼻音とはじき音", "摩擦音と接近音", "側面音とはじき音"], "ans": [0], "multi": false, "exp": "摩擦音の明瞭度は比較的保たれ、破裂音・破擦音が低下して摩擦音に異聴される（[t,d]→[s,z]、[ts,dz]→[s,z]）。", "star": true, "flag": ""}, {"id": "q13", "g": "g3", "cat": "誤り方", "q": "舌<ruby>切除<rt>せつじょ</rt></ruby>後の位置別の<ruby>異聴<rt>いちょう</rt></ruby>で、[k, g]はどのように聞こえるか。", "opts": ["[t, d]に聞こえる", "[s, z]に聞こえる", "[p, b]に聞こえる", "[h]や母音に聞こえる", "[m, n]に聞こえる"], "ans": [3], "multi": false, "exp": "軟口蓋音[k,g]は声門音[h]や母音（省略）に異聴される。歯茎音[t,d]は[p,b]（両唇音）で代償される。", "star": true, "flag": ""}, {"id": "q14", "g": "g3", "cat": "切除型", "q": "前方型の舌<ruby>切除<rt>せつじょ</rt></ruby>でみられる特徴はどれか。", "opts": ["構音点が左右に偏る", "閉鎖や狭めが不十分になる", "構音点が後方へずれる", "側方型より明瞭度が高い", "摩擦音のみ明瞭度が低下する"], "ans": [2], "multi": false, "exp": "前方型は前舌部の欠損・可動性低下で構音点が後方へずれる／口唇音で代償／構音点が作れない。左右への偏りや閉鎖・狭めの不十分は側方型。前方型は側方型より明瞭度が低下する。（例題では[t,d]→[p,b]を「前方へずれる」代償としており、前方型の「後方へずれる」との向きが食い違うため、授業ノートで要確認）", "star": true, "flag": "※構音点の向きは授業ノート確認"}, {"id": "q15", "g": "g3", "cat": "評価", "q": "術後の定期評価の時期として、授業資料にあるのはどれか。", "opts": ["1か月・3か月・6か月・9か月・1年", "1週・2週・1か月・3か月・6か月", "1か月・2か月・3か月・4か月・5か月", "1か月・2か月・3か月・6か月・1年", "2か月・4か月・6か月・9か月・1年"], "ans": [3], "multi": false, "exp": "術後は1・2・3・6か月、1年と定期的に評価し、明瞭度の変化に応じて構音訓練や歯科的補綴物の適応を検討する。", "star": true, "flag": ""}, {"id": "q16", "g": "g3", "cat": "機器", "q": "<ruby>口蓋<rt>こうがい</rt></ruby>に<ruby>色素<rt>しきそ</rt></ruby>を塗って発音し、接触した舌面を観察する方法はどれか。", "opts": ["パラトグラフィー", "エレクトロパラトグラフィー", "ナゾメーター", "舌圧測定器検査", "リンゴグラフィー"], "ans": [4], "multi": false, "exp": "リンゴグラフィー（得られる図＝リンゴグラム）は舌面を観察。パラトグラフィー（パラトグラム）は口蓋に残った接触の跡を観察。〜グラフィー＝方法、〜グラム＝図。", "star": true, "flag": ""}, {"id": "q17", "g": "g3", "cat": "機器", "q": "ナゾメーターで比較する指標はどれか。", "opts": ["口と鼻で測定した音圧", "舌と口蓋の接触率", "口唇閉鎖時の圧", "舌でバルーンを押す圧", "呼気と吸気の流量"], "ans": [0], "multi": false, "exp": "ナゾメーターは口唇側と鼻側のマイクで測定した音圧を比較し、鼻漏出（開鼻声）を評価する。舌圧はTPM-2、舌と口蓋の接触はEPG。", "star": true, "flag": ""}, {"id": "q18", "g": "g4", "cat": "補綴", "q": "残存舌の運動性や<ruby>再建<rt>さいけん</rt></ruby>舌のボリュームが小さいとき、早期から装着する<ruby>装置<rt>そうち</rt></ruby>はどれか。", "opts": ["軟口蓋挙上装置（PLP）", "舌接触補助床（PAP）", "バルブ型スピーチエイド（SB）", "軟口蓋栓塞子（SPO）", "顎義歯"], "ans": [1], "multi": false, "exp": "PAP（Palatal Augmentation Prosthesis）は舌の欠損、残存舌・再建舌の体積や可動性の不足を補う。PLP・SB・SPOは鼻咽腔閉鎖不全に対する装置。", "star": true, "flag": ""}, {"id": "q19", "g": "g4", "cat": "訓練", "q": "<ruby>歯茎<rt>はぐき</rt></ruby>音の<ruby>産生<rt>さんせい</rt></ruby>訓練で、授業資料に示された順序はどれか。", "opts": ["破裂音→摩擦音→破擦音", "摩擦音→破擦音→破裂音", "摩擦音→破裂音→破擦音", "破裂音→破擦音→摩擦音", "破擦音→摩擦音→破裂音"], "ans": [2], "multi": false, "exp": "できる音から難しい音へ。切除後は摩擦音の明瞭度が保たれ摩擦音が楽（授業ノート）。そのため摩擦音から破裂音、破擦音の順。", "star": true, "flag": ""}, {"id": "q20", "g": "g4", "cat": "訓練", "q": "<ruby>構音<rt>こうおん</rt></ruby>訓練を始める前に確保するものはどれか。", "opts": ["経口摂取の手段", "意思の表出手段（AAC）", "代償構音の手段", "自主訓練の課題", "聴取者の協力体制"], "ans": [1], "multi": false, "exp": "訓練前に患者の意思の表出手段を確保する（AAC＝拡大・代替コミュニケーション）。あわせて家族に聞き取り方を指導する。", "star": true, "flag": ""}, {"id": "q21", "g": "g4", "cat": "訓練", "q": "口腔・中咽頭がんで<ruby>気管切開<rt>きかんせっかい</rt></ruby>のある患者に、まず習得させる呼吸はどれか。", "opts": ["胸式呼吸", "口すぼめ呼吸", "腹式呼吸", "努力呼吸", "浅速呼吸"], "ans": [2], "multi": false, "exp": "気管切開患者は浅く速い胸式呼吸になりやすい。まず腹式呼吸を習得すると、呼吸と嚥下のリズムがとりやすく、力強い喀出・咳嗽が可能になる。", "star": true, "flag": ""}, {"id": "q22", "g": "g4", "cat": "補綴", "q": "<ruby>軟口蓋<rt>なんこうがい</rt></ruby>は動くが長さが足りず<ruby>鼻咽腔<rt>びいんくう</rt></ruby><ruby>閉鎖<rt>へいさ</rt></ruby>が不十分なときに用いる<ruby>装置<rt>そうち</rt></ruby>はどれか。", "opts": ["軟口蓋挙上装置（PLP）", "舌接触補助床（PAP）", "軟口蓋栓塞子（SPO）", "硬口蓋閉鎖床", "バルブ型スピーチエイド（SB）"], "ans": [4], "multi": false, "exp": "SBは「軟口蓋は動くが長さが足りない」場合。PLPは「長さは十分だが挙上しない」場合。SPOは欠損した軟口蓋を塞ぐ。", "star": true, "flag": ""}, {"id": "q23", "g": "g4", "cat": "補綴", "q": "<ruby>軟口蓋<rt>なんこうがい</rt></ruby>の長さは十分だが<ruby>挙上<rt>きょじょう</rt></ruby>せず<ruby>鼻咽腔<rt>びいんくう</rt></ruby><ruby>閉鎖<rt>へいさ</rt></ruby>が不十分なときに用いる<ruby>装置<rt>そうち</rt></ruby>はどれか。", "opts": ["バルブ型スピーチエイド（SB）", "舌接触補助床（PAP）", "軟口蓋栓塞子（SPO）", "軟口蓋挙上装置（PLP）", "顎義歯"], "ans": [3], "multi": false, "exp": "PLPは軟口蓋を持ち上げる。一気に持ち上げると口蓋舌筋が収縮して装置が外れ嘔吐反射が生じ、きつく止めると褥瘡ができる。", "star": true, "flag": ""}, {"id": "q24", "g": "g4", "cat": "上顎切除", "q": "<ruby>上顎<rt>じょうがく</rt></ruby><ruby>切除<rt>せつじょ</rt></ruby>後に<ruby>鼻漏出<rt>びろうしゅつ</rt></ruby>が重度のとき、[b]と[d]はどのように聞こえるか。", "opts": ["[m]と[n]に聞こえる", "[p]と[t]に聞こえる", "[w]と[j]に聞こえる", "[v]と[z]に聞こえる", "[g]と[k]に聞こえる"], "ans": [0], "multi": false, "exp": "口腔鼻腔瘻から呼気が鼻へ流出するため、鼻漏出が重度になると[b]→[m]、[d]→[n]に近く異聴される。", "star": true, "flag": ""}, {"id": "q25", "g": "g3", "cat": "例題", "q": "[t, d]が[p, b]に聞こえるとき、考えられる状態はどれか。", "opts": ["鼻咽腔閉鎖不全で鼻へ漏れている", "舌尖が挙がらず両唇音で代償している", "舌根が後退し声門音化している", "下顎の開口が過度で閉鎖できない", "口唇の閉鎖が不十分である"], "ans": [1], "multi": false, "exp": "[t,d]は舌尖を歯茎に当てる歯茎音。舌が使えず、前方の両唇で閉鎖して代償すると[p,b]に聞こえる（授業資料の例題）。", "star": true, "flag": "※仮説。授業の解説を優先"}, {"id": "q26", "g": "g3", "cat": "例題", "q": "[s, z]が[f, v]に聞こえるとき、考えられる状態はどれか。", "opts": ["舌尖が歯間に出て歯間音化している", "呼気が鼻へ漏れて鼻音化している", "舌での狭めが作れず唇歯音で代償している", "摩擦が声門で作られ声門音化している", "舌の閉鎖が強く破擦音化している"], "ans": [2], "multi": false, "exp": "[s,z]は舌尖と歯茎の狭めで作る摩擦音。舌での狭めが作れず、下唇と上歯の狭めで代償すると[f,v]（唇歯音）に聞こえる（授業資料の例題）。", "star": true, "flag": "※仮説。授業の解説を優先"}, {"id": "q27", "g": "g3", "cat": "再建", "q": "前方型の舌<ruby>切除<rt>せつじょ</rt></ruby>と舌半側<ruby>切除<rt>せつじょ</rt></ruby>（側方型）の<ruby>再建<rt>さいけん</rt></ruby>後の<ruby>明瞭度<rt>めいりょうど</rt></ruby>として、授業資料に沿うのはどれか。", "opts": ["側方型のほうが明瞭度が低い", "両者の明瞭度に差はない", "前方型は再建舌が上方へ挙上する", "側方型は構音点が後方へずれる", "前方型のほうが明瞭度が低い"], "ans": [4], "multi": false, "exp": "前方型切除例は、再建舌が下方へ後退し、適切な形態と可動性が得られないため、側方型よりも明瞭度が低下する。構音点が後方へずれるのは前方型の特徴。", "star": true, "flag": ""}, {"id": "q28", "g": "g3", "cat": "評価", "q": "発話<ruby>明瞭度<rt>めいりょうど</rt></ruby>の<ruby>聴取者<rt>ちょうしゅしゃ</rt></ruby>選定で注意する点はどれか。2つ選べ。", "opts": ["聴力に問題がないこと", "患者と親しい関係であること", "言語聴覚士の資格を持つこと", "聞き取りに協力的であること", "患者の発話に慣れていること"], "ans": [0, 3], "multi": true, "exp": "聴取者の条件は、聴力に問題がない、体調に問題がない、聞き取りに協力的であること。患者に直接接していない5名とする（患者の発話に慣れていない人）。", "star": true, "flag": ""}, {"id": "q29", "g": "g2", "cat": "舌がん", "q": "<ruby>舌がん<rt>ぜつがん</rt></ruby>のリスク因子はどれか。2つ選べ。", "opts": ["慢性副鼻腔炎", "不良補綴装置", "唾石症", "胃食道逆流", "口腔衛生不良"], "ans": [1, 4], "multi": true, "exp": "リスク因子は飲酒、喫煙、口腔衛生不良、う歯、不良補綴装置、前がん病変（白板症）など。", "star": false, "flag": ""}, {"id": "q30", "g": "g3", "cat": "評価", "q": "発話<ruby>明瞭度<rt>めいりょうど</rt></ruby>（<ruby>百分率<rt>ひゃくぶんりつ</rt></ruby>）の評価で正しいのはどれか。2つ選べ。", "opts": ["日本語100音節をランダムに録音する", "100単語をランダムに録音する", "担当STが聴取者を務める", "患者に接していない5名が聴取する", "聴取者の最高正答率を採用する"], "ans": [0, 3], "multi": true, "exp": "100音節を録音し、患者に接していない5名が聴取して平均正答率（％）を算出する。担当STは患者の話し方に慣れているため聴取者に向かない。採用するのは平均値。", "star": true, "flag": ""}, {"id": "q31", "g": "g3", "cat": "機器", "q": "エレクトロパラトグラフィー（EPG）の特徴はどれか。2つ選べ。", "opts": ["舌運動を直接計測できる", "測定範囲が咽頭まで及ぶ", "リアルタイムで調音動態を観察できる", "色素の剥がれで接触を観察する", "舌縁による側面狭窄を計測できる"], "ans": [2, 4], "multi": true, "exp": "EPGのメリットはリアルタイム観察、舌縁による側面狭窄の直接計測、舌の接触パターンの平面データ。デメリットは測定範囲が歯茎〜軟口蓋前部に限られる点と、舌運動を直接計測できない点。色素の剥がれで見るのはパラトグラフィー。", "star": true, "flag": ""}], "desc": [{"id": "d01", "q": "器質性<ruby>構音<rt>こうおん</rt></ruby>障害の定義を述べよ。", "a": "構音器官そのものに起こる形態的異常（口蓋裂や頭頸部癌術後など）によって生じる構音障害。", "pt": "「構音器官の形態的異常」「口蓋裂・頭頸部癌術後」", "flag": ""}, {"id": "d02", "q": "<ruby>外舌筋<rt>がいぜっきん</rt></ruby>と内舌筋の違いを述べよ。", "a": "外舌筋は舌の位置を動かし、内舌筋は舌の形を変える。", "pt": "位置＝外／形＝内", "flag": ""}, {"id": "d03", "q": "<ruby>舌下神経<rt>ぜっかしんけい</rt></ruby>の片側<ruby>麻痺<rt>まひ</rt></ruby>で、舌を<ruby>突出<rt>とっしゅつ</rt></ruby>したときの舌の動きとその理由を述べよ。", "a": "麻痺側へ偏位する。健側のオトガイ舌筋が舌を麻痺側へ押し出すため。", "pt": "麻痺側／健側の筋が押す", "flag": "※授業ノート確認"}, {"id": "d04", "q": "有茎<ruby>皮弁<rt>ひべん</rt></ruby>と<ruby>遊離皮弁<rt>ゆうりひべん</rt></ruby>の違いを述べよ。", "a": "有茎皮弁は血行を保ったまま近い部位から移植し、定着後に茎を切り離す。遊離皮弁は必要な組織（皮膚・筋・血管）を切り離して移植する。", "pt": "血行を保つか／切り離すか", "flag": ""}, {"id": "d05", "q": "舌<ruby>切除<rt>せつじょ</rt></ruby>後の<ruby>構音<rt>こうおん</rt></ruby>の誤りを、位置と方法に分けて例を挙げよ。", "a": "位置：歯茎音・軟口蓋音が低下（[t,d]→[p,b]、[k,g]→[h]）。方法：破裂音・破擦音が摩擦音に異聴（[t,d]→[s,z]）。", "pt": "位置別と方法別に分けている／例が正しい", "flag": ""}, {"id": "d06", "q": "側方型と前方型の違いを述べよ。", "a": "側方型は構音点が左右に偏り、閉鎖や狭めが不十分で破裂・破擦音が歪む。前方型は構音点が後方へずれる／口唇音で代償し、側方型より明瞭度が低い。", "pt": "偏る／後方へずれる", "flag": ""}, {"id": "d07", "q": "発話<ruby>明瞭度<rt>めいりょうど</rt></ruby>（<ruby>百分率<rt>ひゃくぶんりつ</rt></ruby>）の評価手順を述べよ。", "a": "日本語100音節をランダムに録音し、患者に接していない5名が聴取して平均正答率を求め、位置別・方法別に分析する。", "pt": "100音節／5名／平均／位置別・方法別", "flag": ""}, {"id": "d08", "q": "PAPの目的と適応を述べよ。", "a": "舌の欠損や、残存舌・再建舌の体積・可動性の不足を補って口蓋への接触を助ける。運動性やボリュームが小さい例で早期から装着する。", "pt": "舌の不足を補う／口蓋との接触", "flag": ""}, {"id": "d09", "q": "SBとPLPの使い分けを述べよ。", "a": "軟口蓋は動くが長さが足りない場合はSB、長さは十分だが挙上しない場合はPLP。", "pt": "長さ不足＝SB／挙上不全＝PLP", "flag": ""}, {"id": "d10", "q": "口腔・中咽頭がんが全がんに占める割合と、そのうち<ruby>舌がん<rt>ぜつがん</rt></ruby>が占める割合を述べよ。", "a": "全がんの数％（約2％）。そのうち舌がんは30〜60％。", "pt": "約2％／30〜60％", "flag": "※割合は授業での言い方を確認"}, {"id": "d11", "q": "<ruby>白板症<rt>はくばんしょう</rt></ruby>とは何か述べよ。", "a": "粘膜上皮が肥厚し、下の毛細血管が透けず白く見える状態。前がん病変。", "pt": "上皮の肥厚／白く見える／前がん病変", "flag": ""}, {"id": "d12", "q": "舌・口底<ruby>切除<rt>せつじょ</rt></ruby>の<ruby>再建<rt>さいけん</rt></ruby>方法を、<ruby>切除<rt>せつじょ</rt></ruby>範囲ごとに述べよ。", "a": "舌部分切除＝再建しないことも多い。舌可動部半側切除＝前腕皮弁。舌・口底（亜）全摘＝腹直筋皮弁。", "pt": "3つの対応", "flag": ""}, {"id": "d13", "q": "発話<ruby>明瞭度<rt>めいりょうど</rt></ruby>の<ruby>聴取者<rt>ちょうしゅしゃ</rt></ruby>を選ぶときの注意点を述べよ。", "a": "聴力・体調に問題がなく、聞き取りに協力的であること。患者に直接接していない人とする。", "pt": "聴力／体調／協力的", "flag": ""}, {"id": "d14", "q": "[t,d]→[p,b]と[s,z]→[f,v]で、それぞれ何が起きているか仮説を述べよ。", "a": "[t,d]→[p,b]は舌尖が歯茎に届かず両唇で代償。[s,z]→[f,v]は舌での狭めが作れず唇歯で代償。", "pt": "舌で作れず前方の唇で代償", "flag": "※仮説。授業の解説を優先"}, {"id": "d15", "q": "訓練音の選択の基準を述べよ。", "a": "聴覚的に歪みが顕著、聞き返しが多い、使用頻度が高い、患者が発音しにくいと感じる音。できる音から難しい音へ進める。", "pt": "4つの基準／できる音から", "flag": ""}, {"id": "d16", "q": "訓練・指導の一般的な順序を述べよ。", "a": "①現在の構音障害の状態を説明 ②基礎的運動訓練（筋力・可動性）③音声産生訓練（音→単語→文章→自由会話のボトムアップ）", "pt": "3段階／ボトムアップ", "flag": ""}, {"id": "d17", "q": "口腔ケアが術後に重要な理由を述べよ。", "a": "凝血塊や唾液がたまり不潔になりやすく、術創感染や誤嚥性肺炎の予防のため。咽頭のものは自分で出せない。", "pt": "術創感染・誤嚥性肺炎", "flag": "※咽頭の説明は授業ノート確認"}], "cloze": [{"name": "①舌と神経", "rows": [{"cl": "定義", "l": "器質性構音障害", "t": "構音器官そのものの⟦形態的異常⟧（口蓋裂、頭頸部癌術後など）による構音障害。小児＝口蓋裂系、成人＝⟦舌がん⟧中心", "star": true, "flag": false}, {"cl": "定義", "l": "運動障害性構音障害", "t": "脳性麻痺・脳血管障害などで口や舌に⟦運動障害⟧が生じ、発音が不明瞭", "star": true, "flag": false}, {"cl": "定義", "l": "機能性構音障害", "t": "⟦形態障害・運動障害⟧が「ない」のに発音が不明瞭", "star": true, "flag": false}, {"cl": "定義", "l": "発話障害モデル", "t": "言語学レベル＝⟦失語症⟧／生理学レベル 企画＝⟦発語失行⟧、実行＝運動障害性・器質性構音障害", "star": true, "flag": false}, {"cl": "外舌筋", "l": "オトガイ舌筋", "t": "舌を⟦前下方⟧へ引く（突出）。⟦舌下神経⟧", "star": true, "flag": true}, {"cl": "外舌筋", "l": "舌骨舌筋", "t": "舌を⟦後下方⟧へ引く。⟦舌下神経⟧", "star": false, "flag": true}, {"cl": "外舌筋", "l": "茎突舌筋", "t": "舌を⟦後上方⟧へ引く（後舌の挙上）。⟦舌下神経⟧", "star": false, "flag": true}, {"cl": "軟口蓋側", "l": "口蓋舌筋", "t": "後舌を挙上し⟦口峡を狭める⟧。⟦迷走神経⟧（咽頭神経叢経由）", "star": true, "flag": true}, {"cl": "内舌筋", "l": "上縦舌筋", "t": "舌尖を⟦上方⟧へ反らせ、舌を⟦短縮⟧。舌下神経", "star": false, "flag": true}, {"cl": "内舌筋", "l": "下縦舌筋", "t": "舌尖を⟦下方⟧へ向け、舌を⟦短縮⟧。舌下神経", "star": false, "flag": true}, {"cl": "内舌筋", "l": "横舌筋", "t": "舌の⟦幅を狭め⟧細長くする。舌下神経", "star": false, "flag": true}, {"cl": "内舌筋", "l": "垂直舌筋", "t": "舌を⟦平たく⟧広げる。舌下神経", "star": false, "flag": true}, {"cl": "原則", "l": "外舌筋と内舌筋", "t": "外舌筋＝舌の⟦位置⟧を動かす／内舌筋＝舌の⟦形⟧を変える", "star": true, "flag": false}, {"cl": "偏位", "l": "舌下神経の片側麻痺", "t": "突出時、舌は⟦麻痺側へ偏位⟧（⟦健側のオトガイ舌筋⟧が麻痺側へ押すため）。覚え方「健側が押して、麻痺側へ倒れる」", "star": true, "flag": false}, {"cl": "偏位", "l": "内舌筋", "t": "⟦収縮した側⟧へ舌尖が曲がる。⟦健側⟧へ舌尖を動かすことはできる（授業での説明）", "star": true, "flag": false}, {"cl": "神経", "l": "口唇（口輪筋・表情筋）", "t": "⟦顔面神経⟧", "star": false, "flag": false}, {"cl": "神経", "l": "軟口蓋", "t": "⟦口蓋帆張筋⟧＝⟦下顎神経（三叉神経）⟧／その他（口蓋帆挙筋・咽頭筋・口蓋垂筋など）＝咽頭神経叢経由の⟦迷走神経⟧", "star": true, "flag": false}, {"cl": "口腔底", "l": "口腔底の筋", "t": "⟦顎舌骨筋、オトガイ舌骨筋、顎二腹筋前腹⟧", "star": false, "flag": false}]}, {"name": "②舌がん・治療", "rows": [{"cl": "疫学", "l": "口腔・中咽頭がんの割合", "t": "全がんの数％（⟦約2％⟧、R2＝令和2年）。授業での言い方を確認", "star": true, "flag": true}, {"cl": "疫学", "l": "舌がんの割合", "t": "口腔・中咽頭がんの⟦30〜60％⟧", "star": false, "flag": false}, {"cl": "臨床像", "l": "好発部位", "t": "⟦舌側縁・後方⟧", "star": true, "flag": false}, {"cl": "臨床像", "l": "男女比", "t": "⟦2：1で男性⟧が多い（※近年は女性の割合が増加の報告あり）", "star": false, "flag": true}, {"cl": "臨床像", "l": "発症年齢", "t": "⟦50〜60歳代⟧が最多", "star": false, "flag": false}, {"cl": "臨床像", "l": "リスク因子", "t": "⟦飲酒⟧、⟦喫煙⟧、口腔衛生不良、う歯、不良補綴装置、前がん病変（⟦白板症⟧）", "star": true, "flag": false}, {"cl": "臨床像", "l": "組織型", "t": "⟦扁平上皮がん⟧が最多。易出血性の腫瘤状病変で周囲に⟦硬結⟧", "star": true, "flag": false}, {"cl": "臨床像", "l": "白板症", "t": "粘膜上皮の⟦肥厚⟧で、下の毛細血管が透けず白く見える⟦前がん病変⟧", "star": true, "flag": false}, {"cl": "治療", "l": "3本柱", "t": "⟦放射線治療・化学療法・外科治療⟧", "star": false, "flag": false}, {"cl": "治療", "l": "外科治療", "t": "後遺症：⟦器質性構音障害⟧、嚥下障害。⟦頸部郭清術⟧＝頸部リンパ節転移を制御する手術", "star": true, "flag": false}, {"cl": "術式", "l": "A 舌部分切除術", "t": "舌可動部の一部。嚥下・構音障害をきたしにくい。⟦再建しない⟧ことも多い", "star": false, "flag": false}, {"cl": "術式", "l": "B 舌可動部半側切除術", "t": "舌可動部のみ半側を切除。再建＝⟦前腕皮弁⟧", "star": true, "flag": false}, {"cl": "術式", "l": "C 舌可動部（亜）全摘出術", "t": "舌可動部を⟦すべて⟧切除", "star": false, "flag": false}, {"cl": "術式", "l": "D 舌半側切除術", "t": "⟦舌根を含めて⟧半側を切除", "star": true, "flag": false}, {"cl": "術式", "l": "E 舌（亜）全摘出術", "t": "舌根を含めて切除。再建＝⟦腹直筋皮弁⟧（口底を含む場合）", "star": true, "flag": false}, {"cl": "皮弁", "l": "有茎皮弁", "t": "近い部位から移植。一部を切り離さず血行を保ち、定着後に切り離す（⟦茎⟧）。例：⟦大胸筋皮弁⟧", "star": true, "flag": false}, {"cl": "皮弁", "l": "遊離皮弁", "t": "必要な組織（⟦皮膚・筋・血管⟧）を切り離して移植。例：前腕・腹直筋・前外側大腿皮弁", "star": true, "flag": false}, {"cl": "皮弁", "l": "腹直筋皮弁", "t": "⟦ボリュームが豊富⟧。広範囲の舌再建・上顎再建・下顎の軟性再建", "star": false, "flag": false}, {"cl": "皮弁", "l": "前外側大腿皮弁", "t": "⟦比較的薄い⟧。舌再建・中咽頭再建。術後2日目から歩行可能", "star": false, "flag": false}, {"cl": "皮弁", "l": "腓骨皮弁", "t": "⟦下顎再建（硬性再建）⟧。足の病気や足腰が弱い高齢者には不向き", "star": false, "flag": false}, {"cl": "気管切開", "l": "目的", "t": "舌がんは⟦気道閉塞・窒息⟧リスクが高く気管切開を行うことがある。気管切開すると⟦声が出せない⟧", "star": true, "flag": false}, {"cl": "気管切開", "l": "単管・カフあり（吸引孔なし）", "t": "術直後の出血時、⟦血液の気道流入⟧を予防", "star": true, "flag": false}, {"cl": "気管切開", "l": "複管", "t": "高価だが⟦内筒のみ洗浄⟧すればよく負担が少ない。頻回に痰が溜まる人に適応", "star": true, "flag": false}, {"cl": "気管切開", "l": "スピーチカニューレ", "t": "⟦発声用バルブ⟧付き。呼気を⟦声帯側⟧へ逃がして発声。※カフを抜く／カフなしで使用", "star": false, "flag": true}]}, {"name": "③評価と誤り", "rows": [{"cl": "術後経過", "l": "術後6か月〜1年", "t": "明瞭度が安定。構音障害の改善が⟦最も顕著⟧", "star": true, "flag": false}, {"cl": "誤り方（位置）", "l": "歯茎音・軟口蓋音が低下", "t": "歯茎音[t,d]→[p,b]（⟦両唇音⟧で代償）／軟口蓋音[k,g]→[h]・母音（⟦声門音化⟧・省略）", "star": true, "flag": false}, {"cl": "誤り方（方法）", "l": "破裂音・破擦音が低下", "t": "摩擦音は⟦比較的保たれ⟧、破裂音・破擦音が摩擦音に⟦異聴⟧。[t,d]→[s,z]、[ts,dz]→[s,z]", "star": true, "flag": false}, {"cl": "切除型", "l": "側方型", "t": "構音点が⟦左右⟧どちらかに偏移・欠損。舌の閉鎖や狭めが不十分で⟦破裂音・破擦音が歪む⟧", "star": true, "flag": false}, {"cl": "切除型", "l": "前方型", "t": "前舌部の欠損・可動性低下で構音点が⟦後方へずれる⟧／口唇音で代償／構音点が作れない。⟦側方型より明瞭度が低い⟧", "star": true, "flag": false}, {"cl": "評価時期", "l": "術後", "t": "⟦1・2・3・6か月、1年⟧と定期的に評価。明瞭度の変化に応じて訓練や補綴物を検討", "star": true, "flag": false}, {"cl": "発話明瞭度", "l": "手順（百分率）", "t": "①日本語⟦100音節⟧をランダムに録音 ②患者に接していない⟦5名⟧が聴取し⟦平均正答率⟧（％）を算出 ③位置別・方法別明瞭度を分析", "star": true, "flag": false}, {"cl": "発話明瞭度", "l": "聴取者選定の注意点", "t": "①⟦聴力⟧に問題がない ②⟦体調⟧に問題がない ③聞き取りに⟦協力的⟧。スピーチサンプル（「北風と太陽」の音読、簡単な会話）も録音して比較資料に", "star": true, "flag": false}, {"cl": "例題", "l": "[t,d]→[p,b]", "t": "舌尖が歯茎へ届かず（挙上不全）、⟦両唇音⟧で代償している可能性。構音点（位置）が⟦前方⟧へずれる代償構音。", "star": true, "flag": true}, {"cl": "例題", "l": "[k,g]→[h,母音]", "t": "舌根が軟口蓋へ届かず（挙上不全）、構音位置が⟦後退⟧して⟦声門音⟧[h]や母音（省略）で代償している可能性。", "star": false, "flag": false}, {"cl": "例題", "l": "[s,z]→[f,v]", "t": "舌での狭めが作れず、下唇と上歯の摩擦（⟦唇歯音⟧）で代償している可能性。", "star": true, "flag": true}, {"cl": "例題", "l": "[t,d]→[s,z]", "t": "舌が歯茎に十分密着できず、⟦隙間⟧から息が漏れ続けて⟦摩擦音⟧[s,z]に聞こえる。破裂音・破擦音の明瞭度が低下。", "star": false, "flag": false}, {"cl": null, "l": "[ts,dz]→[s,z]", "t": "[ts,dz]は閉鎖と狭めの⟦両方⟧が必要な音で、⟦瞬間的な閉鎖⟧が不十分だと摩擦音[s,z]に流れる。", "star": false, "flag": false}, {"cl": "再建後の明瞭度", "l": "前方型切除と舌半側切除", "t": "前方型切除例は、再建舌が⟦下方へ後退⟧し、適切な形態と可動性が得られず、側方型（舌半側切除）より⟦明瞭度が低下⟧する", "star": true, "flag": false}, {"cl": "機器", "l": "パラトグラフィー→パラトグラム", "t": "口蓋に色素を塗布して発音、⟦剥がれた色素⟧から⟦口蓋の接触⟧を観察", "star": true, "flag": false}, {"cl": "機器", "l": "リンゴグラフィー→リンゴグラム", "t": "口蓋に色素を塗布して発音、⟦接触した舌面⟧を観察", "star": true, "flag": false}, {"cl": "機器", "l": "EPG（エレクトロパラトグラフィー）", "t": "⟦人工口蓋床⟧の⟦電極⟧で舌の接触を経時的に測定。累積パターンは平均的な調音パターンを示す", "star": true, "flag": false}, {"cl": "機器", "l": "EPGのデメリット", "t": "測定範囲が⟦歯茎〜軟口蓋前部⟧に限られる／動的な舌運動を直接計測できない", "star": false, "flag": false}, {"cl": "機器", "l": "ナゾメーター", "t": "口唇側と鼻側のマイクの⟦音圧⟧を比較（⟦鼻漏出・開鼻声⟧の評価）", "star": true, "flag": false}, {"cl": "機器", "l": "舌圧測定器（TPM-2）", "t": "舌で⟦バルーン⟧を⟦7秒⟧を目安に押しつぶして舌圧を測定", "star": false, "flag": false}, {"cl": "グラフィー/グラム", "l": "区別", "t": "〜グラフィー＝検査の⟦方法⟧／〜グラム＝得られた⟦図・記録⟧", "star": true, "flag": false}, {"cl": "構音点のずれ", "l": "前方へずれる例", "t": "[t,d]→⟦[p,b]⟧（歯茎音→両唇音）、[s,z]→⟦[f,v]⟧（歯茎音→唇歯音）", "star": true, "flag": false}, {"cl": "構音点のずれ", "l": "後方へずれる例", "t": "[k,g]→⟦[h]⟧・母音（軟口蓋音→⟦声門音⟧）", "star": true, "flag": false}], "note": "「構音点のずれ」の2項目は、例題（[t,d]→[p,b]など）から構成しました。"}, {"name": "④訓練と補綴", "rows": [{"cl": "訓練の概観", "l": "運動性・ボリュームが小さい", "t": "早期から⟦PAP⟧装着。口蓋接触が困難なら舌以外での代償構音", "star": true, "flag": false}, {"cl": "訓練前", "l": "意思表出手段", "t": "⟦AAC⟧（拡大・代替コミュニケーション）を確保。⟦家族⟧に聞き取り方を指導", "star": true, "flag": false}, {"cl": "口腔ケア", "l": "口腔ケア（術後）", "t": "凝血塊・唾液で口腔内が不潔になりやすく（タンパク質は細菌の栄養になる）、⟦術創感染・誤嚥性肺炎⟧予防に重要。口唇・頬粘膜のマッサージで口腔感覚を正常化。咽頭にあるものは自分で出せない", "star": true, "flag": true}, {"cl": "呼吸訓練", "l": "腹式呼吸", "t": "気管切開が多く、まず⟦腹式呼吸⟧を習得。呼吸と嚥下のリズムがとりやすく、⟦力強い喀出・咳嗽⟧が可能に", "star": true, "flag": false}, {"cl": "訓練の順序", "l": "一般的順序", "t": "①状態の説明 ②⟦基礎的運動訓練⟧（筋力・可動性）③音→単語→文章→自由会話（⟦ボトムアップ⟧）", "star": true, "flag": false}, {"cl": "訓練の順序", "l": "歯茎音の産生", "t": "⟦摩擦音→破裂音→破擦音⟧。摩擦音のほうが楽（授業ノート）。難しければ舌の面を持ち上げる方法", "star": true, "flag": true}, {"cl": "バイオフィードバック", "l": "機器", "t": "鏡＝⟦舌・口唇の動き⟧／EPG＝⟦口蓋と舌の接触⟧／ナゾメーター＝⟦鼻咽腔閉鎖⟧／超音波（エコー）＝舌の動き", "star": false, "flag": false}, {"cl": "補綴", "l": "PAP（舌接触補助床）", "t": "舌の欠損、残存舌・再建舌の⟦体積や可動性の不足⟧を補う（⟦Palatal Augmentation Prosthesis⟧）", "star": true, "flag": false}, {"cl": "中咽頭切除", "l": "鼻咽腔閉鎖機能不全", "t": "軟口蓋・中咽頭側壁の欠損で生じ、⟦開鼻声⟧・⟦呼気鼻漏出⟧による子音の歪み。重症度は切除範囲に比例", "star": true, "flag": false}, {"cl": "中咽頭切除", "l": "SB（バルブ型スピーチエイド）", "t": "軟口蓋は動くが⟦長さが足りず⟧鼻咽腔閉鎖が不十分", "star": true, "flag": false}, {"cl": "中咽頭切除", "l": "PLP（軟口蓋挙上装置）", "t": "軟口蓋の⟦長さは十分だが挙上せず⟧閉鎖不十分。一気に持ち上げると口蓋舌筋が収縮して装置が外れ嘔吐反射、きつく止めると⟦褥瘡⟧", "star": true, "flag": false}, {"cl": "中咽頭切除", "l": "SPO（軟口蓋栓塞子）", "t": "欠損した軟口蓋を⟦塞ぐ⟧", "star": false, "flag": false}, {"cl": "上顎切除", "l": "影響", "t": "⟦口腔鼻腔瘻⟧から呼気が鼻腔へ流出→開鼻声・呼気鼻漏出。重度で⟦[b]→[m]、[d]→[n]⟧。歯茎・硬口蓋欠損でも歪み", "star": true, "flag": false}]}]};
+const KEY = 'kishitsusei-seijin-v1';
+let S = {res:{}, desc:{}};
+try { S = Object.assign(S, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e) {}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
+
+const NUM = ['①','②','③','④','⑤'];
+const app = document.getElementById('app');
+function h(tag, props, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(props || {})) {
+    if (k === 'class') e.className = v;
+    else if (k === 'html') e.innerHTML = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  }
+  for (const c of kids.flat()) { if (c == null) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+function mount(...nodes){ app.replaceChildren(...nodes); window.scrollTo(0,0); }
+function shuffle(a){ a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* ---------- ホーム ---------- */
+function home(){
+  const nodes = [];
+  nodes.push(h('header', {class:'top'},
+    h('h1', {}, '器質性構音障害（成人）'),
+    h('p', {class:'lead'}, '試験対策 ｜ 第1〜3回（山﨑先生）')));
+
+  nodes.push(h('h2', {class:'sec'}, 'カテゴリー別（5択）'));
+  const grid = h('div', {class:'cats'});
+  D.groups.forEach(g => {
+    const qs = D.questions.filter(q => q.g === g.id);
+    const ok = qs.filter(q => S.res[q.id] === 'o').length;
+    const card = h('button', {class:'cat', style:'--c:'+g.color, onclick:()=>startQuiz(qs, g.name)},
+      h('span', {class:'nm'}, g.name),
+      h('span', {class:'sb'}, g.sub),
+      h('span', {class:'ct'}, h('span', {}, qs.length + '問'), h('span', {}, '正解済 ' + ok)),
+      h('span', {class:'bar'}, h('i', {style:'width:'+Math.round(ok/qs.length*100)+'%'})));
+    grid.append(card);
+  });
+  nodes.push(grid);
+
+  nodes.push(h('h2', {class:'sec'}, '出題モード'));
+  const wrong = D.questions.filter(q => S.res[q.id] === 'x');
+  const stars = D.questions.filter(q => q.star);
+  nodes.push(h('div', {class:'modes'},
+    h('button', {class:'mode', onclick:()=>startQuiz(D.questions, '全問')}, '全問（' + D.questions.length + '）'),
+    h('button', {class:'mode', onclick:()=>startQuiz(shuffle(D.questions), 'ランダム', true)}, 'ランダム'),
+    h('button', {class:'mode', onclick:()=>startQuiz(stars, '★頻出')}, h('b', {}, '★'), '頻出（' + stars.length + '）'),
+    h('button', {class:'mode', disabled: wrong.length ? null : 'disabled', onclick:()=>startQuiz(wrong, '間違えた問題')}, '間違えた問題（' + wrong.length + '）')));
+
+  const dDone = D.desc.filter(d => S.desc[d.id]).length;
+  nodes.push(h('h2', {class:'sec'}, 'そのほかの学習'));
+  nodes.push(h('div', {class:'more'},
+    h('button', {class:'cat', onclick:descView},
+      h('span', {class:'nm'}, '記述問題'),
+      h('span', {class:'sb'}, '1〜2行で説明する。模範解答と採点ポイントで自己採点'),
+      h('span', {class:'ct'}, h('span', {}, D.desc.length + '問'), h('span', {}, '採点済 ' + dDone))),
+    h('button', {class:'cat', onclick:()=>clozeView(0)},
+      h('span', {class:'nm'}, 'まとめ穴埋め'),
+      h('span', {class:'sb'}, 'まとめ①〜④の要点。空欄をタップして答えを確認'),
+      h('span', {class:'ct'}, h('span', {}, D.cloze.length + 'セクション')))));
+
+  nodes.push(h('div', {class:'foot'},
+    h('button', {class:'link', onclick:()=>{ if(confirm('学習記録（○×・自己採点）をすべて消しますか？')){ S={res:{},desc:{}}; save(); home(); } }}, '学習記録をリセット')));
+  mount(...nodes);
+}
+
+/* ---------- 5択クイズ ---------- */
+let Q = null;
+function startQuiz(list, title, keepOrder){
+  if (!list.length) { alert('該当する問題がありません。'); return; }
+  Q = {list: list.slice(), title, i:0, correct:0, wrong:[]};
+  renderQ();
+}
+function renderQ(){
+  const q = Q.list[Q.i];
+  const sel = new Set();
+  let answered = false;
+  const opts = h('div', {class:'opts'});
+  const rows = [];
+  const resBox = h('div', {});
+  const actBox = h('div', {class:'act'});
+
+  function grade(){
+    answered = true;
+    const picked = [...sel].sort();
+    const right = picked.length === q.ans.length && picked.every((v,i)=>v===q.ans[i]);
+    rows.forEach((r,idx) => {
+      const b = r.querySelector('.opt'); b.disabled = true;
+      r.querySelector('.elim').disabled = true;
+      if (q.ans.includes(idx)) b.classList.add('ok');
+      else if (sel.has(idx)) b.classList.add('ng');
+      b.classList.remove('sel');
+    });
+    S.res[q.id] = right ? 'o' : 'x'; save();
+    if (right) Q.correct++; else Q.wrong.push(q);
+    resBox.append(
+      h('div', {class:'res ' + (right?'ok':'ng')}, right ? '正解' : '不正解　正答：' + q.ans.map(i=>NUM[i]).join('・')),
+      h('div', {class:'exp'}, h('div', {html:q.exp}), q.flag ? h('span', {class:'flag'}, q.flag) : null));
+    actBox.replaceChildren(h('button', {class:'btn', onclick:next}, Q.i+1 < Q.list.length ? '次の問題へ' : '結果を見る'));
+  }
+  function next(){ Q.i++; if (Q.i < Q.list.length) renderQ(); else resultView(); }
+
+  const gradeBtn = h('button', {class:'btn', disabled:'disabled', onclick:grade}, '回答する');
+  q.opts.forEach((t, idx) => {
+    const b = h('button', {class:'opt', onclick:()=>{
+      if (answered) return;
+      if (q.multi) {
+        if (sel.has(idx)) sel.delete(idx);
+        else if (sel.size < 2) sel.add(idx);
+        rows.forEach((r,k)=>r.querySelector('.opt').classList.toggle('sel', sel.has(k)));
+        if (sel.size === 2) gradeBtn.removeAttribute('disabled'); else gradeBtn.setAttribute('disabled','disabled');
+      } else { sel.add(idx); grade(); }
+    }}, h('span', {class:'n'}, NUM[idx]), h('span', {class:'t'}, t));
+    const x = h('button', {class:'elim', title:'消去法：この選択肢に取り消し線', 'aria-label':'この選択肢を消去', onclick:()=>row.classList.toggle('struck')}, '×');
+    const row = h('div', {class:'orow'}, b, x);
+    rows.push(row); opts.append(row);
+  });
+  if (q.multi) actBox.append(gradeBtn);
+
+  mount(
+    h('div', {class:'nav'},
+      h('button', {class:'back', onclick:()=>{ if(!answered && Q.i===0 || confirm('クイズを中断してホームに戻りますか？')) home(); }}, '← ホーム'),
+      h('span', {class:'ttl'}, Q.title),
+      h('span', {class:'prog'}, (Q.i+1) + ' / ' + Q.list.length)),
+    h('div', {class:'bar', style:'margin:0 0 12px;--c:var(--pri)'}, h('i', {style:'width:'+Math.round(Q.i/Q.list.length*100)+'%'})),
+    h('div', {class:'card'},
+      h('div', {class:'chips'},
+        h('span', {class:'chip'}, q.cat),
+        q.multi ? h('span', {class:'chip multi'}, '2つ選べ') : null,
+        q.star ? h('span', {class:'chip star'}, '★頻出') : null),
+      h('div', {class:'qtext', html:q.q}),
+      opts,
+      q.multi ? h('p', {class:'hint'}, '2つ選んで「回答する」を押してください。右端の×で消去法ができます。') : h('p', {class:'hint'}, '右端の×で選択肢に取り消し線を引けます（消去法）。'),
+      actBox, resBox));
+}
+function resultView(){
+  const n = Q.list.length, pct = Math.round(Q.correct / n * 100);
+  const nodes = [
+    h('div', {class:'nav'}, h('span', {class:'ttl'}, Q.title + ' の結果')),
+    h('div', {class:'card'},
+      h('div', {}, n + '問中'),
+      h('div', {class:'score'}, Q.correct + '問正解（' + pct + '%）'),
+      h('div', {class:'act'},
+        Q.wrong.length ? h('button', {class:'btn', onclick:()=>startQuiz(Q.wrong, '間違えた問題')}, '間違いだけやり直す（' + Q.wrong.length + '）') : null,
+        h('button', {class:'btn ghost', onclick:home}, 'ホームへ')))
+  ];
+  if (Q.wrong.length) {
+    const ul = h('ul', {class:'wlist'});
+    Q.wrong.forEach(q => ul.append(h('li', {},
+      h('div', {html:q.q}),
+      h('div', {class:'a'}, '正答：' + q.ans.map(i=>NUM[i] + ' ' + q.opts[i]).join(' ／ ')))));
+    nodes.push(h('h2', {class:'sec'}, '間違えた問題'), ul);
+  }
+  mount(...nodes);
+}
+
+/* ---------- 記述問題 ---------- */
+function descView(){
+  const nodes = [h('div', {class:'nav'},
+    h('button', {class:'back', onclick:home}, '← ホーム'),
+    h('span', {class:'ttl'}, '記述問題（自己採点）'),
+    h('span', {class:'prog'}, D.desc.filter(d=>S.desc[d.id]).length + ' / ' + D.desc.length))];
+  D.desc.forEach((d, i) => {
+    const ansBox = h('div', {});
+    const card = h('div', {class:'card dq'});
+    const btns = {};
+    function mark(v){
+      S.desc[d.id] = v; save();
+      Object.entries(btns).forEach(([k,b]) => b.classList.toggle('on', k === v));
+    }
+    const self = h('div', {class:'self'});
+    [['o','○ 書けた'],['t','△ 迷った'],['x','× 書けない']].forEach(([k,lab]) => {
+      const b = h('button', {class:k + (S.desc[d.id]===k?' on':''), onclick:()=>mark(k)}, lab);
+      btns[k] = b; self.append(b);
+    });
+    const show = h('button', {class:'btn ghost small', onclick:()=>{
+      if (ansBox.childNodes.length) { ansBox.replaceChildren(); show.textContent = '模範解答を見る'; return; }
+      ansBox.append(
+        h('div', {class:'ans'}, h('div', {}, d.a), h('div', {class:'pt'}, '採点ポイント：' + d.pt)),
+        d.flag ? h('span', {class:'flag'}, d.flag) : null, self);
+      show.textContent = '閉じる';
+    }}, '模範解答を見る');
+    card.append(h('div', {class:'chips'}, h('span', {class:'chip'}, '記述 ' + (i+1))),
+      h('div', {class:'qtext', html:d.q}), show, ansBox);
+    nodes.push(card);
+  });
+  mount(...nodes);
+}
+
+/* ---------- まとめ穴埋め ---------- */
+function clozeView(si){
+  const sec = D.cloze[si];
+  const nodes = [h('div', {class:'nav'},
+    h('button', {class:'back', onclick:home}, '← ホーム'),
+    h('span', {class:'ttl'}, 'まとめ穴埋め'))];
+  const tabs = h('div', {class:'tabs'});
+  D.cloze.forEach((s, k) => tabs.append(h('button', {class:'tab' + (k===si?' on':''), onclick:()=>clozeView(k)}, s.name)));
+  nodes.push(tabs);
+  const blanks = [];
+  const tools = h('div', {class:'tools'},
+    h('button', {class:'btn ghost small', onclick:()=>blanks.forEach(b=>b.classList.add('open'))}, 'すべて表示'),
+    h('button', {class:'btn ghost small', onclick:()=>blanks.forEach(b=>b.classList.remove('open'))}, 'すべて隠す'));
+  nodes.push(tools);
+  if (sec.note) nodes.push(h('p', {class:'note'}, sec.note));
+  sec.rows.forEach(r => {
+    const tx = h('div', {class:'tx'});
+    r.t.split(/(\u27e6.*?\u27e7)/).forEach(seg => {
+      if (seg.startsWith('\u27e6')) {
+        const b = h('button', {class:'blank'}, seg.slice(1, -1));
+        b.addEventListener('click', () => b.classList.toggle('open'));
+        blanks.push(b); tx.append(b);
+      } else if (seg) tx.append(seg);
+    });
+    nodes.push(h('div', {class:'card crow'},
+      h('div', {class:'lb'}, r.cl ? h('span', {class:'cl'}, r.cl + ' ／ ') : null, r.l, r.star ? ' ★' : ''),
+      tx, r.flag ? h('span', {class:'flag'}, '※要確認') : null));
+  });
+  mount(...nodes);
+}
+
+home();
+</script>
+</body>
+</html>
