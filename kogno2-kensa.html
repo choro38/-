@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>高次脳機能障害学Ⅱ 検査一覧 試験対策</title>
+<style>
+:root{
+  --bg:#f2f5f4; --card:#ffffff; --ink:#1b2a29; --sub:#5b6b69; --line:#d9e1df;
+  --pri:#1f6f6b; --pri-ink:#ffffff; --star:#b9770e; --ok:#23703f; --ok-bg:#e4f3e9;
+  --ng:#a8342d; --ng-bg:#fbe9e7; --note:#8a5a00; --note-bg:#fff3d6; --blank:#d7ece9;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#121a19; --card:#1a2524; --ink:#e6efed; --sub:#9bb0ac; --line:#2e3e3c;
+    --pri:#4fb3ac; --pri-ink:#0b1514; --star:#e0a443; --ok:#6fd199; --ok-bg:#183326;
+    --ng:#ff8f86; --ng-bg:#3a1f1c; --note:#f0c36b; --note-bg:#33280f; --blank:#244744;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic","Noto Sans JP",sans-serif;
+  line-height:1.7;font-size:16px;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#app{max-width:720px;margin:0 auto;padding:16px 14px 150px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+h1{font-size:1.45rem;margin:0;line-height:1.35}
+.lead{margin:.2rem 0 0;color:var(--sub);font-size:.9rem}
+.sec{font-size:1.05rem;margin:26px 0 10px}
+.top{padding:6px 2px 4px}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.cats{grid-template-columns:1fr}}
+.cat{position:relative;text-align:left;background:var(--card);border:1px solid var(--line);
+  border-left:8px solid var(--c);border-radius:12px;padding:14px 14px 12px;min-height:118px;display:flex;flex-direction:column}
+.cat:hover{border-color:var(--c)}
+.cat .nm{font-size:1.15rem;font-weight:700;line-height:1.35}
+.cat .sb{font-size:.8rem;color:var(--sub);margin-top:4px;flex:1}
+.cat .ct{font-size:.85rem;margin-top:8px;display:flex;justify-content:space-between}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:6px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--c,var(--pri))}
+.modes{display:flex;flex-wrap:wrap;gap:8px}
+.mode{flex:1 1 auto;min-width:110px;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.92rem}
+.mode[disabled]{opacity:.4;cursor:default}
+.more{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.more{grid-template-columns:1fr}}
+.more .cat{min-height:0;border-left-width:4px;border-left-color:var(--sub)}
+.more .cat .nm{font-size:1rem}
+.foot{margin-top:30px;text-align:center}
+.link{background:none;border:none;color:var(--sub);text-decoration:underline;font-size:.85rem}
+.nav{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.back{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 12px}
+.ttl{font-weight:700;flex:1;font-size:.95rem}
+.prog{font-size:.85rem;color:var(--sub);white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chip{font-size:.75rem;border:1px solid var(--line);border-radius:999px;padding:1px 10px;color:var(--sub);background:none}
+.chip.flagbtn{border-color:var(--star);color:var(--note);background:var(--note-bg);font-weight:700}
+.qtext{font-size:1.05rem;font-weight:600;margin:4px 0 14px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.orow{display:flex;gap:6px;align-items:stretch}
+.opt{flex:1;text-align:left;display:flex;gap:10px;align-items:flex-start;padding:11px 12px;background:var(--card);
+  border:1.5px solid var(--line);border-radius:10px}
+.opt .n{flex:none;font-weight:700;color:var(--pri)}
+.opt:hover:not([disabled]){border-color:var(--pri)}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.ng{border-color:var(--ng);background:var(--ng-bg)}
+.opt[disabled]{cursor:default}
+.orow.struck .opt .t{text-decoration:line-through;opacity:.45}
+.elim{flex:none;width:44px;border:1px solid var(--line);background:var(--card);border-radius:10px;color:var(--sub);font-size:1.1rem}
+.orow.struck .elim{background:var(--ng-bg);color:var(--ng);border-color:var(--ng)}
+.act{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+.btn{padding:11px 20px;border-radius:10px;border:1.5px solid var(--pri);background:var(--pri);color:var(--pri-ink);font-weight:700}
+.btn.ghost{background:transparent;color:var(--pri)}
+.btn.small{padding:7px 14px;font-size:.88rem}
+.btn[disabled]{opacity:.4;cursor:default}
+.res{margin-top:14px;padding:10px 14px;border-radius:10px;font-weight:700}
+.res.ok{background:var(--ok-bg);color:var(--ok)}
+.res.ng{background:var(--ng-bg);color:var(--ng)}
+.exp{margin-top:10px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:.95rem}
+.flag{display:block;margin-top:8px;padding:6px 10px;border-radius:6px;background:var(--note-bg);color:var(--note);font-size:.82rem}
+.hint{font-size:.8rem;color:var(--sub);margin:8px 0 0}
+.score{font-size:2.2rem;font-weight:800;color:var(--pri);margin:4px 0}
+.wlist{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.wlist li{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.92rem;background:var(--card)}
+.wlist .a{color:var(--ok);font-weight:700;margin-top:4px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tab{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.88rem}
+.tab.on{background:var(--pri);color:var(--pri-ink);border-color:var(--pri);font-weight:700}
+.tools{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tcard{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--c,var(--pri));border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.tcard .hd{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font-weight:700;font-size:1.02rem}
+.tcard .ab{color:var(--sub);font-weight:600;font-size:.9rem}
+.tcard .bd{margin-top:6px;font-size:.98rem}
+.blank{display:inline-block;min-width:3.2em;margin:0 2px;padding:0 8px;border:none;border-bottom:2px solid var(--pri);
+  background:var(--blank);color:transparent;border-radius:4px 4px 0 0;user-select:none;line-height:1.6;text-align:center}
+.blank.done{color:var(--ink);background:var(--ok-bg);border-bottom-color:var(--ok);font-weight:700}
+.blank.miss{color:var(--ink);background:var(--ng-bg);border-bottom-color:var(--ng);font-weight:700}
+.blank.target{color:var(--pri);background:var(--blank);font-weight:800}
+.given{border-bottom:1px dotted var(--sub);color:var(--sub)}
+.kub{font-size:.75rem;color:var(--sub);margin-left:4px}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:2px solid var(--pri);
+  box-shadow:0 -6px 24px rgba(0,0,0,.25);max-height:75vh;overflow:auto;padding:12px 14px calc(14px + env(safe-area-inset-bottom));display:none}
+#sheet .in{max-width:720px;margin:0 auto}
+#sheet .sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:700}
+.shx{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:4px 12px}
+/* table (間違い探し/原表) */
+.dom{font-weight:700;margin:16px 0 8px;font-size:1rem}
+.trow{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px}
+.cellb{display:inline-flex;align-items:baseline;gap:6px;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:4px 9px;margin:2px 4px 2px 0;max-width:100%}
+.cellb .nb{font-size:.72rem;color:var(--sub);flex:none;min-width:1.6em}
+.cellb.body{display:flex;width:100%;margin:6px 0 0;padding:8px 10px}
+.cellb:hover{border-color:var(--pri)}
+.cellb.ok{border-color:var(--ok);background:var(--ok-bg)}
+.cellb.half{border-color:var(--star);background:var(--note-bg)}
+.cellb.fa{border-color:var(--ng);border-style:dashed;background:var(--ng-bg)}
+.cellb.miss{border-color:var(--star);background:var(--note-bg)}
+.cellb.static{cursor:default}
+.fix{display:block;font-size:.85rem;color:var(--ok);margin-top:4px}
+.sum{display:flex;gap:14px;flex-wrap:wrap;font-size:.9rem;margin-bottom:8px}
+.sum b{color:var(--pri)}
+.quote{padding:10px 12px;border-left:4px solid var(--line);background:var(--bg);border-radius:6px;margin:6px 0 10px;font-size:.95rem}
+/* ROC */
+.t2{border-collapse:collapse;margin:8px 0;font-size:.9rem}
+.t2 th,.t2 td{border:1px solid var(--line);padding:4px 10px;text-align:center}
+.t2 th{background:var(--bg);font-weight:600}
+.inp{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.inp label{display:flex;flex-direction:column;font-size:.85rem;color:var(--sub);gap:2px}
+.inp input{font:inherit;font-size:1.1rem;width:8.5em;padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.steps{margin:6px 0 0;padding-left:1.2em;font-size:.92rem}
+.small{font-size:.85rem}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="sheet"><div class="in" id="sheetin"></div></div>
+<script>
+const D = {"domains":[{"id":"d1","name":"行為・構成","sub":"動作・構成の検査（SPTA・コース・ROCFT・BVRT）","color":"#1f6f6b"},{"id":"d2","name":"視空間認知","sub":"視知覚・無視の検査（VPTA・BIT・CBS）","color":"#2f6fa3"},{"id":"d3","name":"記憶","sub":"記憶の検査（WMS-R・RBMT・三宅式・RAVLT）","color":"#9a5a1a"},{"id":"d4","name":"注意","sub":"注意・前頭葉の検査（CAT・TMT・FAB・RSABほか）","color":"#7a4a8c"},{"id":"d5","name":"遂行機能","sub":"遂行機能の検査（BADS・WCST・IGT・DEX）","color":"#a8342d"},{"id":"d6","name":"意欲","sub":"意欲の検査（やる気スコア・CAS）","color":"#b9770e"},{"id":"d7","name":"知的機能","sub":"知能の検査（WAIS-Ⅳ・RCPM）","color":"#3a7d44"},{"id":"d8","name":"認知症","sub":"認知症の検査（MMSE・HDS-R・MoCA・NPI・CDR・FAST）","color":"#555f8c"}],"tests":[{"id":"t01","dom":"d1","kubun":"","ref":null,"orig":{"name":"標準高次動作性検査","abbr":"SPTA","body":"顔面・上肢の模倣や物品を使う動作、描画、積み木など総合的に評価する。誤りが多い検査項目や誤り方の分析を行う。"},"A":{"name":"標準高次動作性検査","abbr":"{A1}","body":"顔面・上肢の模倣や物品を使う動作、描画、積み木など総合的に評価する。誤りが多い検査項目や誤り方の分析を行う。"},"B":{"name":"{B1}","abbr":"SPTA","body":"顔面・上肢の模倣や物品を使う動作、描画、{B2}など総合的に評価する。誤りが多い検査項目や{B3}の分析を行う。"},"note":null},{"id":"t02","dom":"d1","kubun":"","ref":null,"orig":{"name":"コース立方体組み合わせ検査","abbr":"―","body":"各面4色で塗り分けられた立方体を提示された模様図版通りに並べる検査。17問があり、各問の解答に要した時間により採点する。素点とIQが算出できる。"},"A":{"name":"コース立方体組み合わせ検査","abbr":"―","body":"各面{A2}色で塗り分けられた立方体を提示された模様図版通りに並べる検査。{A3}問があり、各問の解答に要した時間により採点する。素点とIQが算出できる。"},"B":{"name":"{B4}","abbr":"―","body":"各面4色で塗り分けられた立方体を提示された{B5}通りに並べる検査。17問があり、各問の{B6}により採点する。素点と{B7}が算出できる。"},"note":null},{"id":"t03","dom":"d1","kubun":"","ref":null,"orig":{"name":"レイの複雑図形検査","abbr":"ROCFT","body":"複雑な図形を模写、および遅延再生する。18部分について採点基準がある、36点満点。"},"A":{"name":"レイの複雑図形検査","abbr":"{A4}","body":"複雑な図形を模写、および遅延再生する。{A5}部分について採点基準がある、{A6}点満点。"},"B":{"name":"{B8}","abbr":"ROCFT","body":"複雑な図形を模写、および{B9}する。18部分について採点基準がある、36点満点。"},"note":null},{"id":"t04","dom":"d1","kubun":"","ref":null,"orig":{"name":"ベントン視覚記銘検査","abbr":"BVRT","body":"複数の図形の模写、および遅延再生する。計 10問。正解数と誤謬数による採点を行う。"},"A":{"name":"ベントン視覚記銘検査","abbr":"{A7}","body":"複数の図形の模写、および遅延再生する。計{A8}問。正解数と誤謬数による採点を行う。"},"B":{"name":"{B10}","abbr":"BVRT","body":"複数の図形の模写、および{B11}する。計 10問。正解数と{B12}による採点を行う。"},"note":null},{"id":"t05","dom":"d2","kubun":"","ref":null,"orig":{"name":"標準高次視知覚検査","abbr":"VPTA","body":"視知覚の基本機能、物品・画像の視覚認知、相貌認知、色彩、地誌的見当識などを総合的に評価する。各検査項目の障害パターンの分析を行う。"},"A":{"name":"標準高次視知覚検査","abbr":"{A9}","body":"視知覚の基本機能、物品・画像の視覚認知、相貌認知、色彩、地誌的見当識などを総合的に評価する。各検査項目の障害パターンの分析を行う。"},"B":{"name":"{B13}","abbr":"VPTA","body":"視知覚の基本機能、物品・画像の視覚認知、{B14}、色彩、{B15}などを総合的に評価する。各検査項目の{B16}の分析を行う。"},"note":null},{"id":"t06","dom":"d2","kubun":"","ref":null,"orig":{"name":"行動性無視検査","abbr":"BIT","body":"通常検査（抹消、模写、二等分、描画）が 146点満点、行動検査が 81点満点。通常検査のカットオフ点は 131/132点。"},"A":{"name":"行動性無視検査","abbr":"{A10}","body":"通常検査（抹消、模写、二等分、描画）が{A11}点満点、行動検査が{A12}点満点。通常検査のカットオフ点は{A13}点。"},"B":{"name":"{B17}","abbr":"BIT","body":"{B18}（抹消、模写、{B19}、描画）が 146点満点、{B20}が 81点満点。通常検査のカットオフ点は 131/132点。"},"note":null},{"id":"t07","dom":"d2","kubun":"","ref":null,"orig":{"name":"Catherine Bergego scale","abbr":"CBS","body":"半側空間無視について生活場面の観察尺度によって評価する。"},"A":{"name":"Catherine Bergego scale","abbr":"{A14}","body":"半側空間無視について生活場面の観察尺度によって評価する。"},"B":{"name":"{B21}","abbr":"CBS","body":"半側空間無視について{B22}の観察尺度によって評価する。"},"note":null},{"id":"t08","dom":"d3","kubun":"","ref":null,"orig":{"name":"ウェクスラー記憶検査","abbr":"WMS-R","body":"言語性記憶、視覚性記憶、一般的記憶、注意/集中力、遅延再生について総合的に評価する。年代別の指標に照らし合わせ、健常者平均を 100点とし、15点を標準偏差とする。"},"A":{"name":"ウェクスラー記憶検査","abbr":"{A15}","body":"言語性記憶、視覚性記憶、一般的記憶、注意/集中力、遅延再生について総合的に評価する。年代別の指標に照らし合わせ、健常者平均を{A16}点とし、{A17}点を標準偏差とする。"},"B":{"name":"{B23}","abbr":"WMS-R","body":"言語性記憶、視覚性記憶、一般的記憶、注意/集中力、{B24}について総合的に評価する。年代別の指標に照らし合わせ、健常者平均を 100点とし、15点を標準偏差とする。"},"note":null},{"id":"t09","dom":"d3","kubun":"","ref":null,"orig":{"name":"日本版リバーミード行動記憶検査","abbr":"RBMT","body":"展望記憶を含む、日常生活における記憶を総合的に評価する。スクリーニング点と標準プロフィール点が算出され、年代別にカットオフ値が示されている。"},"A":{"name":"日本版リバーミード行動記憶検査","abbr":"{A18}","body":"展望記憶を含む、日常生活における記憶を総合的に評価する。スクリーニング点と標準プロフィール点が算出され、年代別にカットオフ値が示されている。"},"B":{"name":"{B25}","abbr":"RBMT","body":"{B26}を含む、日常生活における記憶を総合的に評価する。スクリーニング点と{B27}が算出され、{B28}にカットオフ値が示されている。"},"note":null},{"id":"t10","dom":"d3","kubun":"","ref":null,"orig":{"name":"三宅式記銘力検査","abbr":"―","body":"単語の対連合学習検査。有関係対語試験と無関係対語試験からなる。3回繰り返し実施。"},"A":{"name":"三宅式記銘力検査","abbr":"―","body":"単語の対連合学習検査。有関係対語試験と無関係対語試験からなる。{A19}回繰り返し実施。"},"B":{"name":"{B29}","abbr":"―","body":"単語の{B30}検査。有関係対語試験と{B31}試験からなる。3回繰り返し実施。"},"note":"配布表は3回繰り返し。一般には無関係対語を5回とする版もある（試験は配布表基準）。"},{"id":"t11","dom":"d3","kubun":"","ref":null,"orig":{"name":"レイ聴覚性言語学習検査","abbr":"RAVLT","body":"15語の単語リストの提示と再生を 5回繰り返し、学習効果をみる。"},"A":{"name":"レイ聴覚性言語学習検査","abbr":"{A20}","body":"{A21}語の単語リストの提示と再生を{A22}回繰り返し、学習効果をみる。"},"B":{"name":"{B32}","abbr":"RAVLT","body":"15語の単語リストの提示と再生を 5回繰り返し、{B33}をみる。"},"note":null},{"id":"t12","dom":"d3","kubun":"","ref":"行為・構成を参照","orig":{"name":"ベントン視覚記銘検査","abbr":"","body":"行為・構成を参照"},"A":{"name":"ベントン視覚記銘検査","abbr":"","body":"行為・構成を参照"},"B":{"name":"ベントン視覚記銘検査","abbr":"","body":"行為・構成を参照"},"note":null},{"id":"t13","dom":"d3","kubun":"","ref":"行為・構成を参照","orig":{"name":"レイ複雑図形検査","abbr":"","body":"行為・構成を参照"},"A":{"name":"レイ複雑図形検査","abbr":"","body":"行為・構成を参照"},"B":{"name":"レイ複雑図形検査","abbr":"","body":"行為・構成を参照"},"note":null},{"id":"t14","dom":"d4","kubun":"","ref":null,"orig":{"name":"標準注意検査法","abbr":"CAT","body":"注意機能に関する 7つの検査項目があり、点数は年齢別に標準化されている。選択性、分配性、注意の変換、制御機能、持続性のいずれの要素の障害であるか分析が行える"},"A":{"name":"標準注意検査法","abbr":"{A23}","body":"注意機能に関する{A24}つの検査項目があり、点数は年齢別に標準化されている。選択性、分配性、注意の変換、制御機能、持続性のいずれの要素の障害であるか分析が行える"},"B":{"name":"{B34}","abbr":"CAT","body":"注意機能に関する 7つの検査項目があり、点数は{B35}に標準化されている。{B36}のいずれの要素の障害であるか分析が行える"},"note":null},{"id":"t15","dom":"d4","kubun":"","ref":null,"orig":{"name":"トレイルメイキングテスト","abbr":"TMT","body":"パート A は 25 までの数字を、パート B は 13 までの数字と仮名文字を交互に、順番に線で繋ぐ。終了までの時間を計測する。パート A、B ともに注意の持続と選択を評価し、パート B ではさらに注意の転換を評価する。"},"A":{"name":"トレイルメイキングテスト","abbr":"{A25}","body":"パート A は{A26}までの数字を、パート B は{A27}までの数字と仮名文字を交互に、順番に線で繋ぐ。終了までの時間を計測する。パート A、B ともに注意の持続と選択を評価し、パート B ではさらに注意の転換を評価する。"},"B":{"name":"{B37}","abbr":"TMT","body":"パート A は 25 までの数字を、パート B は 13 までの数字と仮名文字を交互に、順番に線で繋ぐ。{B38}を計測する。パート A、B ともに注意の持続と選択を評価し、パート B ではさらに{B39}を評価する。"},"note":null},{"id":"t16","dom":"d4","kubun":"","ref":null,"orig":{"name":"仮名ひろいテスト","abbr":"―","body":"注意の持続、分配などを評価する目標文字の抹消課題。ひらがな文字で書かれた物語を黙読し、内容を把握しながら、同時に「あ、い、う、え、お」の5文字に丸をつける。"},"A":{"name":"仮名ひろいテスト","abbr":"―","body":"注意の持続、分配などを評価する目標文字の抹消課題。ひらがな文字で書かれた物語を黙読し、内容を把握しながら、同時に「あ、い、う、え、お」の{A28}文字に丸をつける。"},"B":{"name":"{B40}","abbr":"―","body":"注意の持続、{B41}などを評価する目標文字の抹消課題。ひらがな文字で書かれた物語を{B42}し、内容を把握しながら、同時に{B43}の5文字に丸をつける。"},"note":null},{"id":"t17","dom":"d4","kubun":"","ref":null,"orig":{"name":"ストループテスト","abbr":"―","body":"抑制障害を評価する。3つのパートがあり、色名呼称を行う。パート1の刺激はドット、パート2は色と漢字1文字、パート3は塗られた色と異なる色名を表す漢字である。"},"A":{"name":"ストループテスト","abbr":"―","body":"抑制障害を評価する。{A29}つのパートがあり、色名呼称を行う。パート1の刺激はドット、パート2は色と漢字1文字、パート3は塗られた色と異なる色名を表す漢字である。"},"B":{"name":"{B44}","abbr":"―","body":"{B45}障害を評価する。3つのパートがあり、色名呼称を行う。パート1の刺激は{B46}、パート2は{B47}、パート3は{B48}である。"},"note":null},{"id":"t18","dom":"d4","kubun":"","ref":null,"orig":{"name":"前頭葉機能検査","abbr":"FAB","body":"簡易的に 6項目（言語の概念化、言語流暢性、運動プログラミング、干渉への感受性、抑制性制御、理解行動）で構成されたスクリーニング検査。"},"A":{"name":"前頭葉機能検査","abbr":"{A30}","body":"簡易的に{A31}項目（言語の概念化、言語流暢性、運動プログラミング、干渉への感受性、抑制性制御、理解行動）で構成されたスクリーニング検査。"},"B":{"name":"{B49}","abbr":"FAB","body":"簡易的に 6項目（{B50}、{B51}、{B52}、{B53}、{B54}、{B55}）で構成されたスクリーニング検査。"},"note":"配布表の領域は「注意」（FTDの欄は「注意を参照」）。一般には前頭葉・遂行機能のスクリーニング。6項目目「理解行動」は一般に「把握行動（環境に対する被影響性）」とも呼ばれる（試験は配布表基準）。"},{"id":"t19","dom":"d4","kubun":"","ref":null,"orig":{"name":"Ponsfordの注意評価スケール","abbr":"RSAB","body":"注意に関するさまざまな観察事項 14項目を 5段階、合計 56点で評価する。"},"A":{"name":"Ponsfordの注意評価スケール","abbr":"{A32}","body":"注意に関するさまざまな観察事項{A33}項目を{A34}段階、合計{A35}点で評価する。"},"B":{"name":"{B56}","abbr":"RSAB","body":"注意に関するさまざまな観察事項 14項目を 5段階、合計 56点で評価する。"},"note":null},{"id":"t20","dom":"d5","kubun":"","ref":null,"orig":{"name":"遂行機能障害症候群の行動評価","abbr":"BADS","body":"カードや道具を使用する6種類の下位検査からなる。課題の達成度や反応時間に応じて 0～4点の 5段階評価し、合計点を年齢標準化得点に換算する"},"A":{"name":"遂行機能障害症候群の行動評価","abbr":"{A36}","body":"カードや道具を使用する{A37}種類の下位検査からなる。課題の達成度や反応時間に応じて{A38}点の{A39}段階評価し、合計点を年齢標準化得点に換算する"},"B":{"name":"{B57}","abbr":"BADS","body":"カードや道具を使用する6種類の下位検査からなる。課題の達成度や反応時間に応じて 0～4点の 5段階評価し、合計点を{B58}に換算する"},"note":null},{"id":"t21","dom":"d5","kubun":"","ref":null,"orig":{"name":"ウィスコンシンカード分類課題","abbr":"WCST","body":"概念ないしセットの転換障害を評価する。記号の形、色、数が異なる反応カードを使用して検査者の設定した分類カテゴリーを推測する。"},"A":{"name":"ウィスコンシンカード分類課題","abbr":"{A40}","body":"概念ないしセットの転換障害を評価する。記号の形、色、数が異なる反応カードを使用して検査者の設定した分類カテゴリーを推測する。"},"B":{"name":"{B59}","abbr":"WCST","body":"{B60}ないしセットの転換障害を評価する。記号の形、{B61}、数が異なる反応カードを使用して検査者の設定した{B62}を推測する。"},"note":null},{"id":"t22","dom":"d5","kubun":"","ref":null,"orig":{"name":"アイオワ・ギャンブリング課題","abbr":"IGT","body":"目標の設定・計画を評価する。4つのカードの山があり、カードを引くごとに報酬か罰金が生じる。多くの利益を上げるようにカードを選ぶことが求められる。"},"A":{"name":"アイオワ・ギャンブリング課題","abbr":"{A41}","body":"目標の設定・計画を評価する。{A42}つのカードの山があり、カードを引くごとに報酬か罰金が生じる。多くの利益を上げるようにカードを選ぶことが求められる。"},"B":{"name":"{B63}","abbr":"IGT","body":"{B64}を評価する。4つのカードの山があり、カードを引くごとに{B65}が生じる。多くの利益を上げるようにカードを選ぶことが求められる。"},"note":"配布表は「目標の設定・計画」を評価とする。一般には意思決定（リスクと報酬の判断）の評価とされる（試験は配布表基準）。"},{"id":"t23","dom":"d5","kubun":"","ref":null,"orig":{"name":"遂行機能障害質問票","abbr":"DEX","body":"日常生活上の遂行機能の障害を検出するための 20項目からなる質問紙。"},"A":{"name":"遂行機能障害質問票","abbr":"{A43}","body":"日常生活上の遂行機能の障害を検出するための{A44}項目からなる質問紙。"},"B":{"name":"{B66}","abbr":"DEX","body":"日常生活上の遂行機能の障害を検出するための 20項目からなる{B67}。"},"note":null},{"id":"t24","dom":"d6","kubun":"","ref":null,"orig":{"name":"やる気スコア","abbr":"―","body":"意欲低下に関して、14項目を 4段階で評価する。16点以上でアパシーありとする。"},"A":{"name":"やる気スコア","abbr":"―","body":"意欲低下に関して、{A45}項目を{A46}段階で評価する。{A47}点以上でアパシーありとする。"},"B":{"name":"{B68}","abbr":"―","body":"意欲低下に関して、14項目を 4段階で評価する。16点以上で{B69}ありとする。"},"note":null},{"id":"t25","dom":"d6","kubun":"","ref":null,"orig":{"name":"標準意欲評価法","abbr":"CAS","body":"意欲、自発性に関して面接、質問紙、行動観察など多視点から評価する。"},"A":{"name":"標準意欲評価法","abbr":"{A48}","body":"意欲、自発性に関して面接、質問紙、行動観察など多視点から評価する。"},"B":{"name":"{B70}","abbr":"CAS","body":"意欲、自発性に関して{B71}、質問紙、{B72}など多視点から評価する。"},"note":null},{"id":"t26","dom":"d7","kubun":"","ref":null,"orig":{"name":"ウェクスラー成人知能検査","abbr":"WAIS-Ⅳ","body":"10種類の基本下位検査と、5種類の補助下位検査で構成される。年代別の指標に照らし合わせ、健常者平均を 100点とし、15点を標準偏差とする。各検査を行うことで 5つの合成得点（FSIQ、VCI、PRI、WMI、PSI）が算出される。"},"A":{"name":"ウェクスラー成人知能検査","abbr":"{A49}","body":"{A50}種類の基本下位検査と、{A51}種類の補助下位検査で構成される。年代別の指標に照らし合わせ、健常者平均を{A52}点とし、{A53}点を標準偏差とする。各検査を行うことで{A54}つの合成得点（{A55}、{A56}、{A57}、{A58}、{A59}）が算出される。"},"B":{"name":"{B73}","abbr":"WAIS-Ⅳ","body":"10種類の基本下位検査と、5種類の補助下位検査で構成される。年代別の指標に照らし合わせ、健常者平均を 100点とし、15点を標準偏差とする。各検査を行うことで 5つの合成得点（FSIQ、VCI、PRI、WMI、PSI）が算出される。"},"note":null},{"id":"t27","dom":"d7","kubun":"","ref":null,"orig":{"name":"レーヴン色彩マトリックス検査","abbr":"RCPM","body":"スピアマンのg因子の測定を目的とする。図の欠如部に合致するものを6つの選択肢の中から選ぶ。計36問。"},"A":{"name":"レーヴン色彩マトリックス検査","abbr":"{A60}","body":"スピアマンのg因子の測定を目的とする。図の欠如部に合致するものを{A61}つの選択肢の中から選ぶ。計{A62}問。"},"B":{"name":"{B74}","abbr":"RCPM","body":"スピアマンの{B75}の測定を目的とする。{B76}を6つの選択肢の中から選ぶ。計36問。"},"note":null},{"id":"t28","dom":"d7","kubun":"","ref":"行為・構成を参照","orig":{"name":"コース立方体組み合わせ検査","abbr":"","body":"行為・構成を参照"},"A":{"name":"コース立方体組み合わせ検査","abbr":"","body":"行為・構成を参照"},"B":{"name":"コース立方体組み合わせ検査","abbr":"","body":"行為・構成を参照"},"note":null},{"id":"t29","dom":"d8","kubun":"","ref":null,"orig":{"name":"ミニメンタルステート検査","abbr":"MMSE","body":"国際的に最も用いられている 30点満点の認知症スクリーニング検査。カットオフ得点は 23/24 である。"},"A":{"name":"ミニメンタルステート検査","abbr":"{A63}","body":"国際的に最も用いられている{A64}点満点の認知症スクリーニング検査。カットオフ得点は{A65}である。"},"B":{"name":"{B77}","abbr":"MMSE","body":"{B78}に最も用いられている 30点満点の認知症スクリーニング検査。カットオフ得点は 23/24 である。"},"note":null},{"id":"t30","dom":"d8","kubun":"","ref":null,"orig":{"name":"改訂長谷川式簡易知能評価スケール","abbr":"HDS-R","body":"日本で最も用いられている 30点満点の認知症スクリーニング検査。カットオフ得点は 20/21 である。"},"A":{"name":"改訂長谷川式簡易知能評価スケール","abbr":"{A66}","body":"日本で最も用いられている{A67}点満点の認知症スクリーニング検査。カットオフ得点は{A68}である。"},"B":{"name":"{B79}","abbr":"HDS-R","body":"{B80}で最も用いられている 30点満点の認知症スクリーニング検査。カットオフ得点は 20/21 である。"},"note":null},{"id":"t31","dom":"d8","kubun":"MCI","ref":null,"orig":{"name":"モントリオール認知評価検査","abbr":"MoCA","body":"30点満点の MCI のスクリーニング検査。カットオフ得点は 25/26 である。一つ以上の認知側面に低下があった場合 MCI と診断する"},"A":{"name":"モントリオール認知評価検査","abbr":"{A69}","body":"{A70}点満点の MCI のスクリーニング検査。カットオフ得点は{A71}である。一つ以上の認知側面に低下があった場合 MCI と診断する"},"B":{"name":"{B81}","abbr":"MoCA","body":"30点満点の MCI のスクリーニング検査。カットオフ得点は 25/26 である。{B82}の認知側面に低下があった場合 MCI と診断する"},"note":null},{"id":"t32","dom":"d8","kubun":"BPSD","ref":null,"orig":{"name":"精神神経科検査表","abbr":"NPI","body":"妄想、幻覚、興奮、うつ、不安、多幸、無為、脱抑制、易刺激性、異常行動の 10項目について重症度と頻度を評価する尺度"},"A":{"name":"精神神経科検査表","abbr":"{A72}","body":"妄想、幻覚、興奮、うつ、不安、多幸、無為、脱抑制、易刺激性、異常行動の{A73}項目について重症度と頻度を評価する尺度"},"B":{"name":"{B83}","abbr":"NPI","body":"{B84}、{B85}の 10項目について{B86}と頻度を評価する尺度"},"note":"配布表は「精神神経科検査表」。一般には「神経精神症状評価尺度」とも呼ばれる（試験は配布表基準）。"},{"id":"t33","dom":"d8","kubun":"AD","ref":null,"orig":{"name":"Clinical dementia rating","abbr":"CDR","body":"記憶、見当識、判断力と問題解決、社会適応、家庭状況と趣味・関心、パーソナルケアの 6項目に関して、健康から重度まで 5段階に評価する"},"A":{"name":"Clinical dementia rating","abbr":"{A74}","body":"記憶、見当識、判断力と問題解決、社会適応、家庭状況と趣味・関心、パーソナルケアの{A75}項目に関して、健康から重度まで{A76}段階に評価する"},"B":{"name":"{B87}","abbr":"CDR","body":"{B88}、{B89}の 6項目に関して、健康から重度まで 5段階に評価する"},"note":null},{"id":"t34","dom":"d8","kubun":"AD","ref":null,"orig":{"name":"Functional assessment staging","abbr":"FAST","body":"認知機能障害を、なし～きわめて高度まで7段階に評定する"},"A":{"name":"Functional assessment staging","abbr":"{A77}","body":"認知機能障害を、なし～きわめて高度まで{A78}段階に評定する"},"B":{"name":"{B90}","abbr":"FAST","body":"認知機能障害を、{B91}まで7段階に評定する"},"note":null},{"id":"t35","dom":"d8","kubun":"FTD","ref":"注意を参照","orig":{"name":"前頭葉機能検査","abbr":"","body":"注意を参照"},"A":{"name":"前頭葉機能検査","abbr":"","body":"注意を参照"},"B":{"name":"前頭葉機能検査","abbr":"","body":"注意を参照"},"note":"配布表の領域は「注意」（FTDの欄は「注意を参照」）。一般には前頭葉・遂行機能のスクリーニング。6項目目「理解行動」は一般に「把握行動（環境に対する被影響性）」とも呼ばれる（試験は配布表基準）。"}],"blanks":{"A1":{"s":"A","t":"t01","a":"SPTA","m":"SPTA＝Standard Performance Test for Apraxia","k":"abbr","o":["SPTA","VPTA","BIT","CBS","BVRT"]},"A2":{"s":"A","t":"t02","a":"4","m":"","k":"num","o":["2","3","4","5","6"]},"A3":{"s":"A","t":"t02","a":"17","m":"","k":"num","o":["10","12","15","17","20"]},"A4":{"s":"A","t":"t03","a":"ROCFT","m":"ROCFT＝Rey-Osterrieth Complex Figure Test","k":"abbr","o":["ROCFT","BVRT","RAVLT","RCPM","SPTA"]},"A5":{"s":"A","t":"t03","a":"18","m":"","k":"num","o":["15","16","18","20","24"]},"A6":{"s":"A","t":"t03","a":"36","m":"","k":"num","o":["30","36","40","48","56"]},"A7":{"s":"A","t":"t04","a":"BVRT","m":"BVRT＝Benton Visual Retention Test","k":"abbr","o":["BVRT","ROCFT","BIT","RBMT","RAVLT"]},"A8":{"s":"A","t":"t04","a":"10","m":"","k":"num","o":["8","10","12","15","20"]},"A9":{"s":"A","t":"t05","a":"VPTA","m":"VPTA＝Visual Perception Test for Agnosia","k":"abbr","o":["VPTA","SPTA","BIT","CBS","BVRT"]},"A10":{"s":"A","t":"t06","a":"BIT","m":"BIT＝Behavioural Inattention Test","k":"abbr","o":["BIT","CBS","VPTA","BVRT","CAT"]},"A11":{"s":"A","t":"t06","a":"146","m":"","k":"num","o":["100","126","131","146","150"]},"A12":{"s":"A","t":"t06","a":"81","m":"","k":"num","o":["68","81","100","131","146"]},"A13":{"s":"A","t":"t06","a":"131/132","m":"","k":"num","o":["126/127","131/132","136/137","81/82","100/101"]},"A14":{"s":"A","t":"t07","a":"CBS","m":"CBS＝Catherine Bergego Scale","k":"abbr","o":["CBS","BIT","CAS","CDR","RSAB"]},"A15":{"s":"A","t":"t08","a":"WMS-R","m":"WMS-R＝Wechsler Memory Scale-Revised","k":"abbr","o":["WMS-R","RBMT","RAVLT","WAIS-Ⅳ","BVRT"]},"A16":{"s":"A","t":"t08","a":"100","m":"","k":"num","o":["50","70","85","100","115"]},"A17":{"s":"A","t":"t08","a":"15","m":"","k":"num","o":["5","10","15","20","25"]},"A18":{"s":"A","t":"t09","a":"RBMT","m":"RBMT＝Rivermead Behavioural Memory Test","k":"abbr","o":["RBMT","WMS-R","RAVLT","RSAB","BADS"]},"A19":{"s":"A","t":"t10","a":"3","m":"※授業資料も3回。無関係対語を5回とする版もある（参考）","k":"num","o":["1","2","3","5","10"]},"A20":{"s":"A","t":"t11","a":"RAVLT","m":"RAVLT＝Rey Auditory Verbal Learning Test","k":"abbr","o":["RAVLT","RBMT","WMS-R","ROCFT","RSAB"]},"A21":{"s":"A","t":"t11","a":"15","m":"","k":"num","o":["10","15","20","25","50"]},"A22":{"s":"A","t":"t11","a":"5","m":"","k":"num","o":["2","3","4","5","6"]},"A23":{"s":"A","t":"t14","a":"CAT","m":"CAT＝Clinical Assessment for Attention","k":"abbr","o":["CAT","CAS","FAB","TMT","RSAB"]},"A24":{"s":"A","t":"t14","a":"7","m":"","k":"num","o":["4","5","6","7","8"]},"A25":{"s":"A","t":"t15","a":"TMT","m":"TMT＝Trail Making Test","k":"abbr","o":["TMT","CAT","WCST","FAB","RSAB"]},"A26":{"s":"A","t":"t15","a":"25","m":"","k":"num","o":["10","13","15","20","25"]},"A27":{"s":"A","t":"t15","a":"13","m":"","k":"num","o":["5","8","10","13","15"]},"A28":{"s":"A","t":"t16","a":"5","m":"","k":"num","o":["3","4","5","6","7"]},"A29":{"s":"A","t":"t17","a":"3","m":"","k":"num","o":["2","3","4","5","6"]},"A30":{"s":"A","t":"t18","a":"FAB","m":"FAB＝Frontal Assessment Battery","k":"abbr","o":["FAB","FAST","BADS","CAT","WAB"]},"A31":{"s":"A","t":"t18","a":"6","m":"","k":"num","o":["3","4","5","6","7"]},"A32":{"s":"A","t":"t19","a":"RSAB","m":"RSAB＝Rating Scale of Attentional Behaviour","k":"abbr","o":["RSAB","RBMT","CAT","FAB","DEX"]},"A33":{"s":"A","t":"t19","a":"14","m":"","k":"num","o":["12","14","16","20","24"]},"A34":{"s":"A","t":"t19","a":"5","m":"","k":"num","o":["3","4","5","6","7"]},"A35":{"s":"A","t":"t19","a":"56","m":"","k":"num","o":["50","56","60","70","80"]},"A36":{"s":"A","t":"t20","a":"BADS","m":"BADS＝Behavioural Assessment of the Dysexecutive Syndrome","k":"abbr","o":["BADS","DEX","WCST","IGT","FAB"]},"A37":{"s":"A","t":"t20","a":"6","m":"","k":"num","o":["3","4","5","6","7"]},"A38":{"s":"A","t":"t20","a":"0～4","m":"","k":"num","o":["0～2","0～3","0～4","0～5","1～5"]},"A39":{"s":"A","t":"t20","a":"5","m":"","k":"num","o":["3","4","5","6","7"]},"A40":{"s":"A","t":"t21","a":"WCST","m":"WCST＝Wisconsin Card Sorting Test","k":"abbr","o":["WCST","IGT","BADS","TMT","DEX"]},"A41":{"s":"A","t":"t22","a":"IGT","m":"IGT＝Iowa Gambling Task","k":"abbr","o":["IGT","WCST","BADS","DEX","TMT"]},"A42":{"s":"A","t":"t22","a":"4","m":"","k":"num","o":["3","4","5","6","8"]},"A43":{"s":"A","t":"t23","a":"DEX","m":"DEX＝Dysexecutive Questionnaire","k":"abbr","o":["DEX","BADS","NPI","RSAB","WCST"]},"A44":{"s":"A","t":"t23","a":"20","m":"","k":"num","o":["10","14","16","20","24"]},"A45":{"s":"A","t":"t24","a":"14","m":"","k":"num","o":["12","14","16","20","28"]},"A46":{"s":"A","t":"t24","a":"4","m":"","k":"num","o":["2","3","4","5","6"]},"A47":{"s":"A","t":"t24","a":"16","m":"","k":"num","o":["14","16","18","20","24"]},"A48":{"s":"A","t":"t25","a":"CAS","m":"CAS＝Clinical Assessment for Spontaneity","k":"abbr","o":["CAS","CAT","CBS","CDR","DEX"]},"A49":{"s":"A","t":"t26","a":"WAIS-Ⅳ","m":"WAIS-Ⅳ＝Wechsler Adult Intelligence Scale-Fourth Edition","k":"abbr","o":["WAIS-Ⅳ","WMS-R","RCPM","MMSE","RAVLT"]},"A50":{"s":"A","t":"t26","a":"10","m":"","k":"num","o":["6","8","10","12","15"]},"A51":{"s":"A","t":"t26","a":"5","m":"","k":"num","o":["4","5","6","7","10"]},"A52":{"s":"A","t":"t26","a":"100","m":"","k":"num","o":["50","70","85","100","115"]},"A53":{"s":"A","t":"t26","a":"15","m":"","k":"num","o":["5","10","15","20","25"]},"A54":{"s":"A","t":"t26","a":"5","m":"","k":"num","o":["3","4","5","6","7"]},"A55":{"s":"A","t":"t26","a":"FSIQ","m":"FSIQ＝Full Scale IQ（全検査IQ）","k":"abbr","o":["FSIQ","WMI","VSI","PIQ","PRI"]},"A56":{"s":"A","t":"t26","a":"VCI","m":"VCI＝Verbal Comprehension Index（言語理解）","k":"abbr","o":["VCI","VSI","VIQ","WMI","PSI"]},"A57":{"s":"A","t":"t26","a":"PRI","m":"PRI＝Perceptual Reasoning Index（知覚推理）","k":"abbr","o":["PRI","FSIQ","PIQ","WMI","PSI"]},"A58":{"s":"A","t":"t26","a":"WMI","m":"WMI＝Working Memory Index（ワーキングメモリー）","k":"abbr","o":["WMI","VSI","PSI","PIQ","FSIQ"]},"A59":{"s":"A","t":"t26","a":"PSI","m":"PSI＝Processing Speed Index（処理速度）","k":"abbr","o":["PSI","PRI","VCI","WMI","VIQ"]},"A60":{"s":"A","t":"t27","a":"RCPM","m":"RCPM＝Raven's Coloured Progressive Matrices","k":"abbr","o":["RCPM","WAIS-Ⅳ","RAVLT","CDR","ROCFT"]},"A61":{"s":"A","t":"t27","a":"6","m":"","k":"num","o":["3","4","5","6","8"]},"A62":{"s":"A","t":"t27","a":"36","m":"","k":"num","o":["24","30","36","40","60"]},"A63":{"s":"A","t":"t29","a":"MMSE","m":"MMSE＝Mini-Mental State Examination","k":"abbr","o":["MMSE","HDS-R","MoCA","FAST","CDR"]},"A64":{"s":"A","t":"t29","a":"30","m":"","k":"num","o":["10","20","25","30","50"]},"A65":{"s":"A","t":"t29","a":"23/24","m":"","k":"num","o":["18/19","20/21","23/24","25/26","27/28"]},"A66":{"s":"A","t":"t30","a":"HDS-R","m":"HDS-R＝Hasegawa Dementia Scale-Revised","k":"abbr","o":["HDS-R","MMSE","MoCA","NPI","CDR"]},"A67":{"s":"A","t":"t30","a":"30","m":"","k":"num","o":["10","20","25","30","50"]},"A68":{"s":"A","t":"t30","a":"20/21","m":"","k":"num","o":["18/19","20/21","23/24","25/26","27/28"]},"A69":{"s":"A","t":"t31","a":"MoCA","m":"MoCA＝Montreal Cognitive Assessment","k":"abbr","o":["MoCA","MMSE","HDS-R","NPI","FAST"]},"A70":{"s":"A","t":"t31","a":"30","m":"","k":"num","o":["10","20","25","30","50"]},"A71":{"s":"A","t":"t31","a":"25/26","m":"","k":"num","o":["18/19","20/21","23/24","25/26","27/28"]},"A72":{"s":"A","t":"t32","a":"NPI","m":"NPI＝Neuropsychiatric Inventory","k":"abbr","o":["NPI","SST","CDR","FAST","MoCA"]},"A73":{"s":"A","t":"t32","a":"10","m":"","k":"num","o":["8","10","12","14","20"]},"A74":{"s":"A","t":"t33","a":"CDR","m":"CDR＝Clinical Dementia Rating","k":"abbr","o":["CDR","FAST","NPI","CBS","CAS"]},"A75":{"s":"A","t":"t33","a":"6","m":"","k":"num","o":["5","6","7","8","10"]},"A76":{"s":"A","t":"t33","a":"5","m":"","k":"num","o":["3","4","5","6","7"]},"A77":{"s":"A","t":"t34","a":"FAST","m":"FAST＝Functional Assessment Staging","k":"abbr","o":["FAST","CDR","FAB","NPI","MoCA"]},"A78":{"s":"A","t":"t34","a":"7","m":"","k":"num","o":["4","5","6","7","8"]},"B1":{"s":"B","t":"t01","a":"標準高次動作性検査","m":"","k":"name","o":["標準高次動作性検査","コース立方体組み合わせ検査","レイの複雑図形検査","ベントン視覚記銘検査","標準高次視知覚検査"]},"B2":{"s":"B","t":"t01","a":"積み木","m":"","k":"kw","o":["積み木","計算","音読","復唱","線分二等分"]},"B3":{"s":"B","t":"t01","a":"誤り方","m":"","k":"kw","o":["誤り方","反応時間","年代別平均","施行回数","障害パターン"]},"B4":{"s":"B","t":"t02","a":"コース立方体組み合わせ検査","m":"","k":"name","o":["コース立方体組み合わせ検査","標準高次動作性検査","レイの複雑図形検査","ベントン視覚記銘検査","標準高次視知覚検査"]},"B5":{"s":"B","t":"t02","a":"模様図版","m":"","k":"kw","o":["模様図版","見本図形","展開図","色見本","積み木見本"]},"B6":{"s":"B","t":"t02","a":"解答に要した時間","m":"","k":"kw","o":["解答に要した時間","正解数と誤謬数","正答した問題数","模写図形の部分点","遅延再生の得点"]},"B7":{"s":"B","t":"t02","a":"IQ","m":"","k":"kw","o":["IQ","誤謬数","遅延再生得点","標準プロフィール点","スクリーニング点"]},"B8":{"s":"B","t":"t03","a":"レイの複雑図形検査","m":"","k":"name","o":["レイの複雑図形検査","コース立方体組み合わせ検査","ベントン視覚記銘検査","標準高次動作性検査","標準高次視知覚検査"]},"B9":{"s":"B","t":"t03","a":"遅延再生","m":"","k":"kw","o":["遅延再生","対連合学習","色名呼称","視覚的探索","再認"]},"B10":{"s":"B","t":"t04","a":"ベントン視覚記銘検査","m":"","k":"name","o":["ベントン視覚記銘検査","レイの複雑図形検査","標準高次視知覚検査","コース立方体組み合わせ検査","行動性無視検査"]},"B11":{"s":"B","t":"t04","a":"遅延再生","m":"","k":"kw","o":["遅延再生","再認","対連合学習","系列学習","視覚的探索"]},"B12":{"s":"B","t":"t04","a":"誤謬数","m":"","k":"kw","o":["誤謬数","所要時間","修正回数","反応潜時","保続数"]},"B13":{"s":"B","t":"t05","a":"標準高次視知覚検査","m":"","k":"name","o":["標準高次視知覚検査","ベントン視覚記銘検査","行動性無視検査","レイの複雑図形検査","Catherine Bergego scale"]},"B14":{"s":"B","t":"t05","a":"相貌認知","m":"","k":"kw","o":["相貌認知","手指構成模倣","口腔顔面失行","聴理解","復唱"]},"B15":{"s":"B","t":"t05","a":"地誌的見当識","m":"","k":"kw","o":["地誌的見当識","時間的見当識","人物見当識","身体部位認知","病態失認"]},"B16":{"s":"B","t":"t05","a":"障害パターン","m":"","k":"kw","o":["障害パターン","年代別平均","反応時間","感度と特異度","合計IQ"]},"B17":{"s":"B","t":"t06","a":"行動性無視検査","m":"","k":"name","o":["行動性無視検査","標準高次視知覚検査","Catherine Bergego scale","ベントン視覚記銘検査","ウェクスラー記憶検査"]},"B18":{"s":"B","t":"t06","a":"通常検査","m":"","k":"kw","o":["通常検査","行動検査","日常検査","簡易検査","基本検査"]},"B19":{"s":"B","t":"t06","a":"二等分","m":"","k":"kw","o":["二等分","電話課題","メニュー課題","音読課題","トランプ課題"]},"B20":{"s":"B","t":"t06","a":"行動検査","m":"","k":"kw","o":["行動検査","通常検査","日常検査","簡易検査","観察検査"]},"B21":{"s":"B","t":"t07","a":"Catherine Bergego scale","m":"","k":"name","o":["Catherine Bergego scale","行動性無視検査","ウェクスラー記憶検査","標準高次視知覚検査","日本版リバーミード行動記憶検査"]},"B22":{"s":"B","t":"t07","a":"生活場面","m":"","k":"kw","o":["生活場面","机上課題","家族への質問紙","面接場面","描画課題"]},"B23":{"s":"B","t":"t08","a":"ウェクスラー記憶検査","m":"","k":"name","o":["ウェクスラー記憶検査","Catherine Bergego scale","日本版リバーミード行動記憶検査","行動性無視検査","三宅式記銘力検査"]},"B24":{"s":"B","t":"t08","a":"遅延再生","m":"","k":"kw","o":["遅延再生","展望記憶","抑制機能","意欲","概念の転換"]},"B25":{"s":"B","t":"t09","a":"日本版リバーミード行動記憶検査","m":"","k":"name","o":["日本版リバーミード行動記憶検査","ウェクスラー記憶検査","三宅式記銘力検査","Catherine Bergego scale","レイ聴覚性言語学習検査"]},"B26":{"s":"B","t":"t09","a":"展望記憶","m":"","k":"kw","o":["展望記憶","手続き記憶","作動記憶","意味記憶","感覚記憶"]},"B27":{"s":"B","t":"t09","a":"標準プロフィール点","m":"","k":"kw","o":["標準プロフィール点","年齢標準化得点","合成得点","素点","偏差値"]},"B28":{"s":"B","t":"t09","a":"年代別","m":"","k":"kw","o":["年代別","性別","病巣別","教育歴別","利き手別"]},"B29":{"s":"B","t":"t10","a":"三宅式記銘力検査","m":"","k":"name","o":["三宅式記銘力検査","日本版リバーミード行動記憶検査","レイ聴覚性言語学習検査","ウェクスラー記憶検査","標準注意検査法"]},"B30":{"s":"B","t":"t10","a":"対連合学習","m":"","k":"kw","o":["対連合学習","系列学習","自由再生","概念学習","干渉学習"]},"B31":{"s":"B","t":"t10","a":"無関係対語","m":"","k":"kw","o":["無関係対語","類義対語","反意対語","同音対語","連想対語"]},"B32":{"s":"B","t":"t11","a":"レイ聴覚性言語学習検査","m":"","k":"name","o":["レイ聴覚性言語学習検査","三宅式記銘力検査","標準注意検査法","日本版リバーミード行動記憶検査","トレイルメイキングテスト"]},"B33":{"s":"B","t":"t11","a":"学習効果","m":"","k":"kw","o":["学習効果","干渉効果","再認成績","系列位置効果","保持率"]},"B34":{"s":"B","t":"t14","a":"標準注意検査法","m":"","k":"name","o":["標準注意検査法","レイ聴覚性言語学習検査","トレイルメイキングテスト","三宅式記銘力検査","仮名ひろいテスト"]},"B35":{"s":"B","t":"t14","a":"年齢別","m":"","k":"kw","o":["年齢別","性別","教育歴別","病巣別","利き手別"]},"B36":{"s":"B","t":"t14","a":"選択性、分配性、注意の変換、制御機能、持続性","m":"","k":"kw","o":["選択性、分配性、注意の変換、制御機能、持続性","ワーキングメモリ、発動性、抑制機能","選択性、持続性、抑制性、記銘性、柔軟性","分配性、処理速度、作動記憶、流暢性、保続","選択性、分配性、注意の転換、遂行機能、記銘力"]},"B37":{"s":"B","t":"t15","a":"トレイルメイキングテスト","m":"","k":"name","o":["トレイルメイキングテスト","標準注意検査法","仮名ひろいテスト","レイ聴覚性言語学習検査","ストループテスト"]},"B38":{"s":"B","t":"t15","a":"終了までの時間","m":"","k":"kw","o":["終了までの時間","正答数","誤謬数","見落とし数","保続の数"]},"B39":{"s":"B","t":"t15","a":"注意の転換","m":"","k":"kw","o":["注意の転換","注意の分配","作動記憶","反応抑制","処理速度"]},"B40":{"s":"B","t":"t16","a":"仮名ひろいテスト","m":"","k":"name","o":["仮名ひろいテスト","トレイルメイキングテスト","ストループテスト","標準注意検査法","前頭葉機能検査"]},"B41":{"s":"B","t":"t16","a":"分配","m":"","k":"kw","o":["分配","展望","計画","概念形成","干渉"]},"B42":{"s":"B","t":"t16","a":"黙読","m":"","k":"kw","o":["黙読","音読","復唱","書き写し","暗唱"]},"B43":{"s":"B","t":"t16","a":"「あ、い、う、え、お」","m":"","k":"kw","o":["「あ、い、う、え、お」","「あ、か、さ、た、な」","「か、き、く、け、こ」","「い、き、し、ち、に」","「あ、こ、そ、と、の」"]},"B44":{"s":"B","t":"t17","a":"ストループテスト","m":"","k":"name","o":["ストループテスト","仮名ひろいテスト","前頭葉機能検査","トレイルメイキングテスト","Ponsfordの注意評価スケール"]},"B45":{"s":"B","t":"t17","a":"抑制","m":"","k":"kw","o":["抑制","分配","持続","転換","意欲"]},"B46":{"s":"B","t":"t17","a":"ドット","m":"","k":"kw","o":["ドット","色と漢字1文字","塗られた色と異なる色名を表す漢字","数字","仮名文字"]},"B47":{"s":"B","t":"t17","a":"色と漢字1文字","m":"","k":"kw","o":["色と漢字1文字","ドット","塗られた色と異なる色名を表す漢字","色名と同じ色で塗られた漢字","仮名文字"]},"B48":{"s":"B","t":"t17","a":"塗られた色と異なる色名を表す漢字","m":"","k":"kw","o":["塗られた色と異なる色名を表す漢字","ドット","色と漢字1文字","塗られた色と同じ色名を表す漢字","数字と仮名文字の交互配列"]},"B49":{"s":"B","t":"t18","a":"前頭葉機能検査","m":"","k":"name","o":["前頭葉機能検査","ストループテスト","Ponsfordの注意評価スケール","仮名ひろいテスト","遂行機能障害症候群の行動評価"]},"B50":{"s":"B","t":"t18","a":"言語の概念化","m":"","k":"kw","o":["言語の概念化","計画立案","抑制性制御","運動プログラミング","言語流暢性"]},"B51":{"s":"B","t":"t18","a":"言語流暢性","m":"","k":"kw","o":["言語流暢性","抑制性制御","干渉への感受性","計画立案","言語の概念化"]},"B52":{"s":"B","t":"t18","a":"運動プログラミング","m":"","k":"kw","o":["運動プログラミング","聴覚的理解","抑制性制御","理解行動","言語流暢性"]},"B53":{"s":"B","t":"t18","a":"干渉への感受性","m":"","k":"kw","o":["干渉への感受性","計画立案","理解行動","言語流暢性","聴覚的理解"]},"B54":{"s":"B","t":"t18","a":"抑制性制御","m":"","k":"kw","o":["抑制性制御","言語の概念化","言語流暢性","干渉への感受性","理解行動"]},"B55":{"s":"B","t":"t18","a":"理解行動","m":"配布表・過去問とも「理解行動」（誤りではない）。※一般には「把握行動（環境に対する被影響性）」とも呼ばれる","k":"kw","o":["理解行動","抑制性制御","運動プログラミング","聴覚的理解","計画立案"]},"B56":{"s":"B","t":"t19","a":"Ponsfordの注意評価スケール","m":"","k":"name","o":["Ponsfordの注意評価スケール","前頭葉機能検査","遂行機能障害症候群の行動評価","ストループテスト","ウィスコンシンカード分類課題"]},"B57":{"s":"B","t":"t20","a":"遂行機能障害症候群の行動評価","m":"","k":"name","o":["遂行機能障害症候群の行動評価","Ponsfordの注意評価スケール","ウィスコンシンカード分類課題","前頭葉機能検査","アイオワ・ギャンブリング課題"]},"B58":{"s":"B","t":"t20","a":"年齢標準化得点","m":"","k":"kw","o":["年齢標準化得点","カットオフ得点","重症度スコア","百分位順位","合成得点"]},"B59":{"s":"B","t":"t21","a":"ウィスコンシンカード分類課題","m":"","k":"name","o":["ウィスコンシンカード分類課題","遂行機能障害症候群の行動評価","アイオワ・ギャンブリング課題","Ponsfordの注意評価スケール","遂行機能障害質問票"]},"B60":{"s":"B","t":"t21","a":"概念","m":"","k":"kw","o":["概念","注意","課題","規則","言語"]},"B61":{"s":"B","t":"t21","a":"色","m":"","k":"kw","o":["色","大きさ","向き","位置","質感"]},"B62":{"s":"B","t":"t21","a":"分類カテゴリー","m":"","k":"kw","o":["分類カテゴリー","報酬の確率","課題の目的","時間制限","記憶リスト"]},"B63":{"s":"B","t":"t22","a":"アイオワ・ギャンブリング課題","m":"","k":"name","o":["アイオワ・ギャンブリング課題","ウィスコンシンカード分類課題","遂行機能障害質問票","遂行機能障害症候群の行動評価","やる気スコア"]},"B64":{"s":"B","t":"t22","a":"目標の設定・計画","m":"配布表・過去問とも誤りではない。※一般にはIGTは意思決定の評価とされる","k":"kw","o":["目標の設定・計画","概念の転換","注意の持続","言語流暢性","反応の抑制"]},"B65":{"s":"B","t":"t22","a":"報酬か罰金","m":"","k":"kw","o":["報酬か罰金","休憩か再試行","ヒントか警告音","報酬のみ","罰金のみ"]},"B66":{"s":"B","t":"t23","a":"遂行機能障害質問票","m":"","k":"name","o":["遂行機能障害質問票","アイオワ・ギャンブリング課題","やる気スコア","ウィスコンシンカード分類課題","標準意欲評価法"]},"B67":{"s":"B","t":"t23","a":"質問紙","m":"","k":"kw","o":["質問紙","実技検査","面接票","観察尺度","カード課題"]},"B68":{"s":"B","t":"t24","a":"やる気スコア","m":"","k":"name","o":["やる気スコア","遂行機能障害質問票","標準意欲評価法","アイオワ・ギャンブリング課題","ウェクスラー成人知能検査"]},"B69":{"s":"B","t":"t24","a":"アパシー","m":"","k":"kw","o":["アパシー","うつ","不安","せん妄","認知症"]},"B70":{"s":"B","t":"t25","a":"標準意欲評価法","m":"","k":"name","o":["標準意欲評価法","やる気スコア","ウェクスラー成人知能検査","遂行機能障害質問票","レーヴン色彩マトリックス検査"]},"B71":{"s":"B","t":"t25","a":"面接","m":"","k":"kw","o":["面接","描画課題","抹消課題","暗算課題","音読課題"]},"B72":{"s":"B","t":"t25","a":"行動観察","m":"","k":"kw","o":["行動観察","描画課題","抹消課題","暗算課題","音読課題"]},"B73":{"s":"B","t":"t26","a":"ウェクスラー成人知能検査","m":"","k":"name","o":["ウェクスラー成人知能検査","標準意欲評価法","レーヴン色彩マトリックス検査","やる気スコア","ミニメンタルステート検査"]},"B74":{"s":"B","t":"t27","a":"レーヴン色彩マトリックス検査","m":"","k":"name","o":["レーヴン色彩マトリックス検査","ウェクスラー成人知能検査","ミニメンタルステート検査","標準意欲評価法","改訂長谷川式簡易知能評価スケール"]},"B75":{"s":"B","t":"t27","a":"g因子","m":"","k":"kw","o":["g因子","s因子","c因子","f因子","w因子"]},"B76":{"s":"B","t":"t27","a":"図の欠如部に合致するもの","m":"","k":"kw","o":["図の欠如部に合致するもの","見本と同じ図形","立方体の展開図","漫画のコマの順序","色と形が同じカード"]},"B77":{"s":"B","t":"t29","a":"ミニメンタルステート検査","m":"","k":"name","o":["ミニメンタルステート検査","レーヴン色彩マトリックス検査","改訂長谷川式簡易知能評価スケール","ウェクスラー成人知能検査","モントリオール認知評価検査"]},"B78":{"s":"B","t":"t29","a":"国際的","m":"","k":"kw","o":["国際的","日本","臨床現場","欧米","地域"]},"B79":{"s":"B","t":"t30","a":"改訂長谷川式簡易知能評価スケール","m":"","k":"name","o":["改訂長谷川式簡易知能評価スケール","ミニメンタルステート検査","モントリオール認知評価検査","レーヴン色彩マトリックス検査","精神神経科検査表"]},"B80":{"s":"B","t":"t30","a":"日本","m":"","k":"kw","o":["日本","欧米","アジア","世界","全国"]},"B81":{"s":"B","t":"t31","a":"モントリオール認知評価検査","m":"","k":"name","o":["モントリオール認知評価検査","改訂長谷川式簡易知能評価スケール","精神神経科検査表","ミニメンタルステート検査","Clinical dementia rating"]},"B82":{"s":"B","t":"t31","a":"一つ以上","m":"","k":"kw","o":["一つ以上","二つ以上","三つ以上","半数以上","すべて"]},"B83":{"s":"B","t":"t32","a":"精神神経科検査表","m":"配布表・過去問とも誤りではない。※一般には「神経精神症状評価尺度」とも呼ばれる","k":"name","o":["精神神経科検査表","モントリオール認知評価検査","Clinical dementia rating","改訂長谷川式簡易知能評価スケール","Functional assessment staging"]},"B84":{"s":"B","t":"t32","a":"妄想、幻覚、興奮、うつ、不安、多幸、無為、脱抑制、易刺激性","m":"","k":"kw","o":["妄想、幻覚、興奮、うつ、不安、多幸、無為、脱抑制、易刺激性","妄想、幻覚、興奮、うつ、不安、多幸、無為、睡眠、食行動","妄想、幻覚、興奮、うつ、不安、失語、失行、脱抑制、易刺激性","妄想、幻覚、興奮、うつ、不安、多幸、徘徊、脱抑制、易刺激性","幻覚、興奮、うつ、不安、多幸、無為、脱抑制、易刺激性、失認"]},"B85":{"s":"B","t":"t32","a":"異常行動","m":"","k":"kw","o":["異常行動","失語","失行","失認","記憶障害"]},"B86":{"s":"B","t":"t32","a":"重症度","m":"","k":"kw","o":["重症度","持続時間","発症時期","誘因","改善度"]},"B87":{"s":"B","t":"t33","a":"Clinical dementia rating","m":"","k":"name","o":["Clinical dementia rating","精神神経科検査表","Functional assessment staging","モントリオール認知評価検査","改訂長谷川式簡易知能評価スケール"]},"B88":{"s":"B","t":"t33","a":"記憶、見当識、判断力と問題解決、社会適応、家庭状況と趣味・関心","m":"","k":"kw","o":["記憶、見当識、判断力と問題解決、社会適応、家庭状況と趣味・関心","記憶、見当識、判断力と問題解決、社会適応、運動機能と日常動作","記憶、言語、判断力と問題解決、社会適応、家庭状況と趣味・関心","記憶、見当識、注意と集中力、社会適応、家庭状況と趣味・関心","記憶、見当識、判断力と問題解決、感情表出、家庭状況と趣味・関心"]},"B89":{"s":"B","t":"t33","a":"パーソナルケア","m":"","k":"kw","o":["パーソナルケア","言語流暢性","運動機能","抑制制御","視空間認知"]},"B90":{"s":"B","t":"t34","a":"Functional assessment staging","m":"","k":"name","o":["Functional assessment staging","Clinical dementia rating","精神神経科検査表","モントリオール認知評価検査","改訂長谷川式簡易知能評価スケール"]},"B91":{"s":"B","t":"t34","a":"なし～きわめて高度","m":"","k":"kw","o":["なし～きわめて高度","健康～重度","軽度～きわめて高度","なし～高度","軽度～重度"]}},"rows":[{"t":"t01","c":{"dom":{"n":1,"t":"行為・構成"},"name":{"n":2,"t":"標準高次動作性検査"},"abbr":{"n":3,"t":"SPTA"},"body":{"n":4,"t":"顔面・上肢の模倣や物品を使う動作、描画、積み木など総合的に評価する。誤りが多い検査項目や誤り方の分析を行う。"}}},{"t":"t02","c":{"name":{"n":5,"t":"コース立方体組み合わせ検査"},"body":{"n":6,"t":"各面4色で塗り分けられた立方体を提示された模様図版通りに並べる検査。17問があり、各問の解答に要した時間により採点する。素点とIQが算出できる。"}}},{"t":"t03","c":{"name":{"n":7,"t":"レイの複雑図形検査"},"abbr":{"n":8,"t":"ROCFT"},"body":{"n":9,"t":"複雑な図形を模写、および遅延再生する。18部分について採点基準がある、36点満点。"}}},{"t":"t04","c":{"name":{"n":10,"t":"ベントン視覚記銘検査"},"abbr":{"n":11,"t":"BVRT"},"body":{"n":12,"t":"複数の図形の模写、および遅延再生する。計 10問。正解数と誤謬数による採点を行う。"}}},{"t":"t05","c":{"dom":{"n":13,"t":"視空間認知"},"name":{"n":14,"t":"標準高次視知覚検査"},"abbr":{"n":15,"t":"VPTA"},"body":{"n":16,"t":"視知覚の基本機能、物品・画像の視覚認知、相貌認知、色彩、地誌的見当識などを総合的に評価する。各検査項目の障害パターンの分析を行う。"}}},{"t":"t06","c":{"name":{"n":17,"t":"行動性無視検査"},"abbr":{"n":18,"t":"BIT"},"body":{"n":19,"t":"通常検査（抹消、模写、二等分、描画）が 146点満点、行動検査が 81点満点。通常検査のカットオフ点は 131/132点。"}}},{"t":"t07","c":{"name":{"n":20,"t":"Catherine Bergego scale"},"abbr":{"n":21,"t":"CBS"},"body":{"n":22,"t":"半側空間無視について生活場面の観察尺度によって評価する。"}}},{"t":"t08","c":{"dom":{"n":23,"t":"記憶"},"name":{"n":24,"t":"ウェクスラー記憶検査"},"abbr":{"n":25,"t":"WMS-R"},"body":{"n":26,"t":"言語性記憶、視覚性記憶、一般的記憶、注意/集中力、遅延再生について総合的に評価する。年代別の指標に照らし合わせ、健常者平均を 100点とし、15点を標準偏差とする。"}}},{"t":"t09","c":{"name":{"n":27,"t":"日本版リバーミード行動記憶検査"},"abbr":{"n":28,"t":"RBMT"},"body":{"n":29,"t":"展望記憶を含む、日常生活における記憶を総合的に評価する。スクリーニング点と標準プロフィール点が算出され、年代別にカットオフ値が示されている。"}}},{"t":"t10","c":{"name":{"n":30,"t":"三宅式記銘力検査"},"body":{"n":31,"t":"単語の対連合学習検査。有関係対語試験と無関係対語試験からなる。3回繰り返し実施。"}}},{"t":"t11","c":{"name":{"n":32,"t":"レイ聴覚性言語学習検査"},"abbr":{"n":33,"t":"RAVLT"},"body":{"n":34,"t":"15語の単語リストの提示と再生を 5回繰り返し、学習効果をみる。"}}},{"t":"t12","c":{}},{"t":"t13","c":{}},{"t":"t14","c":{"dom":{"n":35,"t":"注意"},"name":{"n":36,"t":"標準注意検査法"},"abbr":{"n":37,"t":"CAT"},"body":{"n":38,"t":"注意機能に関する 7つの検査項目があり、点数は年齢別に標準化されている。選択性、分配性、注意の変換、制御機能、持続性のいずれの要素の障害であるか分析が行える"}}},{"t":"t15","c":{"name":{"n":39,"t":"トレイルメイキングテスト"},"abbr":{"n":40,"t":"TMT"},"body":{"n":41,"t":"パート A は 25 までの数字を、パート B は 13 までの数字と仮名文字を交互に、順番に線で繋ぐ。終了までの時間を計測する。パート A、B ともに注意の持続と選択を評価し、パート B ではさらに注意の転換を評価する。"}}},{"t":"t16","c":{"name":{"n":42,"t":"仮名ひろいテスト"},"body":{"n":43,"t":"注意の持続、分配などを評価する目標文字の抹消課題。ひらがな文字で書かれた物語を黙読し、内容を把握しながら、同時に「あ、い、う、え、お」の5文字に丸をつける。"}}},{"t":"t17","c":{"name":{"n":44,"t":"ストループテスト"},"body":{"n":45,"t":"抑制障害を評価する。3つのパートがあり、色名呼称を行う。パート1の刺激はドット、パート2は色と漢字1文字、パート3は塗られた色と異なる色名を表す漢字である。"}}},{"t":"t18","c":{"name":{"n":46,"t":"前頭葉機能検査"},"abbr":{"n":47,"t":"FAB"},"body":{"n":48,"t":"簡易的に 6項目（言語の概念化、言語流暢性、運動プログラミング、干渉への感受性、抑制性制御、理解行動）で構成されたスクリーニング検査。"}}},{"t":"t19","c":{"name":{"n":49,"t":"Ponsfordの注意評価スケール"},"abbr":{"n":50,"t":"RSAB"},"body":{"n":51,"t":"注意に関するさまざまな観察事項 14項目を 5段階、合計 56点で評価する。"}}},{"t":"t20","c":{"dom":{"n":52,"t":"遂行機能"},"name":{"n":53,"t":"遂行機能障害症候群の行動評価"},"abbr":{"n":54,"t":"BADS"},"body":{"n":55,"t":"カードや道具を使用する6種類の下位検査からなる。課題の達成度や反応時間に応じて 0～4点の 5段階評価し、合計点を年齢標準化得点に換算する"}}},{"t":"t21","c":{"name":{"n":56,"t":"ウィスコンシンカード分類課題"},"abbr":{"n":57,"t":"WCST"},"body":{"n":58,"t":"概念ないしセットの転換障害を評価する。記号の形、色、数が異なる反応カードを使用して検査者の設定した分類カテゴリーを推測する。"}}},{"t":"t22","c":{"name":{"n":59,"t":"アイオワ・ギャンブリング課題"},"abbr":{"n":60,"t":"IGT"},"body":{"n":61,"t":"目標の設定・計画を評価する。4つのカードの山があり、カードを引くごとに報酬か罰金が生じる。多くの利益を上げるようにカードを選ぶことが求められる。"}}},{"t":"t23","c":{"name":{"n":62,"t":"遂行機能障害質問票"},"abbr":{"n":63,"t":"DEX"},"body":{"n":64,"t":"日常生活上の遂行機能の障害を検出するための 20項目からなる質問紙。"}}},{"t":"t24","c":{"dom":{"n":65,"t":"意欲"},"name":{"n":66,"t":"やる気スコア"},"body":{"n":67,"t":"意欲低下に関して、14項目を 4段階で評価する。16点以上でアパシーありとする。"}}},{"t":"t25","c":{"name":{"n":68,"t":"標準意欲評価法"},"abbr":{"n":69,"t":"CAS"},"body":{"n":70,"t":"意欲、自発性に関して面接、質問紙、行動観察など多視点から評価する。"}}},{"t":"t26","c":{"dom":{"n":71,"t":"知的機能"},"name":{"n":72,"t":"ウェクスラー成人知能検査"},"abbr":{"n":73,"t":"WAIS-Ⅳ"},"body":{"n":74,"t":"10種類の基本下位検査と、5種類の補助下位検査で構成される。年代別の指標に照らし合わせ、健常者平均を 100点とし、15点を標準偏差とする。各検査を行うことで 5つの合成得点（FSIQ、VCI、PRI、WMI、PSI）が算出される。"}}},{"t":"t27","c":{"name":{"n":75,"t":"レーヴン色彩マトリックス検査"},"abbr":{"n":76,"t":"RCPM"},"body":{"n":77,"t":"スピアマンのg因子の測定を目的とする。図の欠如部に合致するものを6つの選択肢の中から選ぶ。計36問。"}}},{"t":"t28","c":{}},{"t":"t29","c":{"dom":{"n":78,"t":"認知症"},"name":{"n":79,"t":"ミニメンタルステート検査"},"abbr":{"n":80,"t":"MMSE"},"body":{"n":81,"t":"国際的に最も用いられている 30点満点の認知症スクリーニング検査。カットオフ得点は 23/24 である。"}}},{"t":"t30","c":{"name":{"n":82,"t":"改訂長谷川式簡易知能評価スケール"},"abbr":{"n":83,"t":"HDS-R"},"body":{"n":84,"t":"日本で最も用いられている 30点満点の認知症スクリーニング検査。カットオフ得点は 20/21 である。"}}},{"t":"t31","c":{"kub":{"n":85,"t":"MCI"},"name":{"n":86,"t":"モントリオール認知評価検査"},"abbr":{"n":87,"t":"MoCA"},"body":{"n":88,"t":"30点満点の MCI のスクリーニング検査。カットオフ得点は 25/26 である。一つ以上の認知側面に低下があった場合 MCI と診断する"}}},{"t":"t32","c":{"kub":{"n":89,"t":"BPSD"},"name":{"n":90,"t":"精神神経科検査表"},"abbr":{"n":91,"t":"NPI"},"body":{"n":92,"t":"妄想、幻覚、興奮、うつ、不安、多幸、無為、脱抑制、易刺激性、異常行動の 10項目について重症度と頻度を評価する尺度"}}},{"t":"t33","c":{"kub":{"n":93,"t":"AD"},"name":{"n":94,"t":"Clinical dementia rating"},"abbr":{"n":95,"t":"CDR"},"body":{"n":96,"t":"記憶、見当識、判断力と問題解決、社会適応、家庭状況と趣味・関心、パーソナルケアの 6項目に関して、健康から重度まで 5段階に評価する"}}},{"t":"t34","c":{"name":{"n":97,"t":"Functional assessment staging"},"abbr":{"n":98,"t":"FAST"},"body":{"n":99,"t":"認知機能障害を、なし～きわめて高度まで7段階に評定する"}}},{"t":"t35","c":{}}],"errors":{"k2":{"id":"k2","set":"past","n":2,"col":"name","wrong":"標準行為失行検査","right":"標準高次動作性検査","mut":"標準行為失行検査","type":"検査名の置換","ro":["標準高次動作性検査","標準高次視知覚検査","標準失行動作検査","標準高次機能検査","標準行為動作検査"],"note":"失行（Apraxia）の検査だが、正式名は「高次動作性」検査。","prev":false},"k6":{"id":"k6","set":"past","n":6,"col":"body","wrong":"時間制限はない","right":"各問の解答に要した時間により採点する","mut":"各面4色で塗り分けられた立方体を提示された模様図版通りに並べる検査。17問があり、時間制限はない。素点とIQが算出できる。","type":"内容語の置換","ro":["各問の解答に要した時間により採点する","正解数と誤謬数により採点する","全問正答で満点とする","制限時間内の正答数で採点する","遅延再生の正確さにより採点する"],"note":"コース立方体は各問の「時間」で採点する（時間制限なし、ではない）。","prev":true},"k18":{"id":"k18","set":"past","n":18,"col":"abbr","wrong":"USN","right":"BIT","mut":"USN","type":"略字の置換","ro":["BIT","CBS","BVRT","VPTA","CAT"],"note":"USN＝Unilateral Spatial Neglect（半側空間無視）。検査の略字ではない。行動性無視検査はBIT。","prev":false},"k19":{"id":"k19","set":"past","n":19,"col":"body","wrong":"日常検査が","right":"行動検査が","mut":"通常検査（抹消、模写、二等分、描画）が 146点満点、日常検査が 81点満点。通常検査のカットオフ点は 131/132点。","type":"内容語の置換","ro":["行動検査が","通常検査が","生活検査が","簡易検査が","観察検査が"],"note":"BITは「通常検査」と「行動検査」で構成される。","prev":true},"k26":{"id":"k26","set":"past","n":26,"col":"body","wrong":"満点を 200点とし、120点を合格とする","right":"健常者平均を 100点とし、15点を標準偏差とする","mut":"言語性記憶、視覚性記憶、一般的記憶、注意/集中力、遅延再生について総合的に評価する。年代別の指標に照らし合わせ、満点を 200点とし、120点を合格とする。","type":"数値・基準の置換","ro":["健常者平均を100点とし、15点を標準偏差とする","健常者平均を50点とし、10点を標準偏差とする","健常者平均を100点とし、10点を標準偏差とする","健常者平均を70点とし、15点を標準偏差とする","満点を100点とし、60点を合格とする"],"note":"WMS-R・WAIS-Ⅳとも平均100・標準偏差15。合格点という考え方はない。","prev":false},"k38":{"id":"k38","set":"past","n":38,"col":"body","wrong":"ワーキングメモリ、発動性、抑制機能の","right":"選択性、分配性、注意の変換、制御機能、持続性の","mut":"注意機能に関する 7つの検査項目があり、点数は年齢別に標準化されている。ワーキングメモリ、発動性、抑制機能のいずれの要素の障害であるか分析が行える","type":"内容語の置換","ro":["選択性、分配性、注意の変換、制御機能、持続性の","選択性、持続性、抑制性、記銘性、柔軟性の","分配性、処理速度、作動記憶、流暢性、保続の","選択性、分配性、注意の転換、遂行機能、記銘力の","発動性、抑制機能、概念の転換、分配性、持続性の"],"note":"CATの注意の5要素：選択性・分配性・注意の変換・制御機能・持続性。","prev":false},"k39":{"id":"k39","set":"past","n":39,"col":"name","wrong":"トレインメイキングテスト","right":"トレイルメイキングテスト","mut":"トレインメイキングテスト","type":"検査名の置換","ro":["トレイルメイキングテスト","トレイルメイキング検査","トラックメイキングテスト","トレイルマーキングテスト","トレールメイキングテスト"],"note":"Trail（道筋）＝トレイル。Train（列車）ではない。","prev":true},"k43":{"id":"k43","set":"past","n":43,"col":"body","wrong":"「あ、か、さ、た、な」","right":"「あ、い、う、え、お」","mut":"注意の持続、分配などを評価する目標文字の抹消課題。ひらがな文字で書かれた物語を黙読し、内容を把握しながら、同時に「あ、か、さ、た、な」の5文字に丸をつける。","type":"内容語の置換","ro":["「あ、い、う、え、お」","「か、き、く、け、こ」","「い、き、し、ち、に」","「あ、こ、そ、と、の」","「は、ひ、ふ、へ、ほ」"],"note":"母音の「あ、い、う、え、お」。","prev":false},"k44":{"id":"k44","set":"past","n":44,"col":"name","wrong":"ストリートチルドレン","right":"ストループテスト","mut":"ストリートチルドレン","type":"検査名の置換","ro":["ストループテスト","ストリームテスト","ストライプテスト","ストレッチテスト","スループテスト"],"note":"Stroop（人名）の検査。「ストループテスト」。","prev":false},"k47":{"id":"k47","set":"past","n":47,"col":"abbr","wrong":"WAB","right":"FAB","mut":"WAB","type":"略字の置換","ro":["FAB","FAST","CAT","WCST","RSAB"],"note":"WAB＝Western Aphasia Battery（失語症検査）。前頭葉機能検査はFAB。","prev":false},"k48":{"id":"k48","set":"past","n":48,"col":"body","wrong":"聴覚的理解","right":"言語の概念化","mut":"簡易的に 6項目（聴覚的理解、言語流暢性、運動プログラミング、干渉への感受性、抑制性制御、理解行動）で構成されたスクリーニング検査。","type":"内容語の置換","ro":["言語の概念化","視空間構成","計画立案","作動記憶","展望記憶"],"note":"FABの6項目：言語の概念化、言語流暢性、運動プログラミング、干渉への感受性、抑制性制御、理解行動。","prev":true},"k59":{"id":"k59","set":"past","n":59,"col":"name","wrong":"インディアナ・ギャンブリング課題","right":"アイオワ・ギャンブリング課題","mut":"インディアナ・ギャンブリング課題","type":"検査名の置換","ro":["アイオワ・ギャンブリング課題","アイダホ・ギャンブリング課題","アイオワ・カード分類課題","アイオワ・ギャンブル検査","オハイオ・ギャンブリング課題"],"note":"Iowa（アイオワ）。","prev":false},"k77":{"id":"k77","set":"past","n":77,"col":"body","wrong":"6つの漫画のコマをストーリー順に並び替える","right":"図の欠如部に合致するものを6つの選択肢の中から選ぶ","mut":"スピアマンのg因子の測定を目的とする。6つの漫画のコマをストーリー順に並び替える。計36問。","type":"内容語の置換","ro":["図の欠如部に合致するものを6つの選択肢の中から選ぶ","図の欠如部に合致するものを4つの選択肢の中から選ぶ","見本と同じ図形を6つの選択肢の中から選ぶ","6つの色カードを分類カテゴリーに分ける","提示された図形を6つ記憶して再生する"],"note":"漫画のコマの並べ替えは別の検査（絵画配列課題）。RCPMは図の欠如部を選ぶ。","prev":true},"k81":{"id":"k81","set":"past","n":81,"col":"body","wrong":"20/21","right":"23/24","mut":"国際的に最も用いられている 30点満点の認知症スクリーニング検査。カットオフ得点は 20/21 である。","type":"数値の入れ替え","ro":["23/24","25/26","18/19","27/28","21/22"],"note":"MMSE 23/24、HDS-R 20/21（入れ替え注意）。","prev":false},"k84":{"id":"k84","set":"past","n":84,"col":"body","wrong":"23/24","right":"20/21","mut":"日本で最も用いられている 30点満点の認知症スクリーニング検査。カットオフ得点は 23/24 である。","type":"数値の入れ替え","ro":["20/21","25/26","18/19","27/28","15/16"],"note":"HDS-R 20/21、MMSE 23/24（入れ替え注意）。","prev":false},"k91":{"id":"k91","set":"past","n":91,"col":"abbr","wrong":"SST","right":"NPI","mut":"SST","type":"略字の置換","ro":["NPI","FAST","CDR","MoCA","MMSE"],"note":"SST＝Social Skills Training（社会生活技能訓練）。NPIはNeuropsychiatric Inventory。","prev":false},"k99":{"id":"k99","set":"past","n":99,"col":"body","wrong":"30点満点で評定する","right":"7段階に評定する","mut":"認知機能障害を、なし～きわめて高度まで30点満点で評定する","type":"数値・基準の置換","ro":["7段階に評定する","5段階に評定する","6段階に評定する","4段階に評定する","10段階に評定する"],"note":"FASTは7段階（CDRは5段階）。","prev":false},"y4":{"id":"y4","set":"pred","n":4,"col":"body","wrong":"計算","right":"積み木","mut":"顔面・上肢の模倣や物品を使う動作、描画、計算など総合的に評価する。誤りが多い検査項目や誤り方の分析を行う。","type":"内容語の置換","ro":["積み木","音読","復唱","線分抹消","聴理解"],"note":"SPTAは積み木を含む（計算は含まない）。","prev":false},"y11":{"id":"y11","set":"pred","n":11,"col":"abbr","wrong":"BIT","right":"BVRT","mut":"BIT","type":"略字の置換","ro":["BVRT","ROCFT","VPTA","BADS","RAVLT"],"note":"BITは行動性無視検査。ベントン視覚記銘検査はBVRT。","prev":false},"y14":{"id":"y14","set":"pred","n":14,"col":"name","wrong":"標準高次視覚認知検査","right":"標準高次視知覚検査","mut":"標準高次視覚認知検査","type":"検査名の置換","ro":["標準高次視知覚検査","標準高次視空間検査","標準視知覚認知検査","標準高次動作性検査","標準高次視覚機能検査"],"note":"「視知覚」検査（Visual Perception Test for Agnosia）。","prev":false},"y19":{"id":"y19","set":"pred","n":19,"col":"body","wrong":"126/127","right":"131/132","mut":"通常検査（抹消、模写、二等分、描画）が 146点満点、行動検査が 81点満点。通常検査のカットオフ点は 126/127点。","type":"数値の入れ替え","ro":["131/132","136/137","121/122","100/101","81/82"],"note":"BIT通常検査のカットオフは131/132。","prev":false},"y22":{"id":"y22","set":"pred","n":22,"col":"body","wrong":"机上課題の得点によって","right":"生活場面の観察尺度によって","mut":"半側空間無視について机上課題の得点によって評価する。","type":"内容語の置換","ro":["生活場面の観察尺度によって","面接場面の質問紙によって","家族への質問紙によって","描画課題の得点によって","線分抹消課題によって"],"note":"机上検査はBIT。CBSは生活場面の観察尺度。","prev":false},"y27":{"id":"y27","set":"pred","n":27,"col":"name","wrong":"日本版リバーミード日常記憶検査","right":"日本版リバーミード行動記憶検査","mut":"日本版リバーミード日常記憶検査","type":"検査名の置換","ro":["日本版リバーミード行動記憶検査","日本版リバーミード行動評価検査","日本版ラバーミード行動記憶検査","日本版リバーミード行動記銘検査","日本版リバーミード行動記憶尺度"],"note":"Behavioural＝行動。","prev":false},"y30":{"id":"y30","set":"pred","n":30,"col":"name","wrong":"三宅式記憶力検査","right":"三宅式記銘力検査","mut":"三宅式記憶力検査","type":"検査名の置換","ro":["三宅式記銘力検査","三宅式記銘検査","三宅式対語記憶検査","三宅式学習力検査","三宅式再生力検査"],"note":"「記銘力」検査。","prev":false},"y34":{"id":"y34","set":"pred","n":34,"col":"body","wrong":"3回繰り返し","right":"5回繰り返し","mut":"15語の単語リストの提示と再生を 3回繰り返し、学習効果をみる。","type":"数値の入れ替え","ro":["5回繰り返し","4回繰り返し","2回繰り返し","10回繰り返し","7回繰り返し"],"note":"RAVLTは5回（三宅式は3回）。","prev":false},"y37":{"id":"y37","set":"pred","n":37,"col":"abbr","wrong":"CAS","right":"CAT","mut":"CAS","type":"略字の置換","ro":["CAT","FAB","TMT","RSAB","CDR"],"note":"CASは標準意欲評価法。標準注意検査法はCAT。","prev":false},"y41":{"id":"y41","set":"pred","n":41,"col":"body","wrong":"さらに注意の分配を評価する","right":"さらに注意の転換を評価する","mut":"パート A は 25 までの数字を、パート B は 13 までの数字と仮名文字を交互に、順番に線で繋ぐ。終了までの時間を計測する。パート A、B ともに注意の持続と選択を評価し、パート B ではさらに注意の分配を評価する。","type":"内容語の置換","ro":["注意の転換","注意の分配","注意の持続","注意の選択","作動記憶"],"note":"TMTのパートBは「転換」。分配は仮名ひろいテスト。","prev":false},"y50":{"id":"y50","set":"pred","n":50,"col":"abbr","wrong":"RBMT","right":"RSAB","mut":"RBMT","type":"略字の置換","ro":["RSAB","RAVLT","RCPM","CAT","FAB"],"note":"RBMTはリバーミード行動記憶検査。注意評価スケールはRSAB。","prev":false},"y56":{"id":"y56","set":"pred","n":56,"col":"name","wrong":"ウィスコンシンカード整理課題","right":"ウィスコンシンカード分類課題","mut":"ウィスコンシンカード整理課題","type":"検査名の置換","ro":["ウィスコンシンカード分類課題","ウィスコンシンカード選択課題","ウィスコンシンカード配列課題","ウィスコンシンカード記憶課題","ウィスコンシンカード分類検査"],"note":"Sorting＝分類。","prev":false},"y64":{"id":"y64","set":"pred","n":64,"col":"body","wrong":"14項目","right":"20項目","mut":"日常生活上の遂行機能の障害を検出するための 14項目からなる質問紙。","type":"数値の入れ替え","ro":["20項目","10項目","12項目","16項目","24項目"],"note":"DEXは20項目（やる気スコア・RSABは14項目）。","prev":false},"y67":{"id":"y67","set":"pred","n":67,"col":"body","wrong":"20点以上","right":"16点以上","mut":"意欲低下に関して、14項目を 4段階で評価する。20点以上でアパシーありとする。","type":"数値・基準の置換","ro":["16点以上","14点以上","18点以上","12点以上","24点以上"],"note":"やる気スコアは16点以上でアパシー。","prev":false},"y74":{"id":"y74","set":"pred","n":74,"col":"body","wrong":"5種類の基本下位検査と、10種類の補助下位検査","right":"10種類の基本下位検査と、5種類の補助下位検査","mut":"5種類の基本下位検査と、10種類の補助下位検査で構成される。年代別の指標に照らし合わせ、健常者平均を 100点とし、15点を標準偏差とする。各検査を行うことで 5つの合成得点（FSIQ、VCI、PRI、WMI、PSI）が算出される。","type":"数値の入れ替え","ro":["10種類の基本下位検査と、5種類の補助下位検査","6種類の基本下位検査と、4種類の補助下位検査","8種類の基本下位検査と、7種類の補助下位検査","10種類の基本下位検査と、10種類の補助下位検査","15種類の基本下位検査と、5種類の補助下位検査"],"note":"WAIS-Ⅳは基本10＋補助5。","prev":false},"y81":{"id":"y81","set":"pred","n":81,"col":"body","wrong":"日本で","right":"国際的に","mut":"日本で最も用いられている 30点満点の認知症スクリーニング検査。カットオフ得点は 23/24 である。","type":"内容語の置換","ro":["国際的に","欧米で","アジアで","臨床現場で","学術研究で"],"note":"MMSEは国際的、HDS-Rは日本で最も用いられる。","prev":false},"y96":{"id":"y96","set":"pred","n":96,"col":"body","wrong":"7段階に評価する","right":"5段階に評価する","mut":"記憶、見当識、判断力と問題解決、社会適応、家庭状況と趣味・関心、パーソナルケアの 6項目に関して、健康から重度まで 7段階に評価する","type":"数値の入れ替え","ro":["5段階","4段階","6段階","3段階","10段階"],"note":"CDRは5段階、FASTは7段階。","prev":false}}};
+const KEY='kogno2-kensa-v1';
+let S={res:{},err:{},roc:{}};
+try{ S=Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}')); }catch(e){}
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+const NUM=['①','②','③','④','⑤'];
+const app=document.getElementById('app'), sheet=document.getElementById('sheet'), sheetin=document.getElementById('sheetin');
+const TEST={}; D.tests.forEach(t=>TEST[t.id]=t);
+const DOM={}; D.domains.forEach(d=>DOM[d.id]=d);
+const ROWT={}; D.rows.forEach(r=>ROWT[r.t]=r);
+function h(tag,props,...kids){
+  const e=document.createElement(tag);
+  for(const [k,v] of Object.entries(props||{})){
+    if(v==null||v===false) continue;
+    if(k==='class') e.className=v; else if(k==='html') e.innerHTML=v;
+    else if(k.startsWith('on')) e.addEventListener(k.slice(2),v); else e.setAttribute(k,v);
+  }
+  for(const c of kids.flat()){ if(c==null||c===false) continue; e.append(c.nodeType?c:document.createTextNode(c)); }
+  return e;
+}
+function mount(...nodes){ closeSheet(); app.replaceChildren(...nodes); window.scrollTo(0,0); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function openSheet(...nodes){ sheetin.replaceChildren(...nodes); sheet.style.display='block'; }
+function closeSheet(){ sheet.style.display='none'; sheetin.replaceChildren(); }
+
+/* ---------- ホーム ---------- */
+function blanksOf(domId,sh){ return Object.keys(D.blanks).filter(id=>{const b=D.blanks[id]; return TEST[b.t].dom===domId && (!sh||b.s===sh);}); }
+function home(){
+  const nodes=[h('header',{class:'top'},h('h1',{},'高次脳機能障害学Ⅱ　検査一覧'),h('p',{class:'lead'},'定期試験対策 ｜ 表の穴埋め・間違い探し・ROC計算'))];
+  nodes.push(h('h2',{class:'sec'},'領域別（表の穴埋め）'));
+  const grid=h('div',{class:'cats'});
+  D.domains.forEach(d=>{
+    const ids=blanksOf(d.id); const ok=ids.filter(i=>S.res[i]==='o').length;
+    grid.append(h('button',{class:'cat',style:'--c:'+d.color,onclick:()=>domainView(d.id,'A')},
+      h('span',{class:'nm'},d.name),h('span',{class:'sb'},d.sub),
+      h('span',{class:'ct'},h('span',{},ids.length+'空欄'),h('span',{},'正解済 '+ok)),
+      h('span',{class:'bar'},h('i',{style:'width:'+Math.round(ok/ids.length*100)+'%'}))));
+  });
+  nodes.push(grid);
+  const all=Object.keys(D.blanks), wrong=all.filter(i=>S.res[i]==='x');
+  nodes.push(h('h2',{class:'sec'},'出題モード（空欄を1つずつ・5択）'));
+  nodes.push(h('div',{class:'modes'},
+    h('button',{class:'mode',onclick:()=>startQuiz(all,'全領域（A+B）')},'全空欄（'+all.length+'）'),
+    h('button',{class:'mode',onclick:()=>startQuiz(shuffle(all).slice(0,20),'ランダム20')},'ランダム20'),
+    h('button',{class:'mode',disabled:wrong.length?null:'disabled',onclick:()=>startQuiz(wrong,'間違えた空欄')},'間違えた空欄（'+wrong.length+'）')));
+  const eOk=Object.keys(D.errors).filter(i=>S.err[i]==='o').length;
+  const rOk=Object.values(S.roc).filter(v=>v==='o').length;
+  nodes.push(h('h2',{class:'sec'},'そのほかの学習'));
+  nodes.push(h('div',{class:'more'},
+    h('button',{class:'cat',onclick:spotMenu},h('span',{class:'nm'},'間違い探し（表）'),h('span',{class:'sb'},'表から誤りの欄を探し、訂正を5択で選ぶ。過去問再現・予想・ランダム'),h('span',{class:'ct'},h('span',{},D.errors?Object.keys(D.errors).length+'か所':''),h('span',{},'訂正済 '+eOk))),
+    h('button',{class:'cat',onclick:rocMenu},h('span',{class:'nm'},'ROC計算'),h('span',{class:'sb'},'感度・特異度を小数第2位まで入力。過去問・類題とランダム出題'),h('span',{class:'ct'},h('span',{},'数値入力'),h('span',{},'正解 '+rOk))),
+    h('button',{class:'cat',onclick:()=>refView(null)},h('span',{class:'nm'},'原表（答え入り）'),h('span',{class:'sb'},'配布表の全検査を領域順に確認'),h('span',{class:'ct'},h('span',{},'35行')))));
+  nodes.push(h('div',{class:'foot'},h('button',{class:'link',onclick:()=>{if(confirm('学習記録（正誤・訂正・ROC）をすべて消しますか？')){S={res:{},err:{},roc:{}};save();home();}}},'学習記録をリセット')));
+  mount(...nodes);
+}
+
+/* ---------- テキスト展開 ---------- */
+function bodyNodes(str,fn){ // fn(id) -> node
+  const out=[]; str.split(/(\{[AB]\d+\})/).forEach(seg=>{ const m=seg.match(/^\{([AB]\d+)\}$/); if(m) out.push(fn(m[1])); else if(seg) out.push(seg); });
+  return out;
+}
+function flagChip(t){
+  if(!t.note) return null;
+  const note=h('span',{class:'flag',style:'display:none'},'◇配布表準拠：'+t.note);
+  const chip=h('button',{class:'chip flagbtn',onclick:()=>{note.style.display=note.style.display==='none'?'block':'none';}},'◇配布表準拠');
+  return [chip,note];
+}
+
+/* ---------- 領域画面 ---------- */
+let SESS={};
+function domainView(domId,tab){
+  const d=DOM[domId];
+  const nodes=[h('div',{class:'nav'},h('button',{class:'back',onclick:home},'← ホーム'),h('span',{class:'ttl'},d.name))];
+  const tabs=h('div',{class:'tabs'});
+  [['A','穴埋めA（略字・数値）'],['B','穴埋めB（検査名・キーワード）'],['T','原表']].forEach(([k,l])=>tabs.append(h('button',{class:'tab'+(k===tab?' on':''),onclick:()=>domainView(domId,k)},l)));
+  nodes.push(tabs);
+  if(tab==='T'){ mount(...nodes,...refCards(domId)); return; }
+  const ids=blanksOf(domId,tab);
+  nodes.push(h('p',{class:'hint'},'空欄をタップして答えを選びます。タップ済みの空欄をもう一度押すと隠れます。'));
+  const blankEls=[];
+  nodes.push(h('div',{class:'tools'},
+    h('button',{class:'btn ghost small',onclick:()=>{ids.forEach(i=>{delete SESS[i];}); domainView(domId,tab);}},'すべて隠す'),
+    h('button',{class:'btn small',onclick:()=>startQuiz(ids,d.name+'（'+tab+'）')},'この領域をクイズ形式で解く（'+ids.length+'）')));
+  D.tests.filter(t=>t.dom===domId&&!t.ref).forEach(t=>{
+    const part=t[tab];
+    const mk=id=>{
+      const b=D.blanks[id]; const st=SESS[id];
+      const el=h('button',{class:'blank'+(st==='done'?' done':st==='miss'?' miss':''),onclick:()=>{
+        if(SESS[id]){ delete SESS[id]; domainView(domId,tab); return; } pickBlank(id,domId,tab,ids); }},st?b.a:'　　');
+      return el;
+    };
+    const hd=h('div',{class:'hd'},bodyNodes(part.name,mk), part.abbr&&part.abbr!=='―'?h('span',{class:'ab'},bodyNodes(part.abbr,mk)):null, t.kubun?h('span',{class:'kub'},t.kubun):null);
+    const chips=flagChip(t);
+    nodes.push(h('div',{class:'tcard',style:'--c:'+d.color},hd,h('div',{class:'bd'},bodyNodes(part.body,mk)),chips?h('div',{class:'chips',style:'margin-top:8px'},chips):null));
+  });
+  mount(...nodes);
+}
+function pickBlank(id,domId,tab,ids){
+  const b=D.blanks[id], t=TEST[b.t]; let tries=0, done=false;
+  const rows=[]; const opts=h('div',{class:'opts'}); const msg=h('div',{}); const acts=h('div',{class:'act'});
+  shuffle(b.o).forEach((o,i)=>{
+    const btn=h('button',{class:'opt',onclick:()=>{
+      if(done) return;
+      if(o===b.a){ done=true; btn.classList.add('ok'); rows.forEach(r=>r.querySelector('.opt').disabled=true);
+        S.res[id]=tries?'x':'o'; save(); SESS[id]=tries?'miss':'done';
+        msg.replaceChildren(h('div',{class:'res ok'},tries?'正解（やり直しで）':'正解'),
+          b.m?h('div',{class:'exp'},b.m):null);
+        acts.replaceChildren(h('button',{class:'btn',onclick:()=>{const nx=ids.find(x=>!SESS[x]&&x!==id); domainView(domId,tab); if(nx) pickBlank(nx,domId,tab,ids); else closeSheet();}},'次の空欄へ'),
+          h('button',{class:'btn ghost',onclick:()=>{domainView(domId,tab);}},'閉じる'));
+      } else { tries++; btn.classList.add('ng'); btn.disabled=true; S.res[id]='x'; save(); msg.replaceChildren(h('div',{class:'res ng'},'ちがいます。もう一度選んでください')); }
+    }},h('span',{class:'n'},NUM[i]),h('span',{class:'t'},o));
+    const x=h('button',{class:'elim','aria-label':'この選択肢を消去',onclick:()=>row.classList.toggle('struck')},'×');
+    const row=h('div',{class:'orow'},btn,x); rows.push(row); opts.append(row);
+  });
+  acts.append(h('button',{class:'btn ghost small',onclick:()=>{ if(done) return; done=true; S.res[id]='x'; save(); SESS[id]='miss'; domainView(domId,tab); }},'答えを見る'),
+    h('button',{class:'btn ghost small',onclick:closeSheet},'閉じる'));
+  openSheet(h('div',{class:'sh'},h('span',{},(t.orig.abbr&&t.orig.abbr!=='―'?t.orig.abbr:t.orig.name)+'　空欄を選ぶ'),h('span',{class:'prog'},id)),opts,msg,acts);
+}
+
+/* ---------- 空欄クイズ ---------- */
+let Q=null;
+function startQuiz(ids,title){
+  if(!ids.length){alert('該当する空欄がありません。');return;}
+  Q={list:ids.slice(),title,i:0,correct:0,wrong:[]}; renderQ();
+}
+function renderQ(){
+  const id=Q.list[Q.i], b=D.blanks[id], t=TEST[b.t], part=t[b.s]; let answered=false; const rows=[];
+  const mk=bid=>{ if(bid===id) return h('span',{class:'blank target'},'　？　'); return h('span',{class:'given'},D.blanks[bid].a); };
+  const ctx=h('div',{class:'tcard',style:'--c:'+DOM[t.dom].color},
+    h('div',{class:'hd'},bodyNodes(part.name,mk),part.abbr&&part.abbr!=='―'?h('span',{class:'ab'},bodyNodes(part.abbr,mk)):null,t.kubun?h('span',{class:'kub'},t.kubun):null),
+    h('div',{class:'bd'},bodyNodes(part.body,mk)));
+  const opts=h('div',{class:'opts'}); const resBox=h('div',{}); const actBox=h('div',{class:'act'});
+  const next=()=>{Q.i++; if(Q.i<Q.list.length) renderQ(); else resultView();};
+  shuffle(b.o).forEach((o,i)=>{
+    const btn=h('button',{class:'opt',onclick:()=>{
+      if(answered) return; answered=true; const right=o===b.a;
+      rows.forEach(r=>{const bt=r.querySelector('.opt'); bt.disabled=true; r.querySelector('.elim').disabled=true; if(bt.querySelector('.t').textContent===b.a) bt.classList.add('ok');});
+      if(!right) btn.classList.add('ng');
+      S.res[id]=right?'o':'x'; save(); if(right) Q.correct++; else Q.wrong.push(id);
+      resBox.append(h('div',{class:'res '+(right?'ok':'ng')},right?'正解':'不正解　正答：'+b.a),
+        (b.m||t.note)?h('div',{class:'exp'},b.m?h('div',{},b.m):null,t.note?h('span',{class:'flag'},'◇配布表準拠：'+t.note):null):null);
+      actBox.replaceChildren(h('button',{class:'btn',onclick:next},Q.i+1<Q.list.length?'次の問題へ':'結果を見る'));
+    }},h('span',{class:'n'},NUM[i]),h('span',{class:'t'},o));
+    const x=h('button',{class:'elim','aria-label':'この選択肢を消去',onclick:()=>row.classList.toggle('struck')},'×');
+    const row=h('div',{class:'orow'},btn,x); rows.push(row); opts.append(row);
+  });
+  mount(h('div',{class:'nav'},h('button',{class:'back',onclick:()=>{if(Q.i===0||confirm('クイズを中断してホームに戻りますか？'))home();}},'← ホーム'),h('span',{class:'ttl'},Q.title),h('span',{class:'prog'},(Q.i+1)+' / '+Q.list.length)),
+    h('div',{class:'bar',style:'margin:0 0 12px;--c:var(--pri)'},h('i',{style:'width:'+Math.round(Q.i/Q.list.length*100)+'%'})),
+    h('div',{class:'card'},h('div',{class:'chips'},h('span',{class:'chip'},DOM[t.dom].name),h('span',{class:'chip'},b.s==='A'?'穴埋めA':'穴埋めB')),
+      h('div',{class:'qtext'},'（　？　）に入るものはどれか。'),ctx,opts,h('p',{class:'hint'},'右端の×で選択肢に取り消し線を引けます（消去法）。'),actBox,resBox));
+}
+function resultView(){
+  const n=Q.list.length,pct=Math.round(Q.correct/n*100);
+  const nodes=[h('div',{class:'nav'},h('span',{class:'ttl'},Q.title+' の結果')),
+    h('div',{class:'card'},h('div',{},n+'問中'),h('div',{class:'score'},Q.correct+'問正解（'+pct+'%）'),
+      h('div',{class:'act'},Q.wrong.length?h('button',{class:'btn',onclick:()=>startQuiz(Q.wrong,'間違えた空欄')},'間違いだけやり直す（'+Q.wrong.length+'）'):null,h('button',{class:'btn ghost',onclick:home},'ホームへ')))];
+  if(Q.wrong.length){ const ul=h('ul',{class:'wlist'});
+    Q.wrong.forEach(id=>{const b=D.blanks[id],t=TEST[b.t]; ul.append(h('li',{},h('div',{},(t.orig.abbr&&t.orig.abbr!=='―'?t.orig.abbr:t.orig.name)+'：'+b.m.split('＝')[0].slice(0,0)+DOM[t.dom].name),h('div',{class:'a'},'正答：'+b.a)));});
+    nodes.push(h('h2',{class:'sec'},'間違えた空欄'),ul); }
+  mount(...nodes);
+}
+
+/* ---------- 原表 ---------- */
+function refCards(domId){
+  const out=[];
+  D.tests.filter(t=>!domId||t.dom===domId).forEach(t=>{
+    const d=DOM[t.dom]; const chips=flagChip(t);
+    out.push(h('div',{class:'tcard',style:'--c:'+d.color},
+      h('div',{class:'hd'},t.orig.name,t.orig.abbr&&t.orig.abbr!=='―'?h('span',{class:'ab'},t.orig.abbr):null,h('span',{class:'kub'},d.name+(t.kubun?'／'+t.kubun:''))),
+      h('div',{class:'bd'},t.orig.body),chips?h('div',{class:'chips',style:'margin-top:8px'},chips):null));
+  });
+  return out;
+}
+function refView(domId){ mount(h('div',{class:'nav'},h('button',{class:'back',onclick:home},'← ホーム'),h('span',{class:'ttl'},'原表（答え入り）')),...refCards(domId)); }
+
+/* ---------- 間違い探し ---------- */
+let SP=null;
+function spotMenu(){
+  const sets=[['past','過去問再現（17か所）','定期試験 問題1の表を再現。誤りは17か所'],['pred','予想問題（17か所）','過去問と同じ誤りの型で別の箇所に誤りを入れた表'],['rand','ランダム（12か所）','過去問＋予想の誤りからランダムに選んで1つの表にする']];
+  const nodes=[h('div',{class:'nav'},h('button',{class:'back',onclick:home},'← ホーム'),h('span',{class:'ttl'},'間違い探し（表）')),
+    h('p',{class:'hint'},'誤りだと思う欄をタップ →「ここは誤り」→ 訂正を5択で選びます。誤りでない欄を選ぶと「誤指摘」になります。')];
+  const g=h('div',{class:'more',style:'grid-template-columns:1fr'});
+  sets.forEach(([k,n,s])=>g.append(h('button',{class:'cat',onclick:()=>startSpot(k)},h('span',{class:'nm'},n),h('span',{class:'sb'},s))));
+  nodes.push(g);
+  mount(...nodes);
+}
+function startSpot(kind){
+  let ids;
+  const all=Object.values(D.errors);
+  if(kind==='past') ids=all.filter(e=>e.set==='past').map(e=>e.id);
+  else if(kind==='pred') ids=all.filter(e=>e.set==='pred').map(e=>e.id);
+  else { const used=new Set(); ids=[]; shuffle(all).forEach(e=>{ if(ids.length<12&&!used.has(e.n)){used.add(e.n);ids.push(e.id);} }); }
+  SP={kind,ids,byCell:{},state:{},fa:new Set(),done:false};
+  ids.forEach(i=>SP.byCell[D.errors[i].n]=i);
+  renderSpot();
+}
+function cellText(n,orig){ const id=SP.byCell[n]; return id?D.errors[id].mut:orig; }
+function renderSpot(){
+  const found=Object.keys(SP.state).length, okc=Object.values(SP.state).filter(v=>v==='ok').length;
+  const title={past:'過去問再現',pred:'予想問題',rand:'ランダム'}[SP.kind];
+  const nodes=[h('div',{class:'nav'},h('button',{class:'back',onclick:()=>{if(SP.done||confirm('中断してメニューに戻りますか？'))spotMenu();}},'← 戻る'),h('span',{class:'ttl'},'間違い探し｜'+title)),
+    h('div',{class:'sum'},h('span',{},'誤り：',h('b',{},SP.ids.length+'か所')),h('span',{},'発見：',h('b',{},found)),h('span',{},'訂正正解：',h('b',{},okc)),h('span',{},'誤指摘：',h('b',{},SP.fa.size)))];
+  if(!SP.done) nodes.push(h('div',{class:'tools'},h('button',{class:'btn small',onclick:()=>{if(confirm('答え合わせをして終了しますか？未発見の誤りが表示されます。')){finishSpot();}}},'答え合わせ（終了）')));
+  else nodes.push(spotResult());
+  let lastDom=null;
+  D.rows.forEach(r=>{
+    const t=TEST[r.t];
+    if(t.dom!==lastDom){ lastDom=t.dom; const dc=r.c.dom; nodes.push(h('div',{class:'dom'},dc?cellBtn(dc,true):DOM[t.dom].name)); }
+    const kids=[];
+    if(r.c.kub) kids.push(cellBtn(r.c.kub));
+    if(r.c.name) kids.push(cellBtn(r.c.name)); else kids.push(h('span',{class:'hd'},t.orig.name));
+    if(r.c.abbr) kids.push(cellBtn(r.c.abbr)); else if(t.orig.abbr==='―') kids.push(h('span',{class:'kub'},'―'));
+    if(r.c.body) kids.push(cellBtn(r.c.body,false,true)); else kids.push(h('div',{class:'kub'},t.ref||''));
+    nodes.push(h('div',{class:'trow'},kids));
+  });
+  mount(...nodes);
+}
+function cellBtn(c,heading,body){
+  const st=SP.state[c.n]; const isErr=!!SP.byCell[c.n]; const fa=SP.fa.has(c.n);
+  let cls='cellb'+(body?' body':'');
+  if(st==='ok') cls+=' ok'; else if(st==='ng') cls+=' half'; else if(fa) cls+=' fa'; else if(SP.done&&isErr) cls+=' miss';
+  const txt=cellText(c.n,c.t);
+  const el=h('button',{class:cls,onclick:()=>spotTap(c)},h('span',{class:'nb'},'('+c.n+')'),h('span',{},txt));
+  if((st||SP.done)&&isErr&&(st||SP.done)){ const e=D.errors[SP.byCell[c.n]]; if(st||SP.done){ const w=h('span',{style:'display:flex;flex-direction:column'},h('span',{},txt),h('span',{class:'fix'},'→ 正：'+e.ro[0]+(st==='ng'?'（訂正ミス）':''))); el.replaceChildren(h('span',{class:'nb'},'('+c.n+')'),w); } }
+  return el;
+}
+function spotTap(c){
+  const id=SP.byCell[c.n], st=SP.state[c.n], txt=cellText(c.n,c.t);
+  const q=h('div',{class:'quote'},'（'+c.n+'）'+txt);
+  if(SP.done||st||SP.fa.has(c.n)){
+    const e=id&&D.errors[id];
+    openSheet(h('div',{class:'sh'},h('span',{},'（'+c.n+'）の欄'),h('button',{class:'shx',onclick:closeSheet},'閉じる')),q,
+      e?h('div',{class:'exp'},h('div',{},'誤り：「'+e.wrong+'」→ 正しくは「'+e.ro[0]+'」'),h('div',{class:'small'},'型：'+e.type),h('div',{class:'small'},e.note)):h('div',{class:'exp'},'この欄に誤りはありません。'));
+    return;
+  }
+  openSheet(h('div',{class:'sh'},h('span',{},'この欄を判定'),h('button',{class:'shx',onclick:closeSheet},'閉じる')),q,
+    h('div',{class:'act'},h('button',{class:'btn',onclick:()=>judge(c)},'ここは誤り'),h('button',{class:'btn ghost',onclick:closeSheet},'やめる')));
+}
+function judge(c){
+  const id=SP.byCell[c.n];
+  if(!id){ SP.fa.add(c.n); renderSpot(); openSheet(h('div',{class:'sh'},h('span',{},'誤指摘'),h('button',{class:'shx',onclick:closeSheet},'閉じる')),h('div',{class:'res ng'},'この欄は誤りではありません（誤指摘）'),h('div',{class:'exp'},'表のこの欄は配布表どおりで正しい記載です。')); return; }
+  const e=D.errors[id]; let done=false; const msg=h('div',{}); const opts=h('div',{class:'opts'}); const rows=[];
+  shuffle(e.ro).forEach((o,i)=>{
+    const btn=h('button',{class:'opt',onclick:()=>{ if(done) return; done=true; const right=o===e.ro[0];
+      rows.forEach(r=>{const b=r.querySelector('.opt'); b.disabled=true; if(b.querySelector('.t').textContent===e.ro[0]) b.classList.add('ok');}); if(!right) btn.classList.add('ng');
+      SP.state[c.n]=right?'ok':'ng'; S.err[id]=right?'o':'x'; save();
+      msg.append(h('div',{class:'res '+(right?'ok':'ng')},right?'正解：誤りを発見し、正しく訂正できました':'誤りは見つけましたが、訂正がちがいます'),
+        h('div',{class:'exp'},h('div',{},'誤り：「'+e.wrong+'」→ 正しくは「'+e.ro[0]+'」'),h('div',{class:'small'},'型：'+e.type),h('div',{class:'small'},e.note)),
+        h('div',{class:'act'},h('button',{class:'btn',onclick:()=>{closeSheet();renderSpot();}},'表に戻る')));
+    }},h('span',{class:'n'},NUM[i]),h('span',{class:'t'},o));
+    const row=h('div',{class:'orow'},btn); rows.push(row); opts.append(row);
+  });
+  openSheet(h('div',{class:'sh'},h('span',{},'（'+c.n+'）正しい記載はどれか'),h('span',{class:'prog'},e.col==='body'?'概要':e.col==='name'?'検査名':e.col==='abbr'?'略字':'欄')),h('div',{class:'quote'},'誤っている記載：「'+e.wrong+'」'),opts,msg);
+}
+function finishSpot(){
+  SP.done=true; closeSheet();
+  SP.ids.forEach(i=>{ const e=D.errors[i]; if(!SP.state[e.n]){ S.err[i]='x'; } }); save();
+  renderSpot();
+}
+function spotResult(){
+  const miss=SP.ids.filter(i=>!SP.state[D.errors[i].n]).map(i=>D.errors[i]);
+  const ok=Object.values(SP.state).filter(v=>v==='ok').length;
+  const box=h('div',{class:'card'},h('div',{},SP.ids.length+'か所中'),h('div',{class:'score'},'訂正正解 '+ok+'か所'),
+    h('div',{class:'sum'},h('span',{},'発見：',h('b',{},Object.keys(SP.state).length)),h('span',{},'見落とし：',h('b',{},miss.length)),h('span',{},'誤指摘：',h('b',{},SP.fa.size))));
+  if(miss.length){ const ul=h('ul',{class:'wlist'}); miss.forEach(e=>ul.append(h('li',{},h('div',{},'（'+e.n+'）「'+e.wrong+'」→「'+e.ro[0]+'」'),h('div',{class:'small'},e.type+'｜'+e.note),e.prev?h('div',{class:'a'},'★前回の試験でも見落とした箇所'):null))); box.append(h('h3',{class:'sec'},'見落とした誤り'),ul); }
+  if(SP.kind==='past') box.append(h('p',{class:'hint'},'前回の答案では、(74)「VCI」を誤りと指摘しましたが、FSIQ・VCI・PRI・WMI・PSIは正しい記載でした（誤指摘）。'));
+  box.append(h('div',{class:'act'},h('button',{class:'btn',onclick:()=>startSpot(SP.kind)},'もう一度'),h('button',{class:'btn ghost',onclick:spotMenu},'メニューへ')));
+  return box;
+}
+
+/* ---------- ROC計算 ---------- */
+const FIXED=[
+ {t:'A',src:'過去問2-1',n1:100,a:98,n0:100,b:40},{t:'A',src:'過去問2-2',n1:480,a:384,n0:720,b:396},
+ {t:'B',src:'過去問2-3',N:1000,s:.5,pos:59,tp:50},{t:'A',src:'類題①',n1:250,a:200,n0:750,b:225},
+ {t:'A',src:'類題②',n1:300,a:240,n0:700,b:280},{t:'B',src:'類題③',N:1000,s:.75,pos:54,tp:45},{t:'B',src:'類題④',N:400,s:.6,pos:50,tp:36}];
+function okRound(v){ const x=v*100; return Math.abs((x-Math.floor(x))-0.5)>0.04; }
+function genA(){ for(;;){ const n1=[100,150,200,250,300,400,480][Math.random()*7|0], s=[.6,.7,.75,.8,.85,.9,.95][Math.random()*7|0];
+  if(Math.abs(n1*s-Math.round(n1*s))>1e-9) continue; const a=Math.round(n1*s); const n0=[100,120,150,200,250,300,500,600,720,750,800][Math.random()*11|0];
+  const b=Math.round(n0*(0.05+Math.random()*0.55)); if(okRound(a/n1)&&okRound((n0-b)/n0)) return {t:'A',src:'ランダム',n1,a,n0,b}; } }
+function genB(){ for(;;){ const N=[400,500,1000][Math.random()*3|0], Dn=[40,60,80,100,120,200][Math.random()*6|0], s=[.5,.6,.75,.8][Math.random()*4|0];
+  if(Math.abs(Dn*s-Math.round(Dn*s))>1e-9) continue; const tp=Math.round(Dn*s), f=4+(Math.random()*17|0), pos=tp+f; if(okRound((N-Dn-f)/(N-Dn))) return {t:'B',src:'ランダム',N,s,pos,tp}; } }
+function rocMenu(){
+  const g=h('div',{class:'more',style:'grid-template-columns:1fr'},
+    h('button',{class:'cat',onclick:()=>startRoc(FIXED.slice(),'過去問・類題（7問）')},h('span',{class:'nm'},'過去問・類題（7問）'),h('span',{class:'sb'},'定期試験 問題2と、同じ型の類題')),
+    h('button',{class:'cat',onclick:()=>startRoc(Array.from({length:10},(_,i)=>i%2?genB():genA()),'ランダム10問')},h('span',{class:'nm'},'ランダム10問'),h('span',{class:'sb'},'型A（人数から求める）と型B（逆算）を交互に出題')),
+    h('button',{class:'cat',onclick:rocHelp},h('span',{class:'nm'},'解き方のまとめ'),h('span',{class:'sb'},'式・2×2表・逆算型の手順')));
+  mount(h('div',{class:'nav'},h('button',{class:'back',onclick:home},'← ホーム'),h('span',{class:'ttl'},'ROC計算（感度・特異度）')),g);
+}
+function rocHelp(){
+  mount(h('div',{class:'nav'},h('button',{class:'back',onclick:rocMenu},'← 戻る'),h('span',{class:'ttl'},'解き方のまとめ')),
+    h('div',{class:'card'},
+      h('table',{class:'t2'},h('tr',{},h('th',{},''),h('th',{},'障害あり'),h('th',{},'障害なし')),h('tr',{},h('th',{},'検査陽性'),h('td',{},'a 真陽性'),h('td',{},'b 偽陽性')),h('tr',{},h('th',{},'検査陰性'),h('td',{},'c 偽陰性'),h('td',{},'d 真陰性'))),
+      h('p',{},'感度＝a／(a＋c)（障害あり の縦列）'),h('p',{},'特異度＝d／(b＋d)（障害なし の縦列）'),
+      h('p',{class:'small'},'ROC曲線：縦軸＝感度、横軸＝偽陽性率（1－特異度）。左上隅に最も近い点が最適なカットオフ候補。基準を緩めると感度↑・特異度↓（トレードオフ）。スクリーニングは高感度、確定診断は高特異度を重視。'),
+      h('h3',{class:'sec'},'逆算型（過去問2-3の型）'),
+      h('ol',{class:'steps'},h('li',{},'障害あり人数＝（陽性のうち障害ありの人数）÷ 感度'),h('li',{},'障害なし人数＝総人数 － 障害あり人数'),h('li',{},'偽陽性数＝検査陽性数 － 陽性のうち障害ありの人数'),h('li',{},'真陰性数＝障害なし人数 － 偽陽性数'),h('li',{},'特異度＝真陰性数 ÷ 障害なし人数'))));
+}
+let R=null;
+function startRoc(list,title){ R={list,title,i:0,ok:0,hist:[]}; renderRoc(); }
+function f2(v){ return (Math.round(v*100)/100).toFixed(2); }
+function renderRoc(){
+  const p=R.list[R.i]; let q, fields=[], ans=[], steps;
+  if(p.t==='A'){
+    const c=p.n1-p.a,d=p.n0-p.b;
+    q='ある検査を実施した。障害を有する'+p.n1+'人のうち'+p.a+'人、障害のない'+p.n0+'人のうち'+p.b+'人が、それぞれ検査陽性と判定された。感度と特異度を求めよ。（小数第2位まで）';
+    fields=[['感度'],['特異度']]; ans=[p.a/p.n1,d/p.n0];
+    steps=['真陽性a＝'+p.a+'、偽陰性c＝'+p.n1+'－'+p.a+'＝'+c,'偽陽性b＝'+p.b+'、真陰性d＝'+p.n0+'－'+p.b+'＝'+d,'感度＝'+p.a+'／'+p.n1+'＝'+f2(ans[0]),'特異度＝'+d+'／'+p.n0+'＝'+f2(ans[1])];
+  } else {
+    const Dn=Math.round(p.tp/p.s), H=p.N-Dn, fp=p.pos-p.tp, tn=H-fp;
+    q=p.N+'人の、ある障害が疑われる集団を、感度'+Math.round(p.s*100)+'%の検査でスクリーニングしたところ、'+p.pos+'人が検査陽性であった。この'+p.pos+'人に精密検査をしたところ、'+p.tp+'人がその障害を有していた。特異度（小数第2位まで）と、見逃された人数を求めよ。';
+    fields=[['特異度'],['見逃された人数（整数）']]; ans=[tn/H,Dn-p.tp];
+    steps=['障害あり＝'+p.tp+'÷'+p.s+'＝'+Dn+'人','障害なし＝'+p.N+'－'+Dn+'＝'+H+'人','偽陽性＝'+p.pos+'－'+p.tp+'＝'+fp+'人','真陰性＝'+H+'－'+fp+'＝'+tn+'人','特異度＝'+tn+'／'+H+'＝'+f2(ans[0]),'見逃し（偽陰性）＝'+Dn+'－'+p.tp+'＝'+(Dn-p.tp)+'人'];
+  }
+  const inputs=fields.map(([l])=>h('input',{type:'text',inputmode:'decimal',autocomplete:'off','aria-label':l}));
+  const resBox=h('div',{}); const act=h('div',{class:'act'}); let done=false;
+  const check=h('button',{class:'btn',onclick:()=>{ if(done) return;
+    const vals=inputs.map(i=>parseFloat(i.value.replace(/[０-９．]/g,ch=>ch==='．'?'.':String.fromCharCode(ch.charCodeAt(0)-65248)).replace(/,/g,'.')));
+    if(vals.some(v=>isNaN(v))){ resBox.replaceChildren(h('div',{class:'res ng'},'すべての欄に数値を入力してください')); return; }
+    done=true; const marks=vals.map((v,k)=>k===1&&p.t==='B'?Math.abs(v-ans[k])<1e-9:Math.abs(Math.round(v*100)/100-Math.round(ans[k]*100)/100)<1e-9);
+    const all=marks.every(Boolean); if(all) R.ok++;
+    S.roc[R.title+'|'+R.i+'|'+p.src]=all?'o':'x'; save();
+    resBox.replaceChildren(h('div',{class:'res '+(all?'ok':'ng')},(all?'正解　':'不正解　')+fields.map((f,k)=>f[0]+'：'+(marks[k]?'○':'×')+'（正答 '+(k===1&&p.t==='B'?ans[k]:f2(ans[k]))+'）').join('　')),
+      h('div',{class:'exp'},h('ol',{class:'steps'},steps.map(s=>h('li',{},s)))));
+    act.replaceChildren(h('button',{class:'btn',onclick:()=>{R.i++; if(R.i<R.list.length) renderRoc(); else rocResult();}},R.i+1<R.list.length?'次の問題へ':'結果を見る'));
+  }},'答え合わせ');
+  act.append(check);
+  mount(h('div',{class:'nav'},h('button',{class:'back',onclick:()=>{if(R.i===0||confirm('中断しますか？'))rocMenu();}},'← 戻る'),h('span',{class:'ttl'},R.title),h('span',{class:'prog'},(R.i+1)+' / '+R.list.length)),
+    h('div',{class:'card'},h('div',{class:'chips'},h('span',{class:'chip'},p.src),h('span',{class:'chip'},p.t==='A'?'型A：人数から求める':'型B：逆算')),h('div',{class:'qtext'},q),
+      h('div',{class:'inp'},fields.map(([l],k)=>h('label',{},l,inputs[k]))),act,resBox));
+}
+function rocResult(){
+  mount(h('div',{class:'nav'},h('span',{class:'ttl'},R.title+' の結果')),h('div',{class:'card'},h('div',{},R.list.length+'問中'),h('div',{class:'score'},R.ok+'問正解'),
+    h('div',{class:'act'},h('button',{class:'btn',onclick:rocMenu},'ROC計算メニューへ'),h('button',{class:'btn ghost',onclick:home},'ホームへ'))));
+}
+home();
+</script>
+</body>
+</html>
