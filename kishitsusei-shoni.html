@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>器質性構音障害（小児）試験対策</title>
+<style>
+:root{
+  --bg:#f2f5f4; --card:#ffffff; --ink:#1b2a29; --sub:#5b6b69; --line:#d9e1df;
+  --pri:#1f6f6b; --pri-ink:#ffffff; --star:#b9770e; --ok:#23703f; --ok-bg:#e4f3e9;
+  --ng:#a8342d; --ng-bg:#fbe9e7; --note:#8a5a00; --note-bg:#fff3d6; --blank:#d7ece9;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#121a19; --card:#1a2524; --ink:#e6efed; --sub:#9bb0ac; --line:#2e3e3c;
+    --pri:#4fb3ac; --pri-ink:#0b1514; --star:#e0a443; --ok:#6fd199; --ok-bg:#183326;
+    --ng:#ff8f86; --ng-bg:#3a1f1c; --note:#f0c36b; --note-bg:#33280f; --blank:#244744;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic","Noto Sans JP",sans-serif;
+  line-height:1.7;font-size:16px;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#app{max-width:720px;margin:0 auto;padding:16px 14px 56px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+ruby rt{font-size:.55em;color:var(--sub)}
+h1{font-size:1.45rem;margin:0;line-height:1.35}
+.lead{margin:.2rem 0 0;color:var(--sub);font-size:.9rem}
+.sec{font-size:1.05rem;margin:26px 0 10px}
+.top{padding:6px 2px 4px}
+
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.cats{grid-template-columns:1fr}}
+.cat{position:relative;text-align:left;background:var(--card);border:1px solid var(--line);
+  border-left:8px solid var(--c);border-radius:12px;padding:14px 14px 12px;min-height:128px;display:flex;flex-direction:column}
+.cat:hover{border-color:var(--c)}
+.cat .nm{font-size:1.15rem;font-weight:700;line-height:1.35}
+.cat .sb{font-size:.8rem;color:var(--sub);margin-top:4px;flex:1}
+.cat .ct{font-size:.85rem;margin-top:8px;display:flex;justify-content:space-between}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:6px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--c,var(--pri))}
+
+.modes{display:flex;flex-wrap:wrap;gap:8px}
+.mode{flex:1 1 auto;min-width:110px;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.92rem}
+.mode b{color:var(--star)}
+.mode[disabled]{opacity:.4;cursor:default}
+.foot{margin-top:30px;text-align:center}
+.link{background:none;border:none;color:var(--sub);text-decoration:underline;font-size:.85rem}
+
+.nav{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.back{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 12px}
+.ttl{font-weight:700;flex:1;font-size:.95rem}
+.prog{font-size:.85rem;color:var(--sub);white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chip{font-size:.75rem;border:1px solid var(--line);border-radius:999px;padding:1px 10px;color:var(--sub)}
+.chip.star{border-color:var(--star);color:var(--star);font-weight:700}
+.chip.add{border-color:var(--pri);color:var(--pri)}
+.qtext{font-size:1.02rem;font-weight:600;margin:4px 0 12px}
+.btn{padding:9px 16px;border-radius:10px;border:1.5px solid var(--pri);background:var(--pri);color:var(--pri-ink);font-weight:700}
+.btn.ghost{background:transparent;color:var(--pri)}
+.btn.small{padding:7px 14px;font-size:.88rem}
+.flag{display:inline-block;margin-top:8px;padding:2px 10px;border-radius:6px;background:var(--note-bg);color:var(--note);font-size:.8rem}
+
+.ans{margin-top:12px;padding:12px 14px;background:var(--blank);border-radius:10px;font-size:.95rem;white-space:pre-wrap}
+.kws{margin-top:10px}
+.kws .lb{font-size:.8rem;color:var(--sub);margin-bottom:4px}
+.kws .kw{display:inline-block;margin:0 6px 6px 0;padding:1px 10px;border:1px solid var(--pri);border-radius:6px;font-size:.85rem;color:var(--pri)}
+.exp{margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:.88rem;color:var(--sub)}
+.self{display:flex;gap:8px;margin-top:12px}
+.self button{flex:1;padding:8px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);font-weight:700}
+.self button.on.o{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.self button.on.t{background:var(--note-bg);border-color:var(--star);color:var(--note)}
+.self button.on.x{background:var(--ng-bg);border-color:var(--ng);color:var(--ng)}
+.tools{display:flex;gap:8px;margin-bottom:12px}
+.done{font-size:.8rem;margin-left:6px}
+@media (prefers-reduced-motion:no-preference){.bar>i{transition:width .3s}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const D = {"groups": [{"id": "g1", "name": "① 定義・原因疾患・分類", "sub": "器質性構音障害の定義、原因疾患、舌小帯短縮症、口唇口蓋裂の発生と分類", "color": "#1f6f6b"}, {"id": "g2", "name": "② 口蓋裂に伴う問題", "sub": "共鳴・栄養・言語発達、多職種連携、異常構音（声門破裂音・口蓋化・側音化など）", "color": "#2f6fa3"}, {"id": "g3", "name": "③ 評価・検査・補綴", "sub": "パッサーバン隆起、鼻咽腔閉鎖機能の検査機器、口蓋裂言語検査、スピーチエイド", "color": "#9a5a1a"}, {"id": "g4", "name": "④ 治療・訓練・支援", "sub": "外科的治療、補綴的治療、鼻咽腔閉鎖機能訓練、発達段階ごとの支援、構音訓練", "color": "#7a4a8c"}], "questions": [{"id": "q01", "g": "g1", "no": "①-1", "unit": "定義・原因疾患", "q": "<ruby>器質性<rt>きしつせい</rt></ruby><ruby>構音障害<rt>こうおんしょうがい</rt></ruby>の<ruby>定義<rt>ていぎ</rt></ruby>を<ruby>説明<rt>せつめい</rt></ruby>せよ。", "a": "構音器官の形態の異常が原因と考えられるものをいう。形態や運動機能の障害がある。(別解:構音器官の形態や機能の異常に起因する構音障害)", "kw": ["構音器官", "形態の異常", "形態や運動機能の障害", "起因する構音障害"], "exp": "教科書の文言と、スライド4の文言(2024年過去問の答案も後者で○)のどちらでも書ける。構音障害の定義は「言語音を産出するための運動機能が発達年齢相応に獲得されていない状態、または獲得後に正常に機能していない状態」(教科書)。", "past": "2024年過去問 問1(3点)", "star": true, "add": false, "flag": ""}, {"id": "q02", "g": "g1", "no": "①-2", "unit": "定義・原因疾患", "q": "<ruby>器質性<rt>きしつせい</rt></ruby><ruby>構音障害<rt>こうおんしょうがい</rt></ruby>は、<ruby>言語音<rt>げんごおん</rt></ruby><ruby>産出<rt>さんしゅつ</rt></ruby>プロセスでいうとどの<ruby>段階<rt>だんかい</rt></ruby>が<ruby>障害<rt>しょうがい</rt></ruby>されているのか<ruby>説明<rt>せつめい</rt></ruby>せよ。", "a": "発語の実行の段階が障害されている。発語運動のプランニング・プログラミングは保たれているが、構音器官の形態や機能の異常により、プログラムどおりに実行できない。", "kw": ["発語の実行", "プランニング・プログラミングは保たれる", "形態や機能の異常"], "exp": "小児の発語障害モデル(符号化 → プランニング → プログラミング → 発語の実行)で、器質性は「実行」。プランニング・プログラミングの障害は発語失行(発達性発語失行=小児版発語失行)。", "past": "", "star": false, "add": false, "flag": ""}, {"id": "q03", "g": "g1", "no": "①-3", "unit": "定義・原因疾患", "q": "<ruby>原因疾患<rt>げんいんしっかん</rt></ruby>について、<ruby>後天性<rt>こうてんせい</rt></ruby>のものを3つ、<ruby>先天性<rt>せんてんせい</rt></ruby>のものを8つそれぞれ<ruby>答<rt>こた</rt></ruby>えよ。", "a": "【後天性(3)】口腔・中咽頭がん/外傷性/手術による後遺症\n【先天性(8)】口唇裂/口蓋裂/舌小帯短縮症/先天性鼻咽腔閉鎖機能不全/小舌症/巨舌症/下顎前突症/瘻孔", "kw": ["後天性3つ(口腔・中咽頭がん、外傷性、手術による後遺症)", "先天性8つ(口唇裂、口蓋裂、舌小帯短縮症、先天性鼻咽腔閉鎖機能不全、小舌症、巨舌症、下顎前突症、瘻孔)"], "exp": "完答形式。1つでも抜けると減点のおそれ。先天性鼻咽腔閉鎖機能不全はCVPI(Congenital Velopharyngeal Incompetence)。覚え方:裂(唇・蓋)→ 舌(小帯・小・巨)→ 咬合 → 鼻咽腔・瘻孔。", "past": "2024年過去問 問2(完答5点)", "star": true, "add": false, "flag": ""}, {"id": "q04", "g": "g1", "no": "①-4", "unit": "舌小帯短縮症", "q": "<ruby>舌小帯短縮症<rt>ぜつしょうたいたんしゅくしょう</rt></ruby>を<ruby>視診<rt>ししん</rt></ruby>にて<ruby>評価<rt>ひょうか</rt></ruby>する<ruby>際<rt>さい</rt></ruby>の<ruby>評価項目<rt>ひょうかこうもく</rt></ruby>と<ruby>症状<rt>しょうじょう</rt></ruby>を<ruby>述<rt>の</rt></ruby>べよ。", "a": "【評価項目(視診)】舌小帯の長さ(短さ)/舌先の形(挺舌時のハート型)/舌先の挙上(最大開口時に舌先が上の歯茎につくか、挙上限)/可動域・随意運動(挺舌時に下唇を越えられるか、左右の口角を舌尖で接することができるか)\n【症状】舌先の挙上困難、ハート型の舌/最も障害されるのは /r/(ラ行)の産出(/d/に置換)/軽度の場合は構音への影響は低い/重度の場合は摂食動作にも影響する(食塊形成が不十分、丸飲み込み)", "kw": ["舌小帯の長さ", "可動域(舌先の挙上)", "ハート型", "/r/の障害", "軽度は影響が少ない", "重度は摂食動作に影響"], "exp": "2024年過去問では「長さ」「可動域」に○。先生の朱書き:摂乳(摂食)障害、舌の運動機能障害による。教科書p195:重症度は最大開口時の舌尖の挙上限で3段階(軽度:最大開口域の1/2以上/中等度:咬合平面以上で1/2以下/重度:咬合平面まで挙上できない)。", "past": "2024年過去問 問3(4点)", "star": true, "add": false, "flag": ""}, {"id": "q05", "g": "g1", "no": "①-5", "unit": "口唇口蓋裂の発生・分類", "q": "<ruby>口唇口蓋裂児<rt>こうしんこうがいれつじ</rt></ruby>の<ruby>発生機序<rt>はっせいきじょ</rt></ruby>を<ruby>説明<rt>せつめい</rt></ruby>せよ。", "a": "胎生4〜12週の間に、口唇や口蓋の組織(突起)が左右から中央に向かって伸びて融合する。この融合がうまくいかなかった状態(融合不全)が口唇口蓋裂である。背景には遺伝、胎内環境がかかわる。", "kw": ["胎生4〜12週", "左右から中央へ伸びて融合", "融合不全", "遺伝・胎内環境"], "exp": "2024年過去問の朱書き:口唇裂=上顎突起と内側鼻突起、口蓋裂=左右の口蓋突起、顎裂=一次口蓋と口蓋突起の融合不全。週数は授業(スライド)どおり4〜12週で書く(2024年の朱書きには「4〜9週」と読める箇所がある)。発生頻度は日本人で約500人に1人。", "past": "2024年過去問 問4(4点)", "star": true, "add": false, "flag": ""}, {"id": "q06", "g": "g1", "no": "①-6", "unit": "口唇口蓋裂の発生・分類", "q": "<ruby>口唇口蓋裂<rt>こうしんこうがいれつ</rt></ruby>の<ruby>分類<rt>ぶんるい</rt></ruby>を6つ<ruby>挙<rt>あ</rt></ruby>げよ。（<ruby>日本口蓋裂学会<rt>にほんこうがいれつがっかい</rt></ruby>の<ruby>基準<rt>きじゅん</rt></ruby>に<ruby>基<rt>もと</rt></ruby>づくもの）", "a": "①口唇裂 ②軟口蓋裂 ③硬軟口蓋裂 ④片側口唇口蓋裂 ⑤両側口唇口蓋裂 ⑥粘膜下口蓋裂", "kw": ["口唇裂", "軟口蓋裂", "硬軟口蓋裂", "片側口唇口蓋裂", "両側口唇口蓋裂", "粘膜下口蓋裂"], "exp": "「硬口蓋裂」ではなく「硬軟口蓋裂」。片側は、口唇・歯槽・硬口蓋の前方までは片側の裂で、切歯孔より後方は正中に裂ける。粘膜下口蓋裂は、粘膜は連続し筋層に裂がある(カルナンの三徴候:口蓋垂裂、軟口蓋正中部の透過性、硬口蓋後縁のV字型欠損)※三徴候は一般的な内容。", "past": "", "star": false, "add": false, "flag": ""}, {"id": "q07", "g": "g2", "no": "②-1", "unit": "口蓋裂に伴う問題", "q": "<ruby>口蓋裂児<rt>こうがいれつじ</rt></ruby>が<ruby>共鳴<rt>きょうめい</rt></ruby>の<ruby>異常<rt>いじょう</rt></ruby>を<ruby>伴<rt>ともな</rt></ruby>う<ruby>場合<rt>ばあい</rt></ruby>があるのはなぜか<ruby>説明<rt>せつめい</rt></ruby>せよ。", "a": "口蓋裂児は鼻咽腔閉鎖機能不全を伴うことがあり、発声時に鼻腔と口腔の分離が十分にできず、鼻腔共鳴が過剰になる(開鼻声)ため。原因は、軟口蓋の組織量不足・短縮、口蓋筋の不完全な再建、軟口蓋や咽頭後壁などの発語器官の機能不良。なお、鼻炎・アデノイド肥大・術後の後遺症では、鼻腔共鳴が過少になる閉鼻声もみられ、両方を示すものを混合性鼻声という。", "kw": ["鼻咽腔閉鎖機能不全", "鼻腔と口腔の分離が不十分", "鼻腔共鳴の過剰", "開鼻声"], "exp": "最低限は「鼻咽腔閉鎖不全のため開鼻声になる」(2024年過去問の答案に○)。開鼻声=鼻にかかった柔らかい声質、閉鼻声=鼻をふさいだような詰まった声質。授業で開鼻声と確認済み(小児②スライド4の1つ目の表記は「閉鼻声」に見えるが、内容は開鼻声)。", "past": "2024年過去問 問5(4点)", "star": true, "add": false, "flag": ""}, {"id": "q08", "g": "g2", "no": "②-2", "unit": "口蓋裂に伴う問題", "q": "<ruby>口蓋裂児<rt>こうがいれつじ</rt></ruby>が<ruby>栄養摂取<rt>えいようせっしゅ</rt></ruby>の<ruby>問題<rt>もんだい</rt></ruby>を<ruby>伴<rt>ともな</rt></ruby>うことがあるのはなぜか<ruby>説明<rt>せつめい</rt></ruby>せよ。", "a": "哺乳では、口蓋の裂により口腔内圧を高められず、吸啜力が低下する。摂食では、鼻咽腔閉鎖機能不全により、鼻漏、むせ、口角からのこぼれがみられる。そのため食事に疲れやすく、意欲が低下し、離乳が進みにくい。", "kw": ["口腔内圧を高められない", "吸啜力の低下", "鼻咽腔閉鎖機能不全", "鼻漏・むせ・こぼれ"], "exp": "手書きメモ:長い食事で疲れる、食事に対する意欲低下、離乳が進みにくい。", "past": "", "star": false, "add": false, "flag": ""}, {"id": "q09", "g": "g2", "no": "②-3", "unit": "口蓋裂に伴う問題", "q": "<ruby>口蓋裂児<rt>こうがいれつじ</rt></ruby>が<ruby>言語発達<rt>げんごはったつ</rt></ruby>の<ruby>遅<rt>おく</rt></ruby>れを<ruby>伴<rt>ともな</rt></ruby>うことがあるのはなぜか<ruby>説明<rt>せつめい</rt></ruby>せよ。", "a": "滲出性中耳炎(伝音性難聴)、副鼻腔炎、アデノイド、口蓋扁桃肥大症などの合併症により、聴力障害をきたしやすいため。また、手術のために入退院を繰り返し、適切な言語に触れる機会が少なくなるため。(全員に遅れがみられるわけではなく、1〜2歳にかけて遅れが認められる場合がある。聴覚障害や精神発達の遅れなどが重複しなければ、3歳過ぎには追いつくといわれる)", "kw": ["滲出性中耳炎(伝音性難聴)", "聴力障害", "入退院を繰り返す", "言語に触れる機会が少ない"], "exp": "2024年過去問では、答案の「入退院」だけでは不十分で、先生が聴力障害(滲出性中耳炎など)を加筆していた。両方を書く。手書き:痛み等により発語したくない、構音+言語発達。", "past": "2024年過去問 問6(4点)", "star": true, "add": false, "flag": ""}, {"id": "q10", "g": "g2", "no": "②-4", "unit": "口蓋裂に伴う問題", "q": "<ruby>口蓋裂<rt>こうがいれつ</rt></ruby>の<ruby>治療<rt>ちりょう</rt></ruby>・<ruby>支援<rt>しえん</rt></ruby>には<ruby>多職種<rt>たしょくしゅ</rt></ruby>が<ruby>関<rt>かか</rt></ruby>わる<ruby>必要<rt>ひつよう</rt></ruby>がある。その<ruby>理由<rt>りゆう</rt></ruby>を<ruby>述<rt>の</rt></ruby>べよ。", "a": "口唇口蓋裂は顔面の外表奇形であることから、本人・家族の受ける精神的な負担が大きい。また、治療が長期にわたるため、身体的負担も大きい。そのため、手術を行う口腔外科・形成外科・耳鼻科医、補綴物を提供し矯正を行う歯科医師、構音訓練を行うSTなど、多職種でのチームアプローチが必要となる。", "kw": ["外表奇形", "本人・家族の精神的負担", "治療が長期", "身体的負担", "チームアプローチ", "具体的な職種"], "exp": "2024年過去問では、答案が「長期」「様々な職種」とだけ書いて、先生が職種と役割の具体例を朱書きしていた(読み取れた範囲:手術=口腔外科・耳鼻科医、補綴物=歯科医師、上顎の成長不良の矯正=矯正歯科医、構音訓練=ST)。具体的な職種も書く。", "past": "2024年過去問 問7(4点)", "star": true, "add": false, "flag": ""}, {"id": "q11", "g": "g2", "no": "②-5", "unit": "口蓋裂言語(異常構音)", "q": "<ruby>口蓋裂児<rt>こうがいれつじ</rt></ruby>のスピーチの<ruby>障害<rt>しょうがい</rt></ruby>の中で、<ruby>鼻咽腔閉鎖機能<rt>びいんくうへいさきのう</rt></ruby>と<ruby>構音障害<rt>こうおんしょうがい</rt></ruby>の<ruby>関連<rt>かんれん</rt></ruby>が<ruby>多<rt>おお</rt></ruby>い<ruby>誤<rt>あやま</rt></ruby>り<ruby>方<rt>かた</rt></ruby>と<ruby>少<rt>すく</rt></ruby>ない<ruby>誤<rt>あやま</rt></ruby>り<ruby>方<rt>かた</rt></ruby>をそれぞれすべて<ruby>答<rt>こた</rt></ruby>えよ。", "a": "【関連が大きい(4)】呼気鼻漏出による子音の歪み/声門破裂音/咽頭(喉頭)摩擦音/咽頭(喉頭)破裂音\n【関連が小さい(5)】口蓋化構音/側音化構音/鼻咽腔構音/発達途上にみられる構音の誤り/その他(置換・省略・歪み)", "kw": ["大きい4つ", "小さい5つ(完答)"], "exp": "先生が「覚える!!」(手書き)と強調した表。大きい群は鼻咽腔閉鎖不全に多く、鼻咽腔閉鎖機能検査を行う。小さい群の口蓋化・側音化は口蓋裂術後に多く、訓練期間が長い。手書きの★は、呼気鼻漏出を除く6つ(異常構音)。", "past": "2024年過去問 問8(各5点・完答)", "star": true, "add": false, "flag": ""}, {"id": "q12", "g": "g3", "no": "③-1", "unit": "評価・検査", "q": "パッサーバン<ruby>隆起<rt>りゅうき</rt></ruby>とはどのような<ruby>症状<rt>しょうじょう</rt></ruby>か<ruby>説明<rt>せつめい</rt></ruby>せよ。", "a": "発声時に咽頭壁に水平方向にみられる隆起。鼻咽腔閉鎖機能不全の代償としてあらわれることもある。軟口蓋と咽頭後壁の閉鎖位置のやや低い位置にみられる。", "kw": ["発声時", "咽頭壁", "水平方向の隆起", "鼻咽腔閉鎖機能不全の代償", "やや低い位置"], "exp": "口腔・顔面の評価(咽頭)で、咽頭側壁の動き、咽頭腔の深さとともに観察する。先輩の答案には「上咽頭収縮筋が作る隆起」とあったが判読不明瞭なため、スライドの表現を優先する。", "past": "", "star": false, "add": false, "flag": ""}, {"id": "q13", "g": "g3", "no": "③-2", "unit": "評価・検査", "q": "<ruby>鼻咽腔閉鎖機能<rt>びいんくうへいさきのう</rt></ruby>の<ruby>評価<rt>ひょうか</rt></ruby>において、<ruby>使用<rt>しよう</rt></ruby>される<ruby>機器<rt>きき</rt></ruby>には<ruby>何<rt>なに</rt></ruby>があるかいくつか<ruby>挙<rt>あ</rt></ruby>げよ。", "a": "鼻咽腔ファイバースコープ(内視鏡)、セファログラム(頭部X線規格写真・側面)、ナゾメータ。(口蓋裂言語検査のブローイング検査で使う鼻息鏡も挙げられる)", "kw": ["鼻咽腔ファイバースコープ", "セファログラム", "ナゾメータ", "(鼻息鏡)"], "exp": "授業の「機器による検査」は、鼻咽腔ファイバースコープ・セファログラム・ナゾメータの3つ。問題は「いくつか挙げよ」なので、3つで足りる。鼻息鏡は口蓋裂言語検査(ブローイング検査)で使う道具で、添える場合は「口蓋裂言語検査の鼻息鏡」と書く。", "past": "", "star": false, "add": false, "flag": ""}, {"id": "q14", "g": "g3", "no": "③-3", "unit": "補綴的治療", "q": "バルブ<ruby>型<rt>がた</rt></ruby>スピーチエイドの<ruby>長所<rt>ちょうしょ</rt></ruby>と<ruby>短所<rt>たんしょ</rt></ruby>を<ruby>説明<rt>せつめい</rt></ruby>せよ。", "a": "【長所】咽頭の空間をバルブで埋め、呼気の鼻腔への流出を防いで鼻咽腔閉鎖機能を補助する。手術がいらず、幼くても使える。\n【短所】衛生管理・自己管理が必要、誤飲、嘔吐反射、装着の拒否、成長に伴う作り替えが必要。", "kw": ["長所:手術がいらない・幼くても使える", "短所:衛生管理・自己管理・誤飲・嘔吐反射・成長に伴う作り替え"], "exp": "小児④スライド11の手書き(メリット・デメリット)による。軟口蓋挙上装置(PLP)も、スピーチエイドと同じデメリット(手書き)。", "past": "2024年過去問 問9(補綴的治療法、各2点)", "star": true, "add": false, "flag": ""}, {"id": "q15", "g": "g3", "no": "③-4", "unit": "評価・検査", "q": "<ruby>口蓋裂言語検査<rt>こうがいれつげんごけんさ</rt></ruby>の<ruby>目的<rt>もくてき</rt></ruby>とそこから<ruby>得<rt>え</rt></ruby>られる<ruby>結果<rt>けっか</rt></ruby>は<ruby>何<rt>なに</rt></ruby>か、<ruby>述<rt>の</rt></ruby>べよ。", "a": "【目的】良好な鼻咽腔閉鎖機能を獲得し、正しい構音を習得するための評価。\n【結果】鼻咽腔閉鎖機能の判定(開鼻声・呼気鼻漏出による子音の歪みの聴覚判定とブローイング検査から、良好/ごく軽度不全/軽度不全/不全の4段階)、構音障害のタイプ(異常構音の種類、置換・省略・歪み)、今後の方針(経過観察、訓練、精密検査依頼、医学的処置依頼、終了)。", "kw": ["鼻咽腔閉鎖機能の獲得", "正しい構音の習得", "鼻咽腔閉鎖機能の4段階判定", "構音障害のタイプ", "今後の方針"], "exp": "適応は2歳台〜成人、所要20〜30分、特別な機器を用いずに実施できる。先輩の答案:外科的治療・補綴治療が必要なのか、構音訓練だけでよいのかなど治療方針を決める。", "past": "", "star": false, "add": false, "flag": ""}, {"id": "q16", "g": "g4", "no": "④-1", "unit": "外科的治療", "q": "<ruby>口蓋裂児<rt>こうがいれつじ</rt></ruby>の<ruby>医学的治療<rt>いがくてきちりょう</rt></ruby>の中の<ruby>外科的治療<rt>げかてきちりょう</rt></ruby>として、その<ruby>手術方法<rt>しゅじゅつほうほう</rt></ruby>と<ruby>手術時期<rt>しゅじゅつじき</rt></ruby>を<ruby>述<rt>の</rt></ruby>べよ。", "a": "【口唇裂手術】目的は哺乳手段の確立。時期は生後3か月(または6〜7か月)。\n【口蓋裂手術(口蓋形成術)】目的は鼻咽腔閉鎖機能の修復など。時期は1歳ごろが主で、出生直後から12〜13歳ごろまで様々。そのあと12〜13歳ごろまでの追加の手術として、口蓋2次手術、咽頭弁形成術(4〜6歳)、口唇鼻修正(口唇の手術)がある。\n【顎裂部の骨移植】目的は歯列や咬合の改善、口唇鼻の形態改善など。時期は5〜10歳くらい。\n【顎矯正術】16〜18歳(顎外科手術、外鼻修正術など)。", "kw": ["口唇裂手術(哺乳手段の確立・生後3か月)", "口蓋裂手術(鼻咽腔閉鎖機能の修復・1歳ごろが主)", "追加の手術(口蓋2次手術・咽頭弁形成術・口唇鼻修正)", "顎裂部の骨移植(歯列・咬合の改善・5〜10歳)", "顎矯正術"], "exp": "治療の流れ:出生後に全身検査・哺乳指導 → 3か月ごろ口唇形成術 → 1歳ごろ口蓋形成術 → 4〜6歳 咽頭弁形成術・外鼻修正術 → 9〜10歳 顎裂部骨移植 → 16〜18歳 顎外科手術。授業で確認済み:口蓋形成術は1歳ごろが主で、そのあと12〜13歳ごろまでの追加の手術に、口蓋2次手術・咽頭弁形成術・口唇鼻修正がある(スライド46・52にも口唇鼻修正・口蓋2次手術の記載)。", "past": "", "star": false, "add": false, "flag": ""}, {"id": "q17", "g": "g4", "no": "④-2", "unit": "補綴的治療", "q": "<ruby>補綴的治療法<rt>ほてつてきちりょうほう</rt></ruby>として、その<ruby>名前<rt>なまえ</rt></ruby>と<ruby>目的<rt>もくてき</rt></ruby>をそれぞれ3つずつ<ruby>説明<rt>せつめい</rt></ruby>せよ。", "a": "①バルブ型スピーチエイド:鼻咽腔閉鎖機能の補助\n②軟口蓋挙上装置(PLP:Palatal Lift Prosthesis):鼻咽腔閉鎖機能の補助。軟口蓋の長さは十分だが動きが悪い症例に適応\n③瘻孔閉鎖床:瘻孔をふさぎ、食物の侵入を防ぐ。低年齢の場合や手術を希望しない場合に適応\n(他:ホッツ床(哺乳床)=哺乳の補助、授乳時の口蓋からの乳漏れを防ぐ。術前顎矯正装置としても働く。鼻歯槽矯正装置)", "kw": ["バルブ型スピーチエイド(鼻咽腔閉鎖機能の補助)", "軟口蓋挙上装置(軟口蓋の動きが悪い症例)", "瘻孔閉鎖床(瘻孔をふさぐ)"], "exp": "補綴的治療はスライド10の5つ(バルブ型スピーチエイド、軟口蓋挙上装置、瘻孔閉鎖床、ホッツ床、鼻歯槽矯正装置)。ホッツ床と哺乳床は同じ装置の呼び方として整理している。2024年過去問では、答案の「ホッツ床=哺乳の補助」に丸が付き、先生が「哺乳床」と添え書きしていた(読み取れた範囲)。スライド16は「術前顎矯正装置」なので、ホッツ床を書く場合は両方の目的を書くと安全。", "past": "2024年過去問 問9(各2点)", "star": true, "add": false, "flag": ""}, {"id": "q18", "g": "g4", "no": "④-3", "unit": "鼻咽腔閉鎖機能訓練", "q": "<ruby>鼻咽腔閉鎖機能訓練<rt>びいんくうへいさきのうくんれん</rt></ruby>の<ruby>実施<rt>じっし</rt></ruby>にあたっての<ruby>留意点<rt>りゅういてん</rt></ruby>を<ruby>述<rt>の</rt></ruby>べよ。", "a": "鼻咽腔閉鎖機能訓練には、バイオフィードバック法(鼻孔の下に鼻息鏡を置いて発話させ、呼気鼻漏出の有無を視覚的にフィードバックする)とブローイング法(鼻腔を閉じて長く吹く → 片側の鼻孔を開放して長く吹く → 両側の鼻孔を開放して長く吹く)がある。留意点は、鼻渋面に注意することである(鼻の周りに力が入る代償)。吹く機会を増やす工夫として、風船、ストロー(水)、しゃぼん玉、ヨーグルトを吸う、ティッシュなどを使う。なお、鼻咽腔閉鎖機能訓練はエビデンスが弱いとされる。", "kw": ["バイオフィードバック法", "ブローイング法", "鼻渋面に注意", "吹く機会を増やす工夫"], "exp": "留意点の根拠はスライド20の「注意:鼻渋面」。手書きの内容(鼻周囲の力の入り、吹く機会を増やす工夫、エビデンス弱い)は判読に不確かさがある。", "past": "", "star": false, "add": false, "flag": "※要確認：スライド20の手書き（鼻周囲の力の入り、吹く機会を増やす工夫、エビデンスが弱い）の読み取りに不確かさあり"}, {"id": "q19", "g": "g4", "no": "④-4", "unit": "発達段階ごとの支援", "q": "<ruby>口蓋裂児<rt>こうがいれつじ</rt></ruby>への<ruby>発達段階<rt>はったつだんかい</rt></ruby>ごとの<ruby>支援<rt>しえん</rt></ruby>の中で、STの<ruby>役割<rt>やくわり</rt></ruby>を<ruby>各時期<rt>かくじき</rt></ruby>ごとに<ruby>述<rt>の</rt></ruby>べよ。<br>①<ruby>乳児期<rt>にゅうじき</rt></ruby>　②<ruby>幼児期<rt>ようじき</rt></ruby>　③<ruby>学童期<rt>がくどうき</rt></ruby>　④<ruby>思春期<rt>ししゅんき</rt></ruby>・<ruby>成人期<rt>せいじんき</rt></ruby>", "a": "①乳児期:家族に今後の言語発達の見通しを伝える。「何度でも確認し質問してよい」と伝えて家族の不安を解消する。手術部門・小児科・耳鼻科と連携する。\n②幼児期:手術の適応に合わせた構音の獲得を支援する。鼻咽腔閉鎖機能の評価・訓練、構音訓練(誤り音の自覚 → 適正な構音操作の獲得 → 般化)を行い、耳鼻科・歯科と情報を共有する。\n③学童期:構音の定着・般化を確認し、鼻咽腔閉鎖機能の経過をフォローする(成長とともに悪化する傾向があるため)。音声の異常があれば専門医の診察を勧める。本人への心理的支援(いじめ・自尊心への配慮など)や学校との連携を行う。\n④思春期・成人期:社会的支援の情報提供を行う。最終的に正常なスピーチを獲得し、社会の中で十分にコミュニケーションがとれるよう支援する。", "kw": ["乳児期:言語発達の見通し・家族の不安の解消", "幼児期:手術の適応に合わせた構音の獲得", "学童期:構音の定着・経過のフォロー・心理的支援", "思春期・成人期:社会的支援の情報提供"], "exp": "2024年過去問の先生の評価:乳児期○、幼児期○、学童期「栄養が摂取できているか確認する」は×(朱書き:この時期より乳児期に必要なこと)、思春期・成人期○。学童期以降は、授業のスライドに内容がなく(先生が付け忘れ)、2024年の朱書きと一般的な内容で作成。", "past": "2024年過去問 問10(各4点)", "star": true, "add": false, "flag": "※要確認：学童期以降はスライドになく、2024年の朱書きと一般的な内容で作成"}, {"id": "q20", "g": "g2", "no": "予想1", "unit": "口蓋裂に伴う問題", "q": "<ruby>口蓋裂児<rt>こうがいれつじ</rt></ruby>に<ruby>嗄声<rt>させい</rt></ruby>が<ruby>出現<rt>しゅつげん</rt></ruby>しやすい<ruby>理由<rt>りゆう</rt></ruby>を<ruby>説明<rt>せつめい</rt></ruby>せよ。", "a": "鼻咽腔閉鎖機能不全により呼気が減弱し、それを補うために強く声帯を閉鎖する(硬起性発声)ことが習慣化して、声帯結節 → 気息性嗄声(しゃがれたざらざら声)となる。長期化するなら喉頭の診察が必要。", "kw": ["鼻咽腔閉鎖機能不全", "呼気の減弱", "硬起性発声", "習慣化", "声帯結節", "気息性嗄声"], "exp": "小児②スライド5。", "past": "", "star": false, "add": true, "flag": ""}, {"id": "q21", "g": "g2", "no": "予想2", "unit": "口蓋裂に伴う問題", "q": "<ruby>開鼻声<rt>かいびせい</rt></ruby>・<ruby>閉鼻声<rt>へいびせい</rt></ruby>・<ruby>混合性鼻声<rt>こんごうせいびせい</rt></ruby>の<ruby>違<rt>ちが</rt></ruby>いを<ruby>説明<rt>せつめい</rt></ruby>せよ。", "a": "開鼻声は、鼻咽腔閉鎖機能不全により鼻腔と口腔の分離が不十分で、鼻腔共鳴が過剰になった状態(鼻にかかった柔らかい声質)。閉鼻声は、鼻腔共鳴が過少になった状態(鼻をふさいだような詰まった声質。原因は鼻炎、アデノイド肥大、術後の後遺症など)。混合性鼻声は、両方の要素を示す。", "kw": ["開鼻声=過剰", "閉鼻声=過少", "混合性鼻声=両方"], "exp": "小児②スライド4。", "past": "", "star": false, "add": true, "flag": ""}, {"id": "q22", "g": "g2", "no": "予想3", "unit": "口蓋裂言語(異常構音)", "q": "<ruby>声門破裂音<rt>せいもんはれつおん</rt></ruby>の<ruby>構音操作<rt>こうおんそうさ</rt></ruby>と<ruby>特徴<rt>とくちょう</rt></ruby>を<ruby>述<rt>の</rt></ruby>べよ。", "a": "構音操作:声帯・仮声帯を強く閉鎖して喉頭で破裂音を産出する。誤り音は p, t, k(破裂音)。聴覚印象:母音を強く区切って発声した音に近い。鼻咽腔閉鎖不全例に多く、予後は良好。鼻咽腔閉鎖機能検査を行う。舌の挙上がみられず、頸部に力が入る。二重構音(弱い正常音に異常構音を伴う)に注意。", "kw": ["声帯・仮声帯を強く閉鎖", "喉頭で破裂", "p,t,k", "母音を強く区切った音", "鼻咽腔閉鎖不全例に多い", "予後良好"], "exp": "小児②スライド16。", "past": "", "star": false, "add": true, "flag": ""}, {"id": "q23", "g": "g2", "no": "予想4", "unit": "口蓋裂言語(異常構音)", "q": "<ruby>咽喉頭摩擦音<rt>いんこうとうまさつおん</rt></ruby>・<ruby>破擦音<rt>はさつおん</rt></ruby>と<ruby>咽喉頭破裂音<rt>いんこうとうはれつおん</rt></ruby>について、<ruby>構音操作<rt>こうおんそうさ</rt></ruby>と<ruby>特徴<rt>とくちょう</rt></ruby>を<ruby>述<rt>の</rt></ruby>べよ。", "a": "咽喉頭摩擦音・破擦音:舌根(喉頭蓋)と咽頭壁で音を産出し、喉の奥からしぼり出されるような摩擦音に聞こえる。咽喉頭破裂音:舌根部と咽頭後壁で音(k, g)を産出し、喉の奥で産出される歪んだ[k, g]に聞こえる。どちらも頻度は少なく、鼻咽腔閉鎖不全例に多いので鼻咽腔閉鎖機能検査を行う。舌(奥舌)の挙上がみられず、舌が咽頭後壁に向かって引かれる。", "kw": ["舌根と咽頭壁", "摩擦音・破擦音", "破裂音(k,g)", "舌が咽頭後壁へ引かれる", "頻度は少ない"], "exp": "小児②スライド17・18。", "past": "", "star": false, "add": true, "flag": ""}, {"id": "q24", "g": "g2", "no": "予想5", "unit": "口蓋裂言語(異常構音)", "q": "<ruby>口蓋化構音<rt>こうがいかこうおん</rt></ruby>の<ruby>構音操作<rt>こうおんそうさ</rt></ruby>、<ruby>聴覚印象<rt>ちょうかくいんしょう</rt></ruby>、<ruby>頻度<rt>ひんど</rt></ruby>・<ruby>予後<rt>よご</rt></ruby>を<ruby>述<rt>の</rt></ruby>べよ。", "a": "構音操作:舌の中央部と硬口蓋後端で音を産出する。誤り音は舌先音・歯茎音(t, d, n, s, ts, dz, r)。聴覚印象:摩擦音は[ç]に、破裂音は[k, g]に近い歪み音で、舌が全体に口中でもごもごしている。口蓋裂術後に多く、訓練期間は長い。舌先の挙上がみられず舌全体が丸くなり、舌の巧緻性の問題(舌先で口角や上口唇をなめられない、舌打ちができない)がある。", "kw": ["舌の中央部と硬口蓋後端", "舌先音・歯茎音", "[ç][k,g]に近い", "術後に多い", "訓練期間が長い", "舌全体が丸くなる"], "exp": "小児②スライド19。構音障害の内訳(スライド24)では、口蓋化構音が最も多い(237例)。", "past": "", "star": false, "add": true, "flag": ""}, {"id": "q25", "g": "g2", "no": "予想6", "unit": "口蓋裂言語(異常構音)", "q": "<ruby>側音化構音<rt>そくおんかこうおん</rt></ruby>の<ruby>構音操作<rt>こうおんそうさ</rt></ruby>、<ruby>聴覚印象<rt>ちょうかくいんしょう</rt></ruby>、<ruby>確認方法<rt>かくにんほうほう</rt></ruby>を<ruby>述<rt>の</rt></ruby>べよ。", "a": "構音操作:舌側縁と臼歯付近で音を産出し、呼気は頬側部を通る。誤り音はイ列・拗音。聴覚印象:シはヒに、チはキに、ジ・リ・ニはギに近い歪み音。口蓋裂術後に多く、訓練期間は長い。舌・口角・下顎の偏位がみられる。確認方法:鼻息鏡で呼気の側方流出を観察できる。呼気流出側の頬を押さえると音が出ない。", "kw": ["舌側縁と臼歯付近", "呼気は頬側部", "イ列・拗音", "シ→ヒ・チ→キ", "鼻息鏡", "頬を押さえると音が出ない"], "exp": "小児②スライド20。構音障害の内訳(スライド24)では、口蓋化構音に次いで多い(144例)。", "past": "", "star": false, "add": true, "flag": ""}, {"id": "q26", "g": "g2", "no": "予想7", "unit": "口蓋裂言語(異常構音)", "q": "<ruby>呼気鼻漏出<rt>こきびろうしゅつ</rt></ruby>による<ruby>子音<rt>しいん</rt></ruby>の<ruby>歪<rt>ゆが</rt></ruby>みの<ruby>特徴<rt>とくちょう</rt></ruby>を<ruby>述<rt>の</rt></ruby>べよ。", "a": "鼻咽腔閉鎖機能不全により呼気が鼻腔へ流出し、口腔内圧を高められないため、産出した子音は鼻音化・弱音化する。鼻をつまむと正常音に近づく。", "kw": ["呼気が鼻腔へ流出", "口腔内圧を高められない", "鼻音化・弱音化", "鼻をつまむと正常音に近づく"], "exp": "小児②スライド15。異常構音ではなく、構音点は正しいまま。", "past": "", "star": false, "add": true, "flag": ""}, {"id": "q27", "g": "g2", "no": "予想8", "unit": "口蓋裂言語(異常構音)", "q": "<ruby>鼻咽腔構音<rt>びいんくうこうおん</rt></ruby>の<ruby>構音操作<rt>こうおんそうさ</rt></ruby>と<ruby>特徴<rt>とくちょう</rt></ruby>を<ruby>述<rt>の</rt></ruby>べ、<ruby>呼気鼻漏出<rt>こきびろうしゅつ</rt></ruby>による<ruby>子音<rt>しいん</rt></ruby>の<ruby>歪<rt>ゆが</rt></ruby>みとの<ruby>違<rt>ちが</rt></ruby>いを<ruby>説明<rt>せつめい</rt></ruby>せよ。", "a": "鼻咽腔構音:イ列・ウ列(s, ts, dz)が主な誤り音。舌と口蓋は完全閉鎖して、軟口蓋と咽頭壁で音を産出し、呼気はすべて鼻腔から出る。聴覚印象は、母音は「ン」に、破裂音は「クン」に、摩擦音は鼻音化した摩擦音に近い。機能性構音障害・口蓋裂術後のどちらにもみられ、予後は良好。小下顎症や咽頭腔の狭窄例に多い。口唇は閉鎖している。鼻腔を閉鎖すると音が出ない。\n違い:呼気鼻漏出による歪みは、構音点は口腔内で正しく、鼻をつまむと正常音に近づく。鼻咽腔構音は、構音点が鼻咽腔に移っており、鼻をつまむと音が出ない。", "kw": ["イ列・ウ列", "舌と口蓋は完全閉鎖", "軟口蓋と咽頭壁で産出", "呼気はすべて鼻腔から", "鼻腔を閉鎖すると音が出ない"], "exp": "小児②スライド21。鼻咽腔閉鎖機能不全と誤りやすい。", "past": "", "star": false, "add": true, "flag": ""}, {"id": "q28", "g": "g2", "no": "予想9", "unit": "口蓋裂言語(異常構音)", "q": "<ruby>口蓋裂児<rt>こうがいれつじ</rt></ruby>の<ruby>構音障害<rt>こうおんしょうがい</rt></ruby>で<ruby>多<rt>おお</rt></ruby>い<ruby>誤<rt>あやま</rt></ruby>り<ruby>方<rt>かた</rt></ruby>を、<ruby>多<rt>おお</rt></ruby>い<ruby>順<rt>じゅん</rt></ruby>に3つ<ruby>挙<rt>あ</rt></ruby>げよ。", "a": "①口蓋化構音(237例)②側音化構音(144例)③呼気鼻漏出による子音の歪み(116例)", "kw": ["口蓋化構音", "側音化構音", "呼気鼻漏出による子音の歪み"], "exp": "小児②スライド24(昭和大学形成外科言語室、663例)。手書き:多くてメジャー。表の数値は写真から読み取ったもので、読み違いの可能性がある。", "past": "", "star": false, "add": true, "flag": "※要確認：件数は写真から読み取った数値（読み違いの可能性あり）"}, {"id": "q29", "g": "g3", "no": "予想10", "unit": "評価・検査", "q": "<ruby>口蓋裂言語検査<rt>こうがいれつげんごけんさ</rt></ruby>の<ruby>構成<rt>こうせい</rt></ruby>を<ruby>述<rt>の</rt></ruby>べよ。", "a": "記録用紙①:【1】基本情報(診断名、合併疾患、手術、補綴的発音補助装置・閉鎖床・哺乳床、言語、耳鼻科疾患、歯列・咬合)。記録用紙②:【2】経年的記録(2〜7歳は1年ごと、10〜12歳、15〜18歳)。検査用紙①②:【3】鼻咽腔閉鎖機能検査(1)音声言語の評価 2)ブローイング検査 3)口腔内の評価 4)まとめ)。検査用紙③:【4】構音のまとめ(新版構音検査の結果を表に整理)。", "kw": ["記録用紙①②", "検査用紙①②③", "基本情報", "経年的記録", "鼻咽腔閉鎖機能検査", "構音のまとめ"], "exp": "小児③スライド39〜57。", "past": "", "star": false, "add": true, "flag": ""}, {"id": "q30", "g": "g3", "no": "予想11", "unit": "評価・検査", "q": "<ruby>口蓋裂言語検査<rt>こうがいれつげんごけんさ</rt></ruby>の<ruby>鼻咽腔閉鎖機能検査<rt>びいんくうへいさきのうけんさ</rt></ruby>の<ruby>内容<rt>ないよう</rt></ruby>（<ruby>音声言語<rt>おんせいげんご</rt></ruby>の<ruby>評価<rt>ひょうか</rt></ruby>、ブローイング<ruby>検査<rt>けんさ</rt></ruby>、<ruby>口腔内<rt>こうくうない</rt></ruby>の<ruby>評価<rt>ひょうか</rt></ruby>）を<ruby>述<rt>の</rt></ruby>べよ。", "a": "1)音声言語の評価(聴覚判定):開鼻声は /a/ /i/、短文・会話で4段階。呼気鼻漏出による子音の歪みは /pa(ba)/ /ka/ /sa/、短文・会話で4段階。鼻雑音・鼻渋面の有無。閉鼻声は /ma, na/ の短文・会話。\n2)ブローイング検査:ソフト(コップに水3cm、直径4〜5mmのストロー、深呼吸して静かに長く泡立てる。原則こちら)、ハード(ラッパや吹き戻し。低年齢向け)。鼻息鏡で呼気鼻漏出を判定(−なし、+2cm未満、++2cm以上)。\n3)口腔内の評価:軟口蓋の長さ(安静時)、軟口蓋の動き(/a/発声時の後上方)、咽頭側壁の動き(内方)、瘻孔、補綴物、口蓋扁桃、パッサーバン隆起。\n4)まとめ:4段階判定(良好/ごく軽度不全/軽度不全/不全)。", "kw": ["音声言語の評価", "ブローイング検査(ソフト・ハード)", "口腔内の評価", "4段階判定"], "exp": "小児③スライド47〜56。判定表の細部は写真で読み切れていない。", "past": "", "star": false, "add": true, "flag": "※要確認：判定表の細部は写真で読み切れていない"}, {"id": "q31", "g": "g4", "no": "予想12", "unit": "外科的治療", "q": "<ruby>口蓋裂児<rt>こうがいれつじ</rt></ruby>の<ruby>治療<rt>ちりょう</rt></ruby>の<ruby>流<rt>なが</rt></ruby>れを、<ruby>年齢順<rt>ねんれいじゅん</rt></ruby>に<ruby>述<rt>の</rt></ruby>べよ。", "a": "出生前:保護者カウンセリング/出生後:全身検査・哺乳指導/3か月ごろ:口唇形成術/1歳ごろ:口蓋形成術/1〜6歳:経過観察と鼻咽腔閉鎖機能の評価/4〜6歳:咽頭弁形成術、外鼻修正術、構音訓練など/7〜8歳:簡単な歯科矯正治療/9〜10歳:顎裂部骨移植/11〜15歳:本格的な歯科矯正治療/16〜18歳:顎外科手術、外鼻修正術など", "kw": ["3か月:口唇形成術", "1歳:口蓋形成術", "4〜6歳:咽頭弁形成術・構音訓練", "9〜10歳:顎裂部骨移植", "16〜18歳:顎外科手術"], "exp": "小児④スライド4(小嶋 2016)。", "past": "", "star": false, "add": true, "flag": ""}, {"id": "q32", "g": "g4", "no": "予想13", "unit": "構音訓練", "q": "<ruby>構音訓練<rt>こうおんくんれん</rt></ruby>の<ruby>流<rt>なが</rt></ruby>れと、<ruby>各段階<rt>かくだんかい</rt></ruby>の<ruby>方法<rt>ほうほう</rt></ruby>を<ruby>述<rt>の</rt></ruby>べよ。", "a": "①誤り音の自覚(音韻認識へのアプローチ):語音弁別訓練、音韻分解・抽出訓練、自己音声モニタリング。\n②適正な構音操作の獲得:構音位置づけ法、聴覚刺激法、漸次接近法、鍵となる語を使う方法、ほかの音を変える方法。\n③般化:系統的構音訓練、絵本読み、自由会話(録音・録画で客観視する)。\n系統的構音訓練は、構音操作 → 音 → 音節 → 単語 → 文 → 日常会話への般化と段階を踏んで進める。", "kw": ["誤り音の自覚", "適正な構音操作の獲得", "般化", "語音弁別・音韻分解・抽出・自己音声モニタリング", "系統的構音訓練"], "exp": "小児④スライド21〜31。②の5つの方法の内容は、スライドに説明がない。", "past": "", "star": false, "add": true, "flag": "※要確認：②の5つの方法はスライドに名称のみ（説明は一般的な内容）"}]};
+const KEY = 'kishitsusei-shoni-v1';
+let S = {desc:{}};
+try { S = Object.assign(S, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e) {}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
+
+const app = document.getElementById('app');
+function h(tag, props, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(props || {})) {
+    if (k === 'class') e.className = v;
+    else if (k === 'html') e.innerHTML = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  }
+  for (const c of kids.flat()) { if (c == null) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+function mount(...nodes){ app.replaceChildren(...nodes); window.scrollTo(0,0); }
+function shuffle(a){ a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const mark = q => S.desc[q.id];
+
+function home(){
+  const nodes = [];
+  nodes.push(h('header', {class:'top'},
+    h('h1', {}, '器質性構音障害（小児）'),
+    h('p', {class:'lead'}, '試験対策 ｜ ミニテスト記述問題＋予想問題（' + D.questions.length + '問）')));
+
+  nodes.push(h('h2', {class:'sec'}, '授業回別'));
+  const grid = h('div', {class:'cats'});
+  D.groups.forEach(g => {
+    const qs = D.questions.filter(q => q.g === g.id);
+    const ok = qs.filter(q => mark(q) === 'o').length;
+    grid.append(h('button', {class:'cat', style:'--c:'+g.color, onclick:()=>listView(qs, g.name)},
+      h('span', {class:'nm'}, g.name),
+      h('span', {class:'sb'}, g.sub),
+      h('span', {class:'ct'}, h('span', {}, qs.length + '問'), h('span', {}, '○ ' + ok + ' / ' + qs.length)),
+      h('span', {class:'bar'}, h('i', {style:'width:'+Math.round(ok/qs.length*100)+'%'}))));
+  });
+  nodes.push(grid);
+
+  const stars = D.questions.filter(q => q.star);
+  const review = D.questions.filter(q => mark(q) === 'x' || mark(q) === 't');
+  const unmarked = D.questions.filter(q => !mark(q));
+  nodes.push(h('h2', {class:'sec'}, '出題モード'));
+  nodes.push(h('div', {class:'modes'},
+    h('button', {class:'mode', onclick:()=>listView(D.questions, '全問')}, '全問（' + D.questions.length + '）'),
+    h('button', {class:'mode', onclick:()=>listView(shuffle(D.questions), 'ランダム')}, 'ランダム'),
+    h('button', {class:'mode', onclick:()=>listView(stars, '★過去問(2024)')}, h('b', {}, '★'), '過去問（' + stars.length + '）'),
+    h('button', {class:'mode', disabled: unmarked.length ? null : 'disabled', onclick:()=>listView(unmarked, '未採点')}, '未採点（' + unmarked.length + '）'),
+    h('button', {class:'mode', disabled: review.length ? null : 'disabled', onclick:()=>listView(review, '要復習（△・×）')}, '要復習（' + review.length + '）')));
+
+  nodes.push(h('div', {class:'foot'},
+    h('button', {class:'link', onclick:()=>{ if(confirm('自己採点の記録をすべて消しますか？')){ S={desc:{}}; save(); home(); } }}, '学習記録をリセット')));
+  mount(...nodes);
+}
+
+function listView(list, title){
+  if (!list.length) { alert('該当する問題がありません。'); return; }
+  const prog = h('span', {class:'prog'});
+  const upd = () => { prog.textContent = '採点済 ' + list.filter(q=>mark(q)).length + ' / ' + list.length; };
+  upd();
+  const nodes = [h('div', {class:'nav'},
+    h('button', {class:'back', onclick:home}, '← ホーム'),
+    h('span', {class:'ttl'}, title), prog)];
+  const toggles = [];
+  nodes.push(h('div', {class:'tools'},
+    h('button', {class:'btn ghost small', onclick:()=>toggles.forEach(t=>t(true))}, 'すべて開く'),
+    h('button', {class:'btn ghost small', onclick:()=>toggles.forEach(t=>t(false))}, 'すべて閉じる')));
+
+  list.forEach((q, i) => {
+    const box = h('div', {});
+    const btns = {};
+    function setMark(v){ S.desc[q.id] = v; save(); Object.entries(btns).forEach(([k,b]) => b.classList.toggle('on', k === v)); upd(); }
+    const self = h('div', {class:'self'});
+    [['o','○ 書けた'],['t','△ 迷った'],['x','× 書けない']].forEach(([k,lab]) => {
+      const b = h('button', {class:k + (mark(q)===k?' on':''), onclick:()=>setMark(k)}, lab);
+      btns[k] = b; self.append(b);
+    });
+    const show = h('button', {class:'btn ghost small'}, '模範解答を見る');
+    function open(on){
+      if (on) {
+        if (box.childNodes.length) return;
+        box.append(
+          h('div', {class:'ans'}, q.a),
+          q.kw.length ? h('div', {class:'kws'}, h('div', {class:'lb'}, '採点キーワード'), q.kw.map(k => h('span', {class:'kw'}, k))) : null,
+          q.exp ? h('div', {class:'exp'}, '解説：' + q.exp) : null,
+          q.flag ? h('span', {class:'flag'}, q.flag) : null,
+          self);
+        show.textContent = '閉じる';
+      } else { box.replaceChildren(); show.textContent = '模範解答を見る'; }
+    }
+    show.addEventListener('click', () => open(!box.childNodes.length));
+    toggles.push(open);
+    nodes.push(h('div', {class:'card'},
+      h('div', {class:'chips'},
+        h('span', {class:'chip'}, q.no),
+        h('span', {class:'chip'}, q.unit),
+        q.add ? h('span', {class:'chip add'}, '予想') : null,
+        q.star ? h('span', {class:'chip star'}, '★ ' + q.past) : null),
+      h('div', {class:'qtext', html:q.q}), show, box));
+  });
+  mount(...nodes);
+}
+home();
+</script>
+</body>
+</html>
