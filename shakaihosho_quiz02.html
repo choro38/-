@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>社会保障 第3〜5回 ミニテスト対策</title>
+<style>
+:root{
+  --bg:#F3F5F4; --surface:#FFFFFF; --ink:#1C2530; --sub:#5B6773; --line:#DDE3E8;
+  --accent:#2E4A7D; --accent-soft:#E6ECF7; --accent-ink:#FFFFFF;
+  --star:#B26A00; --star-soft:#FFF1DA;
+  --ok:#1E7A4F; --ok-soft:#E2F4EA; --ng:#B93A2E; --ng-soft:#FBE7E4;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#12171C; --surface:#1B222A; --ink:#E8EDF2; --sub:#9AA7B4; --line:#2C3641;
+    --accent:#8FB0E8; --accent-soft:#232F45; --accent-ink:#10161D;
+    --star:#F0B35A; --star-soft:#3A2D14;
+    --ok:#6FD0A0; --ok-soft:#173326; --ng:#F0877B; --ng-soft:#3A1E1B;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+  line-height:1.7; font-size:16px;
+  padding:0 0 calc(32px + env(safe-area-inset-bottom));
+}
+button{font:inherit; color:inherit; cursor:pointer}
+button:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+.wrap{max-width:640px; margin:0 auto; padding:0 16px}
+
+/* ---------- ヘッダー ---------- */
+header{padding:calc(20px + env(safe-area-inset-top)) 0 12px}
+header h1{margin:0; font-size:1.55rem; letter-spacing:.04em; line-height:1.3}
+header p{margin:2px 0 0; color:var(--sub); font-size:.85rem}
+.seg{display:flex; margin-top:14px; background:var(--line); border-radius:10px; padding:3px}
+.seg button{flex:1; border:0; background:transparent; padding:9px 6px; border-radius:8px; font-weight:600; color:var(--sub)}
+.seg button.on{background:var(--surface); color:var(--accent); box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg small{font-weight:400; margin-left:4px}
+
+/* ---------- メニュー：単元 ---------- */
+.sec-title{margin:22px 0 4px; font-size:1.15rem; font-weight:700}
+.sec-note{margin:0 0 6px; color:var(--sub); font-size:.8rem}
+.round{
+  margin:18px 0 0; padding:7px 12px; font-size:.95rem; font-weight:700;
+  background:var(--accent); color:var(--accent-ink); border-radius:8px 8px 0 0;
+}
+.cats{list-style:none; margin:0; padding:0; background:var(--surface); border:1px solid var(--line); border-top:0; border-radius:0 0 8px 8px}
+.cats li+li{border-top:1px solid var(--line)}
+.cats button{
+  width:100%; min-height:56px; text-align:left; background:transparent; border:0;
+  padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  font-size:1.02rem; font-weight:600;
+}
+.cats button:active{background:var(--accent-soft)}
+.cat-meta{display:flex; align-items:center; gap:8px; flex-shrink:0; color:var(--sub); font-size:.85rem; font-weight:400}
+.wbadge{background:var(--ng-soft); color:var(--ng); border-radius:999px; padding:1px 9px; font-size:.75rem; font-weight:700}
+
+/* ---------- メニュー：その他 ---------- */
+.others{margin-top:28px}
+.others h2{margin:0 0 8px; font-size:.9rem; color:var(--sub); font-weight:600}
+.chips{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.chips button{
+  border:1px solid var(--line); background:var(--surface); border-radius:10px;
+  padding:9px 10px; text-align:left; min-height:52px; line-height:1.35;
+}
+.chips button b{display:block; font-size:.95rem}
+.chips button span{font-size:.75rem; color:var(--sub)}
+.chips button:disabled{opacity:.45; cursor:default}
+.chips button.star b{color:var(--star)}
+.chips button.rev b{color:var(--ng)}
+.shuffle{display:flex; align-items:center; gap:8px; margin-top:12px; font-size:.9rem; color:var(--sub)}
+.shuffle input{width:20px; height:20px; accent-color:var(--accent)}
+
+/* ---------- クイズ ---------- */
+.screen{display:none}
+.screen.on{display:block}
+.qhead{display:flex; align-items:center; gap:10px; padding:calc(12px + env(safe-area-inset-top)) 0 8px}
+.back{border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:6px 12px; font-size:.9rem}
+.qtitle{flex:1; font-weight:700; font-size:.95rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.qcount{font-size:.9rem; color:var(--sub); font-variant-numeric:tabular-nums}
+.progress{height:6px; background:var(--line); border-radius:3px; overflow:hidden}
+.progress div{height:100%; width:0; background:var(--accent); transition:width .25s}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 16px; margin-top:14px}
+.meta{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px}
+.tag{font-size:.75rem; padding:1px 9px; border-radius:999px; background:var(--accent-soft); color:var(--accent); font-weight:600}
+.tag.src{background:var(--bg); color:var(--sub); font-weight:400}
+.tag.star{background:var(--star-soft); color:var(--star)}
+.tag.chk{background:var(--ng-soft); color:var(--ng)}
+.qtext{font-size:1.08rem; line-height:2; margin:0}
+.blank{
+  display:inline-block; min-width:4.2em; text-align:center; margin:0 .15em;
+  border-bottom:2px solid var(--accent); color:var(--sub); font-size:.9em; padding:0 .2em;
+}
+.blank.filled{color:var(--accent); font-weight:700; background:var(--accent-soft); border-radius:4px 4px 0 0}
+.btn-main{
+  width:100%; min-height:54px; margin-top:16px; border:0; border-radius:10px;
+  background:var(--accent); color:var(--accent-ink); font-weight:700; font-size:1.05rem;
+}
+.judge{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px}
+.judge button{min-height:54px; border-radius:10px; border:2px solid; font-weight:700; font-size:1.02rem; background:var(--surface)}
+.judge .j-ok{border-color:var(--ok); color:var(--ok)}
+.judge .j-ng{border-color:var(--ng); color:var(--ng)}
+.tfbtns{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px}
+.tfbtns button{
+  min-height:84px; font-size:2.4rem; font-weight:700; border-radius:12px;
+  border:2px solid var(--line); background:var(--surface);
+}
+.tfbtns .t-o{color:var(--ok)}
+.tfbtns .t-x{color:var(--ng)}
+.tfbtns button:disabled{cursor:default; opacity:.5}
+.tfbtns button.chosen{opacity:1; border-color:currentColor}
+.explain{margin-top:16px; padding:12px 14px; background:var(--bg); border-left:4px solid var(--accent); border-radius:0 8px 8px 0; font-size:.95rem}
+.explain b{display:block; font-size:.8rem; color:var(--sub); margin-bottom:2px}
+.verdict{margin-top:16px; font-weight:700; font-size:1.1rem}
+.verdict.ok{color:var(--ok)} .verdict.ng{color:var(--ng)}
+.hide{display:none!important}
+
+/* ---------- 結果 ---------- */
+.score{text-align:center; padding:26px 0 6px}
+.score .big{font-size:3.2rem; font-weight:800; color:var(--accent); line-height:1.1; font-variant-numeric:tabular-nums}
+.score .of{color:var(--sub)}
+.score .msg{margin-top:6px; font-weight:700}
+.rlist{margin:16px 0 0; padding:0; list-style:none}
+.rlist li{background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--ng); border-radius:8px; padding:10px 12px; margin-bottom:8px; font-size:.92rem}
+.rlist .ra{margin-top:4px; font-weight:700; color:var(--accent)}
+.rlist .re{margin-top:4px; color:var(--sub); font-size:.85rem}
+.ractions{display:grid; gap:10px; margin-top:18px}
+.ractions button{min-height:52px; border-radius:10px; border:1px solid var(--line); background:var(--surface); font-weight:600}
+.ractions button.primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent)}
+.ractions button:disabled{opacity:.45}
+@media (prefers-reduced-motion: reduce){.progress div{transition:none}}
+
+.opts{display:flex; flex-direction:column; gap:8px; margin-top:16px}
+.orow{display:flex; gap:6px; align-items:stretch}
+.opt{flex:1; text-align:left; display:flex; gap:10px; align-items:flex-start; padding:12px; min-height:52px;
+  background:var(--surface); border:1.5px solid var(--line); border-radius:10px; font-size:1rem}
+.opt .n{flex:none; font-weight:700; color:var(--accent)}
+.opt:active:not([disabled]){border-color:var(--accent)}
+.opt.ok{border-color:var(--ok); background:var(--ok-soft)}
+.opt.ng{border-color:var(--ng); background:var(--ng-soft)}
+.orow.struck .opt .t{text-decoration:line-through; opacity:.45}
+.elim{flex:none; width:44px; border:1px solid var(--line); background:var(--surface); border-radius:10px; color:var(--sub); font-size:1.1rem}
+.orow.struck .elim{background:var(--ng-soft); color:var(--ng); border-color:var(--ng)}
+.hint{font-size:.8rem; color:var(--sub); margin:10px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= メニュー ================= -->
+<section id="s-menu" class="screen on">
+  <header>
+    <h1>社会保障</h1>
+    <p>第3〜5回 健康保険・介護保険　ミニテスト対策（5択）</p>
+  </header>
+
+  <h2 class="sec-title">単元から選ぶ</h2>
+  <p class="sec-note">タップするとその単元の問題がすぐ始まります</p>
+  <div id="cat-area"></div>
+
+  <div class="others">
+    <h2>ほかの出題方法</h2>
+    <div class="chips">
+      <button id="o-all"><b>全問</b><span id="o-all-n"></span></button>
+      <button id="o-rand"><b>ランダム10問</b><span>全単元から抽出</span></button>
+      <button id="o-star" class="star"><b>★頻出</b><span id="o-star-n"></span></button>
+      <button id="o-wrong" class="rev"><b>間違えた問題</b><span id="o-wrong-n"></span></button>
+    </div>
+    <label class="shuffle"><input type="checkbox" id="shuffle"> 出題順をシャッフルする</label>
+  </div>
+</section>
+
+<!-- ================= クイズ ================= -->
+<section id="s-quiz" class="screen">
+  <div class="qhead">
+    <button class="back" id="btn-back">← 戻る</button>
+    <div class="qtitle" id="q-title"></div>
+    <div class="qcount" id="q-count"></div>
+  </div>
+  <div class="progress"><div id="bar"></div></div>
+
+  <div class="card">
+    <div class="meta" id="q-meta"></div>
+    <p class="qtext" id="q-text"></p>
+
+    <div class="opts" id="opts"></div>
+    <p class="hint">右端の×で選択肢に取り消し線を引けます（消去法）。</p>
+
+    <div id="verdict" class="verdict hide"></div>
+    <div id="explain" class="explain hide"></div>
+    <button class="btn-main hide" id="btn-next">次へ</button>
+  </div>
+</section>
+
+<!-- ================= 結果 ================= -->
+<section id="s-result" class="screen">
+  <div class="score">
+    <div class="big" id="r-score"></div>
+    <div class="of" id="r-of"></div>
+    <div class="msg" id="r-msg"></div>
+  </div>
+  <ul class="rlist" id="r-list"></ul>
+  <div class="ractions">
+    <button class="primary" id="r-wrong">間違えた問題だけもう一度</button>
+    <button id="r-again">同じ問題をもう一度</button>
+    <button id="r-menu">単元メニューへ戻る</button>
+  </div>
+</section>
+
+</div>
+
+<script>
+const DATA = [{"id": "q1", "round": 3, "cat": "国民皆保険", "q": "わが国で国民皆保険が実現した年はどれか。", "opts": ["1946年", "1950年", "1958年", "1961年", "1973年"], "ans": 3, "exp": "1961年に国民皆年金とともに実現した（授業メモ）。1958年は新国民健康保険法の制定、1973年は福祉元年。", "star": true, "check": false}, {"id": "q2", "round": 3, "cat": "国民皆保険", "q": "国民皆保険の説明として正しいのはどれか。", "opts": ["国民すべてがいずれかの保険に加入する", "国民すべてが同一の保険制度に加入する", "希望する国民のみが保険に加入する", "労働者のみがいずれかの保険に加入する", "高齢者のみが公的保険に加入する"], "ans": 0, "exp": "制度は分かれているが、国民すべてがいずれかの医療保険に強制的に加入する。基本は「いつでも、どこでも、誰でも安心して医療を受けられる」こと。", "star": true, "check": false}, {"id": "q3", "round": 3, "cat": "国民皆保険", "q": "医療保険に一部負担が設けられている理由として挙げられるのはどれか。", "opts": ["診療報酬の引き下げ", "乱受診の防止", "医師の人材確保", "保険者の事務の簡素化", "医療機関の経営の安定"], "ans": 1, "exp": "病気になった人とならない人との公平性の確保、乱受診の防止、医療費増加に対する財政安定化のため。医療費のすべてが保障されるわけではない。", "star": true, "check": false}, {"id": "q4", "round": 3, "cat": "健康保険", "q": "協会けんぽが主な対象とする事業所はどれか。", "opts": ["主に大企業", "主に公務員の職場", "主に私立学校の法人", "主に自営業の事業所", "主に中小企業"], "ans": 4, "exp": "全国健康保険協会管掌健康保険（協会けんぽ）は主に民間の中小企業が対象。大企業は組合管掌健康保険（組合健保）。", "star": true, "check": false}, {"id": "q5", "round": 3, "cat": "健康保険", "q": "協会けんぽの保険料率の設定方法はどれか。", "opts": ["都道府県ごとに設定される", "全国一律で設定される", "市町村ごとに設定される", "事業所ごとに設定される", "加入者ごとに設定される"], "ans": 0, "exp": "都道府県ごとに、地域の医療費水準を反映して設定される（都道府県単位の財政運営）。組合健保は3〜13％の範囲で組合が自主的に決める。", "star": true, "check": false}, {"id": "q6", "round": 3, "cat": "健康保険", "q": "総合健保組合の設立に必要な、常時の従業員数はどれか。", "opts": ["常時おおむね2400人以上", "常時おおむね2600人以上", "常時おおむね2800人以上", "常時おおむね3000人以上", "常時おおむね3200人以上"], "ans": 3, "exp": "総合健保組合は常時3000人以上（同種・同業、または一定地域の企業）。単一健保組合は単独で常時おおむね700人以上。厚生労働大臣の認可が必要。", "star": false, "check": false}, {"id": "q7", "round": 3, "cat": "健康保険", "q": "組合健保が行うことのできる給付はどれか。", "opts": ["診療報酬点数の独自の設定", "法定給付に上乗せする附加給付", "自己負担割合の独自の設定", "被扶養者の範囲の独自の拡大", "保険診療の独自の対象拡大"], "ans": 1, "exp": "一部負担の還元、家族療養費、手当金について、法定給付のほかに附加給付を行える。保険料率や事業主の負担割合も法律の範囲内で自主的に決められる。", "star": true, "check": false}, {"id": "q8", "round": 3, "cat": "健康保険", "q": "同一世帯の被扶養者の認定基準はどれか。", "opts": ["年収130万円未満かつ被保険者と同額未満", "年収120万円未満かつ被保険者の半分未満", "年収140万円未満かつ被保険者の半分未満", "年収130万円未満かつ被保険者の4分の3未満", "年収130万円未満かつ被保険者の半分未満"], "ans": 4, "exp": "対象者が被保険者と同一世帯の場合は、年収130万円未満かつ被保険者の年収の半分未満。別世帯は、130万円未満かつ被保険者からの仕送額より少ないこと。", "star": true, "check": false}, {"id": "q9", "round": 3, "cat": "健康保険", "q": "60歳以上または障害者の場合の、被扶養者の年収の基準はどれか。", "opts": ["年収170万円未満", "年収180万円未満", "年収190万円未満", "年収200万円未満", "年収210万円未満"], "ans": 1, "exp": "60歳以上または障害者は180万円未満。年収には年金なども含まれる。19歳以上23歳未満は令和7年10月から150万円未満。", "star": true, "check": false}, {"id": "q10", "round": 3, "cat": "健康保険", "q": "月々の健康保険料の算定の基礎となるものはどれか。", "opts": ["報酬月額", "平均標準報酬月額", "標準賞与額", "基本給のみの額", "標準報酬月額"], "ans": 4, "exp": "報酬を区切りのよい幅で区分した標準報酬月額（第1級5万8000円〜第50級139万円）に保険料率を乗じる。平均標準報酬月額は厚生年金の年金額算出の基礎。", "star": true, "check": false}, {"id": "q11", "round": 3, "cat": "健康保険", "q": "総報酬制で、保険料の対象に加わるものはどれか。", "opts": ["賞与・期末手当", "結婚祝金", "見舞金", "退職金", "出張旅費の実費"], "ans": 0, "exp": "賞与・期末手当等にも、標準報酬月額と同じ保険料率で保険料がかかる（標準賞与額は年度累計573万円が上限）。見舞金や結婚祝金は臨時的な報酬で除かれる。", "star": true, "check": false}, {"id": "q12", "round": 3, "cat": "国民健康保険", "q": "国民健康保険の保険者はどれか。", "opts": ["市町村と健康保険組合", "市町村と国民健康保険組合", "都道府県と全国健康保険協会", "全国健康保険協会と国保組合", "市町村と後期高齢者医療広域連合"], "ans": 1, "exp": "市町村（特別区を含む）と国民健康保険組合。市町村が保険者＝市町村国保、国保組合が保険者＝国保組合。2018年4月からは都道府県も共同保険者。", "star": true, "check": false}, {"id": "q13", "round": 3, "cat": "国民健康保険", "q": "2018年度から国民健康保険の財政運営の責任主体となったのはどれか。", "opts": ["都道府県", "市町村", "国", "全国健康保険協会", "国民健康保険団体連合会"], "ans": 0, "exp": "2015年成立の法律により、2018年度から財政運営の責任主体が市町村から都道府県に移行。市町村は資格の取得・喪失、保険料の徴収、保健事業等を担う。", "star": true, "check": false}, {"id": "q14", "round": 3, "cat": "国民健康保険", "q": "国民健康保険組合は、同種の事業・業務に従事する何人以上で組織されるか。", "opts": ["260人以上", "280人以上", "300人以上", "320人以上", "340人以上"], "ans": 2, "exp": "同種の事業・業務に従事する300人以上で組織。医師・歯科医師・薬剤師・弁護士・理容美容業・土木建築業などがある。", "star": true, "check": false}, {"id": "q15", "round": 3, "cat": "国民健康保険", "q": "国民健康保険の保険料の納付義務者はどれか。", "opts": ["被保険者本人", "世帯主", "世帯の最年長者", "事業主", "世帯の扶養者"], "ans": 1, "exp": "加入者がいる世帯の世帯主が負担する。世帯主本人が加入者でなくても、家族に加入者がいれば納付義務者になる。", "star": true, "check": false}, {"id": "q16", "round": 3, "cat": "国民健康保険", "q": "国民健康保険料の資産割は、何に応じて算定されるか。", "opts": ["収入の額", "加入者一人当たりの定額", "一世帯当たりの定額", "預貯金の額", "固定資産税の額"], "ans": 4, "exp": "所得割（収入に応じて）、資産割（固定資産税に応じて）、被保険者均等割（一人当たり定額）、世帯別平等割（一世帯当たり定額）の組合せで賦課される。", "star": false, "check": false}, {"id": "q17", "round": 3, "cat": "国民健康保険", "q": "国民健康保険に投入される国庫負担は、給付費のおよそ何％か。", "opts": ["41％", "43％", "45％", "47％", "49％"], "ans": 0, "exp": "給付費の41％の国庫負担が投入される。2018年度の移行後も、都道府県に対して給付費の41％が支出される。", "star": true, "check": false}, {"id": "q18", "round": 3, "cat": "診療報酬", "q": "診療報酬を決定するのは誰か。", "opts": ["厚生労働大臣", "中央社会保険医療協議会", "社会保険診療報酬支払基金", "全国健康保険協会", "都道府県知事"], "ans": 0, "exp": "厚生労働大臣が、中央社会保険医療協議会（中医協）の議論を踏まえて決定する（厚生労働大臣告示）。", "star": true, "check": false}, {"id": "q19", "round": 3, "cat": "診療報酬", "q": "診療報酬の計算方法はどれか。", "opts": ["包括払い制", "定額払い制", "出来高払い制", "人頭払い制", "成功報酬制"], "ans": 2, "exp": "実施した医療行為ごとに各項目の点数を加え、1点＝10円で計算する。点数表は医科・歯科・調剤の3種類。", "star": true, "check": false}, {"id": "q20", "round": 3, "cat": "診療報酬", "q": "診療報酬の請求を審査し、支払う機関はどれか。", "opts": ["中央社会保険医療協議会", "後期高齢者医療広域連合", "全国健康保険協会", "健康保険組合連合会", "社会保険診療報酬支払基金"], "ans": 4, "exp": "審査支払機関は、社会保険診療報酬支払基金と国民健康保険団体連合会。保険医療機関は診療報酬を請求し、一部負担分を差し引いた額の支払いを受ける。", "star": true, "check": false}, {"id": "q21", "round": 3, "cat": "自己負担", "q": "現役並み所得者に当たる、課税所得の基準はどれか。", "opts": ["課税所得125万円以上", "課税所得135万円以上", "課税所得145万円以上", "課税所得155万円以上", "課税所得165万円以上"], "ans": 2, "exp": "課税所得145万円以上で窓口負担が3割。75歳以上の2割判定は、課税所得28万円以上かつ年金収入等が単身200万円以上・複数320万円以上。", "star": true, "check": false}, {"id": "q22", "round": 4, "cat": "高齢者医療制度", "q": "老人保健制度が創設された年はどれか。", "opts": ["1973年", "1978年", "1983年", "1989年", "1997年"], "ans": 2, "exp": "老人保健制度は1983年創設。市町村が実施主体で、各医療保険者からの拠出金と公費が財源だった。", "star": false, "check": false}, {"id": "q23", "round": 4, "cat": "高齢者医療制度", "q": "後期高齢者医療制度が施行された年はどれか。", "opts": ["2000年", "2004年", "2006年", "2007年", "2008年"], "ans": 4, "exp": "2006年の健康保険法等の改正で創設され、2008年4月に施行。後期高齢者医療制度の成立により老人保健制度は廃止。", "star": true, "check": false}, {"id": "q24", "round": 4, "cat": "高齢者医療制度", "q": "後期高齢者医療制度の保険者はどれか。", "opts": ["市町村", "後期高齢者医療広域連合", "都道府県", "全国健康保険協会", "国民健康保険団体連合会"], "ans": 1, "exp": "都道府県の区域ごとにすべての市町村が加入する広域連合が保険者。保険料の徴収や窓口業務は市町村が行う。", "star": true, "check": false}, {"id": "q25", "round": 4, "cat": "高齢者医療制度", "q": "後期高齢者医療制度で、保険料の徴収と窓口業務を行うのはどれか。", "opts": ["後期高齢者医療広域連合", "都道府県", "社会保険診療報酬支払基金", "市町村", "地域包括支援センター"], "ans": 3, "exp": "広域連合は主に制度の運営、市町村は主に窓口業務と保険料の徴収を行う。", "star": true, "check": false}, {"id": "q26", "round": 4, "cat": "高齢者医療制度", "q": "後期高齢者医療制度の被保険者はどれか。", "opts": ["70歳以上と一定の障害のある65歳以上70歳未満", "75歳以上と一定の障害のある60歳以上75歳未満", "65歳以上と一定の障害のある40歳以上65歳未満", "75歳以上と一定の障害のある65歳以上75歳未満", "75歳以上の医療保険の被扶養者を除く者"], "ans": 3, "exp": "広域連合内に住所のある75歳以上の高齢者と、65歳以上75歳未満で一定の障害の状態にある人（申請が必要）。従来の老人保健制度と異なり、各医療保険の被保険者・被扶養者から除かれる。", "star": true, "check": false}, {"id": "q27", "round": 4, "cat": "高齢者医療制度", "q": "後期高齢者医療の費用負担（自己負担を除く）で、現役世代の支援金は約何割か。", "opts": ["約4割", "約1割", "約2割", "約3割", "約5割"], "ans": 0, "exp": "保険料（約1割）、公費（約5割）、現役世代からの後期高齢者支援金（約4割）。若者が給付費の4割、高齢者が1割（スライド）。", "star": true, "check": false}, {"id": "q28", "round": 4, "cat": "高齢者医療制度", "q": "後期高齢者医療の公費負担の内訳（国：都道府県：市町村）はどれか。", "opts": ["2：1：1", "4：1：1", "3：1：1", "4：2：1", "5：2：1"], "ans": 1, "exp": "公費は約5割で、内訳は国：都道府県：市町村＝4：1：1。", "star": true, "check": false}, {"id": "q29", "round": 4, "cat": "高齢者医療制度", "q": "前期高齢者医療制度で、保険者間の負担の不均衡を調整する方法はどれか。", "opts": ["各保険者の保険料収入に応じた費用負担", "各保険者の医療費総額に応じた費用負担", "国庫負担による全額の補填", "前期高齢者の一つの保険者への集約", "各保険者の75歳未満の加入者数に応じた費用負担"], "ans": 4, "exp": "前期高齢者（65〜74歳）は従来どおり被用者保険や国保に加入し、各保険者が75歳未満の加入者数に応じて費用を負担して調整する。", "star": true, "check": false}, {"id": "q30", "round": 4, "cat": "高齢者医療制度", "q": "70〜74歳の医療費の自己負担割合はどれか。", "opts": ["原則1割（現役並み所得者は3割）", "原則1割（一定以上所得者は2割）", "原則2割（現役並み所得者は3割）", "原則3割（一定以上所得者は2割）", "原則2割（一定以上所得者は3割）"], "ans": 2, "exp": "70〜74歳は原則2割、現役並み所得者は3割。75歳以上は原則1割（一定以上所得者は2割、現役並み所得者は3割）。授業メモ：69歳まで3割。", "star": true, "check": false}, {"id": "q31", "round": 4, "cat": "保険給付", "q": "附加給付を実施している保険者はどれか。", "opts": ["全国健康保険協会", "組合管掌健康保険", "市町村国民健康保険", "後期高齢者医療広域連合", "社会保険診療報酬支払基金"], "ans": 1, "exp": "附加給付は、組合管掌健康保険、共済組合、国民健康保険組合で実施。協会けんぽや市町村国保では実施されない。", "star": true, "check": false}, {"id": "q32", "round": 4, "cat": "保険給付", "q": "現物給付（療養の給付）方式の説明はどれか。", "opts": ["被保険者が全額を支払い後で払い戻しを受ける", "保険者が被保険者に現金を支給する", "医療機関が患者に費用を立て替える", "被保険者が自己負担分を後日支払う", "保険者が医療機関に費用を直接支払う"], "ans": 4, "exp": "現物給付は保険者が医療機関に直接支払う。被保険者がまず全額を支払い、後で払い戻しを受けるのは償還払方式。", "star": true, "check": false}, {"id": "q33", "round": 4, "cat": "保険給付", "q": "傷病手当金は、どの保険に特有の給付か。", "opts": ["被用者保険", "国民健康保険", "後期高齢者医療制度", "介護保険", "国民健康保険組合"], "ans": 0, "exp": "傷病手当金は被用者保険に特有の現金給付。自営業者等の国民健康保険では、休業による所得損失の確定が困難という理由から実施されていない。", "star": true, "check": false}, {"id": "q34", "round": 4, "cat": "保険給付", "q": "国民健康保険の給付のうち、相対的必要給付はどれか。", "opts": ["療養の給付", "高額療養費", "傷病手当金", "出産育児一時金", "入院時食事療養費"], "ans": 3, "exp": "相対的必要給付は「給付を行うものとする」とされるもの（出産育児一時金、葬祭費）。療養の給付・高額療養費等は絶対的必要給付、傷病手当金は任意給付。", "star": true, "check": false}, {"id": "q35", "round": 4, "cat": "高額療養費", "q": "高額療養費の自己負担限度額が適用される期間の単位はどれか。", "opts": ["診療日ごと", "受診から30日間", "暦月（月の初めから終わりまで）", "1週間ごと", "暦年（1月から12月まで）"], "ans": 2, "exp": "暦月（月の初めから終わりまで）の自己負担額が限度額を超えた分が支給される。", "star": true, "check": false}, {"id": "q36", "round": 4, "cat": "高額療養費", "q": "高額療養費制度の対象とならないものはどれか。", "opts": ["入院基本料の自己負担分", "外来診療の自己負担分", "手術料の自己負担分", "差額ベッド代", "投薬料の自己負担分"], "ans": 3, "exp": "入院時の食事代等の一部負担や、保険外診療となる差額ベッド代等は対象外で、全額自己負担。", "star": true, "check": false}, {"id": "q37", "round": 4, "cat": "高額療養費", "q": "高額療養費の多数回該当で、限度額が引き下げられるのはいつからか。", "opts": ["2回目以降", "4回目以降", "3回目以降", "5回目以降", "6回目以降"], "ans": 1, "exp": "直近1年間に3回以上高額療養費が支給された場合、4回目以降の限度額が引き下げられる。", "star": true, "check": false}, {"id": "q38", "round": 4, "cat": "高額療養費", "q": "高額療養費の「年間上限」が新設される時期はどれか。", "opts": ["令和8年8月", "令和7年8月", "令和8年4月", "令和9年4月", "令和9年8月"], "ans": 0, "exp": "令和8年8月（第1段階）に年間上限が新設され、多数回該当の金額は据え置き。令和9年8月には所得区分が細分化される。", "star": true, "check": false}, {"id": "q39", "round": 4, "cat": "混合診療", "q": "現行制度で混合診療を行った場合の取扱いはどれか。", "opts": ["保険診療部分のみ保険給付の対象となる", "保険外診療部分のみ全額自己負担となる", "保険診療部分が公費で負担される", "高額療養費制度の対象として扱われる", "全体が保険外診療となり全額自己負担"], "ans": 4, "exp": "混合診療は原則禁止で、実施すると全体が保険外診療扱いとなり、医療費の全額が自己負担。例外が保険外併用療養費制度。", "star": true, "check": false}, {"id": "q40", "round": 4, "cat": "混合診療", "q": "評価療養に含まれるのはどれか。", "opts": ["特別の療養環境の提供", "予約診療", "先進医療", "時間外診療", "大病院の初診"], "ans": 2, "exp": "評価療養は保険導入のための評価を行うもの（先進医療、治験に係る診療、適応外使用など）。後ろの4つは選定療養。", "star": true, "check": false}, {"id": "q41", "round": 4, "cat": "混合診療", "q": "選定療養に含まれるのはどれか。", "opts": ["先進医療", "治験に係る診療", "薬価基準収載医薬品の適応外使用", "保険適用医療機器の適応外使用", "大病院の初診"], "ans": 4, "exp": "選定療養は保険導入を前提としないもの（差額ベッド、予約診療、時間外診療、大病院の初診・再診、180日を超える入院など）。後ろの4つは評価療養。", "star": true, "check": false}, {"id": "q42", "round": 4, "cat": "混合診療", "q": "患者申出療養が実施された年はどれか。", "opts": ["2012年", "2014年", "2015年", "2016年", "2018年"], "ans": 3, "exp": "患者からの申出を起点とする仕組みで、2016年（平成28年）4月から実施。原則6週間（前例がある場合は2週間）で審議。", "star": true, "check": false}, {"id": "q43", "round": 4, "cat": "混合診療", "q": "総医療費100万円のうち先進医療が20万円のとき、保険診療部分の一部負担金（3割）はいくらか。", "opts": ["20万円", "22万円", "24万円", "26万円", "28万円"], "ans": 2, "exp": "先進医療20万円は全額自己負担。共通部分80万円の7割（56万円）が保険給付、3割の24万円が一部負担金で、高額療養費の対象になる。", "star": true, "check": false}, {"id": "q44", "round": 5, "cat": "創設・被保険者", "q": "介護保険法が施行された年はどれか。", "opts": ["1997年", "1998年", "1999年", "2000年", "2001年"], "ans": 3, "exp": "介護保険法は1997年成立、2000年施行。", "star": true, "check": false}, {"id": "q45", "round": 5, "cat": "創設・被保険者", "q": "措置制度の説明として正しいのはどれか。", "opts": ["行政が福祉サービスの内容を決定する", "利用者が事業者と契約して選択する", "保険者が給付の内容を決定する", "医師が福祉サービスの内容を決定する", "事業者が価格を自由に決定する"], "ans": 0, "exp": "措置制度＝行政機関が要否や内容を決めて提供する仕組み。利用者が選択できない。介護保険は利用者が事業者と対等に契約する利用契約制。", "star": true, "check": false}, {"id": "q46", "round": 5, "cat": "創設・被保険者", "q": "老人医療分野で問題となった「社会的入院」とはどれか。", "opts": ["治療のための一般病院への短期入院", "介護を理由とした施設への短期入所", "介護を理由とした一般病院への長期入院", "リハビリのための回復期病院への入院", "経済的理由による診療の中断"], "ans": 2, "exp": "医療の必要性がないにもかかわらず、介護を理由に一般病院へ長期入院すること。コストが高く医療費が増加した。", "star": true, "check": false}, {"id": "q47", "round": 5, "cat": "創設・被保険者", "q": "介護保険の保険者はどれか。", "opts": ["都道府県", "市町村と特別区", "国", "医療保険者", "地域包括支援センター"], "ans": 1, "exp": "保険者は市町村と特別区（広域連合を設置している場合は広域連合）。国・都道府県・医療保険者・年金保険者等が財政負担で市町村を支える。", "star": true, "check": false}, {"id": "q48", "round": 5, "cat": "創設・被保険者", "q": "介護保険の第2号被保険者はどれか。", "opts": ["65歳以上の医療保険加入者", "40歳以上75歳未満の全員", "20歳以上65歳未満の医療保険加入者", "40歳以上65歳未満の医療保険加入者", "65歳以上75歳未満の障害のある者"], "ans": 3, "exp": "第1号は65歳以上、第2号は40歳以上65歳未満の医療保険加入者。", "star": true, "check": false}, {"id": "q49", "round": 5, "cat": "創設・被保険者", "q": "第2号被保険者の介護保険料の徴収方法はどれか。", "opts": ["市町村が年金から天引きして徴収", "市町村が単独で算定し徴収", "都道府県が一括して徴収", "国が税として徴収", "医療保険者が医療保険料と合算して徴収"], "ans": 4, "exp": "第2号は各医療保険者が医療保険料と合算して徴収。第1号は市町村単位で算定される。", "star": true, "check": false}, {"id": "q50", "round": 5, "cat": "創設・被保険者", "q": "第2号被保険者が介護保険の給付を受けられるのはどのような場合か。", "opts": ["原因を問わない要介護・要支援状態", "事故による要介護・要支援状態", "特定疾病による要介護・要支援状態", "老衰による要介護・要支援状態", "認知症以外の疾病による要介護状態"], "ans": 2, "exp": "第1号は原因を問わないが、第2号は特定疾病による場合に限定される。", "star": true, "check": false}, {"id": "q51", "round": 5, "cat": "特定疾病", "q": "介護保険の特定疾病に含まれるのはどれか。", "opts": ["多発性硬化症", "筋萎縮性側索硬化症", "重症筋無力症", "ギラン・バレー症候群", "心筋梗塞"], "ans": 1, "exp": "特定疾病は16疾病（がん、関節リウマチ、ALS、脳血管疾患、初老期における認知症、パーキンソン病関連疾患など）。後ろの4つは含まれない。", "star": true, "check": false}, {"id": "q52", "round": 5, "cat": "認定・ケアプラン", "q": "要介護認定の申請先はどれか。", "opts": ["市町村", "都道府県", "地域包括支援センター", "介護認定審査会", "指定居宅介護支援事業者"], "ans": 0, "exp": "申請先は市町村。家族のほか、指定居宅介護支援事業者・介護保険施設・地域包括支援センターが代行できる。", "star": true, "check": false}, {"id": "q53", "round": 5, "cat": "認定・ケアプラン", "q": "要介護認定は、原則として申請から何日以内に行われるか。", "opts": ["24日", "27日", "30日", "33日", "36日"], "ans": 2, "exp": "原則30日以内。特別の事情があれば理由を通知して延長できる。認定の効力は申請日にさかのぼる。", "star": true, "check": false}, {"id": "q54", "round": 5, "cat": "認定・ケアプラン", "q": "訪問調査の結果をもとに行われる1次判定の方法はどれか。", "opts": ["介護認定審査会による審査", "主治医による判定", "介護支援専門員による判定", "コンピュータによる判定", "市町村長による判定"], "ans": 3, "exp": "全国一律の基準で訪問調査を行い、コンピュータにより判定（1次判定）。", "star": true, "check": false}, {"id": "q55", "round": 5, "cat": "認定・ケアプラン", "q": "2次判定を行うのはどれか。", "opts": ["主治医", "市町村長", "地域包括支援センター", "都道府県知事", "介護認定審査会"], "ans": 4, "exp": "保健・医療・福祉の専門職で構成される介護認定審査会が、訪問調査結果や主治医の意見書をもとに審査・判定する。", "star": true, "check": false}, {"id": "q56", "round": 5, "cat": "認定・ケアプラン", "q": "在宅の要介護者の居宅サービス計画を作成するのは誰か。", "opts": ["地域包括支援センターの保健師", "介護支援専門員", "市町村の職員", "主治医", "訪問介護員"], "ans": 1, "exp": "指定居宅介護支援事業者や介護保険施設に配置される介護支援専門員（ケアマネジャー）が作成。要介護者の承諾を得る。", "star": true, "check": false}, {"id": "q57", "round": 5, "cat": "認定・ケアプラン", "q": "要支援者の介護予防サービス計画を作成するのはどれか。", "opts": ["介護認定審査会の委員", "市町村長", "主治医", "地域包括支援センターの職員", "介護老人保健施設の医師"], "ans": 3, "exp": "要支援者の介護予防サービス計画は、地域包括支援センターの職員（保健師等）が作成する。", "star": true, "check": false}, {"id": "q58", "round": 5, "cat": "認定・ケアプラン", "q": "介護サービス計画の作成費用の利用者負担はどれか。", "opts": ["利用者の自己負担はない", "利用者が1割を負担する", "利用者が2割を負担する", "利用者が半額を負担する", "利用者が全額を負担する"], "ans": 0, "exp": "計画作成費用は全額が保険給付の対象。利用者は自己負担なしで作成してもらえる。", "star": true, "check": false}, {"id": "q59", "round": 5, "cat": "給付・財源", "q": "介護保険の保険給付費の財源構成（公費：保険料）はどれか。", "opts": ["公費60％：保険料40％", "公費40％：保険料60％", "公費45％：保険料55％", "公費50％：保険料50％", "公費55％：保険料45％"], "ans": 3, "exp": "公費（税財源）50％、保険料50％。保険料は第1号23％・第2号27％（令和2年度予算の資料）。", "star": true, "check": false}, {"id": "q60", "round": 5, "cat": "給付・財源", "q": "特別養護老人ホームの入所は、原則として要介護何以上か。", "opts": ["要介護1以上", "要介護2以上", "要介護3以上", "要介護4以上", "要介護5のみ"], "ans": 2, "exp": "介護老人福祉施設（特別養護老人ホーム）の利用は原則として要介護3以上に限られる。", "star": true, "check": false}, {"id": "q61", "round": 5, "cat": "給付・財源", "q": "市町村が条例で独自に定める保険給付はどれか。", "opts": ["介護給付", "予防給付", "附加給付", "市町村特別給付", "地域支援事業"], "ans": 3, "exp": "市町村特別給付（横出しサービス）。移送・配食・寝具乾燥・理美容など。附加給付は医療保険の用語。", "star": true, "check": false}, {"id": "q62", "round": 5, "cat": "施設・サービス", "q": "介護保険の施設サービスを提供する施設はどれか。", "opts": ["養護老人ホーム", "軽費老人ホーム", "介護老人保健施設", "有料老人ホーム", "サービス付き高齢者向け住宅"], "ans": 2, "exp": "介護老人福祉施設（特養）、介護老人保健施設、介護医療院が介護保険の施設。後ろの4つは介護保険の施設サービスではない。", "star": true, "check": false}, {"id": "q63", "round": 5, "cat": "施設・サービス", "q": "介護保険で、市町村が事業者の指定・監督を行うサービスはどれか。", "opts": ["地域密着型介護サービス", "居宅サービス", "施設サービス", "訪問看護", "福祉用具貸与"], "ans": 0, "exp": "地域密着型介護サービスは市町村が指定・監督。居宅サービスや施設サービスは都道府県（政令市・中核市を含む）が指定・監督する。", "star": true, "check": false}, {"id": "q64", "round": 5, "cat": "施設・サービス", "q": "定期巡回・随時対応型訪問介護看護の対象者はどれか。", "opts": ["要支援者のみ", "要介護者のみ", "要介護者と要支援者", "65歳以上の全員", "第2号被保険者のみ"], "ans": 1, "exp": "地域密着型サービスの一類型で、対象は要介護者のみ。介護予防サービスは規定されていない。", "star": true, "check": false}, {"id": "q65", "round": 5, "cat": "地域包括ケア", "q": "地域包括支援センターに配置される専門職の組合せはどれか。", "opts": ["医師・看護師・介護福祉士", "保健師・理学療法士・栄養士", "社会福祉士・言語聴覚士・薬剤師", "看護師・作業療法士・保育士", "保健師・社会福祉士・主任ケアマネジャー"], "ans": 4, "exp": "保健師（または地域保健に経験のある看護師）、社会福祉士、主任介護支援専門員が配置される。", "star": true, "check": false}, {"id": "q66", "round": 5, "cat": "地域包括ケア", "q": "地域包括支援センターの機能に含まれるのはどれか。", "opts": ["権利擁護", "要介護認定の審査・判定", "介護保険料の算定", "サービス事業者の指定", "診療報酬の審査"], "ans": 0, "exp": "4つの機能：総合相談支援、権利擁護、包括的・継続的ケアマネジメント支援、介護予防ケアマネジメント。", "star": true, "check": false}, {"id": "q67", "round": 5, "cat": "地域包括ケア", "q": "令和8年の改正で廃止されることになった、介護支援専門員の仕組みはどれか。", "opts": ["実務経験の要件", "都道府県知事への登録", "実務研修受講試験", "5年ごとの更新制", "介護支援専門員名簿の作成"], "ans": 3, "exp": "更新制は廃止され、研修は柔軟に受講できるよう見直し。施行は公布後1年6月以内に政令で定める日。", "star": true, "check": false}, {"id": "q68", "round": 5, "cat": "成年後見", "q": "判断能力が最も低い人が対象となる法定後見の類型はどれか。", "opts": ["保佐", "後見", "補助", "任意後見", "未成年後見"], "ans": 1, "exp": "重い順に後見（重度）・保佐（中度）・補助（軽度）。任意後見は法定後見ではない。未成年後見は未成年者を保護する別の制度。", "star": true, "check": false}, {"id": "q69", "round": 5, "cat": "成年後見", "q": "任意後見の事務が実際に開始されるのはいつか。", "opts": ["任意後見契約を締結した時点", "公正証書を作成した時点", "任意後見監督人が選任された時点", "本人が65歳に達した時点", "家庭裁判所に契約を届け出た時点"], "ans": 2, "exp": "本人の判断能力が不十分になった後、家庭裁判所が任意後見監督人を選任した時点で開始する。契約は公正証書で締結する。", "star": true, "check": false}, {"id": "q70", "round": 5, "cat": "成年後見", "q": "法定後見と比べた、任意後見の特徴はどれか。", "opts": ["本人が結んだ契約を取り消せる", "家庭裁判所が代理権の範囲を定める", "監督人が選任されない場合がある", "市町村長が開始の申立てを行える", "本人が結んだ契約を取り消せない"], "ans": 4, "exp": "任意後見人は契約で定めた範囲内で代理できるが、本人が結んだ契約の取消権はない。監督人は全件で選任される。", "star": true, "check": false}];
+const LS_KEY = 'shakaihosho_quiz02_wrong_v1';
+const NUM = ['①','②','③','④','⑤'];
+
+let queue = [], idx = 0, results = [];
+let lastItems = [], lastTitle = '';
+let answered = false;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---- 間違えた問題の保存（localStorage。使えない環境でも動くよう try/catch） ---- */
+function loadWrong(){ try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e){ return {}; } }
+function saveWrong(){ try { localStorage.setItem(LS_KEY, JSON.stringify(wrong)); } catch(e){} }
+let wrong = loadWrong();
+
+function shuffle(a){
+  a = a.slice();
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function show(name){
+  ['menu','quiz','result'].forEach(n => $('s-' + n).classList.toggle('on', n === name));
+  window.scrollTo(0, 0);
+}
+
+/* ---- メニュー ---- */
+function renderMenu(){
+  const list = DATA;
+  const rounds = [...new Set(list.map(q => q.round))].sort((a, b) => a - b);
+  let html = '';
+  rounds.forEach(r => {
+    const cats = [];
+    list.filter(q => q.round === r).forEach(q => { if (!cats.includes(q.cat)) cats.push(q.cat); });
+    html += '<h3 class="round">第' + r + '回</h3><ul class="cats">';
+    cats.forEach(c => {
+      const items = list.filter(q => q.round === r && q.cat === c);
+      const w = items.filter(q => wrong[q.id]).length;
+      html += '<li><button data-round="' + r + '" data-cat="' + esc(c) + '">'
+            + '<span>' + esc(c) + '</span>'
+            + '<span class="cat-meta">' + (w ? '<span class="wbadge">要復習 ' + w + '</span>' : '')
+            + items.length + '問</span></button></li>';
+    });
+    html += '</ul>';
+  });
+  $('cat-area').innerHTML = html;
+
+  const stars = list.filter(q => q.star), ws = list.filter(q => wrong[q.id]);
+  $('o-all-n').textContent = list.length + '問';
+  $('o-star-n').textContent = stars.length + '問';
+  $('o-wrong-n').textContent = ws.length ? ws.length + '問' : 'まだありません';
+  $('o-star').disabled = !stars.length;
+  $('o-wrong').disabled = !ws.length;
+}
+
+/* ---- 開始 ---- */
+function start(items, title, forceShuffle){
+  if (!items.length) return;
+  lastItems = items; lastTitle = title;
+  queue = (forceShuffle || $('shuffle').checked) ? shuffle(items) : items.slice();
+  idx = 0; results = [];
+  show('quiz'); renderQ();
+}
+
+function renderQ(){
+  const q = queue[idx];
+  answered = false;
+  $('q-title').textContent = lastTitle;
+  $('q-count').textContent = (idx + 1) + ' / ' + queue.length;
+  $('bar').style.width = (idx / queue.length * 100) + '%';
+  $('q-meta').innerHTML = '<span class="tag">第' + q.round + '回・' + esc(q.cat) + '</span>'
+    + (q.star ? '<span class="tag star">★頻出</span>' : '')
+    + (q.check ? '<span class="tag chk">要確認</span>' : '');
+  $('q-text').textContent = q.q;
+
+  $('verdict').classList.add('hide');
+  $('explain').classList.add('hide');
+  $('btn-next').classList.add('hide');
+
+  const box = $('opts');
+  box.replaceChildren();
+  q.opts.forEach((t, i) => {
+    const row = document.createElement('div'); row.className = 'orow';
+    const b = document.createElement('button'); b.className = 'opt';
+    b.innerHTML = '<span class="n">' + NUM[i] + '</span><span class="t">' + esc(t) + '</span>';
+    b.onclick = () => choose(i);
+    const x = document.createElement('button'); x.className = 'elim'; x.textContent = '×';
+    x.title = '消去法：この選択肢に取り消し線'; x.setAttribute('aria-label', 'この選択肢を消去');
+    x.onclick = () => row.classList.toggle('struck');
+    row.append(b, x); box.append(row);
+  });
+}
+
+function choose(i){
+  if (answered) return;
+  answered = true;
+  const q = queue[idx], ok = (i === q.ans);
+  results[idx] = { q, ok };
+  if (ok) delete wrong[q.id]; else wrong[q.id] = 1;
+  saveWrong();
+
+  [...$('opts').children].forEach((row, k) => {
+    const b = row.querySelector('.opt');
+    b.disabled = true; row.querySelector('.elim').disabled = true;
+    if (k === q.ans) b.classList.add('ok');
+    else if (k === i) b.classList.add('ng');
+  });
+  const vd = $('verdict');
+  vd.className = 'verdict ' + (ok ? 'ok' : 'ng');
+  vd.textContent = ok ? '正解' : '不正解　正答：' + NUM[q.ans];
+  if (q.exp){
+    $('explain').innerHTML = '<b>解説</b>' + esc(q.exp);
+    $('explain').classList.remove('hide');
+  }
+  $('btn-next').textContent = (idx + 1 >= queue.length) ? '結果を見る' : '次へ';
+  $('btn-next').classList.remove('hide');
+}
+
+function advance(){
+  idx++;
+  if (idx >= queue.length) renderResult(); else { renderQ(); window.scrollTo(0, 0); }
+}
+$('btn-next').onclick = advance;
+
+/* ---- 結果 ---- */
+function renderResult(){
+  show('result');
+  const total = results.length, ok = results.filter(r => r.ok).length;
+  const pct = Math.round(ok / total * 100);
+  $('r-score').textContent = pct + '%';
+  $('r-of').textContent = ok + ' / ' + total + '問';
+  $('r-msg').textContent = pct === 100 ? '全問クリア！' : pct >= 80 ? 'あと少しです' : pct >= 60 ? '間違えた問題を重点的に' : 'もう一周して定着させましょう';
+
+  const ng = results.filter(r => !r.ok);
+  $('r-list').innerHTML = ng.map(r => {
+    const q = r.q;
+    return '<li>' + esc(q.q)
+      + '<div class="ra">正答：' + NUM[q.ans] + ' ' + esc(q.opts[q.ans]) + '</div>'
+      + (q.exp ? '<div class="re">' + esc(q.exp) + '</div>' : '') + '</li>';
+  }).join('');
+  $('r-wrong').disabled = !ng.length;
+  $('r-wrong').textContent = ng.length ? '間違えた問題だけもう一度（' + ng.length + '問）' : '間違いなし！';
+}
+$('r-wrong').onclick = () => start(results.filter(r => !r.ok).map(r => r.q), '間違えた問題');
+$('r-again').onclick = () => start(lastItems, lastTitle);
+$('r-menu').onclick = goMenu;
+
+function goMenu(){ renderMenu(); show('menu'); }
+$('btn-back').onclick = goMenu;
+
+/* ---- メニュー操作 ---- */
+$('cat-area').addEventListener('click', e => {
+  const b = e.target.closest('button[data-cat]');
+  if (!b) return;
+  const r = Number(b.dataset.round), c = b.dataset.cat;
+  start(DATA.filter(q => q.round === r && q.cat === c), c);
+});
+$('o-all').onclick  = () => start(DATA, '全問');
+$('o-rand').onclick = () => start(shuffle(DATA).slice(0, 10), 'ランダム10問', true);
+$('o-star').onclick = () => start(DATA.filter(q => q.star), '★頻出');
+$('o-wrong').onclick = () => start(DATA.filter(q => wrong[q.id]), '間違えた問題');
+
+renderMenu();
+</script>
+</body>
+</html>
