@@ -93,7 +93,7 @@ h1{font-size:1.45rem;margin:0;line-height:1.35}
 .tcard .hd{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font-weight:700;font-size:1.02rem}
 .tcard .ab{color:var(--sub);font-weight:600;font-size:.9rem}
 .tcard .bd{margin-top:6px;font-size:.98rem}
-.blank{display:inline-block;min-width:3.2em;margin:0 2px;padding:0 8px;border:none;border-bottom:2px solid var(--pri);
+.blank{scroll-margin-top:90px;display:inline-block;min-width:3.2em;margin:0 2px;padding:0 8px;border:none;border-bottom:2px solid var(--pri);
   background:var(--blank);color:transparent;border-radius:4px 4px 0 0;user-select:none;line-height:1.6;text-align:center}
 .blank.done{color:var(--ink);background:var(--ok-bg);border-bottom-color:var(--ok);font-weight:700}
 .blank.miss{color:var(--ink);background:var(--ng-bg);border-bottom-color:var(--ng);font-weight:700}
@@ -156,9 +156,9 @@ function h(tag,props,...kids){
   for(const c of kids.flat()){ if(c==null||c===false) continue; e.append(c.nodeType?c:document.createTextNode(c)); }
   return e;
 }
-function mount(...nodes){ closeSheet(); app.replaceChildren(...nodes); window.scrollTo(0,0); }
+function mount(...nodes){ closeSheet(); app.style.paddingBottom=''; app.replaceChildren(...nodes); window.scrollTo(0,0); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-function openSheet(...nodes){ sheetin.replaceChildren(...nodes); sheet.style.display='block'; }
+function openSheet(...nodes){ sheetin.replaceChildren(...nodes); sheet.style.display='block'; app.style.paddingBottom='80vh'; }
 function closeSheet(){ sheet.style.display='none'; sheetin.replaceChildren(); }
 
 /* ---------- ホーム ---------- */
@@ -169,7 +169,7 @@ function home(){
   const grid=h('div',{class:'cats'});
   D.domains.forEach(d=>{
     const ids=blanksOf(d.id); const ok=ids.filter(i=>S.res[i]==='o').length;
-    grid.append(h('button',{class:'cat',style:'--c:'+d.color,onclick:()=>domainView(d.id,'A')},
+    grid.append(h('button',{class:'cat',style:'--c:'+d.color,onclick:()=>{SESS={};domainView(d.id,'A');}},
       h('span',{class:'nm'},d.name),h('span',{class:'sb'},d.sub),
       h('span',{class:'ct'},h('span',{},ids.length+'空欄'),h('span',{},'正解済 '+ok)),
       h('span',{class:'bar'},h('i',{style:'width:'+Math.round(ok/ids.length*100)+'%'}))));
@@ -206,32 +206,46 @@ function flagChip(t){
 
 /* ---------- 領域画面 ---------- */
 let SESS={};
-function domainView(domId,tab){
-  const d=DOM[domId];
+function blankEl(id){ return document.querySelector('[data-bid="'+id+'"]'); }
+function setBlank(id){
+  const el=blankEl(id); if(!el) return; const st=SESS[id];
+  el.className='blank'+(st==='done'?' done':st==='miss'?' miss':'');
+  el.textContent=st?D.blanks[id].a:'　　';
+}
+function revealAboveSheet(id){
+  const el=blankEl(id); if(!el) return;
+  setTimeout(()=>{ const r=el.getBoundingClientRect(); const limit=window.innerHeight-sheet.offsetHeight-16;
+    if(r.bottom>limit||r.top<60) window.scrollBy({top:r.top-80,behavior:'auto'}); },40);
+}
+function domainView(domId,tab,keep){
+  const y=keep?window.scrollY:0; const d=DOM[domId];
   const nodes=[h('div',{class:'nav'},h('button',{class:'back',onclick:home},'← ホーム'),h('span',{class:'ttl'},d.name))];
   const tabs=h('div',{class:'tabs'});
   [['A','穴埋めA（略字・数値）'],['B','穴埋めB（検査名・キーワード）'],['T','原表']].forEach(([k,l])=>tabs.append(h('button',{class:'tab'+(k===tab?' on':''),onclick:()=>domainView(domId,k)},l)));
   nodes.push(tabs);
   if(tab==='T'){ mount(...nodes,...refCards(domId)); return; }
-  const ids=blanksOf(domId,tab);
-  nodes.push(h('p',{class:'hint'},'空欄をタップして答えを選びます。タップ済みの空欄をもう一度押すと隠れます。'));
-  const blankEls=[];
+  const ids=blanksOf(domId,tab); const tap=!!S.tap;
+  nodes.push(h('div',{class:'tabs'},
+    h('button',{class:'tab'+(!tap?' on':''),onclick:()=>{S.tap=false;save();domainView(domId,tab,true);}},'選んで答える（5択）'),
+    h('button',{class:'tab'+(tap?' on':''),onclick:()=>{S.tap=true;save();closeSheet();domainView(domId,tab,true);}},'タップで答えを見る')));
+  nodes.push(h('p',{class:'hint'},tap?'空欄をタップすると答えが出ます。もう一度タップすると隠れます（正誤は記録されません）。':'空欄をタップして答えを選びます。タップ済みの空欄をもう一度押すと隠れます。'));
   nodes.push(h('div',{class:'tools'},
-    h('button',{class:'btn ghost small',onclick:()=>{ids.forEach(i=>{delete SESS[i];}); domainView(domId,tab);}},'すべて隠す'),
+    h('button',{class:'btn ghost small',onclick:()=>{ids.forEach(i=>{delete SESS[i];setBlank(i);});closeSheet();}},'すべて隠す'),
+    tap?h('button',{class:'btn ghost small',onclick:()=>{ids.forEach(i=>{SESS[i]='done';setBlank(i);});}},'すべて表示'):null,
     h('button',{class:'btn small',onclick:()=>startQuiz(ids,d.name+'（'+tab+'）')},'この領域をクイズ形式で解く（'+ids.length+'）')));
   D.tests.filter(t=>t.dom===domId&&!t.ref).forEach(t=>{
     const part=t[tab];
     const mk=id=>{
       const b=D.blanks[id]; const st=SESS[id];
-      const el=h('button',{class:'blank'+(st==='done'?' done':st==='miss'?' miss':''),onclick:()=>{
-        if(SESS[id]){ delete SESS[id]; domainView(domId,tab); return; } pickBlank(id,domId,tab,ids); }},st?b.a:'　　');
-      return el;
+      return h('button',{class:'blank'+(st==='done'?' done':st==='miss'?' miss':''),'data-bid':id,onclick:()=>{
+        if(S.tap||SESS[id]){ if(SESS[id]) delete SESS[id]; else SESS[id]='done'; setBlank(id); return; }
+        pickBlank(id,domId,tab,ids); }},st?b.a:'　　');
     };
     const hd=h('div',{class:'hd'},bodyNodes(part.name,mk), part.abbr&&part.abbr!=='―'?h('span',{class:'ab'},bodyNodes(part.abbr,mk)):null, t.kubun?h('span',{class:'kub'},t.kubun):null);
     const chips=flagChip(t);
     nodes.push(h('div',{class:'tcard',style:'--c:'+d.color},hd,h('div',{class:'bd'},bodyNodes(part.body,mk)),chips?h('div',{class:'chips',style:'margin-top:8px'},chips):null));
   });
-  mount(...nodes);
+  mount(...nodes); app.style.paddingBottom='80vh'; if(keep) window.scrollTo(0,y);
 }
 function pickBlank(id,domId,tab,ids){
   const b=D.blanks[id], t=TEST[b.t]; let tries=0, done=false;
@@ -240,19 +254,20 @@ function pickBlank(id,domId,tab,ids){
     const btn=h('button',{class:'opt',onclick:()=>{
       if(done) return;
       if(o===b.a){ done=true; btn.classList.add('ok'); rows.forEach(r=>r.querySelector('.opt').disabled=true);
-        S.res[id]=tries?'x':'o'; save(); SESS[id]=tries?'miss':'done';
-        msg.replaceChildren(h('div',{class:'res ok'},tries?'正解（やり直しで）':'正解'),
-          b.m?h('div',{class:'exp'},b.m):null);
-        acts.replaceChildren(h('button',{class:'btn',onclick:()=>{const nx=ids.find(x=>!SESS[x]&&x!==id); domainView(domId,tab); if(nx) pickBlank(nx,domId,tab,ids); else closeSheet();}},'次の空欄へ'),
-          h('button',{class:'btn ghost',onclick:()=>{domainView(domId,tab);}},'閉じる'));
+        S.res[id]=tries?'x':'o'; save(); SESS[id]=tries?'miss':'done'; setBlank(id);
+        msg.replaceChildren(h('div',{class:'res ok'},tries?'正解（やり直しで）':'正解'), b.m?h('div',{class:'exp'},b.m):null);
+        const nx=ids.find(x=>!SESS[x]);
+        acts.replaceChildren(nx?h('button',{class:'btn',onclick:()=>pickBlank(nx,domId,tab,ids)},'次の空欄へ'):null,
+          h('button',{class:'btn ghost',onclick:closeSheet},'閉じる'));
       } else { tries++; btn.classList.add('ng'); btn.disabled=true; S.res[id]='x'; save(); msg.replaceChildren(h('div',{class:'res ng'},'ちがいます。もう一度選んでください')); }
     }},h('span',{class:'n'},NUM[i]),h('span',{class:'t'},o));
     const x=h('button',{class:'elim','aria-label':'この選択肢を消去',onclick:()=>row.classList.toggle('struck')},'×');
     const row=h('div',{class:'orow'},btn,x); rows.push(row); opts.append(row);
   });
-  acts.append(h('button',{class:'btn ghost small',onclick:()=>{ if(done) return; done=true; S.res[id]='x'; save(); SESS[id]='miss'; domainView(domId,tab); }},'答えを見る'),
+  acts.append(h('button',{class:'btn ghost small',onclick:()=>{ if(done) return; done=true; S.res[id]='x'; save(); SESS[id]='miss'; setBlank(id); closeSheet(); }},'答えを見る'),
     h('button',{class:'btn ghost small',onclick:closeSheet},'閉じる'));
   openSheet(h('div',{class:'sh'},h('span',{},(t.orig.abbr&&t.orig.abbr!=='―'?t.orig.abbr:t.orig.name)+'　空欄を選ぶ'),h('span',{class:'prog'},id)),opts,msg,acts);
+  revealAboveSheet(id);
 }
 
 /* ---------- 空欄クイズ ---------- */
@@ -330,10 +345,11 @@ function startSpot(kind){
   else { const used=new Set(); ids=[]; shuffle(all).forEach(e=>{ if(ids.length<17&&!used.has(e.n)){used.add(e.n);ids.push(e.id);} }); }
   SP={kind,ids,byCell:{},state:{},fa:new Set(),done:false};
   ids.forEach(i=>SP.byCell[D.errors[i].n]=i);
-  renderSpot();
+  renderSpot(false);
 }
 function cellText(n,orig){ const id=SP.byCell[n]; return id?D.errors[id].mut:orig; }
-function renderSpot(){
+function renderSpot(keep=true){
+  const y=window.scrollY;
   const found=Object.keys(SP.state).length, okc=Object.values(SP.state).filter(v=>v==='ok').length;
   const title={past:'過去問再現',pred:'予想問題①',pred2:'予想問題②',pred3:'予想問題③',rand:'ランダム'}[SP.kind];
   const nodes=[h('div',{class:'nav'},h('button',{class:'back',onclick:()=>{if(SP.done||confirm('中断してメニューに戻りますか？'))spotMenu();}},'← 戻る'),h('span',{class:'ttl'},'間違い探し｜'+title)),
@@ -351,7 +367,7 @@ function renderSpot(){
     if(r.c.body) kids.push(cellBtn(r.c.body,false,true)); else kids.push(h('div',{class:'kub'},t.ref||''));
     nodes.push(h('div',{class:'trow'},kids));
   });
-  mount(...nodes);
+  mount(...nodes); app.style.paddingBottom='80vh'; if(keep) window.scrollTo(0,y);
 }
 function cellBtn(c,heading,body){
   const st=SP.state[c.n]; const isErr=!!SP.byCell[c.n]; const fa=SP.fa.has(c.n);
@@ -393,7 +409,7 @@ function judge(c){
 function finishSpot(){
   SP.done=true; closeSheet();
   SP.ids.forEach(i=>{ const e=D.errors[i]; if(!SP.state[e.n]){ S.err[i]='x'; } }); save();
-  renderSpot();
+  renderSpot(false);
 }
 function spotResult(){
   const miss=SP.ids.filter(i=>!SP.state[D.errors[i].n]).map(i=>D.errors[i]);
