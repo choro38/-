@@ -131,6 +131,7 @@ function shuffle(a){ a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math
 
 /* ---------- ホーム ---------- */
 function home(){
+  MENU = null;
   const nodes = [];
   nodes.push(h('header', {class:'top'},
     h('h1', {}, '人工内耳'),
@@ -174,22 +175,54 @@ function home(){
     h('button', {class:'mode', disabled: wrong.length ? null : 'disabled', onclick:()=>startQuiz(wrong, '間違えた問題')}, '間違えた問題（' + wrong.length + '）')));
 
   const okc = a => a.filter(q => S.res[q.id] === 'o').length;
-  const card = (nm, sb, list, title) => h('button', {class:'cat', onclick:()=>startQuiz(list, title)},
+  const card = (nm, sb, list, title, sizes) => h('button', {class:'cat', onclick:()=> sizes ? partMenu(list, title, sizes) : startQuiz(list, title)},
     h('span', {class:'nm'}, nm), h('span', {class:'sb'}, sb),
     h('span', {class:'ct'}, h('span', {}, list.length + '問'), h('span', {}, '正解済 ' + okc(list))));
   nodes.push(h('h2', {class:'sec'}, 'そのほかの学習'));
   nodes.push(h('div', {class:'more'},
     card('過去問（組合せ形式）', '原本どおり。記述(1)〜(5)から正しい組合せを選ぶ', D.comb, '過去問（組合せ形式）'),
     card('類題（組合せ形式）', '過去問の各肢を逆の文にした類題20問＋講義の追加3問', D.ruikei, '類題（組合せ形式）'),
-    card('肢別○×（過去問）', '過去問の各記述（20問×5肢）を1つずつ○×で判定', D.ox, '肢別○×（過去問）'),
-    card('肢別○×（類題）', '類題・追加問題の各記述（23問×5肢）を○×で判定', D.oxr, '肢別○×（類題）')));
+    card('肢別○×（過去問）', '過去問の各記述（20問×5肢）を○×で判定。4分割で選べる', D.ox, '肢別○×（過去問）', [25,25,25,25]),
+    card('肢別○×（類題）', '類題・追加問題の各記述（23問×5肢）を○×で判定。4分割で選べる', D.oxr, '肢別○×（類題）', [30,30,30,25])));
   nodes.push(h('div', {class:'modes', style:'margin-top:10px'},
-    h('button', {class:'mode', onclick:()=>startQuiz(shuffle(D.ruikei), '類題 ランダム')}, '類題 ランダム'),
-    h('button', {class:'mode', onclick:()=>startQuiz(shuffle(D.ox), '肢別○×（過去問）ランダム')}, '肢別○×（過去問）ランダム'),
-    h('button', {class:'mode', onclick:()=>startQuiz(shuffle(D.oxr), '肢別○×（類題）ランダム')}, '肢別○×（類題）ランダム')));
+    h('button', {class:'mode', onclick:()=>startQuiz(shuffle(D.ruikei), '類題 ランダム')}, '類題 ランダム')));
 
   nodes.push(h('div', {class:'foot'},
     h('button', {class:'link', onclick:()=>{ if(confirm('学習記録（○×）をすべて消しますか？')){ S={res:{}}; save(); home(); } }}, '学習記録をリセット')));
+  mount(...nodes);
+}
+
+
+/* ---------- 分割メニュー（肢別○×） ---------- */
+let RAND = false, MENU = null;
+function partMenu(list, title, sizes){
+  MENU = () => partMenu(list, title, sizes);
+  const nodes = [h('div', {class:'nav'},
+    h('button', {class:'back', onclick:home}, '← ホーム'),
+    h('span', {class:'ttl'}, title))];
+  const rb = h('button', {class:'mode', onclick:()=>{ RAND = !RAND; partMenu(list, title, sizes); }},
+    RAND ? '出題順：ランダム（タップで順番どおりに）' : '出題順：順番どおり（タップでランダムに）');
+  nodes.push(h('div', {class:'modes', style:'margin-bottom:12px'}, rb));
+  const grid = h('div', {class:'cats'});
+  let pos = 0;
+  sizes.forEach((n, k) => {
+    const part = list.slice(pos, pos + n); pos += n;
+    const first = part[0].cat.split('(')[0], last = part[part.length-1].cat.split('(')[0];
+    const label = (k+1) + '/' + sizes.length + '　' + first + '〜' + last;
+    const ok = part.filter(q => S.res[q.id] === 'o').length;
+    const colors = ['#1f6f6b','#2f6fa3','#9a5a1a','#7a4a8c'];
+    grid.append(h('button', {class:'cat', style:'--c:'+colors[k%4], onclick:()=>startQuiz(RAND ? shuffle(part) : part, title + ' ' + (k+1) + '/' + sizes.length)},
+      h('span', {class:'nm'}, label),
+      h('span', {class:'sb'}, (list.indexOf(part[0])+1) + '〜' + (list.indexOf(part[part.length-1])+1) + '肢目'),
+      h('span', {class:'ct'}, h('span', {}, part.length + '肢'), h('span', {}, '正解済 ' + ok)),
+      h('span', {class:'bar'}, h('i', {style:'width:'+Math.round(ok/part.length*100)+'%'}))));
+  });
+  nodes.push(grid);
+  nodes.push(h('h2', {class:'sec'}, 'まとめて'));
+  const wrongs = list.filter(q => S.res[q.id] === 'x');
+  nodes.push(h('div', {class:'modes'},
+    h('button', {class:'mode', onclick:()=>startQuiz(RAND ? shuffle(list) : list, title + ' 全部')}, '全部（' + list.length + '肢）'),
+    h('button', {class:'mode', disabled: wrongs.length ? null : 'disabled', onclick:()=>startQuiz(RAND ? shuffle(wrongs) : wrongs, title + ' 間違い')}, '間違えた肢（' + wrongs.length + '）')));
   mount(...nodes);
 }
 
@@ -252,7 +285,7 @@ function renderQ(){
 
   mount(
     h('div', {class:'nav'},
-      h('button', {class:'back', onclick:()=>{ if((!answered && Q.i===0) || confirm('クイズを中断してホームに戻りますか？')) home(); }}, '← ホーム'),
+      h('button', {class:'back', onclick:()=>{ if((!answered && Q.i===0) || confirm('クイズを中断して戻りますか？')) (MENU||home)(); }}, MENU ? '← メニュー' : '← ホーム'),
       h('span', {class:'ttl'}, Q.title),
       h('span', {class:'prog'}, (Q.i+1) + ' / ' + Q.list.length)),
     h('div', {class:'bar', style:'margin:0 0 12px;--c:var(--pri)'}, h('i', {style:'width:'+Math.round(Q.i/Q.list.length*100)+'%'})),
@@ -278,7 +311,7 @@ function resultView(){
       h('div', {class:'score'}, Q.correct + '問正解（' + pct + '%）'),
       h('div', {class:'act'},
         Q.wrong.length ? h('button', {class:'btn', onclick:()=>startQuiz(Q.wrong, '間違えた問題')}, '間違いだけやり直す（' + Q.wrong.length + '）') : null,
-        h('button', {class:'btn ghost', onclick:home}, 'ホームへ')))
+        h('button', {class:'btn ghost', onclick:()=>(MENU||home)()}, MENU ? 'メニューへ' : 'ホームへ')))
   ];
   if (Q.wrong.length) {
     const ul = h('ul', {class:'wlist'});
