@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>機能性構音障害 試験対策</title>
+<style>
+:root{
+  --bg:#f2f5f4; --card:#ffffff; --ink:#1b2a29; --sub:#5b6b69; --line:#d9e1df;
+  --pri:#1f6f6b; --pri-ink:#ffffff; --star:#b9770e; --ok:#23703f; --ok-bg:#e4f3e9;
+  --ng:#a8342d; --ng-bg:#fbe9e7; --note:#8a5a00; --note-bg:#fff3d6; --blank:#d7ece9;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#121a19; --card:#1a2524; --ink:#e6efed; --sub:#9bb0ac; --line:#2e3e3c;
+    --pri:#4fb3ac; --pri-ink:#0b1514; --star:#e0a443; --ok:#6fd199; --ok-bg:#183326;
+    --ng:#ff8f86; --ng-bg:#3a1f1c; --note:#f0c36b; --note-bg:#33280f; --blank:#244744;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic","Noto Sans JP",sans-serif;
+  line-height:1.7;font-size:16px;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#app{max-width:720px;margin:0 auto;padding:16px 14px 56px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+ruby rt{font-size:.55em;color:var(--sub)}
+h1{font-size:1.45rem;margin:0;line-height:1.35}
+.lead{margin:.2rem 0 0;color:var(--sub);font-size:.9rem}
+.sec{font-size:1.05rem;margin:26px 0 10px}
+.top{padding:6px 2px 4px}
+
+/* カテゴリーカード（最上部・最も目立たせる） */
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.cats{grid-template-columns:1fr}}
+.cat{position:relative;text-align:left;background:var(--card);border:1px solid var(--line);
+  border-left:8px solid var(--c);border-radius:12px;padding:14px 14px 12px;min-height:120px;display:flex;flex-direction:column}
+.cat:hover{border-color:var(--c)}
+.cat .nm{font-size:1.15rem;font-weight:700;line-height:1.35}
+.cat .sb{font-size:.8rem;color:var(--sub);margin-top:4px;flex:1}
+.cat .ct{font-size:.85rem;margin-top:8px;display:flex;justify-content:space-between}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:6px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--c,var(--pri))}
+
+/* 出題モード（カテゴリーより控えめ） */
+.modes{display:flex;flex-wrap:wrap;gap:8px}
+.mode{flex:1 1 auto;min-width:110px;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.92rem}
+.mode b{color:var(--star)}
+.mode[disabled]{opacity:.4;cursor:default}
+.more{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.more{grid-template-columns:1fr}}
+.more .cat{min-height:0;border-left-width:4px;border-left-color:var(--sub)}
+.more .cat .nm{font-size:1rem}
+.foot{margin-top:30px;text-align:center}
+.link{background:none;border:none;color:var(--sub);text-decoration:underline;font-size:.85rem}
+
+/* 画面共通 */
+.nav{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.back{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 12px}
+.ttl{font-weight:700;flex:1;font-size:.95rem}
+.prog{font-size:.85rem;color:var(--sub);white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chip{font-size:.75rem;border:1px solid var(--line);border-radius:999px;padding:1px 10px;color:var(--sub)}
+.chip.multi{border-color:var(--pri);color:var(--pri);font-weight:700}
+.chip.star{border-color:var(--star);color:var(--star);font-weight:700}
+.chip.chk{border-color:var(--note);color:var(--note);background:var(--note-bg)}
+.qtext{font-size:1.08rem;font-weight:600;margin:4px 0 14px}
+
+/* 選択肢 */
+.opts{display:flex;flex-direction:column;gap:8px}
+.orow{display:flex;gap:6px;align-items:stretch}
+.opt{flex:1;text-align:left;display:flex;gap:10px;align-items:flex-start;padding:11px 12px;background:var(--card);
+  border:1.5px solid var(--line);border-radius:10px}
+.opt .n{flex:none;font-weight:700;color:var(--pri)}
+.opt:hover:not([disabled]){border-color:var(--pri)}
+.opt.sel{border-color:var(--pri);background:var(--blank)}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.ng{border-color:var(--ng);background:var(--ng-bg)}
+.orow.struck .opt .t{text-decoration:line-through;opacity:.45}
+.elim{flex:none;width:44px;border:1px solid var(--line);background:var(--card);border-radius:10px;color:var(--sub);font-size:1.1rem}
+.orow.struck .elim{background:var(--ng-bg);color:var(--ng);border-color:var(--ng)}
+.act{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+.btn{padding:11px 20px;border-radius:10px;border:1.5px solid var(--pri);background:var(--pri);color:var(--pri-ink);font-weight:700}
+.btn.ghost{background:transparent;color:var(--pri)}
+.btn[disabled]{opacity:.4;cursor:default}
+.res{margin-top:14px;padding:10px 14px;border-radius:10px;font-weight:700}
+.res.ok{background:var(--ok-bg);color:var(--ok)}
+.res.ng{background:var(--ng-bg);color:var(--ng)}
+.exp{margin-top:10px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:.95rem}
+.flag{display:inline-block;margin-top:8px;padding:2px 10px;border-radius:6px;background:var(--note-bg);color:var(--note);font-size:.8rem}
+.hint{font-size:.8rem;color:var(--sub);margin:8px 0 0}
+
+/* 結果 */
+.score{font-size:2.2rem;font-weight:800;color:var(--pri);margin:4px 0}
+.wlist{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.wlist li{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.92rem}
+.wlist .a{color:var(--ok);font-weight:700;margin-top:4px}
+
+/* 記述 */
+.dq{margin-bottom:12px}
+.dq .qtext{font-size:1rem}
+.ans{margin-top:10px;padding:10px 12px;background:var(--blank);border-radius:10px;font-size:.95rem}
+.ans .pt{margin-top:6px;color:var(--sub);font-size:.85rem}
+.self{display:flex;gap:8px;margin-top:10px}
+.self button{flex:1;padding:8px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);font-weight:700}
+.self button.on.o{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.self button.on.t{background:var(--note-bg);border-color:var(--star);color:var(--note)}
+.self button.on.x{background:var(--ng-bg);border-color:var(--ng);color:var(--ng)}
+.memo{width:100%;min-height:64px;margin:0 0 10px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;
+  background:var(--bg);color:var(--ink);font:inherit;font-size:.92rem;resize:vertical}
+
+/* 穴埋め */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tab{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.88rem}
+.tab.on{background:var(--pri);color:var(--pri-ink);border-color:var(--pri);font-weight:700}
+.crow{margin-bottom:10px}
+.crow .lb{font-size:.8rem;color:var(--sub);margin-bottom:2px}
+.crow .lb .cl{color:var(--sub)}
+.crow .tx{font-size:1rem}
+.blank{display:inline-block;min-width:3.2em;margin:0 2px;padding:0 8px;border:none;border-bottom:2px solid var(--pri);
+  background:var(--blank);color:transparent;border-radius:4px 4px 0 0;user-select:none}
+.blank.open{color:var(--ink);background:transparent;font-weight:700}
+.tools{display:flex;gap:8px;margin-bottom:12px}
+.small{padding:7px 14px;font-size:.88rem}
+.note{font-size:.8rem;color:var(--note);margin:2px 0 8px}
+
+/* 子音表（セルをタップして答えを表示） */
+.tblwrap{overflow-x:auto;margin-bottom:14px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.tbl{border-collapse:collapse;width:100%;min-width:480px;font-size:.95rem}
+.tbl th,.tbl td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.tbl th{background:var(--blank);font-size:.82rem;color:var(--sub)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td.k{font-weight:700}
+.tbl .blank{margin:0;width:100%;text-align:left}
+@media (prefers-reduced-motion:no-preference){.bar>i{transition:width .3s}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ============================================================
+   データ（問題を追加・修正するときは、ここを編集）
+   ・groups   : カテゴリー（単元）。part は使わず単一の一覧
+   ・questions: 5択。g=groups の id、ans は 0 始まり（0=①）
+   ・desc     : 記述問題。g=groups の id
+   ・cloze    : まとめ穴埋め（4セクション。1つ目は子音表つき）
+   ============================================================ */
+const D = {"groups": [{"id": "g1", "name": "構音の基礎（解剖・音声学）", "sub": "第1〜2回　解剖・子音の構音点／構音操作・置換", "color": "#1f6f6b"}, {"id": "g2", "name": "構音発達・未熟構音", "sub": "第3〜4・9回　前言語期〜音韻意識・語の音の配列の誤り", "color": "#2f6fb3"}, {"id": "g3", "name": "分類・定義・要因", "sub": "第6回　機能性／器質性／運動障害性・発語失行", "color": "#8a5fb0"}, {"id": "g4", "name": "異常構音", "sub": "第7・9回　側音化・鼻咽腔・口蓋化・声門破裂音", "color": "#c0562d"}, {"id": "g5", "name": "検査・評価", "sub": "第8回　新版構音検査・構音類似運動検査・音声表記", "color": "#b9770e"}, {"id": "g6", "name": "構音訓練・適応", "sub": "第10回　訓練適応・3段階・系統的構音訓練", "color": "#23703f"}], "questions": [{"id": "q1", "g": "g1", "cat": "解剖", "src": "2025問1", "q": "<ruby>頭部<rt>とうぶ<\/rt><\/ruby>の<ruby>矢状面<rt>しじょうめん<\/rt><\/ruby>図において、<ruby>硬口蓋<rt>こうこうがい<\/rt><\/ruby>の<ruby>直後<rt>ちょくご<\/rt><\/ruby>に位置するのはどれか。", "opts": ["歯槽", "上咽頭", "舌根", "軟口蓋", "喉頭蓋"], "ans": [3], "multi": false, "exp": "前方から歯・歯槽・硬口蓋・軟口蓋と並び、軟口蓋の後方が咽頭につながる。喉頭蓋はさらに下方の喉頭入口部にある。", "star": false, "flag": ""}, {"id": "q2", "g": "g1", "cat": "解剖", "src": "2025問1", "q": "<ruby>咽頭<rt>いんとう<\/rt><\/ruby>を3つに<ruby>区分<rt>くぶん<\/rt><\/ruby>したものとして正しいのはどれか。", "opts": ["上咽頭・中咽頭・下咽頭", "鼻腔・口腔・喉頭腔", "硬口蓋・軟口蓋・口蓋垂", "喉頭蓋・声門・気管", "舌尖・舌背・舌根"], "ans": [0], "multi": false, "exp": "2025年度の問題1では咽頭を上咽頭・中咽頭・下咽頭の3区分で記入させている。★鼻咽腔・口腔・喉頭腔は共鳴腔の区分であり、咽頭の区分ではない。", "star": true, "flag": ""}, {"id": "q3", "g": "g1", "cat": "音声学", "src": "2025問2①", "q": "[p]の<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>と<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>の組合せで正しいのはどれか。", "opts": ["舌先－歯茎／破裂音", "前舌面－硬口蓋／破裂音", "上唇－下唇／破裂音", "上唇－下唇／摩擦音", "奥舌－軟口蓋／破裂音"], "ans": [2], "multi": false, "exp": "[p]は上唇と下唇で完全な閉鎖をつくり、瞬間的に開放する無声の両唇破裂音。★構音点は上側だけでなく下側（下唇・舌）も答える。", "star": true, "flag": ""}, {"id": "q4", "g": "g1", "cat": "音声学", "src": "2025問2②", "q": "[ɕ]の<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>と<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>の組合せで正しいのはどれか。", "opts": ["舌先－歯茎／摩擦音", "前舌面－歯茎硬口蓋／破擦音", "奥舌－軟口蓋／摩擦音", "前舌面－硬口蓋／接近音", "前舌面－歯茎硬口蓋／摩擦音"], "ans": [4], "multi": false, "exp": "[ɕ]は「シ」の子音。前舌面と歯茎硬口蓋で狭めをつくる無声摩擦音。破擦音の[ʨ]（チの子音）と構音点は同じで構音操作が異なる。", "star": false, "flag": ""}, {"id": "q5", "g": "g1", "cat": "音声学", "src": "2025問2③", "q": "[g]の<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>と<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>の組合せで正しいのはどれか。", "opts": ["奥舌－軟口蓋／破裂音（有声）", "奥舌－軟口蓋／破裂音（無声）", "奥舌－軟口蓋／摩擦音（有声）", "舌先－歯茎／破裂音（有声）", "前舌面－硬口蓋／破裂音（有声）"], "ans": [0], "multi": false, "exp": "[g]は奥舌を軟口蓋につけて閉鎖をつくる有声の軟口蓋破裂音。無声の対は[k]。※この授業の用語では後舌を「奥舌」と表記する。", "star": false, "flag": ""}, {"id": "q6", "g": "g1", "cat": "音声学", "src": "2025問3", "q": "<ruby>破裂音<rt>はれつおん<\/rt><\/ruby>と<ruby>摩擦音<rt>まさつおん<\/rt><\/ruby>の<ruby>違い<rt>ちがい<\/rt><\/ruby>として正しいのはどれか。", "opts": ["破裂音は狭め、摩擦音は閉鎖をつくる", "破裂音は有声、摩擦音は無声である", "破裂音は舌、摩擦音は口唇でつくる", "破裂音は閉鎖、摩擦音は狭めをつくる", "破裂音は鼻腔、摩擦音は口腔を使う"], "ans": [3], "multi": false, "exp": "破裂音は口腔内に完全な閉鎖をつくり呼気をためてから瞬間的に開放する（/p//t//k/）。摩擦音は狭めをつくり、そこを呼気が通る際の摩擦で音をつくる（/s//ɕ//h/）。", "star": false, "flag": ""}, {"id": "q7", "g": "g1", "cat": "音声学", "src": "2025問4①", "q": "/s/→/t/の<ruby>置換<rt>ちかん<\/rt><\/ruby>について正しいのはどれか。", "opts": ["構音点が変化し、構音操作は変わらない", "構音操作が変化し、構音点は変わらない", "構音点・構音操作がともに変化する", "構音点・構音操作はともに変化しない", "有声・無声のみが変化している"], "ans": [1], "multi": false, "exp": "/s/も/t/も構音点は舌先－歯茎で同じ。構音操作が摩擦音から破裂音に変化している（摩擦音の破裂音化）。★構音点は変わらず操作だけが変わる型。", "star": true, "flag": ""}, {"id": "q8", "g": "g1", "cat": "音声学", "src": "2025問4②", "q": "/r/→/d/の<ruby>置換<rt>ちかん<\/rt><\/ruby>で変化しているのはどれか。", "opts": ["摩擦音から破裂音へ", "鼻音から破裂音へ", "接近音から摩擦音へ", "破裂音からはじき音へ", "はじき音から破裂音へ"], "ans": [4], "multi": false, "exp": "/r/も/d/も構音点は舌先－歯茎で同じ。構音操作がはじき音（弾音）から破裂音に変化している（弾音の破裂音化）。", "star": false, "flag": ""}, {"id": "q9", "g": "g2", "cat": "構音発達", "src": "2025問5①", "q": "子音の<ruby>獲得<rt>かくとく<\/rt><\/ruby>について、最も遅く獲得される傾向がある音はどれか。", "opts": ["/p/", "/m/", "/s/", "/k/", "/r/"], "ans": [2], "multi": false, "exp": "両唇音/p//m/は2歳代、/k/は3〜4歳代に獲得される。/s//r/はいずれも5歳代の獲得だが、狭めの幅を一定に保ち続ける必要がある/s/が最も遅いとされる。★先生に正答を確認したい項目。", "star": true, "flag": "※要確認：/s/と/r/はともに5歳代。正答が/s/でよいか先生に照合"}, {"id": "q10", "g": "g2", "cat": "構音発達", "src": "2025問5②", "q": "子音の<ruby>獲得<rt>かくとく<\/rt><\/ruby>について、最も早く獲得される傾向がある音はどれか。", "opts": ["/s/", "/k/", "/p/", "/r/", "/ʨ/"], "ans": [2], "multi": false, "exp": "両唇音/p/は2歳代に90%以上が獲得する。唇を閉じて開くだけの単純な運動で、動きが目で見えるため模倣しやすい。/k//ʨ/は3〜4歳代、/s//r/は5歳代。", "star": false, "flag": ""}, {"id": "q11", "g": "g3", "cat": "分類", "src": "2025問6", "q": "発話障害の分類として、<ruby>機能性<rt>きのうせい<\/rt><\/ruby><ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>のほかに含まれるのはどれか。", "opts": ["音韻障害と語用障害", "器質性構音障害と運動障害性構音障害", "運動障害性構音障害と吃音", "発語失行と語音症", "器質性構音障害と音韻障害"], "ans": [1], "multi": false, "exp": "発話障害は機能性構音障害・器質性構音障害・運動障害性構音障害（ディサースリア）の3つに分類される。器質性は形態的異常、運動障害性は神経・筋の障害による。", "star": false, "flag": ""}, {"id": "q12", "g": "g3", "cat": "分類", "src": "2025問7", "q": "<ruby>機能性<rt>きのうせい<\/rt><\/ruby><ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>の<ruby>説明<rt>せつめい<\/rt><\/ruby>として正しいのはどれか。", "opts": ["明らかな原因が特定されない", "構音器官の形態的異常により生じる", "神経・筋の障害により生じる", "聴覚障害を必須の原因とする", "脳の形態的異常を背景とする"], "ans": [0], "multi": false, "exp": "機能性構音障害は構音器官の形態・機能、神経筋系、聴覚などに明らかな原因が認められないにもかかわらず、年齢的に構音可能と予想される音が正しく産生されない状態。", "star": false, "flag": ""}, {"id": "q13", "g": "g3", "cat": "分類", "src": "2024[1]", "q": "<ruby>器質性<rt>きしつせい<\/rt><\/ruby><ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>の<ruby>原因<rt>げんいん<\/rt><\/ruby>となるのはどれか。", "opts": ["パーキンソン病", "口蓋裂", "脳性麻痺", "筋萎縮性側索硬化症", "重症筋無力症"], "ans": [1], "multi": false, "exp": "器質性構音障害は構音器官の形態的異常による。口蓋裂、粘膜下口蓋裂、舌小帯短縮症、歯列・咬合異常、舌切除後など。他の選択肢はいずれも運動障害性構音障害の原因。", "star": false, "flag": ""}, {"id": "q14", "g": "g3", "cat": "分類", "src": "2024[2]", "q": "<ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>と<ruby>音韻障害<rt>おんいんしょうがい<\/rt><\/ruby>の<ruby>違い<rt>ちがい<\/rt><\/ruby>として正しいのはどれか。", "opts": ["構音障害は音韻規則、音韻障害は音の産生の誤り", "構音障害は語彙、音韻障害は統語の誤り", "構音障害は理解、音韻障害は表出の誤り", "構音障害は音の産生、音韻障害は音韻規則の誤り", "構音障害は成人、音韻障害は小児に生じる"], "ans": [3], "multi": false, "exp": "構音障害（articulation disorders）は個々の音の産生の誤りに焦点を置く。音韻障害（phonological disorders）は音韻規則や音韻の抽出など音韻論的な誤りに焦点を置く。", "star": false, "flag": ""}, {"id": "q15", "g": "g3", "cat": "分類・診断", "src": "2025問8", "q": "DSM-5-TRのコミュニケーション症群のうち、<ruby>機能性<rt>きのうせい<\/rt><\/ruby><ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>と<ruby>共通<rt>きょうつう<\/rt><\/ruby>する<ruby>概念<rt>がいねん<\/rt><\/ruby>はどれか。", "opts": ["言語症", "語音症", "児童期発症流暢症（吃音）", "社会的（語用論的）コミュニケーション症", "コミュニケーション症、特定不能"], "ans": [1], "multi": false, "exp": "DSM-5-TR（精神疾患の診断・統計マニュアル第5版 本文改訂版）の語音症は語音の産出に困難がある状態で、音韻障害と構音障害の両方を含む。★語音症＝音韻障害＋構音障害。", "star": true, "flag": ""}, {"id": "q16", "g": "g3", "cat": "発語失行", "src": "2024[6]", "q": "発達性<ruby>発語失行<rt>はつごしっこう<\/rt><\/ruby>（CAS）の定義として正しいのはどれか。", "opts": ["音韻規則の獲得の障害", "神経・筋の麻痺による運動障害", "聴覚的弁別の障害", "構音器官の形態的異常による障害", "運動の計画・プログラミングの障害"], "ans": [4], "multi": false, "exp": "CAS（childhood apraxia of speech／小児発語失行）は、音産出の運動計画・プログラミングと、それを連続して産出するためのバッファリングの障害。", "star": false, "flag": ""}, {"id": "q17", "g": "g3", "cat": "発語失行", "src": "2024[6]", "q": "成人の<ruby>発語失行<rt>はつごしっこう<\/rt><\/ruby>と比べた発達性発語失行の<ruby>特徴<rt>とくちょう<\/rt><\/ruby>はどれか。", "opts": ["脳の形態的異常がない", "脳の形態的異常がある", "プロソディが保たれる", "誤りが常に一貫している", "言語理解が必ず障害される"], "ans": [0], "multi": false, "exp": "発達性発語失行は成人の発語失行と異なり脳の形態的異常はない。摂食や口内感覚の異常、口部顔面失行、手指巧緻運動障害などを伴いやすい。誤りは一貫性がなく、プロソディも障害される。", "star": false, "flag": ""}, {"id": "q18", "g": "g3", "cat": "要因", "src": "2024[7]", "q": "<ruby>機能性<rt>きのうせい<\/rt><\/ruby><ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>に<ruby>関連<rt>かんれん<\/rt><\/ruby>する<ruby>要因<rt>よういん<\/rt><\/ruby>とされないのはどれか。", "opts": ["言語発達の遅れ", "聴覚的弁別の遅れ", "音韻認識の問題", "言語環境", "構音器官の形態異常"], "ans": [4], "multi": false, "exp": "★構音器官に形態異常があれば器質性構音障害となり、機能性構音障害の定義から外れる。関連要因は言語発達の遅れ、聴覚的弁別の遅れ、中枢および末梢神経系の成熟の遅れ、音韻認識、言語環境の5つ。", "star": true, "flag": "※要確認：5要因の出典（教科書ページ）を照合"}, {"id": "q19", "g": "g2", "cat": "未熟構音", "src": "2025問9", "q": "発達早期の<ruby>未熟<rt>みじゅく<\/rt><\/ruby><ruby>構音<rt>こうおん<\/rt><\/ruby>にみられる「<ruby>同化<rt>どうか<\/rt><\/ruby>」の例はどれか。", "opts": ["koppu→poppu", "ɕiNkaNseN→ɕikaNseN", "terebi→teberi", "terebi→tebibi", "riNgo→riNgoN"], "ans": [0], "multi": false, "exp": "同化は隣接する音に影響されて類似音や同一音になる誤り。koppuの語頭/k/が後続の/p/に引かれている。2は音節脱落、3は音位転換、4は同音反復、5は付加。", "star": false, "flag": ""}, {"id": "q20", "g": "g2", "cat": "未熟構音", "src": "2025問9", "q": "発達早期の<ruby>未熟<rt>みじゅく<\/rt><\/ruby><ruby>構音<rt>こうおん<\/rt><\/ruby>にみられる「<ruby>同音反復<rt>どうおんはんぷく<\/rt><\/ruby>」の例はどれか。", "opts": ["koppu→poppu", "ɕiNkaNseN→ɕikaNseN", "riNgo→riNgoN", "terebi→tebibi", "terebi→teberi"], "ans": [3], "multi": false, "exp": "同音反復は音節あるいは音節の一部が繰り返される誤り。terebiの「bi」が繰り返されている。音位転換（terebi→teberi）と混同しやすいので区別する。", "star": false, "flag": ""}, {"id": "q21", "g": "g2", "cat": "未熟構音", "src": "2024[5]", "q": "<ruby>発達途上<rt>はったつとじょう<\/rt><\/ruby>の<ruby>構音<rt>こうおん<\/rt><\/ruby>の<ruby>誤り<rt>あやまり<\/rt><\/ruby>のうち、「<ruby>同化<rt>どうか<\/rt><\/ruby>」に該当するのはどれか。", "opts": ["「みかん」が「みたん」になる", "「らっぱ」が「あっぱ」になる", "「てれび」が「てべり」になる", "「りんご」が「りんごん」になる", "「ぽけっと」が「ぽてっと」になる"], "ans": [4], "multi": false, "exp": "★「ぽけっと→ぽてっと」は後続の/t/に引かれた同化であり、歪みではない。歪みは置換のように別の音に変わるのではなく、どの音とも言えない不明瞭な音になるもの（側音化構音など）。1は置換、2は省略、3は音位転換、4は付加。", "star": true, "flag": ""}, {"id": "q22", "g": "g2", "cat": "未熟構音", "src": "2025問10", "q": "<ruby>機能性<rt>きのうせい<\/rt><\/ruby><ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>で、4歳以降にみられる<ruby>構音<rt>こうおん<\/rt><\/ruby>の<ruby>誤り<rt>あやまり<\/rt><\/ruby>の組合せはどれか。<br>　a. 音節<ruby>脱落<rt>だつらく<\/rt><\/ruby>　b. <ruby>置換<rt>ちかん<\/rt><\/ruby>　c. 歪み　d. <ruby>摩擦音<rt>まさつおん<\/rt><\/ruby>の<ruby>破裂音<rt>はれつおん<\/rt><\/ruby>化　e. <ruby>同音反復<rt>どうおんはんぷく<\/rt><\/ruby>", "opts": ["a、b、c", "a、b、e", "a、d、e", "b、c、d", "c、d、e"], "ans": [3], "multi": false, "exp": "4歳以降は音形の変動が少なくなり、置換・省略・歪みとして現れる。摩擦音の破裂音化は構音操作の未熟さによるもので4歳以降。音節脱落と同音反復は発達早期の「語の音の配列の誤り」。", "star": false, "flag": ""}, {"id": "q23", "g": "g2", "cat": "未熟構音", "src": "第7回フォーム", "q": "4歳以降の<ruby>未熟<rt>みじゅく<\/rt><\/ruby><ruby>構音<rt>こうおん<\/rt><\/ruby>のうち、<ruby>弾音<rt>だんおん<\/rt><\/ruby>が<ruby>破裂音<rt>はれつおん<\/rt><\/ruby>化しているものはどれか。", "opts": ["ɕiNbuN→ʨiNbuN", "kaba→taba", "ɸu:seN→u:seN", "riNgo→diNgo", "suika→ʨuika"], "ans": [3], "multi": false, "exp": "弾音は/r/。/r/が/d/に変化している。1と5は摩擦音の破擦音化、2は構音操作の前方移動（k→t）、3は摩擦成分の省略。", "star": false, "flag": ""}, {"id": "q24", "g": "g2", "cat": "未熟構音", "src": "第7回フォーム", "q": "発達早期の<ruby>未熟<rt>みじゅく<\/rt><\/ruby><ruby>構音<rt>こうおん<\/rt><\/ruby>における「語の音の<ruby>配列<rt>はいれつ<\/rt><\/ruby>の<ruby>誤り<rt>あやまり<\/rt><\/ruby>」に含まれないものはどれか。", "opts": ["同化", "脱落", "置換", "転換", "付加"], "ans": [2], "multi": false, "exp": "語の音の配列の誤りは同化・音節脱落・音位転換・同音反復・付加の5つ。置換は4歳以降の構音操作の誤りに分類される。", "star": false, "flag": ""}, {"id": "q25", "g": "g4", "cat": "異常構音", "src": "2025問11", "q": "「<ruby>鼻音化<rt>びおんか<\/rt><\/ruby>」が<ruby>特徴<rt>とくちょう<\/rt><\/ruby>となる異常<ruby>構音<rt>こうおん<\/rt><\/ruby>はどれか。", "opts": ["側音化構音", "口蓋化構音", "声門破裂音", "咽喉頭摩擦音", "鼻咽腔構音"], "ans": [4], "multi": false, "exp": "鼻咽腔構音は軟口蓋と咽頭後壁でつくられ、舌と口蓋で口腔が閉鎖されるため呼気と音声がすべて鼻腔から流出する。「ん」「くん」に近い歪み音となる。", "star": false, "flag": ""}, {"id": "q26", "g": "g4", "cat": "異常構音", "src": "2024[9]", "q": "<ruby>側音化<rt>そくおんか<\/rt><\/ruby><ruby>構音<rt>こうおん<\/rt><\/ruby>の<ruby>特徴<rt>とくちょう<\/rt><\/ruby>として正しいのはどれか。", "opts": ["呼気が鼻腔から流出する", "呼気が口腔の側方から流出する", "呼気が口腔の中央から流出する", "呼気が声門で遮断される", "呼気が咽頭で狭められる"], "ans": [1], "multi": false, "exp": "側音化構音は舌が口蓋に広く接触した状態で舌側縁と臼歯部でつくられ、呼気は口腔の中央ではなく側方から流出する。★機能性構音障害で最も多い異常構音で、自然治癒しにくい。", "star": true, "flag": ""}, {"id": "q27", "g": "g4", "cat": "異常構音", "src": "2024[9]", "q": "<ruby>鼻咽腔<rt>びいんくう<\/rt><\/ruby><ruby>構音<rt>こうおん<\/rt><\/ruby>の<ruby>判別法<rt>はんべつほう<\/rt><\/ruby>として正しいのはどれか。", "opts": ["舌を挺出させると細く尖る", "頸部で喉頭の上下運動がみられる", "口唇や舌の運動が観察されない", "鼻孔を塞ぐと産生できなくなる", "鼻孔を塞ぐと明瞭に産生される"], "ans": [3], "multi": false, "exp": "★鼻咽腔構音は呼気がすべて鼻腔から流出するため、鼻孔を指で塞ぐと音が産生できない。1は口蓋化構音、2と3は声門破裂音の特徴。", "star": true, "flag": ""}, {"id": "q28", "g": "g4", "cat": "異常構音", "src": "2024[9]", "q": "<ruby>口蓋化<rt>こうがいか<\/rt><\/ruby><ruby>構音<rt>こうおん<\/rt><\/ruby>の<ruby>視覚的<rt>しかくてき<\/rt><\/ruby><ruby>特徴<rt>とくちょう<\/rt><\/ruby>として正しいのはどれか。", "opts": ["口唇や舌の運動が全くみられない", "舌が側方に大きく偏位する", "軟口蓋の挙上がみられない", "舌先の使用がみられず舌背が盛り上がる", "下顎が大きく偏位する"], "ans": [3], "multi": false, "exp": "口蓋化構音は本来舌尖と歯・歯茎でつくる音が舌の中央と口蓋でつくられる。舌先の使用がみられず舌背が盛り上がり、舌を前方に挺出させると細く尖る。1は声門破裂音の特徴。", "star": false, "flag": ""}, {"id": "q29", "g": "g4", "cat": "異常構音", "src": "2024[9]", "q": "<ruby>咽喉頭<rt>いんこうとう<\/rt><\/ruby><ruby>摩擦音<rt>まさつおん<\/rt><\/ruby>・<ruby>破擦音<rt>はさつおん<\/rt><\/ruby>の<ruby>聴覚印象<rt>ちょうかくいんしょう<\/rt><\/ruby>として正しいのはどれか。", "opts": ["喉の奥から絞り出すような摩擦音", "軽い咳払いのような音", "「ん」「くん」に近い音", "こもった「か行」に近い音", "独特の摩擦性を伴う歪み音"], "ans": [0], "multi": false, "exp": "咽喉頭摩擦音・破擦音は喉の奥がしぼり出されるような摩擦音として聞かれる。2は声門破裂音、3は鼻咽腔構音、4は口蓋化構音、5は側音化構音の聴覚印象。", "star": false, "flag": ""}, {"id": "q30", "g": "g4", "cat": "異常構音", "src": "2025問12", "q": "<ruby>声門<rt>せいもん<\/rt><\/ruby><ruby>破裂音<rt>はれつおん<\/rt><\/ruby>に見られる<ruby>誤り<rt>あやまり<\/rt><\/ruby>例として正しいのはどれか。", "opts": ["「チ」→「ヒ」", "「タ」→「ナ」", "「カ」→「ア」", "「ツ」→「イ」", "「カ」→「タ」"], "ans": [2], "multi": false, "exp": "声門破裂音は声門で産生されるため口腔内での構音動作が起こらず、聴覚的には母音に近く聞こえる。5は構音点の前方移動による置換。", "star": false, "flag": ""}, {"id": "q31", "g": "g4", "cat": "異常構音", "src": "第7回フォーム", "q": "<ruby>声門<rt>せいもん<\/rt><\/ruby><ruby>破裂音<rt>はれつおん<\/rt><\/ruby>が特に起こりやすい音の組合せはどれか。", "opts": ["無声破裂音・無声破擦音", "有声破裂音・有声破擦音", "鼻音・弾音・接近音", "母音[i]とイ列音", "半母音と長母音"], "ans": [0], "multi": false, "exp": "声門破裂音は口腔内圧を必要とする子音で発現しやすく、有声より無声がなりやすい。特に無声破裂音[p, t, k]・無声破擦音[ts, ʨ]に起こる。4は側音化構音でなりやすい音。", "star": false, "flag": ""}, {"id": "q32", "g": "g4", "cat": "異常構音", "src": "第7回", "q": "<ruby>機能性<rt>きのうせい<\/rt><\/ruby><ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>ではほとんどみられない異常<ruby>構音<rt>こうおん<\/rt><\/ruby>はどれか。", "opts": ["側音化構音", "口蓋化構音", "鼻咽腔構音", "声門破裂音", "咽喉頭摩擦音"], "ans": [4], "multi": false, "exp": "★機能性構音障害でみられる異常構音は側音化構音が最も多く、ほかに声門破裂音・鼻咽腔構音・口蓋化構音。咽（喉）頭摩擦音・咽頭破裂音はほとんどみられないため、答案で挙げない。", "star": true, "flag": ""}, {"id": "q33", "g": "g4", "cat": "異常構音", "src": "第7回フォーム", "q": "「ん」「くん」のように聞こえ、鼻孔を塞ぐと産生できない歪み音はどれか。", "opts": ["側音化構音", "声門破裂音", "鼻咽腔構音", "口蓋化構音", "未熟構音"], "ans": [2], "multi": false, "exp": "鼻咽腔構音の判別法がそのまま決め手になる。口腔が閉鎖され呼気と音声がすべて鼻腔から流出するため、鼻孔を塞ぐと音が出せない。", "star": false, "flag": ""}, {"id": "q34", "g": "g5", "cat": "新版構音検査", "src": "2025問13", "q": "新版<ruby>構音<rt>こうおん<\/rt><\/ruby>検査における「<ruby>被刺激性<rt>ひしげきせい<\/rt><\/ruby>」の<ruby>説明<rt>せつめい<\/rt><\/ruby>として正しいのはどれか。", "opts": ["誤り方が常に一定しているか", "文レベルで構音が保たれているか", "構音器官の運動が随意的に行えるか", "会話の明瞭度が保たれているか", "聴覚刺激により正しい音に変化するか"], "ans": [4], "multi": false, "exp": "被刺激性は、誤り音に強力な聴覚刺激やその他の手がかりを与えることで正しい音に変化するかをみるもの。1は誤りの一貫性、3は構音類似運動検査でみる内容。", "star": false, "flag": ""}, {"id": "q35", "g": "g5", "cat": "新版構音検査", "src": "第8回", "q": "<ruby>被刺激性<rt>ひしげきせい<\/rt><\/ruby>を評価する検査はどれか。", "opts": ["単語検査", "音節検査", "音検査", "文章検査", "構音類似運動検査"], "ans": [2], "multi": false, "exp": "音検査は音に注意を向けた状態で音レベルで復唱させ、被刺激性をみる。★被刺激性があれば聴覚刺激法、なければ構音器官の位置づけ法から訓練を始める。", "star": true, "flag": ""}, {"id": "q36", "g": "g5", "cat": "構音類似運動検査", "src": "2024[8]", "q": "/s/の<ruby>構音<rt>こうおん<\/rt><\/ruby>に必要な<ruby>随意運動<rt>ずいいうんどう<\/rt><\/ruby>として正しいのはどれか。", "opts": ["舌先を挙上し上顎前歯の裏につける", "開口したまま「ンー」という", "口唇を閉鎖し呼気をためる", "舌を平らに出し上顎前歯との狭めを作る", "舌を左右の口角に交互につける"], "ans": [3], "multi": false, "exp": "/s/は上下顎前歯の間から舌を平らに出し、舌と上顎前歯の狭めをつくり呼気を正中から出す。1は/r/、2は/g/の課題。新版構音検査「6.構音類似運動検査」の課題そのもの。", "star": false, "flag": ""}, {"id": "q37", "g": "g5", "cat": "新版構音検査", "src": "第8回", "q": "会話<ruby>明瞭度<rt>めいりょうど<\/rt><\/ruby>の<ruby>段階<rt>だんかい<\/rt><\/ruby>3の<ruby>説明<rt>せつめい<\/rt><\/ruby>として正しいのはどれか。", "opts": ["よくわかる", "時々わからない語がある程度", "聞き手が話題を知っていればわかる程度", "時々わかる語がある程度", "全く了解不能"], "ans": [2], "multi": false, "exp": "会話明瞭度は5段階。1よくわかる／2時々わからない語がある程度／3聞き手が話題を知っていればわかる程度／4時々わかる語がある程度／5全く了解不能。", "star": false, "flag": ""}, {"id": "q38", "g": "g5", "cat": "音声表記", "src": "2024[3]", "q": "新版<ruby>構音<rt>こうおん<\/rt><\/ruby>検査の音声<ruby>表記<rt>ひょうき<\/rt><\/ruby>で「でんわ」を表すのはどれか。", "opts": ["denwa", "deNwa", "denuwa", "deNua", "dengwa"], "ans": [1], "multi": false, "exp": "★新版構音検査では撥音「ん」を大文字のNで表記する。旧版や他の表記法は不可とされる。※答案の赤ペン訂正が読み取りにくいため、配布正答表で要確認。", "star": true, "flag": "※要確認：音声表記の最終正答（配布正答表で照合）"}, {"id": "q39", "g": "g6", "cat": "訓練適応", "src": "2025問14", "q": "<ruby>機能性<rt>きのうせい<\/rt><\/ruby><ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>の<ruby>訓練<rt>くんれん<\/rt><\/ruby><ruby>適応<rt>てきおう<\/rt><\/ruby>の組合せはどれか。<br>　a. <ruby>誤り<rt>あやまり<\/rt><\/ruby>音の一貫性　b. 誤り音の<ruby>被刺激性<rt>ひしげきせい<\/rt><\/ruby>　c. 書字能力の遅れ　d. 希薄な親子関係　e. 集団内での二次的問題", "opts": ["a、b、c", "a、b、e", "a、d、e", "b、c、d", "c、d、e"], "ans": [1], "multi": false, "exp": "誤り方に一貫性があること、被刺激性があること、からかいなど集団内での二次的問題が生じていることは訓練適応の判断材料になる。書字能力の遅れや親子関係は構音訓練の直接の適応条件ではない。", "star": false, "flag": ""}, {"id": "q40", "g": "g6", "cat": "訓練適応", "src": "2025問15", "q": "5歳の男児、主訴は<ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>。<ruby>構音<rt>こうおん<\/rt><\/ruby><ruby>訓練<rt>くんれん<\/rt><\/ruby>の<ruby>適応<rt>てきおう<\/rt><\/ruby>とならないのはどれか。", "opts": ["発話明瞭度が低い", "/s/が[t]に置換する", "構音の誤り方に一貫性がある", "ことばの問題で友人にからかわれる", "言語発達段階が3歳レベルである"], "ans": [4], "multi": false, "exp": "★訓練適応の条件は、精神面・情緒面の相応の発達と安定、原疾患の状態の安定、言語発達レベルが4歳以上の3つ。言語発達が遅れている場合は構音訓練より言語発達の促進が優先される。", "star": true, "flag": ""}, {"id": "q41", "g": "g6", "cat": "構音治療", "src": "第10回", "q": "<ruby>構音<rt>こうおん<\/rt><\/ruby>の<ruby>誤り<rt>あやまり<\/rt><\/ruby>を認めてから<ruby>様子<rt>ようす<\/rt><\/ruby>をみる期間に、行ってはいけないのはどれか。", "opts": ["家庭に発達の見通しを説明する", "正しい音を聞かせる環境をつくる", "定期的に再評価する", "誤り音を模倣して自覚させる", "園や家庭での様子を聞き取る"], "ans": [3], "multi": false, "exp": "★誤り音を指摘して正そうとすること、誤り音を模倣して自覚させようとすることは行わない。発話への苦手意識を生み、誤った構音を強化する可能性がある。", "star": true, "flag": ""}, {"id": "q42", "g": "g6", "cat": "構音訓練", "src": "2024[10]", "q": "<ruby>構音<rt>こうおん<\/rt><\/ruby><ruby>訓練<rt>くんれん<\/rt><\/ruby>のプログラムの3<ruby>段階<rt>だんかい<\/rt><\/ruby>として正しいのはどれか。", "opts": ["誤り音の自覚→正しい構音操作の獲得→習慣化", "正しい構音操作の獲得→誤り音の自覚→習慣化", "誤り音の自覚→習慣化→正しい構音操作の獲得", "被刺激性の評価→単語練習→会話練習", "構音器官の位置づけ→聴覚刺激→般化"], "ans": [0], "multi": false, "exp": "①誤り音の自覚 ②正しい構音操作の獲得 ③正しい音の習慣化の3段階。③の中身が系統的構音訓練にあたる。★3段階と系統的構音訓練の手順（8段階）は別物。", "star": true, "flag": ""}, {"id": "q43", "g": "g6", "cat": "構音訓練", "src": "第10回", "q": "浮動性・<ruby>被刺激性<rt>ひしげきせい<\/rt><\/ruby>がない場合に、正しい<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>の<ruby>獲得<rt>かくとく<\/rt><\/ruby>で用いる<ruby>方法<rt>ほうほう<\/rt><\/ruby>はどれか。", "opts": ["聴覚刺激法", "構音器官の位置づけ法", "系統的構音訓練", "音韻意識訓練", "自己修正法"], "ans": [1], "multi": false, "exp": "★被刺激性の有無で方法が分かれる。被刺激性があれば聴覚刺激法、なければ構音器官の位置づけ法から始める。", "star": true, "flag": ""}, {"id": "q44", "g": "g6", "cat": "構音訓練", "src": "2024[11]", "q": "<ruby>構音<rt>こうおん<\/rt><\/ruby><ruby>位置づけ<rt>いちづけ<\/rt><\/ruby>法の<ruby>目的<rt>もくてき<\/rt><\/ruby>として正しいのはどれか。", "opts": ["獲得した音を日常会話に般化させる", "誤り音を自覚させる", "音韻意識を育てる", "構音器官の筋力を強化する", "正しい構音を新たに身につけさせる"], "ans": [4], "multi": false, "exp": "構音位置づけ法は、構音器官の位置や動きを直接教示して正しい構音を新たに獲得させる方法。被刺激性がない場合に用いる。※2024年[11]の方法欄は手書きが読み取りにくいため要確認。", "star": false, "flag": "※要確認：2024[11]の方法欄が読み取れず、配布正答表で照合"}, {"id": "q45", "g": "g6", "cat": "構音訓練", "src": "第10回", "q": "<ruby>系統的<rt>けいとうてき<\/rt><\/ruby><ruby>構音<rt>こうおん<\/rt><\/ruby><ruby>訓練<rt>くんれん<\/rt><\/ruby>で、<ruby>単語練習<rt>たんごれんしゅう<\/rt><\/ruby>の直前に行う<ruby>段階<rt>だんかい<\/rt><\/ruby>はどれか。", "opts": ["短文練習", "会話練習", "無意味音節の練習", "本読みの練習", "系列語の練習"], "ans": [2], "multi": false, "exp": "教科書の手順は①単音②単音節③無意味音節④単語⑤次の音⑥短文⑦本読み・歌・系列語⑧会話の8段階。※講義スライドでは6段階に圧縮されている。", "star": false, "flag": ""}, {"id": "q46", "g": "g6", "cat": "構音訓練", "src": "第10回", "q": "<ruby>無意味音節<rt>むいみおんせつ<\/rt><\/ruby>の<ruby>練習<rt>れんしゅう<\/rt><\/ruby>を行う理由として正しいのはどれか。", "opts": ["意味理解の負担を減らすため", "習慣的な構音運動の再生を防ぐため", "呼気の調整を容易にするため", "聴覚的弁別を容易にするため", "模倣の負担を減らすため"], "ans": [1], "multi": false, "exp": "★単語にすると口が覚えている構音運動が再生されてしまうため、意味を持たない音の並びで練習し、新しく獲得した構音運動を定着させる。", "star": true, "flag": ""}, {"id": "q47", "g": "g6", "cat": "構音訓練", "src": "第10回", "q": "<ruby>系統的<rt>けいとうてき<\/rt><\/ruby><ruby>構音<rt>こうおん<\/rt><\/ruby><ruby>訓練<rt>くんれん<\/rt><\/ruby>の<ruby>単語練習<rt>たんごれんしゅう<\/rt><\/ruby>で、語頭・語尾・語中それぞれの<ruby>練習<rt>れんしゅう<\/rt><\/ruby>語数の目安はどれか。", "opts": ["10〜15個", "15〜20個", "20〜30個", "30〜40個", "40〜50個"], "ans": [2], "multi": false, "exp": "教科書 表2では語頭・語尾・語中のそれぞれに20〜30個くらいを練習するとされる。日常生活で使う可能性が高い単語や親しみのある単語を集める。", "star": false, "flag": ""}, {"id": "q48", "g": "g6", "cat": "構音訓練", "src": "第10回", "q": "<ruby>歯間音<rt>しかんおん<\/rt><\/ruby>で<ruby>練習<rt>れんしゅう<\/rt><\/ruby>している場合、正常音に修正するのはどの<ruby>段階<rt>だんかい<\/rt><\/ruby>か。", "opts": ["単音節の練習", "無意味音節の練習", "単語練習", "短文練習", "本読み・歌・系列語の練習"], "ans": [4], "multi": false, "exp": "舌を出して練習している場合は短文練習まで出したままでよく、本読み・歌・系列語の段階（教科書の段階7）で正常音にする。", "star": false, "flag": ""}, {"id": "q49", "g": "g6", "cat": "構音訓練", "src": "第10回", "q": "<ruby>系統的<rt>けいとうてき<\/rt><\/ruby><ruby>構音<rt>こうおん<\/rt><\/ruby><ruby>訓練<rt>くんれん<\/rt><\/ruby>の「次の音の<ruby>練習<rt>れんしゅう<\/rt><\/ruby>」の進め方として正しいのはどれか。", "opts": ["1つの音を会話まで完成させてから次に進む", "1つの音が単語練習まで進んだら次の音を始める", "すべての音を同時に単音から始める", "短文練習が終わってから次の音を始める", "誤り音を1つずつ順に会話まで仕上げる"], "ans": [1], "multi": false, "exp": "★1つの音が単語練習まで進んだら次の誤り音を単音から始める。ある程度の誤り音がそれぞれ単語練習まで進んだ時点で短文練習に入る。複数の誤り音を並行して進め、短文以降で合流させる。", "star": true, "flag": ""}], "desc": [{"g": "g1", "q": "言語音をつくる過程を3つ書け。", "a": "発声・共鳴・構音", "pt": "国試頻出。順番も覚える", "src": "第1回 Q1", "star": true, "flag": "", "id": "d1"}, {"g": "g1", "q": "<ruby>構音<rt>こうおん<\/rt><\/ruby>メカニズムにおける共鳴腔を2つ書け。", "a": "口腔・鼻腔", "pt": "模範解答の要点を漏れなく", "src": "第1回 Q2", "star": false, "flag": "", "id": "d2"}, {"g": "g1", "q": "日本語の母音の<ruby>構音<rt>こうおん<\/rt><\/ruby>において、共鳴腔に作用する発声発語器官の要素を3つ書け。", "a": "舌の上下位置・舌の前後位置・唇の形状", "pt": "声帯振動の有無は含まれない", "src": "第1回 Q3", "star": false, "flag": "", "id": "d3"}, {"g": "g1", "q": "日本語の子音の<ruby>構音<rt>こうおん<\/rt><\/ruby>における「<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>」を3つ挙げよ。", "a": "破裂音・摩擦音・鼻音（破擦音・はじき音・接近音も可）", "pt": "3つ以上ある", "src": "第1回 Q4", "star": false, "flag": "", "id": "d4"}, {"g": "g1", "q": "発声発語器官を顔面の矢状断面で図示せよ。（<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>・<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>に関係する器官の名称を図中に示せ）", "a": "両唇・歯・歯茎・硬口蓋・軟口蓋・口蓋垂・舌先・前舌面・中舌面・奥舌・舌根・声門・鼻腔・口腔・咽頭", "pt": "緑本p.3の図を手書き練習", "src": "第2回 ①-1", "star": false, "flag": "", "id": "d5"}, {"g": "g1", "q": "/k/を<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>（接触）＋<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>で<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "奥舌－軟口蓋　破裂音（無声）", "pt": "模範解答の要点を漏れなく", "src": "第2回 ①-2", "star": true, "flag": "", "id": "d6"}, {"g": "g1", "q": "/s/を<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>（接触）＋<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>で<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "舌先－歯茎　摩擦音（無声）", "pt": "模範解答の要点を漏れなく", "src": "第2回 ①-3", "star": false, "flag": "", "id": "d7"}, {"g": "g1", "q": "/t/を<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>（接触）＋<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>で<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "舌先－歯茎　破裂音（無声）", "pt": "サ行と構音点が同じ・操作が違う", "src": "第2回 ①-4", "star": false, "flag": "", "id": "d8"}, {"g": "g1", "q": "/n/を<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>（接触）＋<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>で<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "舌先－歯茎　鼻音（有声）", "pt": "模範解答の要点を漏れなく", "src": "第2回 ①-5", "star": false, "flag": "", "id": "d9"}, {"g": "g1", "q": "/h/を<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>（接触）＋<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>で<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "声門　摩擦音（無声）", "pt": "舌を使わない", "src": "第2回 ①-6", "star": false, "flag": "", "id": "d10"}, {"g": "g1", "q": "/m/を<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>（接触）＋<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>で<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "上唇－下唇　鼻音（有声）", "pt": "模範解答の要点を漏れなく", "src": "第2回 ①-7", "star": false, "flag": "", "id": "d11"}, {"g": "g1", "q": "/j/を<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>（接触）＋<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>で<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "前舌面－硬口蓋　接近音（有声）", "pt": "摩擦も破裂もしない", "src": "第2回 ①-8", "star": false, "flag": "", "id": "d12"}, {"g": "g1", "q": "/r/を<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>（接触）＋<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>で<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "舌先－歯茎　はじき音（有声）", "pt": "模範解答の要点を漏れなく", "src": "第2回 ①-9", "star": false, "flag": "", "id": "d13"}, {"g": "g1", "q": "以下の14の<ruby>構音器官<rt>こうおんきかん<\/rt><\/ruby>を含む、<ruby>頭部<rt>とうぶ<\/rt><\/ruby>の<ruby>矢状面<rt>しじょうめん<\/rt><\/ruby>図を書き、それぞれの名称を正しい位置に書き込みなさい。<br><ruby>喉頭蓋<rt>こうとうがい<\/rt><\/ruby>、喉頭（声帯）、上<ruby>咽頭<rt>いんとう<\/rt><\/ruby>、中咽頭、下咽頭、<ruby>硬口蓋<rt>こうこうがい<\/rt><\/ruby>、<ruby>軟口蓋<rt>なんこうがい<\/rt><\/ruby>、舌、上口唇、下口唇、下顎、歯、鼻腔、口腔", "a": "矢状断面図を描き、14部位を正しい位置に記入する。<br>上方から：鼻腔／硬口蓋／軟口蓋／上咽頭・中咽頭・下咽頭／喉頭蓋／喉頭（声帯）<br>前方：上口唇・下口唇・歯・下顎／口腔・舌", "pt": "模範解答の要点を漏れなく", "src": "2025年度 問1", "star": false, "flag": "", "id": "d14"}, {"g": "g1", "q": "以下の子音について、<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>（調音位置）・<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>（調音<ruby>方法<rt>ほうほう<\/rt><\/ruby>）をそれぞれ答えなさい。構音点は口腔内の上側だけでなく、下側（舌など）も述べなさい。<br>①[p]　②[ɕ]　③[g]", "a": "①[p]　上唇－下唇（両唇）／破裂音（無声）<br>②[ɕ]　前舌面－歯茎硬口蓋／摩擦音（無声）<br>③[g]　奥舌－軟口蓋／破裂音（有声）", "pt": "模範解答の要点を漏れなく", "src": "2025年度 問2", "star": false, "flag": "", "id": "d15"}, {"g": "g1", "q": "子音の<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>（調音<ruby>方法<rt>ほうほう<\/rt><\/ruby>）において<ruby>破裂音<rt>はれつおん<\/rt><\/ruby>と<ruby>摩擦音<rt>まさつおん<\/rt><\/ruby>の<ruby>違い<rt>ちがい<\/rt><\/ruby>を<ruby>説明<rt>せつめい<\/rt><\/ruby>し、それぞれの代表的な音を挙げなさい。", "a": "破裂音は口腔内で完全な閉鎖をつくり、呼気をためてから瞬間的に開放して産生する音である（例：/p//t//k/）。摩擦音は口腔内に狭めをつくり、その狭めを呼気が通過する際に生じる摩擦によって産生する音である（例：/s//ɕ//h/）。閉鎖をつくるか狭めをつくるかが違いである。", "pt": "模範解答の要点を漏れなく", "src": "2025年度 問3", "star": false, "flag": "", "id": "d16"}, {"g": "g1", "q": "次の<ruby>置換<rt>ちかん<\/rt><\/ruby>例について、<ruby>誤り<rt>あやまり<\/rt><\/ruby>音と正しい音の<ruby>違い<rt>ちがい<\/rt><\/ruby>を<ruby>構音点<rt>こうおんてん<\/rt><\/ruby>（調音位置）、<ruby>構音操作<rt>こうおんそうさ<\/rt><\/ruby>（調音<ruby>方法<rt>ほうほう<\/rt><\/ruby>）の観点から<ruby>説明<rt>せつめい<\/rt><\/ruby>しなさい。<br>①/s/→/t/　②/r/→/d/", "a": "①構音点はどちらも舌先－歯茎で同じである。構音操作が摩擦音から破裂音に変化している（摩擦音の破裂音化）。<br>②構音点はどちらも舌先－歯茎で同じである。構音操作がはじき音（弾音）から破裂音に変化している（弾音の破裂音化）。<br>※いずれも構音点は変わらず構音操作だけが変化している点が共通。", "pt": "模範解答の要点を漏れなく", "src": "2025年度 問4", "star": false, "flag": "", "id": "d17"}, {"g": "g2", "q": "前言語期の<ruby>音韻<rt>おんいん<\/rt><\/ruby>の最適化とは何か、<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "生後すぐから1歳頃までに、母語にとって重要な音韻特徴を選択的に強化し、不要な音韻の区別を徐々に捨てていく過程。新生児は世界中の言語の音韻を聞き分けられるが、生後6〜12か月にかけて母語に頻出する音韻の弁別能力が高まり、母語に存在しない音の区別は弱まる。これが母語の音韻体系へと知覚が再編成される発達的プロセスである。", "pt": "シナプスの刈り込みと対応", "src": "第3･4回 Q1", "star": false, "flag": "", "id": "d18"}, {"g": "g2", "q": "前言語期の発声行動を生後0か月から12か月まで順を追って<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "0か月：叫喚発声（産声）／2〜3か月：喉頭を使った発声の増加／4〜6か月：クーイング／6〜10か月：喃語（規準喃語・反復喃語）／10〜12か月：反復喃語から多様喃語へ。泣き声→母音→喃語→多様喃語と段階的に発達する。", "pt": "白本p7表1-3も確認", "src": "第3･4回 Q2", "star": false, "flag": "", "id": "d19"}, {"g": "g2", "q": "幼児前期の認知発達で「物の永続性の<ruby>獲得<rt>かくとく<\/rt><\/ruby>」が重要なのはなぜか、<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "物の永続性とは、物体は見えなくなっても存在し続けるという理解。ピアジェ（スイスの心理学者）の感覚運動期第5段階（12か月〜）に安定してくる認知機能で、三項関係（共同注意）と併せて言語発達に重要。また象徴機能（振り・ごっこ・見立て）の基盤としても重要であり、象徴機能はコミュニケーションの発達に重要。", "pt": "言語＝目に見えないものを表現する", "src": "第3･4回 Q3", "star": false, "flag": "", "id": "d20"}, {"g": "g2", "q": "幼児後期に<ruby>獲得<rt>かくとく<\/rt><\/ruby>される<ruby>音韻<rt>おんいん<\/rt><\/ruby>意識が学齢期にとっても重要なのはなぜか、<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "学齢期にはおもに文字言語による学習が進む。幼児後期（3〜5歳）に獲得される音韻意識は、ことばを音の単位（モーラ・音節・音素）として操作できる能力であり、学齢期の文字の読み書きに直結する。語が音で分解できるようになると、文字が音と1対1で対応していることに気づき文字の習得につながる。この音の操作が文字の操作になる。", "pt": "ひらがな・カタカナは1音1文字", "src": "第3･4回 Q4", "star": false, "flag": "", "id": "d21"}, {"g": "g2", "q": "<ruby>音韻<rt>おんいん<\/rt><\/ruby>意識について<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "音韻意識とは、3歳半ごろからことば遊びを通じて出現する、ことばを構成するモーラや音節などの韻律単位に気づき操作する力である。具体的には「さくら」を「さ・く・ら」と切り分ける音韻の分解、しりとりで「りんご」の最後の音「ご」を取り出す音韻の抽出、「さ・か・な」をつなげて「さかな」と言う音韻の混成などの操作が含まれる。この時期の子どもは、読み書きを身につける前に遊びの中であたかも読み書きができるかのようにふるまう萌芽的リテラシー（プレリテラシー）を示しており、音韻意識はこうした活動とともに就学後の文字言語習得へとつながる重要な発達である。", "pt": "分解・抽出・混成を必ず入れる", "src": "第4回 ②-A", "star": false, "flag": "", "id": "d22"}, {"g": "g2", "q": "<ruby>構音<rt>こうおん<\/rt><\/ruby>発達について、2歳代・3〜4歳代・5歳代・6歳代に90％以上の子どもが習得する子音を述べよ。", "a": "構音発達には順序性があり、2歳代では両唇音・接近音である/w//j//p//b//m//ɸ/が習得され、3〜4歳代では/t//d//g//k//n//ʨ//ʥ//h/が加わる。さらに5歳代では/s//ɕ//r//ki//ke/が習得され、6歳代では/ts//dz/を含めほぼ全ての子音の構音が完成する。", "pt": "唇→舌の粗い動き→舌の細かい動き", "src": "第4回 ②-B", "star": true, "flag": "", "id": "d23"}, {"g": "g2", "q": "発達早期にみられる<ruby>未熟<rt>みじゅく<\/rt><\/ruby><ruby>構音<rt>こうおん<\/rt><\/ruby>における音の<ruby>配列<rt>はいれつ<\/rt><\/ruby>の<ruby>誤り<rt>あやまり<\/rt><\/ruby>として、<ruby>同化<rt>どうか<\/rt><\/ruby>・<ruby>脱落<rt>だつらく<\/rt><\/ruby>・転換・<ruby>同音反復<rt>どうおんはんぷく<\/rt><\/ruby>・付加のうち3つを選んで、例を挙げて<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "①同化：隣接する音に影響されて類似音や同一音になる誤り。「コップ（koppu）」が「ポップ（poppu）」となる場合、語頭の/k/が後続の/p/に引かれて/p/に変化している。<br>②音節脱落：単語内の音節が脱落し語全体が縮小される誤り。「しんかんせん（ɕiNkaNseN）」が「しかんせん（ɕikaNseN）」となる。<br>③音位転換：2つの音・音節の位置が入れ替わる誤り。「てれび（terebi）」が「てべり（teberi）」となる場合、/r/と/b/の位置が入れ替わっている。<br>※いずれも発達早期に語の音形が確実にとらえられていないために生じる。個々の音は産生できており、構音ではなく音韻の問題。<br>※2025問9では5種（同化・音節脱落・音位転換・同音反復・付加）から2つ。同音反復：terebi→tebibi／付加：riNgo→riNgoN", "pt": "定義＋例をセットで書く", "src": "第9回 小テスト④／2025問9", "star": true, "flag": "", "id": "d24"}, {"g": "g2", "q": "<ruby>音韻<rt>おんいん<\/rt><\/ruby>操作能力が低い子の場合、書字がどのような影響を受けるのか述べよ。（3点）", "a": "音韻操作能力が低い子の場合、書字では平仮名が書けなかったり、書き間違いが多くなるといった影響を受ける。音韻の分解ができないと、文字が音と1対1で対応していることに気づけないためである。", "pt": "模範解答の要点を漏れなく", "src": "2024年度 問4", "star": false, "flag": "", "id": "d25"}, {"g": "g2", "q": "<ruby>発達途上<rt>はったつとじょう<\/rt><\/ruby>の<ruby>構音<rt>こうおん<\/rt><\/ruby>の<ruby>誤り<rt>あやまり<\/rt><\/ruby>について、実際にどのような誤り方が考えられるか具体例5つ以上出して答えよ。（5点）", "a": "①置換：「みかん」→「みたん」<br>②省略：「らっぱ」→「あっぱ」<br>③歪み：側音化構音のように、どの音とも言えない不明瞭な音になる<br>④同化：「ぽけっと」→「ぽてっと」<br>⑤音位転換：「てれび」→「てべり」<br>⑥音節脱落：「しんかんせん」→「しかんせん」<br>⑦付加：「りんご」→「りんごん」<br>★答案では③歪みの例に「ぽけっと→ぽてっと」を挙げていたが、これは同化。", "pt": "模範解答の要点を漏れなく", "src": "2024年度 問5", "star": false, "flag": "※要確認：歪みの正しい例（答案の「ぽけっと→ぽてっと」は同化）", "id": "d26"}, {"g": "g3", "q": "<ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>の分類における、<ruby>機能性<rt>きのうせい<\/rt><\/ruby>・<ruby>器質性<rt>きしつせい<\/rt><\/ruby>・<ruby>運動障害性<rt>うんどうしょうがいせい<\/rt><\/ruby>構音障害について、それぞれ具体的な疾患などを挙げて<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "機能性構音障害：構音器官の形態・機能、神経筋系に明らかな異常が認められないにもかかわらず、構音の誤りが持続する状態（原因疾患なし）。<br>器質性構音障害：構音器官の形態的異常により構音が障害される状態。口蓋裂、粘膜下口蓋裂、鼻咽腔閉鎖機能不全、舌小帯短縮症、歯列・咬合異常、舌切除後（舌癌）など。<br>運動障害性構音障害（ディサースリア）：神経・筋系の障害により発声発語器官の運動が障害され構音が困難になる状態。脳血管障害、脳性麻痺、パーキンソン病、ALS（筋萎縮性側索硬化症）、重症筋無力症など。", "pt": "ALSは初出時フルスペル", "src": "第6回 小テスト③／2025問6", "star": true, "flag": "", "id": "d27"}, {"g": "g3", "q": "<ruby>機能性<rt>きのうせい<\/rt><\/ruby><ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>とは何か、<ruby>説明<rt>せつめい<\/rt><\/ruby>しなさい。", "a": "構音器官の形態・機能、神経・筋系、聴覚などに明らかな原因が認められないにもかかわらず、社会的・年齢的に当然構音可能と予想される音が正しく産生されない状態である。音韻障害と構音障害の両方を含む。", "pt": "模範解答の要点を漏れなく", "src": "2025年度 問7", "star": true, "flag": "", "id": "d28"}, {"g": "g3", "q": "Kussmaulに基づいて、<ruby>機能性<rt>きのうせい<\/rt><\/ruby><ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>と<ruby>器質性<rt>きしつせい<\/rt><\/ruby>構音障害の<ruby>違い<rt>ちがい<\/rt><\/ruby>について<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。（3点）", "a": "機能性構音障害は、構音器官の機能や形態に問題がなく、原因がわからない構音障害である。一方、器質性構音障害は、構音器官の機能や形態に起因する構音障害である。", "pt": "模範解答の要点を漏れなく", "src": "2024年度 問1", "star": false, "flag": "※要確認：Kussmaulの分類を授業で扱ったか／教科書ページ", "id": "d29"}, {"g": "g3", "q": "<ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>（articulation disorders）と<ruby>音韻障害<rt>おんいんしょうがい<\/rt><\/ruby>（phonological disorders）をそれぞれ<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。（4点）", "a": "構音障害は、個々の音の生成（産生）の誤りに焦点を置いている。一方、音韻障害は、音韻規則や音韻の抽出など、音韻論的な誤りに焦点を置いている。", "pt": "模範解答の要点を漏れなく", "src": "2024年度 問2", "star": false, "flag": "", "id": "d30"}, {"g": "g3", "q": "発達性<ruby>発語失行<rt>はつごしっこう<\/rt><\/ruby>の定義を述べよ。（3点）", "a": "音産出の運動計画・プログラミングと、それを連続して産出するためのバッファリングの障害である。成人の発語失行と異なり脳の形態的異常はなく、摂食や口内感覚の異常、口部顔面失行、手指巧緻運動障害などを伴いやすい。", "pt": "模範解答の要点を漏れなく", "src": "2024年度 問6", "star": false, "flag": "", "id": "d31"}, {"g": "g3", "q": "<ruby>機能性<rt>きのうせい<\/rt><\/ruby><ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>に<ruby>関連<rt>かんれん<\/rt><\/ruby>していると言われる<ruby>要因<rt>よういん<\/rt><\/ruby>を5つ挙げよ。（5点）", "a": "①言語発達の遅れ<br>②聴覚的弁別の遅れ<br>③構音に関与する中枢および末梢神経系の成熟の遅れ<br>④音韻認識（音韻意識）の問題<br>⑤言語環境", "pt": "模範解答の要点を漏れなく", "src": "2024年度 問7", "star": false, "flag": "※要確認：5要因の出典（教科書ページ）", "id": "d32"}, {"g": "g4", "q": "<ruby>機能性<rt>きのうせい<\/rt><\/ruby><ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>における「異常<ruby>構音<rt>こうおん<\/rt><\/ruby>」を3つ挙げて<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。", "a": "①側音化構音：舌が口蓋に広く接触した状態で舌側縁と臼歯部でつくられる歪み音。呼気は口腔の中央ではなく側方から流出する。母音[i]やイ列音、[ke][ge]に起こりやすく、[ʨi]は[ki]に、[ɕi]は[çi]に近く聞こえる。自然治癒しにくい。<br>②鼻咽腔構音：舌が口蓋に接触した状態で軟口蓋と咽頭後壁でつくられる歪み音。口腔が閉鎖され呼気と音声はすべて鼻腔から流出する。い列音に最も多い。「ん」「くん」に近く聞かれ、鼻孔を塞ぐと産生できない。<br>③声門破裂音：起声前に声帯と仮声帯を強く閉鎖し、起声と同時に開放して産生する。口腔内圧を要する子音、特に無声破裂音[p][t][k]・無声破擦音[ts][ʨ]に起こりやすい。軽い咳払いのように聞かれる。", "pt": "側音化は必ず入れる。咽頭摩擦音・咽頭破裂音は選ばない", "src": "第9回 小テスト④", "star": true, "flag": "", "id": "d33"}, {"g": "g4", "q": "異常<ruby>構音<rt>こうおん<\/rt><\/ruby>のうち、「<ruby>鼻音化<rt>びおんか<\/rt><\/ruby>」が<ruby>特徴<rt>とくちょう<\/rt><\/ruby>となる<ruby>構音障害<rt>こうおんしょうがい<\/rt><\/ruby>の名称を答えなさい。", "a": "鼻咽腔構音。軟口蓋と咽頭後壁でつくられ、舌と口蓋で口腔が閉鎖されるため、呼気と音声がすべて鼻腔から流出する。「ん」「くん」に近い歪み音となり、鼻孔を指で塞ぐと産生できない。", "pt": "模範解答の要点を漏れなく", "src": "2025年度 問11", "star": true, "flag": "", "id": "d34"}, {"g": "g4", "q": "異常<ruby>構音<rt>こうおん<\/rt><\/ruby>の主な<ruby>誤り<rt>あやまり<\/rt><\/ruby>音と<ruby>聴覚印象<rt>ちょうかくいんしょう<\/rt><\/ruby>をそれぞれ<ruby>説明<rt>せつめい<\/rt><\/ruby>しなさい。（各2点）", "a": "側音化構音：イ列音、ke, ge, ɕ, ʨ, ʥ, s, ts, dz／シはヒに、チはキに、ジ・リ・ニはギに近い歪み音<br>鼻咽腔構音：イ列・ウ列、s, ts, dz／母音はンに、破裂音はクンに、摩擦音は鼻音化した摩擦音に近い<br>口蓋化構音：舌尖音・歯茎音 t, d, n, s, ts, dz, r／摩擦音は[ç]に、破裂音は[k, g]に近い歪み音。舌が口中でモゴモゴしている<br>声門破裂音：破裂音 p, t, k／母音を強く区切って発音した音に近い<br>咽喉頭摩擦音・破擦音：ɕ, ʨ, s, ts／喉の奥がしぼり出されるような摩擦音<br>咽喉頭破裂音：k, g／喉の奥で産出される歪んだ k, g", "pt": "模範解答の要点を漏れなく", "src": "2024年度 問9", "star": true, "flag": "", "id": "d35"}, {"g": "g5", "q": "新版<ruby>構音<rt>こうおん<\/rt><\/ruby>検査における「<ruby>被刺激性<rt>ひしげきせい<\/rt><\/ruby>」とは何か。<ruby>説明<rt>せつめい<\/rt><\/ruby>しなさい。", "a": "誤り音について、強力な聴覚刺激およびその他の手がかりを与えることにより、正しい音に変化するかどうかをみるものである。音検査で評価する。被刺激性があれば構音動作自体は獲得されており、訓練の予後は良好と判断される。", "pt": "模範解答の要点を漏れなく", "src": "2025年度 問13", "star": true, "flag": "", "id": "d36"}, {"g": "g5", "q": "次の日本語を音声<ruby>表記<rt>ひょうき<\/rt><\/ruby>に変換しなさい。ただし、採点は「新版 <ruby>構音<rt>こうおん<\/rt><\/ruby>検査」で使われている音声記号に従う。（各2点）<br>①でんわ　②にんじん　③くち　④しんぶん　⑤ふうせん", "a": "①deNwa　②niNdʑiN　③kutɕi　④ɕiNbuN　⑤ɸu:seN<br>※撥音「ん」は大文字のNで表記する。答案の赤ペン訂正が読み取りにくいため、配布正答表で要確認。", "pt": "模範解答の要点を漏れなく", "src": "2024年度 問3", "star": false, "flag": "※要確認：音声表記の最終正答（配布正答表で照合）", "id": "d37"}, {"g": "g5", "q": "以下の音を<ruby>構音<rt>こうおん<\/rt><\/ruby>するために必要な<ruby>随意運動<rt>ずいいうんどう<\/rt><\/ruby>能力を述べよ。（各2点）<br>①/r/　②/s/　③/g/", "a": "①/r/　開口したまま舌先を挙上させ、舌先を上顎前歯の裏につける<br>②/s/　上下顎前歯の間から舌を平らに出し、舌と上顎前歯の狭めを作り、呼気を正中から出す<br>③/g/　開口したままで「ンー」をいう<br>※新版構音検査「6.構音類似運動検査」の課題そのもの。", "pt": "模範解答の要点を漏れなく", "src": "2024年度 問8", "star": false, "flag": "", "id": "d38"}, {"g": "g6", "q": "<ruby>構音<rt>こうおん<\/rt><\/ruby><ruby>訓練<rt>くんれん<\/rt><\/ruby>の流れ、3<ruby>段階<rt>だんかい<\/rt><\/ruby>とそれぞれの<ruby>目的<rt>もくてき<\/rt><\/ruby>を<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。（3点）", "a": "①誤り音の自覚：自分の音が正しくないことに気づかせる段階。いつの間にか正しい構音ができていて、その時に自覚することもある。<br>②正しい構音操作の獲得：正しい音を産生できるようにする段階。浮動性・被刺激性があれば聴覚刺激法、なければ構音器官の位置づけ法を用いる。<br>③正しい音の習慣化：獲得した音を日常の発話で使えるようにする段階。系統的構音訓練を用いる。<br>※第10回の内容。答案は空欄だった。", "pt": "模範解答の要点を漏れなく", "src": "2024年度 問10", "star": true, "flag": "", "id": "d39"}, {"g": "g6", "q": "<ruby>構音<rt>こうおん<\/rt><\/ruby><ruby>位置づけ<rt>いちづけ<\/rt><\/ruby>法の<ruby>目的<rt>もくてき<\/rt><\/ruby>と<ruby>方法<rt>ほうほう<\/rt><\/ruby>を<ruby>説明<rt>せつめい<\/rt><\/ruby>せよ。（各2点）", "a": "目的：正しい構音を身につけること。<br>方法：構音器官（舌・口唇・下顎など）の位置や動かし方を、言語聴覚士が口頭・視覚・触覚の手がかりを用いて直接教示し、正しい構音位置と構音方法を形づくる。被刺激性がない場合に用いる。<br>※答案の方法欄の手書きが読み取れないため、配布正答表で要確認。", "pt": "模範解答の要点を漏れなく", "src": "2024年度 問11", "star": false, "flag": "※要確認：方法欄の手書きが読み取れず配布正答表で照合", "id": "d40"}], "cloze": [{"name": "構音の基礎・子音表", "note": "空欄をタップすると答えが出ます。用語は授業に合わせて「舌先／奥舌」で統一（教科書の「前舌歯茎」などの表記と異なる場合あり）。", "table": {"head": ["音", "構音点（上側－下側）", "構音操作", "有声・無声"], "rows": [["/p/", "⟦上唇－下唇（両唇）⟧", "⟦破裂音⟧", "⟦無声⟧"], ["/m/", "⟦上唇－下唇（両唇）⟧", "⟦鼻音⟧", "⟦有声⟧"], ["/t/", "⟦舌先－歯茎⟧", "⟦破裂音⟧", "⟦無声⟧"], ["/s/", "⟦舌先－歯茎⟧", "⟦摩擦音⟧", "⟦無声⟧"], ["/n/", "⟦舌先－歯茎⟧", "⟦鼻音⟧", "⟦有声⟧"], ["/r/", "⟦舌先－歯茎⟧", "⟦はじき音（弾音）⟧", "⟦有声⟧"], ["/ɕ/", "⟦前舌面－歯茎硬口蓋⟧", "⟦摩擦音⟧", "⟦無声⟧"], ["/j/", "⟦前舌面－硬口蓋⟧", "⟦接近音⟧", "⟦有声⟧"], ["/k/", "⟦奥舌－軟口蓋⟧", "⟦破裂音⟧", "⟦無声⟧"], ["/g/", "⟦奥舌－軟口蓋⟧", "⟦破裂音⟧", "⟦有声⟧"], ["/h/", "⟦声門⟧", "⟦摩擦音⟧", "⟦無声⟧"]], "foot": "★カ行・サ行・タ行は国試頻出。サ行とタ行は構音点が同じで構音操作が違う。"}, "rows": [{"l": "言語音をつくる3つの過程", "t": "⟦発声⟧→⟦共鳴⟧→⟦構音⟧（順番も覚える）", "star": true}, {"l": "共鳴腔（2つ）", "t": "⟦口腔⟧と⟦鼻腔⟧"}, {"l": "母音の構音で共鳴腔に作用する要素", "t": "⟦舌の上下位置⟧・⟦舌の前後位置⟧・⟦唇の形状⟧（声帯振動の有無は含まれない）"}, {"l": "咽頭の3区分", "t": "⟦上咽頭⟧・⟦中咽頭⟧・⟦下咽頭⟧（鼻咽腔・口腔・喉頭腔は共鳴腔の区分）"}, {"l": "口腔内の並び（前→後）", "t": "歯→⟦歯槽⟧→⟦硬口蓋⟧→⟦軟口蓋⟧→咽頭"}, {"l": "子音の構音操作", "t": "⟦破裂音⟧・⟦摩擦音⟧・⟦鼻音⟧（ほかに⟦破擦音⟧・⟦はじき音⟧・⟦接近音⟧）"}, {"l": "破裂音と摩擦音の違い", "t": "破裂音は口腔内に完全な⟦閉鎖⟧をつくり瞬間的に開放。摩擦音は⟦狭め⟧をつくり呼気の摩擦で産生。"}, {"l": "置換 /s/→/t/", "t": "構音点は同じで、構音操作が⟦摩擦音⟧から⟦破裂音⟧に変化（摩擦音の破裂音化）", "star": true}, {"l": "置換 /r/→/d/", "t": "構音点は同じで、構音操作が⟦はじき音（弾音）⟧から⟦破裂音⟧に変化"}, {"l": "構音点の答え方", "t": "口腔内の⟦上側⟧だけでなく、⟦下側⟧（下唇・舌など）も述べる", "star": true}]}, {"name": "構音発達・未熟構音", "note": "構音発達の年齢は授業資料に基づく。/s/と/r/の獲得順は先生に確認予定。", "rows": [{"l": "前言語期の発声", "t": "0か月：⟦叫喚発声⟧／2〜3か月：⟦喉頭を使った発声⟧の増加／4〜6か月：⟦クーイング⟧／6〜10か月：⟦喃語⟧／10〜12か月：⟦多様喃語⟧"}, {"l": "音韻の最適化", "t": "生後6〜12か月に母語に頻出する音韻の弁別能力が⟦高まり⟧、母語にない音の区別は⟦弱まる⟧"}, {"l": "物の永続性", "t": "ピアジェ（Jean Piaget／スイスの心理学者）の⟦感覚運動期⟧第5段階（12か月〜）。⟦象徴機能⟧の基盤"}, {"l": "音韻意識", "t": "⟦3歳半⟧ごろから出現。音韻の⟦分解⟧・⟦抽出⟧・⟦混成⟧などの操作。学齢期の⟦読み書き⟧につながる"}, {"l": "構音発達：2歳代", "t": "⟦/w//j//p//b//m//ɸ/⟧（両唇音・接近音）", "star": true}, {"l": "構音発達：3〜4歳代", "t": "⟦/t//d//g//k//n//ʨ//ʥ//h/⟧が加わる", "star": true}, {"l": "構音発達：5歳代", "t": "⟦/s//ɕ//r//ki//ke/⟧", "star": true, "flag": "※要確認：/s/と/r/のどちらが遅いか（先生に照合）"}, {"l": "構音発達：6歳代", "t": "⟦/ts//dz/⟧を含め、ほぼ全ての子音が完成"}, {"l": "構音発達の順序性", "t": "⟦唇⟧→舌の粗い動き→舌の⟦細かい動き⟧", "star": true}, {"l": "発達早期：語の音の配列の誤り（5つ）", "t": "⟦同化⟧・⟦音節脱落⟧・⟦音位転換⟧・⟦同音反復⟧・⟦付加⟧", "star": true}, {"l": "配列の誤りの例", "t": "koppu→poppu＝⟦同化⟧／ɕiNkaNseN→ɕikaNseN＝⟦音節脱落⟧／terebi→teberi＝⟦音位転換⟧／terebi→tebibi＝⟦同音反復⟧／riNgo→riNgoN＝⟦付加⟧"}, {"l": "4歳以降の誤り", "t": "音形の変動が減り、⟦置換⟧・⟦省略⟧・⟦歪み⟧として現れる。⟦摩擦音の破裂音化⟧は構音操作の未熟さ"}, {"l": "「ぽけっと→ぽてっと」", "t": "後続の/t/に引かれた⟦同化⟧（歪みではない）。歪みは別の音ではなく、どの音とも言えない不明瞭な音（⟦側音化構音⟧など）", "star": true, "flag": "※要確認：歪みの正しい例（2024[5]）"}]}, {"name": "分類・定義・要因", "rows": [{"l": "発話障害の3分類", "t": "⟦機能性⟧・⟦器質性⟧・⟦運動障害性（ディサースリア）⟧構音障害", "star": true}, {"l": "機能性構音障害", "t": "構音器官の形態・機能、神経筋系、聴覚などに⟦明らかな原因がない⟧のに、年齢的に可能な音が正しく産生されない状態", "star": true}, {"l": "器質性構音障害", "t": "構音器官の⟦形態的異常⟧による。例：⟦口蓋裂⟧・⟦粘膜下口蓋裂⟧・⟦舌小帯短縮症⟧・⟦舌切除後⟧"}, {"l": "運動障害性構音障害", "t": "⟦神経・筋系⟧の障害による。例：脳血管障害・⟦脳性麻痺⟧・⟦パーキンソン病⟧・ALS（amyotrophic lateral sclerosis／筋萎縮性側索硬化症）"}, {"l": "Kussmaulに基づく区別", "t": "機能性は機能・形態に問題がなく⟦原因不明⟧、器質性は構音器官の⟦機能・形態⟧に起因", "flag": "※要確認：Kussmaul（Adolf Kussmaul／ドイツの内科医）の分類を授業で扱ったか"}, {"l": "構音障害と音韻障害", "t": "構音障害は個々の音の⟦産生⟧の誤り、音韻障害は⟦音韻規則⟧など音韻論的な誤りに注目"}, {"l": "DSM-5-TRの語音症", "t": "語音症＝⟦音韻障害⟧＋⟦構音障害⟧（DSM-5-TR：精神疾患の診断・統計マニュアル第5版 本文改訂版）", "star": true}, {"l": "機能性構音障害の関連要因（5つ）", "t": "⟦言語発達の遅れ⟧・⟦聴覚的弁別の遅れ⟧・⟦中枢および末梢神経系の成熟の遅れ⟧・⟦音韻認識⟧・⟦言語環境⟧", "flag": "※要確認：出典（教科書ページ）"}, {"l": "発達性発語失行（CAS）", "t": "childhood apraxia of speech。音産出の⟦運動計画・プログラミング⟧と⟦バッファリング⟧の障害。成人と異なり脳の形態的異常は⟦ない⟧"}]}, {"name": "異常構音", "rows": [{"l": "異常構音の種類（機能性で多い順）", "t": "最多は⟦側音化構音⟧。ほかに⟦声門破裂音⟧・⟦鼻咽腔構音⟧・⟦口蓋化構音⟧", "star": true}, {"l": "側音化構音", "t": "呼気が口腔の⟦側方⟧から流出。⟦自然治癒しにくい⟧。シ→ヒ、チ→キに近い歪み音", "star": true}, {"l": "鼻咽腔構音", "t": "⟦軟口蓋⟧と⟦咽頭後壁⟧でつくる。呼気が全て⟦鼻腔⟧から流出し、「ん」「くん」に近い。⟦鼻孔を塞ぐ⟧と産生できない", "star": true}, {"l": "口蓋化構音", "t": "舌尖音・歯茎音が舌の⟦中央⟧と⟦口蓋⟧でつくられる。摩擦音は⟦[ç]⟧に、破裂音は⟦[k, g]⟧に近い。舌を出すと細く尖る"}, {"l": "声門破裂音", "t": "⟦声門⟧で産生。⟦無声破裂音[p][t][k]・無声破擦音[ts][ʨ]⟧で起こりやすい。軽い⟦咳払い⟧のように聞こえる。例：カ→ア"}, {"l": "咽喉頭摩擦音・破擦音／咽頭破裂音", "t": "機能性構音障害では⟦ほとんどみられない⟧。答案で挙げない", "star": true}]}, {"name": "検査・訓練", "rows": [{"l": "被刺激性", "t": "誤り音に強力な⟦聴覚刺激⟧などを与え、正しい音に変わるかをみる。⟦音検査⟧で評価", "star": true}, {"l": "被刺激性による方法の違い", "t": "あり→⟦聴覚刺激法⟧／なし→⟦構音器官の位置づけ法⟧", "star": true}, {"l": "構音類似運動検査：/r/", "t": "開口したまま⟦舌先を挙上⟧し、上顎前歯の裏につける"}, {"l": "構音類似運動検査：/s/", "t": "上下顎前歯の間から舌を⟦平らに出し⟧、舌と上顎前歯の狭めから呼気を⟦正中⟧に出す"}, {"l": "構音類似運動検査：/g/", "t": "開口したままで⟦「ンー」⟧という"}, {"l": "新版構音検査の音声表記", "t": "撥音「ん」は⟦大文字のN⟧。「でんわ」＝⟦deNwa⟧", "star": true, "flag": "※要確認：最終正答（配布正答表で照合）"}, {"l": "会話明瞭度", "t": "⟦5⟧段階。段階3＝⟦聞き手が話題を知っていればわかる程度⟧"}, {"l": "訓練適応の3条件", "t": "⟦精神面・情緒面⟧の発達と安定／⟦原疾患⟧の状態の安定／言語発達レベルが⟦4歳以上⟧", "star": true}, {"l": "様子をみる期間にしないこと", "t": "誤り音を⟦指摘して正す⟧こと、誤り音を⟦模倣して自覚させる⟧こと", "star": true}, {"l": "構音訓練の3段階", "t": "⟦誤り音の自覚⟧→⟦正しい構音操作の獲得⟧→⟦正しい音の習慣化⟧（③の中身が系統的構音訓練）", "star": true}, {"l": "構音位置づけ法", "t": "構音器官（舌・口唇・下顎）の位置や動きを言語聴覚士が⟦直接教示⟧し、正しい構音を新たに獲得させる", "flag": "※要確認：2024[11]の方法欄（配布正答表で照合）"}, {"l": "系統的構音訓練の手順（教科書8段階）", "t": "⟦単音⟧→⟦単音節⟧→⟦無意味音節⟧→⟦単語⟧→⟦次の音⟧→⟦短文⟧→⟦本読み・歌・系列語⟧→⟦会話⟧（講義スライドでは6段階に圧縮）"}, {"l": "無意味音節の練習の理由", "t": "単語にすると口が覚えている⟦習慣的な構音運動⟧が再生されてしまうため", "star": true}, {"l": "単語練習の量", "t": "語頭・語尾・語中それぞれ⟦20〜30個⟧", "flag": "※要確認：数の目安（教科書 表2）"}, {"l": "歯間音で練習している場合", "t": "短文練習まで舌を出したままでよく、⟦本読み・歌・系列語⟧（段階7）で正常音にする"}, {"l": "「次の音」の進め方", "t": "1つの音が⟦単語練習⟧まで進んだら次の誤り音を⟦単音⟧から始め、⟦短文⟧以降で合流させる", "star": true}]}]};
+
+const KEY = 'kinousei-kouon-v1';
+let S = {res:{}, desc:{}, txt:{}};
+try { S = Object.assign(S, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e) {}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
+
+const NUM = ['①','②','③','④','⑤'];
+const app = document.getElementById('app');
+function h(tag, props, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(props || {})) {
+    if (k === 'class') e.className = v;
+    else if (k === 'html') e.innerHTML = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  }
+  for (const c of kids.flat()) { if (c == null) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+function mount(...nodes){ app.replaceChildren(...nodes); window.scrollTo(0,0); }
+function shuffle(a){ a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const gname = id => (D.groups.find(g => g.id === id) || {}).name || '';
+
+/* ---------- ホーム ---------- */
+function home(){
+  const nodes = [];
+  nodes.push(h('header', {class:'top'},
+    h('h1', {}, '機能性構音障害'),
+    h('p', {class:'lead'}, '試験対策 ｜ 5択 ' + D.questions.length + '問・記述 ' + D.desc.length + '問・まとめ穴埋め')));
+
+  nodes.push(h('h2', {class:'sec'}, 'カテゴリー別（5択）'));
+  const grid = h('div', {class:'cats'});
+  D.groups.forEach(g => {
+    const qs = D.questions.filter(q => q.g === g.id);
+    if (!qs.length) return;
+    const ok = qs.filter(q => S.res[q.id] === 'o').length;
+    grid.append(h('button', {class:'cat', style:'--c:'+g.color, onclick:()=>startQuiz(qs, g.name)},
+      h('span', {class:'nm'}, g.name),
+      h('span', {class:'sb'}, g.sub),
+      h('span', {class:'ct'}, h('span', {}, qs.length + '問'), h('span', {}, '正解済 ' + ok)),
+      h('span', {class:'bar'}, h('i', {style:'width:'+Math.round(ok/qs.length*100)+'%'}))));
+  });
+  nodes.push(grid);
+
+  nodes.push(h('h2', {class:'sec'}, '出題モード'));
+  const wrong = D.questions.filter(q => S.res[q.id] === 'x');
+  const stars = D.questions.filter(q => q.star);
+  const flags = D.questions.filter(q => q.flag);
+  nodes.push(h('div', {class:'modes'},
+    h('button', {class:'mode', onclick:()=>startQuiz(D.questions, '全問')}, '全問（' + D.questions.length + '）'),
+    h('button', {class:'mode', onclick:()=>startQuiz(shuffle(D.questions), 'ランダム')}, 'ランダム'),
+    h('button', {class:'mode', onclick:()=>startQuiz(stars, '★頻出')}, h('b', {}, '★'), '頻出（' + stars.length + '）'),
+    h('button', {class:'mode', disabled: wrong.length ? null : 'disabled', onclick:()=>startQuiz(wrong, '間違えた問題')}, '間違えた問題（' + wrong.length + '）'),
+    h('button', {class:'mode', disabled: flags.length ? null : 'disabled', onclick:()=>startQuiz(flags, '要確認の問題')}, '要確認（' + flags.length + '）')));
+
+  const dDone = D.desc.filter(d => S.desc[d.id]).length;
+  nodes.push(h('h2', {class:'sec'}, 'そのほかの学習'));
+  nodes.push(h('div', {class:'more'},
+    h('button', {class:'cat', onclick:()=>descView('all')},
+      h('span', {class:'nm'}, '記述問題'),
+      h('span', {class:'sb'}, '定期試験は記述が中心。書いてから模範解答を見て自己採点'),
+      h('span', {class:'ct'}, h('span', {}, D.desc.length + '問'), h('span', {}, '採点済 ' + dDone))),
+    h('button', {class:'cat', onclick:()=>clozeView(0)},
+      h('span', {class:'nm'}, 'まとめ穴埋め'),
+      h('span', {class:'sb'}, '子音の表と要点の空欄。タップして答えを確認'),
+      h('span', {class:'ct'}, h('span', {}, D.cloze.length + 'セクション')))));
+
+  nodes.push(h('div', {class:'foot'},
+    h('button', {class:'link', onclick:()=>{ if(confirm('学習記録（○×・自己採点・メモ）をすべて消しますか？')){ S={res:{},desc:{},txt:{}}; save(); home(); } }}, '学習記録をリセット')));
+  mount(...nodes);
+}
+
+/* ---------- 5択クイズ ---------- */
+let Q = null;
+function startQuiz(list, title){
+  if (!list.length) { alert('該当する問題がありません。'); return; }
+  Q = {list: list.slice(), title, i:0, correct:0, wrong:[]};
+  renderQ();
+}
+function renderQ(){
+  const q = Q.list[Q.i];
+  const sel = new Set();
+  let answered = false;
+  const opts = h('div', {class:'opts'});
+  const rows = [];
+  const resBox = h('div', {});
+  const actBox = h('div', {class:'act'});
+
+  function grade(){
+    answered = true;
+    const picked = [...sel].sort();
+    const right = picked.length === q.ans.length && picked.every((v,i)=>v===q.ans[i]);
+    rows.forEach((r,idx) => {
+      const b = r.querySelector('.opt'); b.disabled = true;
+      r.querySelector('.elim').disabled = true;
+      if (q.ans.includes(idx)) b.classList.add('ok');
+      else if (sel.has(idx)) b.classList.add('ng');
+      b.classList.remove('sel');
+    });
+    S.res[q.id] = right ? 'o' : 'x'; save();
+    if (right) Q.correct++; else Q.wrong.push(q);
+    resBox.append(
+      h('div', {class:'res ' + (right?'ok':'ng')}, right ? '正解' : '不正解　正答：' + q.ans.map(i=>NUM[i]).join('・')),
+      h('div', {class:'exp'}, h('div', {html:q.exp}), q.flag ? h('span', {class:'flag'}, q.flag) : null));
+    actBox.replaceChildren(h('button', {class:'btn', onclick:next}, Q.i+1 < Q.list.length ? '次の問題へ' : '結果を見る'));
+  }
+  function next(){ Q.i++; if (Q.i < Q.list.length) renderQ(); else resultView(); }
+
+  const gradeBtn = h('button', {class:'btn', disabled:'disabled', onclick:grade}, '回答する');
+  q.opts.forEach((t, idx) => {
+    const b = h('button', {class:'opt', onclick:()=>{
+      if (answered) return;
+      if (q.multi) {
+        if (sel.has(idx)) sel.delete(idx);
+        else if (sel.size < 2) sel.add(idx);
+        rows.forEach((r,k)=>r.querySelector('.opt').classList.toggle('sel', sel.has(k)));
+        if (sel.size === 2) gradeBtn.removeAttribute('disabled'); else gradeBtn.setAttribute('disabled','disabled');
+      } else { sel.add(idx); grade(); }
+    }}, h('span', {class:'n'}, NUM[idx]), h('span', {class:'t'}, t));
+    const x = h('button', {class:'elim', title:'消去法：この選択肢に取り消し線', 'aria-label':'この選択肢を消去', onclick:()=>row.classList.toggle('struck')}, '×');
+    const row = h('div', {class:'orow'}, b, x);
+    rows.push(row); opts.append(row);
+  });
+  if (q.multi) actBox.append(gradeBtn);
+
+  mount(
+    h('div', {class:'nav'},
+      h('button', {class:'back', onclick:()=>{ if((!answered && Q.i===0) || confirm('クイズを中断してホームに戻りますか？')) home(); }}, '← ホーム'),
+      h('span', {class:'ttl'}, Q.title),
+      h('span', {class:'prog'}, (Q.i+1) + ' / ' + Q.list.length)),
+    h('div', {class:'bar', style:'margin:0 0 12px;--c:var(--pri)'}, h('i', {style:'width:'+Math.round(Q.i/Q.list.length*100)+'%'})),
+    h('div', {class:'card'},
+      h('div', {class:'chips'},
+        h('span', {class:'chip'}, q.cat),
+        q.src ? h('span', {class:'chip'}, q.src) : null,
+        q.multi ? h('span', {class:'chip multi'}, '2つ選べ') : null,
+        q.star ? h('span', {class:'chip star'}, '★頻出') : null,
+        q.flag ? h('span', {class:'chip chk'}, '要確認') : null),
+      h('div', {class:'qtext', html:q.q}),
+      opts,
+      q.multi ? h('p', {class:'hint'}, '2つ選んで「回答する」を押してください。右端の×で消去法ができます。') : h('p', {class:'hint'}, '右端の×で選択肢に取り消し線を引けます（消去法）。'),
+      actBox, resBox));
+}
+function resultView(){
+  const n = Q.list.length, pct = Math.round(Q.correct / n * 100);
+  const nodes = [
+    h('div', {class:'nav'}, h('span', {class:'ttl'}, Q.title + ' の結果')),
+    h('div', {class:'card'},
+      h('div', {}, n + '問中'),
+      h('div', {class:'score'}, Q.correct + '問正解（' + pct + '%）'),
+      h('div', {class:'act'},
+        Q.wrong.length ? h('button', {class:'btn', onclick:()=>startQuiz(Q.wrong, '間違えた問題')}, '間違いだけやり直す（' + Q.wrong.length + '）') : null,
+        h('button', {class:'btn ghost', onclick:home}, 'ホームへ')))
+  ];
+  if (Q.wrong.length) {
+    const ul = h('ul', {class:'wlist'});
+    Q.wrong.forEach(q => ul.append(h('li', {},
+      h('div', {html:q.q}),
+      h('div', {class:'a'}, '正答：' + q.ans.map(i=>NUM[i] + ' ' + q.opts[i]).join(' ／ ')))));
+    nodes.push(h('h2', {class:'sec'}, '間違えた問題'), ul);
+  }
+  mount(...nodes);
+}
+
+/* ---------- 記述問題 ---------- */
+function descView(gid){
+  const list = gid === 'all' ? D.desc : D.desc.filter(d => d.g === gid);
+  const nodes = [h('div', {class:'nav'},
+    h('button', {class:'back', onclick:home}, '← ホーム'),
+    h('span', {class:'ttl'}, '記述問題（自己採点）'),
+    h('span', {class:'prog'}, '採点済 ' + D.desc.filter(d=>S.desc[d.id]).length + ' / ' + D.desc.length))];
+
+  const tabs = h('div', {class:'tabs'});
+  tabs.append(h('button', {class:'tab' + (gid==='all'?' on':''), onclick:()=>descView('all')}, 'すべて（' + D.desc.length + '）'));
+  D.groups.forEach(g => {
+    const n = D.desc.filter(d => d.g === g.id).length;
+    if (n) tabs.append(h('button', {class:'tab' + (gid===g.id?' on':''), onclick:()=>descView(g.id)}, g.name + '（' + n + '）'));
+  });
+  nodes.push(tabs);
+
+  list.forEach((d) => {
+    const no = D.desc.indexOf(d) + 1;
+    const ansBox = h('div', {});
+    const card = h('div', {class:'card dq'});
+    const btns = {};
+    function mark(v){
+      S.desc[d.id] = v; save();
+      Object.entries(btns).forEach(([k,b]) => b.classList.toggle('on', k === v));
+    }
+    const self = h('div', {class:'self'});
+    [['o','○ 書けた'],['t','△ 迷った'],['x','× 書けない']].forEach(([k,lab]) => {
+      const b = h('button', {class:k + (S.desc[d.id]===k?' on':''), onclick:()=>mark(k)}, lab);
+      btns[k] = b; self.append(b);
+    });
+    const memo = h('textarea', {class:'memo', placeholder:'ここに自分の解答を書いてから、模範解答を見る', 'aria-label':'自分の解答メモ'});
+    memo.value = S.txt[d.id] || '';
+    memo.addEventListener('input', () => { S.txt[d.id] = memo.value; save(); });
+    const show = h('button', {class:'btn ghost small', onclick:()=>{
+      if (ansBox.childNodes.length) { ansBox.replaceChildren(); show.textContent = '模範解答を見る'; return; }
+      ansBox.append(
+        h('div', {class:'ans'}, h('div', {html:d.a}), h('div', {class:'pt'}, '採点ポイント：' + d.pt)),
+        d.flag ? h('span', {class:'flag'}, d.flag) : null, self);
+      show.textContent = '閉じる';
+    }}, '模範解答を見る');
+    card.append(
+      h('div', {class:'chips'},
+        h('span', {class:'chip'}, '記述 ' + no),
+        h('span', {class:'chip'}, gname(d.g)),
+        d.src ? h('span', {class:'chip'}, d.src) : null,
+        d.star ? h('span', {class:'chip star'}, '★頻出') : null,
+        d.flag ? h('span', {class:'chip chk'}, '要確認') : null),
+      h('div', {class:'qtext', html:d.q}), memo, show, ansBox);
+    nodes.push(card);
+  });
+  mount(...nodes);
+}
+
+/* ---------- まとめ穴埋め ---------- */
+function blankify(text, blanks, host){
+  text.split(/(⟦.*?⟧)/).forEach(seg => {
+    if (seg.startsWith('⟦')) {
+      const b = h('button', {class:'blank'}, seg.slice(1, -1));
+      b.addEventListener('click', () => b.classList.toggle('open'));
+      blanks.push(b); host.append(b);
+    } else if (seg) host.append(seg);
+  });
+}
+function clozeView(si){
+  const sec = D.cloze[si];
+  const nodes = [h('div', {class:'nav'},
+    h('button', {class:'back', onclick:home}, '← ホーム'),
+    h('span', {class:'ttl'}, 'まとめ穴埋め'))];
+  const tabs = h('div', {class:'tabs'});
+  D.cloze.forEach((s, k) => tabs.append(h('button', {class:'tab' + (k===si?' on':''), onclick:()=>clozeView(k)}, s.name)));
+  nodes.push(tabs);
+  const blanks = [];
+  nodes.push(h('div', {class:'tools'},
+    h('button', {class:'btn ghost small', onclick:()=>blanks.forEach(b=>b.classList.add('open'))}, 'すべて表示'),
+    h('button', {class:'btn ghost small', onclick:()=>blanks.forEach(b=>b.classList.remove('open'))}, 'すべて隠す')));
+  if (sec.note) nodes.push(h('p', {class:'note'}, sec.note));
+
+  if (sec.table) {
+    const t = sec.table;
+    const thead = h('thead', {}, h('tr', {}, t.head.map(x => h('th', {}, x))));
+    const tbody = h('tbody', {});
+    t.rows.forEach(r => {
+      const tr = h('tr', {});
+      r.forEach((cell, ci) => {
+        const td = h('td', {class: ci === 0 ? 'k' : ''});
+        blankify(cell, blanks, td);
+        tr.append(td);
+      });
+      tbody.append(tr);
+    });
+    nodes.push(h('div', {class:'tblwrap'}, h('table', {class:'tbl'}, thead, tbody)));
+    if (t.foot) nodes.push(h('p', {class:'note'}, t.foot));
+  }
+
+  sec.rows.forEach(r => {
+    const tx = h('div', {class:'tx'});
+    blankify(r.t, blanks, tx);
+    nodes.push(h('div', {class:'card crow'},
+      h('div', {class:'lb'}, r.cl ? h('span', {class:'cl'}, r.cl + ' ／ ') : null, r.l, r.star ? ' ★' : ''),
+      tx, r.flag ? h('span', {class:'flag'}, r.flag) : null));
+  });
+  mount(...nodes);
+}
+
+home();
+</script>
+</body>
+</html>
